@@ -4,7 +4,7 @@
 		"port": 5000,
 		"routePrefix": "/",
 		"pathVirtualStaticFiles": "/img",
-		"logFileName": "logs-server-test-1.log",
+		"logFileName": "logs-server.log",
 		"cors": {
 			"origin": "*",
 			"methods": ["GET","HEAD","PUT","PATCH","POST","DELETE"],
@@ -14,7 +14,7 @@
 		"session": {
 			"secret": ["SegredoIDCookies123", "Reforco1", "Reforco2"],
 			"secretStore": "SegredoArquivos123",
-			"cookieName": "cookie-server-test-1"
+			"cookieName": "cookie-server"
 		}
 	},
 	"auth": {

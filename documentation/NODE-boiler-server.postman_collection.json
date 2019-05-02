@@ -1,0 +1,255 @@
+{
+	"info": {
+		"_postman_id": "2e700310-6da4-4c24-8dfe-3ed24a989170",
+		"name": "NODE-boiler-server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "{{serverhost}}/venda/123",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/venda/123",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"venda",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/venda",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/venda",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"venda"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/produto/34",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/produto/34",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"produto",
+						"34"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/produto",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/produto",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"produto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/usuario/10",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/usuario/101",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"usuario",
+						"101"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/usuario",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/usuario",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"usuario"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/islogged",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/islogged",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"islogged"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{serverhost}}/logout",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{serverhost}}/login",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/favicon.ico",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/favicon.ico",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"favicon.ico"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{serverhost}}/",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

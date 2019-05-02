@@ -1,5 +1,5 @@
 {
-  "name": "test-server-1",
+  "name": "node-boiler-server",
   "version": "0.0.1",
   "description": "Montando ambiente de teste Node com express.js",
   "main": "./API/servidor.js",
@@ -43,8 +43,7 @@
     "nodemon",
     "servidor",
     "back-end",
-    "rotas",
-    "teste"
+    "rotas"
   ],
   "author": "Michel Guimarães Ariede",
   "license": "MIT"

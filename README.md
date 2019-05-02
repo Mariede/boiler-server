@@ -1,4 +1,4 @@
-# node-test-server-1 (boiler para servidor web NODE)
+# node-boiler-server (boiler para servidor web NODE / Express)
 
 ## Servidor http
   - CORS
