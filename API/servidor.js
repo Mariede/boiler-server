@@ -13,7 +13,6 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const log4js = require('log4js');
 const moduleAlias = require('module-alias');
-const jsonfile = require('jsonfile');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -26,27 +25,27 @@ moduleAlias.addAliases({
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Acessando informacoes do arquivo de configuracoes
-const configPath = __serverRoot + '/config.json';
-
-global.__serverConfig = Object.freeze(jsonfile.readFileSync(configPath));
-// -------------------------------------------------------------------------
-
-// -------------------------------------------------------------------------
-// Modulos/Variaveis de apoio
+// Modulos de apoio
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 const log = require('@serverRoot/helpers/log');
-const checkRoutePrefix = () => (__serverConfig.server.routePrefix && __serverConfig.server.routePrefix !== '/' ? __serverConfig.server.routePrefix : '');
+const configManage = require('@serverRoot/helpers/configManage');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Verifica arquivo de configuracoes por mudancas
-const configChanges = require('@serverRoot/helpers/configChanges');
+// Procedimento prioritarios
 
-configChanges.check(configPath)
+// Acessando e gerindo informacoes do arquivo de configuracoes do servidor
+const configPath = __serverRoot + '/config.json';
+
+global.__serverConfig = configManage.push(configPath);
+
+configManage.check(configPath)
 .catch(err => {
 	log.logger('error', err.stack || err);
 });
+
+// Acessando rotas prefixadas
+const checkRoutePrefix = () => (__serverConfig.server.routePrefix && __serverConfig.server.routePrefix !== '/' ? __serverConfig.server.routePrefix : '');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
