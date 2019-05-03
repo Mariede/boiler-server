@@ -28,29 +28,12 @@ module.exports = {
 	externals: [
 		nodeExternals()
 	],
-	// module: {
-	// 	rules: [
-	// 		{
-	// 			type: 'javascript/auto',
-	// 			test: /config\.json$/,
-	// 			use: [
-	// 				{
-	// 					loader: 'file-loader',
-	// 					options: {
-	// 						name: '[name].[ext]'
-	// 					}
-	// 				}
-	// 			]
-	// 		}
-	// 	]
-	// },
-	// externals: {
-	// 	exclude: /node_modules/,
-	// 	config: require(destinyPath + '/config.json')
-	// },
 	plugins: [
 		new CleanPlugin(),
 		new CopyPlugin([
+			{
+				from: path.resolve(sourcePath, './config.json'), to: path.resolve(destinyPath, './config.json'), force: true
+			},
 			{
 				from: path.resolve(sourcePath, './_home'), to: path.resolve(destinyPath, './_home'), force: true
 			}

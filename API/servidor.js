@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const log4js = require('log4js');
 const moduleAlias = require('module-alias');
+const jsonfile = require('jsonfile');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -20,16 +21,20 @@ const moduleAlias = require('module-alias');
 global.__serverRoot = __dirname;
 
 moduleAlias.addAliases({
-	'@serverRoot': __dirname
+	'@serverRoot': __serverRoot
 });
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+// Acessando informacoes do arquivo de configuracoes
+global.__serverConfig = Object.freeze(jsonfile.readFileSync(__serverRoot + '/config.json'));
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
 // Modulos/Variaveis de apoio
-const config = require('@serverRoot/config');
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 const log = require('@serverRoot/helpers/log');
-const checkRoutePrefix = () => (config.server.routePrefix && config.server.routePrefix !== '/' ? config.server.routePrefix : '');
+const checkRoutePrefix = () => (__serverConfig.server.routePrefix && __serverConfig.server.routePrefix !== '/' ? __serverConfig.server.routePrefix : '');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -43,7 +48,7 @@ log4js.configure({
 		},
 		fileAppender: {
 			type: 'dateFile',
-			filename: (__serverRoot + '/logs/' + config.server.logFileName),
+			filename: (__serverRoot + '/logs/' + __serverConfig.server.logFileName),
 			pattern: '.yyyy-MM-dd',
 			daysToKeep: 15,
 			compress: true
@@ -64,24 +69,24 @@ app.use(
 // CORS --------------------------------------------------
 app.use(
 	cors({
-		'origin': config.server.cors.origin,
-		'methods': config.server.cors.methods,
-		'preflightContinue': config.server.cors.preflightContinue,
-		'optionsSuccessStatus': config.server.cors.optionsSuccessStatus
+		'origin': __serverConfig.server.cors.origin,
+		'methods': __serverConfig.server.cors.methods,
+		'preflightContinue': __serverConfig.server.cors.preflightContinue,
+		'optionsSuccessStatus': __serverConfig.server.cors.optionsSuccessStatus
 	})
 );
 
 // Sessions - inicializando ------------------------------
 app.use(
 	session({
-			name: config.server.session.cookieName,
+			name: __serverConfig.server.session.cookieName,
 			store: new sessionFileStore({
 				path: (__serverRoot + '/sessions'),
 				retries: 5,
-				secret: config.server.session.secretStore,
+				secret: __serverConfig.server.session.secretStore,
 				ttl: 20 * 60 // 1 = 1 segundo (20 minutos)
 			}),
-			secret: config.server.session.secret,
+			secret: __serverConfig.server.session.secret,
 			resave: false,
 			saveUninitialized: false,
 			unset: 'destroy',
@@ -111,7 +116,7 @@ app.use(
 
 // Servindo arquivos estaticos ---------------------------
 app.use(
-	checkRoutePrefix() + config.server.pathVirtualStaticFiles, express.static(__serverRoot + '/_home/images') // De /img para pasta \images
+	checkRoutePrefix() + __serverConfig.server.pathVirtualStaticFiles, express.static(__serverRoot + '/_home/images') // De /img para pasta \images
 );
 
 // Rotas -------------------------------------------------
@@ -133,7 +138,7 @@ app.use((err, req, res, next) => {
 
 // -------------------------------------------------------------------------
 // Inicia servidor ouvindo em host:port (sem certificado https)
-const servidor = http.createServer(app).listen(config.server.port, config.server.host, () => {
-	log.logger('info', `Servidor está rodando em ${config.server.host}:${config.server.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`, 'consoleOnly');
+const servidor = http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.host, () => {
+	log.logger('info', `Servidor está rodando em ${__serverConfig.server.host}:${__serverConfig.server.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`, 'consoleOnly');
 });
 // -------------------------------------------------------------------------

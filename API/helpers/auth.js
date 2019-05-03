@@ -2,15 +2,15 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const config = require('@serverRoot/config');
+
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Verifica se a rota e protegida com base nas informacoes de config
 const isProtected = (req, rota) => {
 	let rotaCheck = rota.toUpperCase(),
-		authTipo = config.auth.authTipo,
-		exceptTable = config.auth.except,
+		authTipo = __serverConfig.auth.authTipo,
+		exceptTable = __serverConfig.auth.except,
 		exceptInspect = (paramTable, paramRota) => {
 			return paramTable.some(
 				(element) => {
@@ -40,7 +40,7 @@ const isProtected = (req, rota) => {
 // Permite acesso as rotas protegidas, analise das permissoes em um segundo momento
 const login = (req) => {
 	let sess = req.session,
-		sessWraper = config.auth.sessWrapper;
+		sessWraper = __serverConfig.auth.sessWrapper;
 
 	if (sess[sessWraper]) {
 		throw new Error('Usuário já logado');
@@ -68,7 +68,7 @@ const logout = (req, res) => {
 
 	if (sess) {
 		sess.destroy();
-		res.cookie(config.server.session.cookieName, '', { expires: new Date() });
+		res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date() });
 
 		fRet = true;
 	}
@@ -79,7 +79,7 @@ const logout = (req, res) => {
 // Verifica se a sessao esta ativa
 const isLogged = (req, retType) => { // retType: 2: retorna object. Default: retorna boolean.
 	let sess = req.session,
-		sessWraper = config.auth.sessWrapper,
+		sessWraper = __serverConfig.auth.sessWrapper,
 		fRet = false;
 
 	if (sess) {

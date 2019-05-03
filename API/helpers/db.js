@@ -3,7 +3,6 @@
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const sql = require('mssql');
-const config = require('@serverRoot/config');
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
@@ -54,9 +53,9 @@ const sqlOpenCon = () => {
 		};
 
 		try {
-			if (config.db.conexaoTipo === 2) {
+			if (__serverConfig.db.conexaoTipo === 2) {
 			// Conexao simples, direta, sem pool
-				sql.connect(config.db.configSql)
+				sql.connect(__serverConfig.db.configSql)
 				.then(
 					pool => {
 						log.logger('info', 'Conectado ao banco de dados', 'consoleOnly');
@@ -80,7 +79,7 @@ const sqlOpenCon = () => {
 				);
 			} else {
 			// DEFAULT - Conexao com pool
-				new sql.ConnectionPool(config.db.configSql).connect()
+				new sql.ConnectionPool(__serverConfig.db.configSql).connect()
 				.then(
 					pool => {
 						log.logger('info', 'Conectado ao pool do banco de dados', 'consoleOnly');
@@ -258,7 +257,7 @@ const sqlCloseCon = (transaction, forceClose = false) => {
 			transaction.commit()
 			.then(
 				() => {
-					if (config.db.conexaoTipo === 2 || forceClose) {
+					if (__serverConfig.db.conexaoTipo === 2 || forceClose) {
 					// Conexao simples, direta, sem pool
 						sqlClose(sql);
 					}
