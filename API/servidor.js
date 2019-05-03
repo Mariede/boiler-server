@@ -27,7 +27,9 @@ moduleAlias.addAliases({
 
 // -------------------------------------------------------------------------
 // Acessando informacoes do arquivo de configuracoes
-global.__serverConfig = Object.freeze(jsonfile.readFileSync(__serverRoot + '/config.json'));
+const configPath = __serverRoot + '/config.json';
+
+global.__serverConfig = Object.freeze(jsonfile.readFileSync(configPath));
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -35,6 +37,16 @@ global.__serverConfig = Object.freeze(jsonfile.readFileSync(__serverRoot + '/con
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 const log = require('@serverRoot/helpers/log');
 const checkRoutePrefix = () => (__serverConfig.server.routePrefix && __serverConfig.server.routePrefix !== '/' ? __serverConfig.server.routePrefix : '');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Verifica arquivo de configuracoes por mudancas
+const configChanges = require('@serverRoot/helpers/configChanges');
+
+configChanges.check(configPath)
+.catch(err => {
+	log.logger('error', err.stack || err);
+});
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
