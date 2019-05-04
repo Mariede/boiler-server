@@ -22,6 +22,6 @@
     - isLogged
     - Login / Logout
 ## Lib parametrizada de fácil utilização para o MS SQL Server
-  - Acesso a queries e stored procedures, variáveis de output, etc
+  - Transacional, acesso a queries e stored procedures, variáveis de output, etc
 ## Criptografia
-  - Hash e cipher
+  - Hash e Cipher
