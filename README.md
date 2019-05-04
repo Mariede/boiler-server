@@ -25,3 +25,5 @@
   - Transacional, acesso a queries e stored procedures, variáveis de output, etc
 ## Criptografia
   - Hash e Cipher
+## Build gerável
+  - Através do Webpack
