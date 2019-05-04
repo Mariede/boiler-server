@@ -49,12 +49,13 @@ const generateSalt = (length, onlyNumbers = true) => {
 };
 
 // Gera um hash baseado em algorithm
+// let passHash = await cryptoHash.hash('P@ssword123', 6, false);
 const hash = async (passData, ...saltData) => {
 	try {
-		const algorithm = 'sha512';
+		const algorithm = __serverConfig.crypto.hashAlgorithm;
 		const pass = (passData || '') + '';
 		const salt = await checkSaltData(...saltData);
- 		const passHash = await crypto.createHmac(algorithm, salt).update(pass).digest('hex');
+ 		const passHash = await crypto.createHmac(algorithm, salt).update(pass).digest( __serverConfig.crypto.hashDigestEncoding);
 
 		return {
 			pass: pass,
@@ -83,8 +84,8 @@ const baseCipherDecipher = async (passData, ...saltData) => {
 			});
 		};
 
-		const algorithm = 'aes-192-cbc';
-		const algorithmKeyLen = 24; //algo 192: 24 bytes; algo 256: 32 bytes
+		const algorithm = __serverConfig.crypto.cipherAlgorithm;
+		const algorithmKeyLen = __serverConfig.crypto.cipherKeyLen; //algo 192: 24 bytes; algo 256: 32 bytes
 		const pass = (passData || '') + '';
 		const salt = await checkSaltData(...saltData);
 		const key = await scryptAsync(pass, salt, algorithmKeyLen);

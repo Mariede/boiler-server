@@ -29,6 +29,12 @@
 		"comments - authTipo": "2: toda rota livre, exceto except / Default: toda rota protegida, exceto except",
 		"comments - except": "Except aceita rota parcial ou exata * utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2 *"
 	},
+	"crypto": {
+		"hashAlgorithm": "sha512",
+		"hashDigestEncoding": "hex",
+		"cipherAlgorithm": "aes-192-cbc",
+		"cipherKeyLen": 24
+	},
 	"db": {
 		"conexaoTipo": 1,
 		"configSql": {
