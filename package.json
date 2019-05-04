@@ -31,7 +31,8 @@
   "nodemonConfig": {
     "ignore": [
       "API/logs/*",
-      "API/sessions/*"
+      "API/sessions/*",
+      "API/config.json"
     ]
   },
   "keywords": [

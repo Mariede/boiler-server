@@ -9,6 +9,14 @@ const auth = require('@serverRoot/helpers/auth');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+// Rotas (controllers)
+const home = require('@serverRoot/routes/controllers/home');
+const usuario = require('@serverRoot/routes/controllers/usuarios/usuario');
+const produto = require('@serverRoot/routes/controllers/produtos/produto');
+const venda = require('@serverRoot/routes/controllers/vendas/venda');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
 // Middleware para todas as rotas existentes e nao existentes
 router.use((req, res, next) => {
 	try {
@@ -43,12 +51,7 @@ router.use((req, res, next) => {
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Rotas (controllers)
-const home = require('@serverRoot/routes/controllers/home');
-const usuario = require('@serverRoot/routes/controllers/usuarios/usuario');
-const produto = require('@serverRoot/routes/controllers/produtos/produto');
-const venda = require('@serverRoot/routes/controllers/vendas/venda');
-
+// Rotas (controllers) - chamadas
 home.rotasHome(router);
 usuario.rotasUsuario(router);
 produto.rotasProduto(router);

@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-
+const cryptoHash = require('@serverRoot/helpers/cryptoHash');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -84,12 +84,10 @@ const isLogged = (req, retType) => { // retType: 2: retorna object. Default: ret
 
 	if (sess) {
 		if (sess[sessWraper]) {
-			if (sess[sessWraper].id) {
-				if (retType === 2) {
-					fRet = sess[sessWraper];
-				} else {
-					fRet = true;
-				}
+			if (retType === 2) {
+				fRet = sess[sessWraper];
+			} else {
+				fRet = true;
 			}
 		}
 	}
