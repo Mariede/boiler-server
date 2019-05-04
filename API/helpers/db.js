@@ -9,40 +9,6 @@ const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 // Conexao e execucao de queries no MS SQL Server
 // atraves do pacote mssql
-/*
------ EXEMPLOS DO JSON DE ENTRADA -----
-
-query = {
-	formato: 1,			// 1: Query String, 2: Stored Procedure
-	dados: {
-		input: [
-			['ID', 'int', 1],
-			['NOME', 'varchar(200)', '%Nome Exemplo 1%']
-		],
-		output: [
-			['QTD_RET', 'int']
-		],
-		executar: `
-			SELECT * FROM TABELA T (NOLOCK) WHERE T.ID_TABELA=@ID OR T.NOME LIKE(@NOME);
-			SET @QTD_RET = SCOPE_IDENTITY();
-		`
-	}
-}
-
-query = {
-	formato: 2,			// 1: Query String, 2: Stored Procedure
-	dados: {
-		input: [
-			['ID', 'int', 1],
-			['NOME', 'varchar(200)', 'Nome Exemplo 2']
-		],
-		output: [
-			['QTD_RET', 'int']
-		],
-		executar: 'USUARIO_CONSULTAR'
-	}
-}
-*/
 
 // Inicia uma transacao
 const sqlOpenCon = () => {

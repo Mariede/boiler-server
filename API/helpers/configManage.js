@@ -7,7 +7,7 @@ const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Carrega config.json
+// Carrega arquivo de configuracao
 const push = config => {
 	try {
 		return Object.freeze(JSON.parse(fs.readFileSync(config, 'utf8')));
@@ -16,7 +16,7 @@ const push = config => {
 	}
 };
 
-// Carrega config.json e checa por mudancas
+// Checa arquivo de configuracao por mudancas
 const check = config => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -104,6 +104,7 @@ const check = config => {
 		}
 	});
 };
+// -------------------------------------------------------------------------
 
 module.exports = {
 	push,

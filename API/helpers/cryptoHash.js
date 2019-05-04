@@ -5,6 +5,8 @@
 const crypto = require('crypto');
 // -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
+// Retorna ou gera salt para tarefas (metodo privado)
 const checkSaltData = async (...saltData) => {
 	try {
 		const saltDataLen = saltData.length;
@@ -27,6 +29,7 @@ const checkSaltData = async (...saltData) => {
 	}
 };
 
+// Gera novo salt com tamanho maximo e conteudo numerico ou alfanumerico
 const generateSalt = (length, onlyNumbers = true) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -45,6 +48,7 @@ const generateSalt = (length, onlyNumbers = true) => {
 	});
 };
 
+// Gera um hash baseado em algorithm
 const hash = async (passData, ...saltData) => {
 	try {
 		const algorithm = 'sha512';
@@ -62,6 +66,7 @@ const hash = async (passData, ...saltData) => {
 	}
 };
 
+// Base de codigo para cripto e decripto, baseado em algorithm (metodo privado)
 const baseCipherDecipher = async (passData, ...saltData) => {
 	try {
 		const scryptAsync = (passA, saltA, keyLenA) => {
@@ -125,6 +130,7 @@ const decipher = async (passData, ...saltData) => {
 		throw new Error(err);
 	}
 };
+// -------------------------------------------------------------------------
 
 module.exports = {
 	generateSalt,

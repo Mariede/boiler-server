@@ -1,0 +1,144 @@
+LIB db.js
+---------
+
+Conexao e execucao de queries no MS SQL Server atraves do pacote mssql
+
+=> exemplos de parâmetros JSON de entrada para queries:
+
+---------------------------------------------------------------------------------------------------------
+query = {
+	formato: 1,			// 1: Query String, 2: Stored Procedure
+	dados: {
+		input: [
+			['ID', 'int', 1],
+			['NOME', 'varchar(200)', '%Nome Exemplo 1%']
+		],
+		output: [
+			['QTD_RET', 'int']
+		],
+		executar: `
+			SELECT * FROM TABELA T (NOLOCK) WHERE T.ID_TABELA=@ID OR T.NOME LIKE(@NOME);
+			SET @QTD_RET = SCOPE_IDENTITY();
+		`
+	}
+}
+
+query = {
+	formato: 2,			// 1: Query String, 2: Stored Procedure
+	dados: {
+		input: [
+			['ID', 'int', 1],
+			['NOME', 'varchar(200)', 'Nome Exemplo 2']
+		],
+		output: [
+			['QTD_RET', 'int']
+		],
+		executar: 'USUARIO_CONSULTAR'
+	}
+}
+---------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------
+// paramentros de entrada
+let query1 = {
+	formato: 1, // 1: Query String, 2: Stored Procedure
+	dados: {
+		input: [
+			['NOME', 'varchar(200)', 'Joaquim Santos'],
+			['SENHA', 'varchar(20)', 'SENH@TESTE123'],
+			['ATIVO', 'bit', 1],
+			['NOMECHECK', 'varchar(200)', '%Joa%']
+		],
+		output: [
+			['INSERTED_ID', 'int']
+		],
+		executar: `
+			SET NOCOUNT OFF;
+			DECLARE
+				@INCR int; -- variavel interna
+			SET
+				@INCR = (
+					SELECT TOP 1
+						ID_USUARIO
+					FROM
+						USUARIO U (NOLOCK)
+					WHERE
+						U.NOME LIKE(@NOMECHECK) -- variavel input externa
+					ORDER BY
+						ID_USUARIO DESC
+			);
+			INSERT INTO USUARIO (
+				NOME
+				,SENHA
+				,ATIVO
+			) VALUES (
+				@NOME + ' ' + CAST(@INCR AS varchar) -- variavel input externa + interna
+				,@SENHA -- variavel input externa
+				,@ATIVO -- variavel input externa
+			);
+			SET
+				@INSERTED_ID = SCOPE_IDENTITY(); -- variavel output
+			SELECT TOP 2
+				NOME
+			FROM
+				USUARIO U (NOLOCK)
+			WHERE
+				U.NOME LIKE(@NOMECHECK) -- variavel input externa
+			ORDER BY
+				ID_USUARIO DESC;
+			SELECT TOP 3
+				*
+			FROM
+				USUARIO U (NOLOCK)
+			WHERE
+				U.NOME LIKE(@NOMECHECK) -- variavel input externa
+			ORDER BY
+				ID_USUARIO DESC;
+		`
+	}
+},
+query2 = {
+	formato: 2, // 1: Query String, 2: Stored Procedure
+	dados: {
+		input: [
+			['ID_USUARIO', 'int', 1],
+			['NOME', 'varchar(200)', 'joa']
+		],
+		output: [
+			['QTD_RET', 'int']
+		],
+		executar: 'USUARIO_CONSULTAR'
+	}
+};
+---------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------
+// Execute
+dbCon.sqlOpenCon()
+.then(
+	async transaction => {
+		try {
+			let result1 = await dbCon.sqlExecute(transaction, query1);
+			// let result1 = await dbCon.sqlExecute(transaction, query2);
+
+			await dbCon.sqlCloseCon(transaction);
+			resolve(result1);
+		} catch(err) {
+			reject(err);
+		}
+	}
+)
+.catch(
+	err => {
+		reject(err);
+	}
+);
+
+// ou ExecuteAll
+try {
+	let result1 = await dbCon.sqlExecuteAll(query1);
+	// let result1 = await dbCon.sqlExecuteAll(query2);
+} catch(err) {
+	throw new Error(err);
+}
+---------------------------------------------------------------------------------------------------------
