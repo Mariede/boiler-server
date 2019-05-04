@@ -7,10 +7,9 @@ const dbCon = require('@serverRoot/helpers/db');
 
 // -------------------------------------------------------------------------
 // Acoes
-const consultarTodos = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let query1 = {
+const consultarTodos = async (req, res) => {
+	try {
+		let query1 = {
 				formato: 1, // 1: Query String, 2: Stored Procedure
 				dados: {
 					input: [
@@ -81,81 +80,59 @@ const consultarTodos = (req, res) => {
 				}
 			};
 
-			dbCon.sqlOpenCon()
-			.then(
-				async transaction => {
-					try {
-						let result1 = await dbCon.sqlExecute(transaction, query1);
-						// let result1 = await dbCon.sqlExecute(transaction, query2);
+		let transaction = await dbCon.sqlOpenCon(),
+			result1 = await dbCon.sqlExecute(transaction, query1);
+			// result1 = await dbCon.sqlExecute(transaction, query2);
+		await dbCon.sqlCloseCon(transaction);
 
-						await dbCon.sqlCloseCon(transaction);
-						resolve(result1);
-					} catch(err) {
-						reject(err);
-					}
-				}
-			)
-			.catch(
-				err => {
-					reject(err);
-				}
-			);
-		} catch(err) {
-			reject(err);
-		}
-	});
+		return result1;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 
-const consultar = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let fRet = 'consulta usuario',
-				id = req.params.id;
+const consultar = async (req, res) => {
+	try {
+		let fRet = 'consulta usuario',
+			id = req.params.id;
 
-			resolve(`${fRet} ${id}`);
-		} catch(err) {
-			reject(err);
-		}
-	});
+		return `${fRet} ${id}`;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 
-const inserir = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let fRet = 'insere usuario',
-				id = req.params.id;
+const inserir = async (req, res) => {
+	try {
+		let fRet = 'insere usuario',
+			id = req.params.id;
 
-			resolve(`${fRet} ${id}`);
-		} catch(err) {
-			reject(err);
-		}
-	});
+		return `${fRet} ${id}`;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 
-const alterar = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let fRet = 'altera usuario',
-				id = req.params.id;
+const alterar = async (req, res) => {
+	try {
+		let fRet = 'altera usuario',
+			id = req.params.id;
 
-			resolve(`${fRet} ${id}`);
-		} catch(err) {
-			reject(err);
-		}
-	});
+		return `${fRet} ${id}`;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 
-const excluir = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let fRet = 'exclui usuario',
-				id = req.params.id;
+const excluir = async (req, res) => {
+	try {
+		let fRet = 'exclui usuario',
+			id = req.params.id;
 
-			resolve(`${fRet} ${id}`);
-		} catch(err) {
-			reject(err);
-		}
-	});
+		return `${fRet} ${id}`;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 // -------------------------------------------------------------------------
 

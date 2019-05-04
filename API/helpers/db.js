@@ -248,7 +248,7 @@ const sqlExecuteAll = async (parametros, forceClose = false) => {
 			result = await sqlExecute(transaction, parametros);
 			await sqlCloseCon(transaction, forceClose);
 
-			return result;
+		return result;
 	} catch(err) {
 		throw new Error(err);
 	}

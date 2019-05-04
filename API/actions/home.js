@@ -7,49 +7,41 @@ const auth = require('@serverRoot/helpers/auth');
 
 // -------------------------------------------------------------------------
 // Acoes
-const root = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			// let fRet = '<html><body><h3>Bem vindo, servidor em NODE.js</h3></body></html>';
-			let fRet = 'index.html';
-			resolve(fRet);
-		} catch(err) {
-			reject(err);
-		}
-	});
+const root = async (req, res) => {
+	try {
+		// let fRet = '<html><body><h3>Bem vindo, servidor em NODE.js</h3></body></html>';
+		let fRet = 'index.html';
+		return fRet;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 
-const login = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let fRet = auth.login(req);
-			resolve(fRet);
-		} catch(err) {
-			reject(err);
-		}
-	});
+const login = async (req, res) => {
+	try {
+		let fRet = auth.login(req);
+		return fRet;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 
-const logout = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let fRet = auth.logout(req, res);
-			resolve(fRet);
-		} catch(err) {
-			reject(err);
-		}
-	});
+const logout = async (req, res) => {
+	try {
+		let fRet = auth.logout(req, res);
+		return fRet;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 
-const isLogged = (req, res) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let fRet = auth.isLogged(req, 2);
-			resolve(fRet);
-		} catch(err) {
-			reject(err);
-		}
-	});
+const isLogged = async (req, res) => {
+	try {
+		let fRet = auth.isLogged(req, 2);
+		return fRet;
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 // -------------------------------------------------------------------------
 

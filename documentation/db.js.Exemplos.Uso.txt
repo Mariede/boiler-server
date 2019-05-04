@@ -6,6 +6,8 @@ Conexao e execucao de queries no MS SQL Server atraves do pacote mssql
 => exemplos de parâmetros JSON de entrada para queries:
 
 ---------------------------------------------------------------------------------------------------------
+//Estrutura basica
+
 query = {
 	formato: 1,			// 1: Query String, 2: Stored Procedure
 	dados: {
@@ -39,7 +41,8 @@ query = {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// paramentros de entrada
+// paramentros de entrada (exemplos)
+
 let query1 = {
 	formato: 1, // 1: Query String, 2: Stored Procedure
 	dados: {
@@ -113,14 +116,15 @@ query2 = {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// Execute
+// Chamadas
+
+// Execute (promise / await)
 dbCon.sqlOpenCon()
 .then(
 	async transaction => {
 		try {
 			let result1 = await dbCon.sqlExecute(transaction, query1);
-			// let result1 = await dbCon.sqlExecute(transaction, query2);
-
+			//	result1 = await dbCon.sqlExecute(transaction, query2);
 			await dbCon.sqlCloseCon(transaction);
 			resolve(result1);
 		} catch(err) {
@@ -134,10 +138,24 @@ dbCon.sqlOpenCon()
 	}
 );
 
-// ou ExecuteAll
+
+// Execute (apenas await)
+try {
+	let transaction = await dbCon.sqlOpenCon(),
+		result1 = await dbCon.sqlExecute(transaction, query1);
+	//	result1 = await dbCon.sqlExecute(transaction, query2);
+	await dbCon.sqlCloseCon(transaction);
+	return result1;
+} catch(err) {
+	throw new Error(err);
+}
+
+
+// ou com o metodo agrupador ExecuteAll (apenas await)
 try {
 	let result1 = await dbCon.sqlExecuteAll(query1);
 	// let result1 = await dbCon.sqlExecuteAll(query2);
+	return result1;
 } catch(err) {
 	throw new Error(err);
 }
