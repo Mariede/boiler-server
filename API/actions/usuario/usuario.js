@@ -80,12 +80,12 @@ const consultarTodos = async (req, res) => {
 				}
 			};
 
-		let transaction = await dbCon.sqlOpenCon(),
-			result1 = await dbCon.sqlExecute(transaction, query1);
-			// result1 = await dbCon.sqlExecute(transaction, query2);
-		await dbCon.sqlCloseCon(transaction);
+		const paginator = require('@serverRoot/helpers/paginator');
+		let result1 = await dbCon.sqlExecuteAll(query1);
+		await paginator.setSorter(result1.recordsets[0], 'NOME', 'DESC') // sorter atua na propria array, referenciada. 'ASC' pode ser omitido (default)
+		let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9); // paginado: pagina 3 / 9 itens por pagina
 
-		return result1;
+		return pResult;
 	} catch(err) {
 		throw new Error(err);
 	}
