@@ -7,10 +7,17 @@
 
 // -------------------------------------------------------------------------
 // Ordena massa de dados
-const setSorter = (jsonData, sortElement) => {
+const setSorter = (jsonData, sortElement, order = 'ASC') => { // sortElement e case sensitive
 	return new Promise((resolve, reject) => {
 		try {
+			let sortOrder = (order.toUpperCase() === 'DESC' ? { d: 1, a: -1 } : { d: -1, a: 1 }),
+				sortData = jsonData.sort(
+					(a, b) => {
+						return ((a[sortElement] < b[sortElement]) ? sortOrder.d : ((a[sortElement] > b[sortElement]) ? sortOrder.a : 0));
+					}
+				);
 
+			resolve({ sortData });
 		} catch(err) {
 			reject(err);
 		}

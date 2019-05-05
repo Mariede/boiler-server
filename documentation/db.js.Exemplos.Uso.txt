@@ -175,3 +175,19 @@ try {
 	throw new Error(err);
 }
 ---------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------
+// Chamada com paginacao e sorter (ordenado)
+
+try {
+	const paginator = require('@serverRoot/helpers/paginator');
+
+	let result1 = await dbCon.sqlExecuteAll(query1);
+	await paginator.setSorter(result1.recordsets[0], 'EMAIL', 'DESC') // sorter atua na propria array, referenciado. Ordem pode ser omitido (default: ASC)
+	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 2, 17); // paginado: pagina 2 / 17 itens por pagina
+
+	return pResult; // retorno => pageDetails, pageData, rowsAffected
+} catch(err) {
+	throw new Error(err);
+}
+---------------------------------------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 ## Lib parametrizada de fácil utilização para o MS SQL Server
   - Transacional, acesso a queries e stored procedures, variáveis de output, etc
 ## Paginador e Ordenador
-  - Com opções configuráveis, items_per_page, current_page, etc
+  - Com opções configuráveis, items_per_page, current_page, ASC/DESC, etc
 ## Criptografia
   - Hash e Cipher
 ## Build gerável
