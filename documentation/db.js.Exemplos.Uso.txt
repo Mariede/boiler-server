@@ -1,12 +1,12 @@
-LIB db.js
----------
+LIB db.js + paginator.js
+------------------------
 
 Conexao e execucao de queries no MS SQL Server atraves do pacote mssql
 
 => exemplos de parâmetros JSON de entrada para queries:
 
 ---------------------------------------------------------------------------------------------------------
-//Estrutura basica
+//Estrutura basica queries (parametros de entrada)
 
 query = {
 	formato: 1,			// 1: Query String, 2: Stored Procedure
@@ -41,7 +41,7 @@ query = {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// paramentros de entrada (exemplos)
+// parametros de entrada (exemplos)
 
 let query1 = {
 	formato: 1, // 1: Query String, 2: Stored Procedure
@@ -116,7 +116,7 @@ query2 = {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// Chamadas
+// Chamadas nos metodos
 
 // Execute (promise / await)
 dbCon.sqlOpenCon()
@@ -156,6 +156,21 @@ try {
 	let result1 = await dbCon.sqlExecuteAll(query1);
 	// let result1 = await dbCon.sqlExecuteAll(query2);
 	return result1;
+} catch(err) {
+	throw new Error(err);
+}
+---------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------
+// Chamada com paginacao
+
+try {
+	const paginator = require('@serverRoot/helpers/paginator');
+
+	let result1 = await dbCon.sqlExecuteAll(query1);
+	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 2, 17); // paginado: pagina 2 / 17 itens por pagina
+
+	return pResult; // retorno => pageDetails, pageData, rowsAffected
 } catch(err) {
 	throw new Error(err);
 }
