@@ -87,7 +87,7 @@ app.use(
 	})
 );
 
-// Sessions - inicializando ------------------------------
+// Sessions - store no file system -----------------------
 app.use(
 	session({
 			name: __serverConfig.server.session.cookieName,
@@ -108,15 +108,15 @@ app.use(
 	)
 );
 
-// Body parser, usando JSON ------------------------------
+// Body parser, application/json -------------------------
 app.use(
 	bodyParser.json()
 );
 
-// Shallow parsing (string) ou Deep parsing (objeto) -----
+// Body parser, application/x-www-form-urlencoded --------
 app.use(
 	bodyParser.urlencoded({
-		extended: false
+		extended: true
 	})
 );
 
