@@ -29,7 +29,7 @@ const setSorter = (jsonData, sortElements, order = 'ASC') => { // sortElements A
 					}
 				);
 
-			resolve({ sortData });
+			resolve();
 		} catch(err) {
 			reject(err);
 		}
