@@ -23,8 +23,8 @@
     - Login / Logout
 ## Lib parametrizada de fácil utilização para o MS SQL Server
   - Transacional, acesso a queries e stored procedures, variáveis de output, etc
-## Paginador e Ordenador
-  - Com opções configuráveis, items_per_page, current_page, ASC/DESC, etc
+## Paginador e Ordenador (Paginator & Sorter)
+  - Com opções configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
 ## Criptografia
   - Hash e Cipher
 ## Build gerável
