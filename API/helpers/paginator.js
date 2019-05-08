@@ -22,12 +22,13 @@ const setSorter = (jsonData, sortElements, order = 'ASC') => { // sortElements A
 			};
 
 			let sortOrder = (order.toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 }),
-				sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0),
-				sortData = jsonData.sort(
-					(a, b) => {
-						return sortFunction(a, b, 0, sortElementsLen);
-					}
-				);
+				sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
+
+			jsonData.sort(
+				(a, b) => {
+					return sortFunction(a, b, 0, sortElementsLen);
+				}
+			);
 
 			resolve();
 		} catch(err) {

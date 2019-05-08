@@ -55,7 +55,7 @@ const hash = async (passData, ...saltData) => {
 		const algorithm = __serverConfig.crypto.hashAlgorithm;
 		const pass = (passData || '') + '';
 		const salt = await checkSaltData(...saltData);
- 		const passHash = await crypto.createHmac(algorithm, salt).update(pass).digest( __serverConfig.crypto.hashDigestEncoding);
+		const passHash = await crypto.createHmac(algorithm, salt).update(pass).digest( __serverConfig.crypto.hashDigestEncoding);
 
 		return {
 			pass: pass,
@@ -75,7 +75,10 @@ const baseCipherDecipher = async (passData, ...saltData) => {
 				try {
 					crypto.scrypt(passA, saltA, keyLenA,
 						(err, derivedKey) => {
-							if (err) reject(err);
+							if (err) {
+								reject(err);
+							}
+
 							resolve(derivedKey);
 					});
 				} catch(err) {

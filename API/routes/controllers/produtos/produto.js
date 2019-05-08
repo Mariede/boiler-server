@@ -14,6 +14,7 @@ const log = require('@serverRoot/helpers/log');
 // Middleware para rotas aqui
 const gateLocal = async (req, res) => {
 	try {
+		log.logger('info', '=> em Controller PRODUTO', 'consoleOnly');
 		return;
 	} catch(err) {
 		throw new Error(err);

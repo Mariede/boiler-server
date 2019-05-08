@@ -149,7 +149,7 @@ app.use((err, req, res, next) => {
 
 // -------------------------------------------------------------------------
 // Inicia servidor ouvindo em host:port (sem certificado https)
-const servidor = http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.host, () => {
+http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.host, () => {
 	log.logger('info', `Servidor está rodando em ${__serverConfig.server.host}:${__serverConfig.server.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`, 'consoleOnly');
 });
 // -------------------------------------------------------------------------

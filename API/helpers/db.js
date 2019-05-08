@@ -148,7 +148,7 @@ const sqlExecute = (transaction, parametros) => {
 										let dataType = dataTypeCheck(key[1]);
 
 										if (dataType !== '') {
-											r.input(key[0], eval(`sql.${dataType}`), key[2]);
+											r.input(key[0], `sql.${dataType}`, key[2]);
 										} else {
 											throw new Error(`Tipo de dados ${key[1]} definido no input de ${p.dados.executar} não configurado no método, favor corrigir ou avise um administrador...`);
 										}
@@ -166,7 +166,7 @@ const sqlExecute = (transaction, parametros) => {
 										let dataType = dataTypeCheck(key[1]);
 
 										if (dataType !== '') {
-											r.output(key[0], eval(`sql.${dataType}`));
+											r.output(key[0], `sql.${dataType}`);
 										} else {
 											throw new Error(`Tipo de dados ${key[1]} definido no output de ${p.dados.executar} não configurado no método, favor corrigir ou avise um administrador...`);
 										}
