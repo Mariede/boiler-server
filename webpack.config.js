@@ -28,6 +28,18 @@ module.exports = {
 	externals: [
 		nodeExternals()
 	],
+	module: {
+		rules: [
+			{
+				enforce: "pre",
+				test: /\.js$/,
+				exclude: /node_modules/,
+				loader: "eslint-loader"
+				// options: {
+				// }
+			}
+		]
+	},
 	plugins: [
 		new CleanPlugin(),
 		new CopyPlugin([
