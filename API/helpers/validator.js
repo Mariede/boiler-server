@@ -171,7 +171,71 @@ const isEmail = email => {
 		let regExp = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/i,
 			vRet = false;
 
-		if (email.match(regExp)) {
+		if ((email || '').toString().match(regExp)) {
+			vRet = true;
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se CEP e valido
+const isCep = (cep, separator = '-') => {
+	try {
+		let regExp = (separator ? new RegExp('^([0-9]{5})' + separator + '([0-9]{3})$') : /^([0-9]{8})$/),
+			vRet = false;
+
+		if ((cep || '').toString().match(regExp)) {
+			vRet = true;
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se valor e vazio
+const isEmpty = (param, trimmed = true) => {
+	try {
+		let paramCheck = (param || '').toString(),
+			vRet = false;
+
+		if ((paramCheck === '' && !trimmed) || (paramCheck.trim() === '' && trimmed)) {
+			vRet = true;
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se valor e alfanumerico
+const isAlphaNumeric = (param, spaceAndUnderscore = false) => {
+	try {
+		let regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i),
+			vRet = false;
+
+		if ((param || '').toString().match(regExp)) {
+			vRet = true;
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se valor e numerico inteiro
+const isInteger = (param, signed = false) => {
+	try {
+		let regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([+]?[0-9]+)$/),
+			vRet = false;
+
+		if ((param || '').toString().match(regExp)) {
 			vRet = true;
 		}
 
@@ -186,5 +250,9 @@ module.exports = {
 	isCnpj,
 	isCpf,
 	isPisPasep,
-	isEmail
+	isEmail,
+	isCep,
+	isEmpty,
+	isAlphaNumeric,
+	isInteger
 };
