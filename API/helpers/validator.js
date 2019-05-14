@@ -198,7 +198,7 @@ const isCep = (cep, separator = '-') => {
 };
 
 // Devolve um dados para analise (metodo privado)
-const falsyCheck = (param) => {
+const _falsyCheck = (param) => {
 	try {
 		const falsy = [null, undefined, NaN, false]; // except 0 and ""
 
@@ -211,7 +211,7 @@ const falsyCheck = (param) => {
 // Verifica se valor e vazio
 const isEmpty = (param, trimmed = true) => {
 	try {
-		let paramCheck = falsyCheck(param),
+		let paramCheck = _falsyCheck(param),
 			vRet = false;
 
 		if (paramCheck && trimmed) {
@@ -231,7 +231,7 @@ const isEmpty = (param, trimmed = true) => {
 // Verifica se valor e alfanumerico
 const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 	try {
-		let paramCheck = falsyCheck(param),
+		let paramCheck = _falsyCheck(param),
 			regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i),
 			vRet = false;
 
@@ -248,7 +248,7 @@ const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 // Verifica se valor e numerico inteiro
 const isInteger = (param, signed = true) => {
 	try {
-		let paramCheck = falsyCheck(param),
+		let paramCheck = _falsyCheck(param),
 			regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([+]?[0-9]+)$/),
 			vRet = false;
 
@@ -265,7 +265,7 @@ const isInteger = (param, signed = true) => {
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante variavel (sempre . como separador decimal)
 const isIntegerOrFloat = (param, signed = true) => {
 	try {
-		let paramCheck = falsyCheck(param),
+		let paramCheck = _falsyCheck(param),
 			regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([+]?[0-9]+)((\.{1}[0-9]+)|())$/),
 			vRet = false;
 
@@ -282,7 +282,7 @@ const isIntegerOrFloat = (param, signed = true) => {
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante fixa (sempre . como separador decimal)
 const isIntegerOrFixed = (param, fixedDecimal, signed = true) => {
 	try {
-		let paramCheck = falsyCheck(param),
+		let paramCheck = _falsyCheck(param),
 			regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([+]?[0-9]+)((\.{1}[0-9]{' + fixedDecimal + '})|())$')),
 			vRet = false;
 
@@ -296,11 +296,28 @@ const isIntegerOrFixed = (param, fixedDecimal, signed = true) => {
 	}
 };
 
-// Verifica se param contem paramCompare
+// Verifica se data valida (dd/mm/yyyy ou dd-mm-yyyy ou dd.mm.yyyy)
+const isDate = date => {
+	try {
+		let dateCheck = (date || '').toString(),
+			regExp = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/,
+			vRet = false;
+
+		if (dateCheck.match(regExp) && dateCheck.length === 10) {
+			vRet = true;
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se param em string contem paramCompare
 const contains = (param, paramCompare, caseInsensitive = true) => {
 	try {
-		let paramCheck = falsyCheck(param),
-			paramCompareCheck = falsyCheck(paramCompare),
+		let paramCheck = _falsyCheck(param),
+			paramCompareCheck = _falsyCheck(paramCompare),
 			vRet = false;
 
 		if (paramCheck && paramCompareCheck) {
@@ -320,11 +337,11 @@ const contains = (param, paramCompare, caseInsensitive = true) => {
 	}
 };
 
-// Verifica se param e identico a paramCompare
+// Verifica se param em string e identico a paramCompare
 const equal = (param, paramCompare, caseInsensitive = true) => {
 	try {
-		let paramCheck = falsyCheck(param),
-			paramCompareCheck = falsyCheck(paramCompare),
+		let paramCheck = _falsyCheck(param),
+			paramCompareCheck = _falsyCheck(paramCompare),
 			vRet = false;
 
 		if (paramCheck && paramCompareCheck) {
@@ -347,7 +364,7 @@ const equal = (param, paramCompare, caseInsensitive = true) => {
 // Verifica limites de comprimento minimo e maximo para string param
 const len = (param, lMin = 0, lMax = 0) => {
 	try {
-		let paramCheck = falsyCheck(param),
+		let paramCheck = _falsyCheck(param),
 			paramCheckLen = (paramCheck ? paramCheck.length : 0),
 			vRet = false;
 
@@ -373,6 +390,7 @@ module.exports = {
 	isInteger,
 	isIntegerOrFloat,
 	isIntegerOrFixed,
+	isDate,
 	contains,
 	equal,
 	len
