@@ -131,14 +131,14 @@ const sqlExecute = (transaction, parametros) => {
 							let checkParamA = param.indexOf('('),
 								checkParamB = checkParamA !== -1 ? checkParamA : param.length,
 								checkParamC = param.substr(0, checkParamB).trim(),
-								checkParamD = dataTypesSupported.find(
+								checkParamD = (dataTypesSupported.find(
 									(element) => {
 										return element.toUpperCase() === checkParamC.toUpperCase();
 									}
-								),
-								checkParamE = (checkParamD ? (checkParamA !== -1 ? (checkParamD + param.substr(checkParamA)) : checkParamD) : '');
+								) || ''),
+								checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace('(', '').replace(')', '') : '');
 
-							return checkParamE;
+							return { base: checkParamD, ext: checkParamE };
 						};
 
 						const inputCheck = (r, p) => {
@@ -146,14 +146,21 @@ const sqlExecute = (transaction, parametros) => {
 								p.dados.input.forEach((key) => {
 									if (key.length === 3) {
 										let dataType = dataTypeCheck(key[1]);
-
-										if (dataType !== '') {
-											r.input(key[0], `sql.${dataType}`, key[2]);
+										if (dataType.base !== '') {
+											if (dataType.ext !== '') {
+												r.input(key[0], sql[dataType.base](...dataType.ext.split(',')), key[2]);
+											} else {
+												r.input(key[0], sql[dataType.base], key[2]);
+											}
 										} else {
 											throw new Error(`Tipo de dados ${key[1]} definido no input de ${p.dados.executar} não configurado no método, favor corrigir ou avise um administrador...`);
 										}
 									} else {
-										throw new Error(`Formato { ${key} } inválido para input da query { ${p.dados.executar} }, necessita de três chaves...`);
+										if (key.length === 2) {
+											r.input(key[0], key[1]);
+										} else {
+											throw new Error(`Formato { ${key} } inválido para input da query { ${p.dados.executar} }, necessita de duas ou três chaves, dependendo do modelo da chamada...`);
+										}
 									}
 								});
 							}
@@ -164,9 +171,12 @@ const sqlExecute = (transaction, parametros) => {
 								p.dados.output.forEach((key) => {
 									if (key.length === 2) {
 										let dataType = dataTypeCheck(key[1]);
-
-										if (dataType !== '') {
-											r.output(key[0], `sql.${dataType}`);
+										if (dataType.base !== '') {
+											if (dataType.ext !== '') {
+												r.output(key[0], sql[dataType.base](...dataType.ext.split(',')));
+											} else {
+												r.output(key[0], sql[dataType.base]);
+											}
 										} else {
 											throw new Error(`Tipo de dados ${key[1]} definido no output de ${p.dados.executar} não configurado no método, favor corrigir ou avise um administrador...`);
 										}

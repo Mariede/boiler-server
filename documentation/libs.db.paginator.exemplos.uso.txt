@@ -1,12 +1,12 @@
 LIB db.js + paginator.js
 ------------------------
 
-Conexao e execucao de queries no MS SQL Server atraves do pacote mssql
+Conexão e execução de queries no MS SQL Server através do pacote NODE mssql
 
 => exemplos de parâmetros JSON de entrada para queries:
 
 ---------------------------------------------------------------------------------------------------------
-//Estrutura basica queries (parametros de entrada)
+// Estrutura básica queries (parâmetros de entrada)
 
 query = {
 	formato: 1,			// 1: Query String, 2: Stored Procedure
@@ -38,10 +38,12 @@ query = {
 		executar: 'USUARIO_CONSULTAR'
 	}
 }
+
+** input pode utilizar também um formato de chamada com apenas dois parâmetros de entrada, omitindo o tipo de dado **
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// parametros de entrada (exemplos)
+// Parâmetros de entrada (exemplos)
 
 let query1 = {
 	formato: 1, // 1: Query String, 2: Stored Procedure
@@ -116,7 +118,7 @@ query2 = {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// Chamadas nos metodos
+// Chamadas nos métodos
 
 // Execute (promise / await)
 dbCon.sqlOpenCon()
@@ -151,7 +153,7 @@ try {
 }
 
 
-// ou com o metodo agrupador ExecuteAll (apenas await)
+// ou com o método agrupador ExecuteAll (apenas await)
 try {
 	let result1 = await dbCon.sqlExecuteAll(query1);
 	// let result1 = await dbCon.sqlExecuteAll(query2);
@@ -162,7 +164,7 @@ try {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// Chamada com paginacao
+// Chamada com paginação
 
 try {
 	const paginator = require('@serverRoot/helpers/paginator');
@@ -177,7 +179,7 @@ try {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// Chamada com paginacao e sorter (ordenado)
+// Chamada com paginação e sorter (ordenado)
 
 try {
 	const paginator = require('@serverRoot/helpers/paginator');
