@@ -235,10 +235,8 @@ const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 			regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i),
 			vRet = false;
 
-		if (paramCheck) {
-			if (paramCheck.match(regExp)) {
-				vRet = true;
-			}
+		if (paramCheck && paramCheck.match(regExp)) {
+			vRet = true;
 		}
 
 		return vRet;
@@ -254,10 +252,8 @@ const isInteger = (param, signed = true) => {
 			regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([+]?[0-9]+)$/),
 			vRet = false;
 
-		if (paramCheck) {
-			if (paramCheck.match(regExp)) {
-				vRet = true;
-			}
+		if (paramCheck && paramCheck.match(regExp)) {
+			vRet = true;
 		}
 
 		return vRet;
@@ -266,17 +262,32 @@ const isInteger = (param, signed = true) => {
 	}
 };
 
-// Verifica se valor e numerico e inteiro ou numerico com pontuacao (utilizar sempre . como separador decimal)
+// Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante variavel (sempre . como separador decimal)
 const isIntegerOrFloat = (param, signed = true) => {
 	try {
 		let paramCheck = falsyCheck(param),
 			regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([+]?[0-9]+)((\.{1}[0-9]+)|())$/),
 			vRet = false;
 
-		if (paramCheck) {
-			if (paramCheck.match(regExp)) {
-				vRet = true;
-			}
+		if (paramCheck && paramCheck.match(regExp)) {
+			vRet = true;
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante fixa (sempre . como separador decimal)
+const isIntegerOrFixed = (param, fixedDecimal, signed = true) => {
+	try {
+		let paramCheck = falsyCheck(param),
+			regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([+]?[0-9]+)((\.{1}[0-9]{' + fixedDecimal + '})|())$')),
+			vRet = false;
+
+		if (paramCheck && paramCheck.match(regExp)) {
+			vRet = true;
 		}
 
 		return vRet;
@@ -332,6 +343,23 @@ const equal = (param, paramCompare, caseInsensitive = true) => {
 		throw new Error(err);
 	}
 };
+
+// Verifica limites de comprimento minimo e maximo para string param
+const len = (param, lMin = 0, lMax = 0) => {
+	try {
+		let paramCheck = falsyCheck(param),
+			paramCheckLen = (paramCheck ? paramCheck.length : 0),
+			vRet = false;
+
+		if (paramCheck && ((paramCheckLen >= lMin && lMin !== 0) || lMin === 0) && ((paramCheckLen <= lMax && lMax !== 0) || lMax === 0)) {
+			vRet = true;
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
@@ -344,6 +372,8 @@ module.exports = {
 	isAlphaNumeric,
 	isInteger,
 	isIntegerOrFloat,
+	isIntegerOrFixed,
 	contains,
-	equal
+	equal,
+	len
 };
