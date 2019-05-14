@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 // -------------------------------------------------------------------------
 // Retorna ou gera salt para tarefas (metodo privado)
-const checkSaltData = async (...saltData) => {
+const _checkSaltData = async (...saltData) => {
 	try {
 		const saltDataLen = saltData.length;
 		let salt = '';
@@ -24,6 +24,44 @@ const checkSaltData = async (...saltData) => {
 		}
 
 		return salt;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Base de codigo para cripto e decripto, baseado em algorithm (metodo privado)
+const _baseCipherDecipher = async (passData, ...saltData) => {
+	try {
+		const scryptAsync = (passA, saltA, keyLenA) => {
+			return new Promise((resolve, reject) => {
+				try {
+					crypto.scrypt(passA, saltA, keyLenA,
+						(err, derivedKey) => {
+							if (err) {
+								reject(err);
+							}
+
+							resolve(derivedKey);
+					});
+				} catch(err) {
+					reject(err);
+				}
+			});
+		};
+
+		const algorithm = __serverConfig.crypto.cipherAlgorithm;
+		const algorithmKeyLen = __serverConfig.crypto.cipherKeyLen; //algo 192: 24 bytes; algo 256: 32 bytes
+		const pass = (passData || '') + '';
+		const salt = await _checkSaltData(...saltData);
+		const key = await scryptAsync(pass, salt, algorithmKeyLen);
+		const iv = await Buffer.alloc(16, 0);
+
+		return {
+			algorithm: algorithm,
+			key: key,
+			iv: iv
+		};
+
 	} catch(err) {
 		throw new Error(err);
 	}
@@ -54,7 +92,7 @@ const hash = async (passData, ...saltData) => {
 	try {
 		const algorithm = __serverConfig.crypto.hashAlgorithm;
 		const pass = (passData || '') + '';
-		const salt = await checkSaltData(...saltData);
+		const salt = await _checkSaltData(...saltData);
 		const passHash = await crypto.createHmac(algorithm, salt).update(pass).digest( __serverConfig.crypto.hashDigestEncoding);
 
 		return {
@@ -67,51 +105,13 @@ const hash = async (passData, ...saltData) => {
 	}
 };
 
-// Base de codigo para cripto e decripto, baseado em algorithm (metodo privado)
-const baseCipherDecipher = async (passData, ...saltData) => {
-	try {
-		const scryptAsync = (passA, saltA, keyLenA) => {
-			return new Promise((resolve, reject) => {
-				try {
-					crypto.scrypt(passA, saltA, keyLenA,
-						(err, derivedKey) => {
-							if (err) {
-								reject(err);
-							}
-
-							resolve(derivedKey);
-					});
-				} catch(err) {
-					reject(err);
-				}
-			});
-		};
-
-		const algorithm = __serverConfig.crypto.cipherAlgorithm;
-		const algorithmKeyLen = __serverConfig.crypto.cipherKeyLen; //algo 192: 24 bytes; algo 256: 32 bytes
-		const pass = (passData || '') + '';
-		const salt = await checkSaltData(...saltData);
-		const key = await scryptAsync(pass, salt, algorithmKeyLen);
-		const iv = await Buffer.alloc(16, 0);
-
-		return {
-			algorithm: algorithm,
-			key: key,
-			iv: iv
-		};
-
-	} catch(err) {
-		throw new Error(err);
-	}
-};
-
 // Exemplo cifragem: (mesma senha e salt)
 // let cipher = await cryptoHash.cipher('aaaHsddsd33##', 'salt%123'),
 // 	cifrado = await cipher.update('Powered By: * Michel Guimarães Ariede *', 'utf8', 'hex');
 // cifrado += cipher.final('hex');
 const cipher = async (passData, ...saltData) => {
 	try {
-		const baseCipher = await baseCipherDecipher(passData, ...saltData);
+		const baseCipher = await _baseCipherDecipher(passData, ...saltData);
 		const cipher = await crypto.createCipheriv(baseCipher.algorithm, baseCipher.key, baseCipher.iv);
 
 		return cipher;
@@ -126,7 +126,7 @@ const cipher = async (passData, ...saltData) => {
 // decifrado += decipher.final('utf8');
 const decipher = async (passData, ...saltData) => {
 	try {
-		const baseDecipher = await baseCipherDecipher(passData, ...saltData);
+		const baseDecipher = await _baseCipherDecipher(passData, ...saltData);
 		const decipher = crypto.createDecipheriv(baseDecipher.algorithm, baseDecipher.key, baseDecipher.iv);
 
 		return decipher;

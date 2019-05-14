@@ -6,6 +6,17 @@
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+// Devolve um dados para analise (metodo privado)
+const _falsyCheck = (param) => {
+	try {
+		const falsy = [null, undefined, NaN, false]; // except 0 and ""
+
+		return (falsy.includes(param) ? param : (param === 0 ? param.toString() : (param || '').toString()));
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
 // Verifica se CNPJ e valido
 const isCnpj = cnpj => {
 	try {
@@ -192,17 +203,6 @@ const isCep = (cep, separator = '-') => {
 		}
 
 		return vRet;
-	} catch(err) {
-		throw new Error(err);
-	}
-};
-
-// Devolve um dados para analise (metodo privado)
-const _falsyCheck = (param) => {
-	try {
-		const falsy = [null, undefined, NaN, false]; // except 0 and ""
-
-		return (falsy.includes(param) ? param : (param === 0 ? param.toString() : (param || '').toString()));
 	} catch(err) {
 		throw new Error(err);
 	}
