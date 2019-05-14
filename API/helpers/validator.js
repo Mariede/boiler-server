@@ -197,13 +197,28 @@ const isCep = (cep, separator = '-') => {
 	}
 };
 
+// Devolve um dados para analise (metodo privado)
+const falsyCheck = (param) => {
+	try {
+		const falsy = [null, undefined, NaN, false]; // except 0 and ""
+
+		return (falsy.includes(param) ? param : (param === 0 ? param.toString() : (param || '').toString()));
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
 // Verifica se valor e vazio
 const isEmpty = (param, trimmed = true) => {
 	try {
-		let paramCheck = (param || '').toString(),
+		let paramCheck = falsyCheck(param),
 			vRet = false;
 
-		if ((paramCheck === '' && !trimmed) || (paramCheck.trim() === '' && trimmed)) {
+		if (paramCheck && trimmed) {
+			paramCheck = paramCheck.trim();
+		}
+
+		if (paramCheck === '') {
 			vRet = true;
 		}
 
@@ -214,13 +229,16 @@ const isEmpty = (param, trimmed = true) => {
 };
 
 // Verifica se valor e alfanumerico
-const isAlphaNumeric = (param, spaceAndUnderscore = false) => {
+const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 	try {
-		let regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i),
+		let paramCheck = falsyCheck(param),
+			regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i),
 			vRet = false;
 
-		if ((param || '').toString().match(regExp)) {
-			vRet = true;
+		if (paramCheck) {
+			if (paramCheck.match(regExp)) {
+				vRet = true;
+			}
 		}
 
 		return vRet;
@@ -230,13 +248,83 @@ const isAlphaNumeric = (param, spaceAndUnderscore = false) => {
 };
 
 // Verifica se valor e numerico inteiro
-const isInteger = (param, signed = false) => {
+const isInteger = (param, signed = true) => {
 	try {
-		let regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([+]?[0-9]+)$/),
+		let paramCheck = falsyCheck(param),
+			regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([+]?[0-9]+)$/),
 			vRet = false;
 
-		if ((param || '').toString().match(regExp)) {
-			vRet = true;
+		if (paramCheck) {
+			if (paramCheck.match(regExp)) {
+				vRet = true;
+			}
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se valor e numerico e inteiro ou numerico com pontuacao (utilizar sempre . como separador decimal)
+const isIntegerOrFloat = (param, signed = true) => {
+	try {
+		let paramCheck = falsyCheck(param),
+			regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([+]?[0-9]+)((\.{1}[0-9]+)|())$/),
+			vRet = false;
+
+		if (paramCheck) {
+			if (paramCheck.match(regExp)) {
+				vRet = true;
+			}
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se param contem paramCompare
+const contains = (param, paramCompare, caseInsensitive = true) => {
+	try {
+		let paramCheck = falsyCheck(param),
+			paramCompareCheck = falsyCheck(paramCompare),
+			vRet = false;
+
+		if (paramCheck && paramCompareCheck) {
+			if (caseInsensitive) {
+				paramCheck = paramCheck.toUpperCase();
+				paramCompareCheck = paramCompareCheck.toUpperCase();
+			}
+
+			if (paramCheck.indexOf(paramCompareCheck) !== -1) {
+				vRet = true;
+			}
+		}
+
+		return vRet;
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Verifica se param e identico a paramCompare
+const equal = (param, paramCompare, caseInsensitive = true) => {
+	try {
+		let paramCheck = falsyCheck(param),
+			paramCompareCheck = falsyCheck(paramCompare),
+			vRet = false;
+
+		if (paramCheck && paramCompareCheck) {
+			if (caseInsensitive) {
+				paramCheck = paramCheck.toUpperCase();
+				paramCompareCheck = paramCompareCheck.toUpperCase();
+			}
+
+			if (paramCheck === paramCompareCheck) {
+				vRet = true;
+			}
 		}
 
 		return vRet;
@@ -254,5 +342,8 @@ module.exports = {
 	isCep,
 	isEmpty,
 	isAlphaNumeric,
-	isInteger
+	isInteger,
+	isIntegerOrFloat,
+	contains,
+	equal
 };
