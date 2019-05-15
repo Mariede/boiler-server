@@ -92,7 +92,7 @@ const sqlExecute = (transaction, parametros) => {
 			const sqlAction = (r, p) => {
 				if (p.hasOwnProperty('formato') && p.hasOwnProperty('dados')) {
 					if (p.dados.hasOwnProperty('executar')) {
-						const dataTypeCheck = (param) => {
+						const dataTypeCheck = param => {
 							const dataTypesSupported = [
 								'Bit',
 								'BigInt',
@@ -128,27 +128,34 @@ const sqlExecute = (transaction, parametros) => {
 								'Geometry'
 							];
 
+							param = (param || '').toString();
+
 							let checkParamA = param.indexOf('('),
 								checkParamB = checkParamA !== -1 ? checkParamA : param.length,
 								checkParamC = param.substr(0, checkParamB).trim(),
 								checkParamD = (dataTypesSupported.find(
-									(element) => {
+									element => {
 										return element.toUpperCase() === checkParamC.toUpperCase();
 									}
 								) || ''),
-								checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace('(', '').replace(')', '') : '');
+								checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : '').split(',').map(
+									i => {
+										let iNum = parseFloat(i);
+										return ((isNaN(i) || isNaN(iNum)) ? i : iNum);
+									}
+								);
 
 							return { base: checkParamD, ext: checkParamE };
 						};
 
 						const inputCheck = (r, p) => {
 							if (p.dados.hasOwnProperty('input')) {
-								p.dados.input.forEach((key) => {
+								p.dados.input.forEach(key => {
 									if (key.length === 3) {
 										let dataType = dataTypeCheck(key[1]);
 										if (dataType.base !== '') {
 											if (dataType.ext !== '') {
-												r.input(key[0], sql[dataType.base](...dataType.ext.split(',')), key[2]);
+												r.input(key[0], sql[dataType.base](...dataType.ext), key[2]);
 											} else {
 												r.input(key[0], sql[dataType.base], key[2]);
 											}
@@ -168,12 +175,12 @@ const sqlExecute = (transaction, parametros) => {
 
 						const outputCheck = (r, p) => {
 							if (p.dados.hasOwnProperty('output')) {
-								p.dados.output.forEach((key) => {
+								p.dados.output.forEach(key => {
 									if (key.length === 2) {
 										let dataType = dataTypeCheck(key[1]);
 										if (dataType.base !== '') {
 											if (dataType.ext !== '') {
-												r.output(key[0], sql[dataType.base](...dataType.ext.split(',')));
+												r.output(key[0], sql[dataType.base](...dataType.ext));
 											} else {
 												r.output(key[0], sql[dataType.base]);
 											}
@@ -225,7 +232,7 @@ const sqlCloseCon = (transaction, forceClose = false) => {
 		};
 
 		try {
-			const sqlClose = (p) => {
+			const sqlClose = p => {
 				p.close();
 				log.logger('info', 'Desconectado do banco de dados', 'consoleOnly');
 			};
