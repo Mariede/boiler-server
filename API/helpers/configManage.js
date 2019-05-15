@@ -87,7 +87,7 @@ const check = config => {
 				}
 			};
 
-			const sleep = (ms) => {
+			const sleep = ms => {
 				return new Promise(resolve => setTimeout(resolve, ms));
 			};
 

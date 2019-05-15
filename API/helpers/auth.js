@@ -14,7 +14,7 @@ const isProtected = (req, rota) => {
 			exceptTable = __serverConfig.auth.except,
 			exceptInspect = (paramTable, paramRota) => {
 				return paramTable.some(
-					(element) => {
+					element => {
 						let elementCheck = element.trim().toUpperCase().replace(/[/]+$/, '') + '/',
 							regExCheck = new RegExp(elementCheck);
 
@@ -42,7 +42,7 @@ const isProtected = (req, rota) => {
 };
 
 // Permite acesso as rotas protegidas, analise das permissoes em um segundo momento
-const login = async (req) => {
+const login = async req => {
 	try {
 		let sess = req.session,
 			sessWraper = __serverConfig.auth.sessWrapper;

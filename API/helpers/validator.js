@@ -7,7 +7,7 @@
 
 // -------------------------------------------------------------------------
 // Devolve um dados para analise (metodo privado)
-const _falsyCheck = (param) => {
+const _falsyCheck = param => {
 	try {
 		const falsy = [null, undefined, NaN, false]; // except 0 and ""
 
