@@ -246,13 +246,13 @@ const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 };
 
 // Verifica se valor e numerico inteiro
-const isInteger = (param, signed = true) => {
+const isInteger = (num, signed = true) => {
 	try {
-		let paramCheck = _falsyCheck(param),
+		let numCheck = _falsyCheck(num),
 			regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([+]?[0-9]+)$/),
 			vRet = false;
 
-		if (paramCheck && paramCheck.match(regExp)) {
+		if (numCheck && numCheck.match(regExp)) {
 			vRet = true;
 		}
 
@@ -263,13 +263,13 @@ const isInteger = (param, signed = true) => {
 };
 
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante variavel (sempre . como separador decimal)
-const isIntegerOrFloat = (param, signed = true) => {
+const isIntegerOrFloat = (num, signed = true) => {
 	try {
-		let paramCheck = _falsyCheck(param),
+		let numCheck = _falsyCheck(num),
 			regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([+]?[0-9]+)((\.{1}[0-9]+)|())$/),
 			vRet = false;
 
-		if (paramCheck && paramCheck.match(regExp)) {
+		if (numCheck && numCheck.match(regExp)) {
 			vRet = true;
 		}
 
@@ -280,13 +280,13 @@ const isIntegerOrFloat = (param, signed = true) => {
 };
 
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante fixa (sempre . como separador decimal)
-const isIntegerOrFixed = (param, fixedDecimal, signed = true) => {
+const isIntegerOrFixed = (num, fixedDecimal, signed = true) => {
 	try {
-		let paramCheck = _falsyCheck(param),
+		let numCheck = _falsyCheck(num),
 			regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([+]?[0-9]+)((\.{1}[0-9]{' + fixedDecimal + '})|())$')),
 			vRet = false;
 
-		if (paramCheck && paramCheck.match(regExp)) {
+		if (numCheck && numCheck.match(regExp)) {
 			vRet = true;
 		}
 
