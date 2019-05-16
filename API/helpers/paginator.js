@@ -10,27 +10,33 @@
 const setSorter = (jsonData, sortElements, order = 'ASC') => { // sortElements Array e case sensitive
 	return new Promise((resolve, reject) => {
 		try {
-			const sortFunction = (a, b, i, iLen) => {
-				if (i < iLen) {
-					let aCheck = (a[sortElements[i]] || ''),
-						bCheck = (b[sortElements[i]] || '');
+			let newData = [];
 
-					return ((aCheck < bCheck) ? sortOrder.d1 : ((aCheck > bCheck) ? sortOrder.a1 : sortFunction(a, b, ++i, iLen)));
-				} else {
-					return 0;
-				}
-			};
+			if (jsonData && Array.isArray(jsonData)) {
+				const sortFunction = (a, b, i, iLen) => {
+					if (i < iLen) {
+						let aCheck = (a[sortElements[i]] || ''),
+							bCheck = (b[sortElements[i]] || '');
 
-			let sortOrder = (order.toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 }),
-				sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
+						return ((aCheck < bCheck) ? sortOrder.d1 : ((aCheck > bCheck) ? sortOrder.a1 : sortFunction(a, b, ++i, iLen)));
+					} else {
+						return 0;
+					}
+				};
 
-			jsonData.sort(
-				(a, b) => {
-					return sortFunction(a, b, 0, sortElementsLen);
-				}
-			);
+				newData = Array.from(jsonData);
 
-			resolve();
+				let sortOrder = (order.toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 }),
+					sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
+
+				newData.sort(
+					(a, b) => {
+						return sortFunction(a, b, 0, sortElementsLen);
+					}
+				);
+			}
+
+			resolve(newData);
 		} catch(err) {
 			reject(err);
 		}
@@ -63,9 +69,45 @@ const setPage = (jsonData, jsonDataLen, currentPage = 1, itemsPerPage = 10) => {
 		}
 	});
 };
+
+// Converte resultado de uma array com objetos para Camel Case
+const keysToCamelCase = jsonData => {
+	return new Promise((resolve, reject) => {
+		try {
+			let newData = [];
+
+			if (jsonData && Array.isArray(jsonData)) {
+				for (let i = 0; i < jsonData.length; i++) {
+					if (typeof jsonData[i] === 'object' && jsonData[i] !== null) {
+						newData.push({});
+
+						Object.keys(jsonData[i]).forEach(
+							function(currentKey) {
+								let newKey = currentKey
+													.toLowerCase()
+													.replace(/[._-]([a-z])/g,
+														function(g) {
+															return g[1].toUpperCase();
+														}
+													);
+
+								newData[i][newKey] = jsonData[i][currentKey];
+							}
+						);
+					}
+				}
+			}
+
+			resolve(newData);
+		} catch(err) {
+			reject(err);
+		}
+	});
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
 	setSorter,
-	setPage
+	setPage,
+	keysToCamelCase
 };
