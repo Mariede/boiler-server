@@ -169,8 +169,10 @@ try {
 try {
 	const paginator = require('@serverRoot/helpers/paginator');
 
+	// Executa query
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 2, 17); // paginado: pagina 2 / 17 itens por pagina
+	// Paginacao: pagina 3 / 9 itens por pagina
+	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
 
 	return pResult; // retorno => pageDetails, pageData, rowsAffected
 } catch(err) {
@@ -184,9 +186,33 @@ try {
 try {
 	const paginator = require('@serverRoot/helpers/paginator');
 
+	// Executa query
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], 'ASC'); // sorter atua no proprio conjunto de dados, referenciado. 'ASC' pode ser omitido (default)
-	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 2, 17); // paginado: pagina 2 / 17 itens por pagina
+	// Sorter, sorterElements deve ser uma array. 'ASC' pode ser omitido (default)
+	result1.recordsets[0] = await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], 'DESC');
+	// Paginacao: pagina 3 / 9 itens por pagina
+	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
+
+	return pResult; // retorno => pageDetails, pageData, rowsAffected
+} catch(err) {
+	throw new Error(err);
+}
+---------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------
+// Chamada com paginação, sorter (ordenado) e conversao para camelcase do json do banco de dados
+
+try {
+	const paginator = require('@serverRoot/helpers/paginator');
+
+	// Executa query
+	let result1 = await dbCon.sqlExecuteAll(query1);
+	// Sorter, sorterElements deve ser uma array. 'ASC' pode ser omitido (default)
+	result1.recordsets[0] = await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], 'DESC');
+	// Renomeia chaves no objeto JSON para o padrao CamelCase
+	result1.recordsets[0] = await paginator.keysToCamelCase(result1.recordsets[0]);
+	// Paginacao: pagina 3 / 9 itens por pagina
+	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
 
 	return pResult; // retorno => pageDetails, pageData, rowsAffected
 } catch(err) {
