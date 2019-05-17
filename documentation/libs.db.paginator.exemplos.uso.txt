@@ -120,13 +120,13 @@ query2 = {
 ---------------------------------------------------------------------------------------------------------
 // Chamadas nos métodos
 
-// Execute (promise / await)
+// Execute (promise / async await)
 dbCon.sqlOpenCon()
 .then(
 	async transaction => {
 		try {
 			let result1 = await dbCon.sqlExecute(transaction, query1);
-			//	result1 = await dbCon.sqlExecute(transaction, query2);
+			//	result2 = await dbCon.sqlExecute(transaction, query2);
 			await dbCon.sqlCloseCon(transaction);
 			resolve(result1);
 		} catch(err) {
@@ -141,11 +141,11 @@ dbCon.sqlOpenCon()
 );
 
 
-// Execute (apenas await)
+// Execute (async await)
 try {
 	let transaction = await dbCon.sqlOpenCon(),
 		result1 = await dbCon.sqlExecute(transaction, query1);
-	//	result1 = await dbCon.sqlExecute(transaction, query2);
+	//	result2 = await dbCon.sqlExecute(transaction, query2);
 	await dbCon.sqlCloseCon(transaction);
 	return result1;
 } catch(err) {
@@ -153,10 +153,10 @@ try {
 }
 
 
-// ou com o método agrupador ExecuteAll (apenas await)
+// ou com o método agrupador ExecuteAll (async await)
 try {
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	// let result1 = await dbCon.sqlExecuteAll(query2);
+	//	result2 = await dbCon.sqlExecuteAll(query2);
 	return result1;
 } catch(err) {
 	throw new Error(err);
@@ -171,10 +171,10 @@ try {
 
 	// Executa query
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	// Paginacao: pagina 3 / 9 itens por pagina
-	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
+	// Paginacao: pagina 3 / 9 itens por pagina, retorno => pageDetails, pageData, rowsAffected
+	result1.recordsets[0] = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
 
-	return pResult; // retorno => pageDetails, pageData, rowsAffected
+	return result1;
 } catch(err) {
 	throw new Error(err);
 }
@@ -188,12 +188,12 @@ try {
 
 	// Executa query
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	// Sorter, sorterElements deve ser uma array. 'ASC' pode ser omitido (default)
-	result1.recordsets[0] = await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], 'DESC');
-	// Paginacao: pagina 3 / 9 itens por pagina
-	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
+	// Sorter, sorterElements deve ser uma array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
+	result1.recordsets[0] = await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], ['DESC', 'ASC']);
+	// Paginacao: pagina 3 / 9 itens por pagina, retorno => pageDetails, pageData, rowsAffected
+	result1.recordsets[0] = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
 
-	return pResult; // retorno => pageDetails, pageData, rowsAffected
+	return result1;
 } catch(err) {
 	throw new Error(err);
 }
@@ -207,14 +207,14 @@ try {
 
 	// Executa query
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	// Sorter, sorterElements deve ser uma array. 'ASC' pode ser omitido (default)
-	result1.recordsets[0] = await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], 'DESC');
+	// Sorter, sorterElements deve ser uma array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
+	result1.recordsets[0] = await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], ['DESC', 'ASC']);
 	// Renomeia chaves no objeto JSON para o padrao CamelCase
 	result1.recordsets[0] = await paginator.keysToCamelCase(result1.recordsets[0]);
-	// Paginacao: pagina 3 / 9 itens por pagina
-	let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
+	// Paginacao: pagina 3 / 9 itens por pagina, retorno => pageDetails, pageData, rowsAffected
+	result1.recordsets[0] = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
 
-	return pResult; // retorno => pageDetails, pageData, rowsAffected
+	return result1;
 } catch(err) {
 	throw new Error(err);
 }

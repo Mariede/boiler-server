@@ -6,8 +6,8 @@
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Ordena massa de dados
-const setSorter = (jsonData, sortElements, order = 'ASC') => { // sortElements Array e case sensitive
+// Ordena massa de dados: sortElements Array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
+const setSorter = (jsonData, sortElements = [], sortOrder = []) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let newData = [];
@@ -16,9 +16,10 @@ const setSorter = (jsonData, sortElements, order = 'ASC') => { // sortElements A
 				const sortFunction = (a, b, i, iLen) => {
 					if (i < iLen) {
 						let aCheck = (a[sortElements[i]] || ''),
-							bCheck = (b[sortElements[i]] || '');
+							bCheck = (b[sortElements[i]] || ''),
+							order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
 
-						return ((aCheck < bCheck) ? sortOrder.d1 : ((aCheck > bCheck) ? sortOrder.a1 : sortFunction(a, b, ++i, iLen)));
+						return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortFunction(a, b, ++i, iLen)));
 					} else {
 						return 0;
 					}
@@ -26,8 +27,7 @@ const setSorter = (jsonData, sortElements, order = 'ASC') => { // sortElements A
 
 				newData = Array.from(jsonData);
 
-				let sortOrder = (order.toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 }),
-					sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
+				let sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
 
 				newData.sort(
 					(a, b) => {
@@ -47,30 +47,32 @@ const setSorter = (jsonData, sortElements, order = 'ASC') => { // sortElements A
 const setPage = (jsonData, jsonDataLen, currentPage = 1, itemsPerPage = 10) => {
 	return new Promise((resolve, reject) => {
 		try {
-			let pageDetails = {
+			let backPage = currentPage - 1,
+				pageDetails = {
 					currentPage: currentPage,
 					itemsPerPage: itemsPerPage,
-					totalItems: jsonDataLen,
+					itemsFrom: (backPage * itemsPerPage) + 1,
+					itemsTo: (currentPage * itemsPerPage < jsonDataLen ? currentPage * itemsPerPage : jsonDataLen),
+					itemsCount: jsonDataLen,
 					totalPages: Math.ceil(jsonDataLen / itemsPerPage)
 				},
-				backPage = currentPage - 1,
 				indexSearchStart = backPage * itemsPerPage,
 				indexSearchStop = indexSearchStart + itemsPerPage,
-				pageData = jsonData.filter(
+				itemsList = jsonData.filter(
 					(e, i) => {
 						return (i >= indexSearchStart && i < indexSearchStop);
 					}
 				),
-				rowsAffected = pageData.length;
+				rowsAffected = itemsList.length;
 
-			resolve({ pageDetails: pageDetails, pageData: pageData, rowsAffected: rowsAffected });
+			resolve({ pageDetails: pageDetails, itemsList: itemsList, rowsAffected: rowsAffected });
 		} catch(err) {
 			reject(err);
 		}
 	});
 };
 
-// Converte resultado de uma array com objetos para Camel Case
+// Converte chaves de uma array com objetos para Camel Case
 const keysToCamelCase = jsonData => {
 	return new Promise((resolve, reject) => {
 		try {
