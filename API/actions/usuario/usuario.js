@@ -22,7 +22,7 @@ const consultarTodos = async (req, res) => {
 
 
 // const searcher = require('@serverRoot/helpers/searcher');
-// return searcher.searchExecute('select top 10 * from usuario (nolock) {{REPLACE}}', ['SORTER2', 'SORTER1', 'NOME'], '56');
+// return searcher.searchExecute('select top 10 * from usuario (nolock){{REPLACE}}', '{{REPLACE}}', ['SORTER2', 'SORTER1', 'NOME'], '56');
 
 
 		// Executa query

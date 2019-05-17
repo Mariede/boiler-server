@@ -17,8 +17,8 @@ const _falsyCheck = param => {
 	}
 };
 
-// Queries dinamicas: searchFields Array
-const searchExecute = (baseQuery, searchFields, searchValue) => {
+// Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final
+const searchExecute = (baseQuery, targetReplace, searchFields, searchValue) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let queryWhere = baseQuery.search(/ where /i),
@@ -36,19 +36,21 @@ const searchExecute = (baseQuery, searchFields, searchValue) => {
 					function(field, index) {
 						searchQuery.dados.input[index] = [field, '%' + value + '%'];
 
-						if (queryWhere === -1 && index === 0) {
-							queryReplace = queryReplace + ` WHERE (CAST(${field} AS varchar(max)) LIKE(@${field})`;
-						} else {
-							if (index === 0) {
-								queryReplace = queryReplace + ` OR (CAST(${field} AS varchar(max)) LIKE(@${field})`;
+						if (queryWhere !== -1 || index !== 0) {
+							if (index !== 0) {
+								queryReplace = queryReplace + ' OR ';
 							} else {
-								queryReplace = queryReplace + ` OR CAST(${field} AS varchar(max)) LIKE(@${field})`;
+								queryReplace = queryReplace + ' AND (';
 							}
+						} else {
+							queryReplace = queryReplace + ' WHERE (';
 						}
+
+						queryReplace = queryReplace + `CAST(${field} AS varchar(max)) LIKE(@${field})`;
 					}
 				);
 
-				searchQuery.dados.executar = baseQuery.replace('{{REPLACE}}', queryReplace + ')');
+				searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace + ')');
 			}
 
 			dbCon.sqlExecuteAll(searchQuery)
