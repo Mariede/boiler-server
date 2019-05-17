@@ -1,8 +1,9 @@
-"use strict";
+'use strict';
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const dbCon = require('@serverRoot/helpers/db');
+const paginator = require('@serverRoot/helpers/paginator');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -16,7 +17,6 @@ const consultarTodos = async (req, res) => {
 				}
 			};
 
-		const paginator = require('@serverRoot/helpers/paginator');
 		let result1 = await dbCon.sqlExecuteAll(query1);
 		await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], 'DESC'); // sorter atua no proprio conjunto de dados, referenciado. 'ASC' pode ser omitido (default)
 		let pResult = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9); // paginado: pagina 3 / 9 itens por pagina

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
@@ -205,10 +205,10 @@ const sqlExecute = (transaction, parametros) => {
 							return r.execute(p.dados.executar);
 						}
 					} else {
-						throw new Error(`Executar não foi corretamente definido nos parâmetros JSON para execução da query, verifique seu código...`);
+						throw new Error('Executar não foi corretamente definido nos parâmetros JSON para execução da query, verifique seu código...');
 					}
 				} else {
-					throw new Error(`O formato e/ou os dados não foram corretamente definidos nos parâmetros JSON para execução da query, verifique seu código...`);
+					throw new Error('O formato e/ou os dados não foram corretamente definidos nos parâmetros JSON para execução da query, verifique seu código...');
 				}
 			};
 
