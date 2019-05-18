@@ -27,7 +27,10 @@ const check = config => {
 							if (err) {
 								reject(err);
 							} else {
-								resolve(data);
+								let isValidJson = true;
+								try { JSON.parse(data) } catch { isValidJson = false; }
+
+								resolve(isValidJson ? JSON.parse(data) : {});
 							}
 						});
 					} catch(err) {
@@ -93,29 +96,30 @@ const check = config => {
 
 			let fsDebounce = false;
 			const watch = fs.watch(config, async function (event, filename) {
-				if (event === 'change') {
-					if (fsDebounce) {
-						return;
-					}
-
-					fsDebounce = setTimeout(() => {
-						fsDebounce = false;
-					}, 200);
-
-					let objCheck1 = __serverConfig,
-						objCheck2 = {},
-						objCheckIsEqual = true;
-
-					do {
-						objCheck2 = JSON.parse(await readConfig(config));
-						objCheckIsEqual = deepIsEqual(objCheck1, objCheck2);
-
-						if (!objCheckIsEqual) {
-							log.logger('info', 'Arquivo ' + filename + ' foi modificado... Favor corrigir ou reiniciar o servidor!!', 'consoleOnly');
+				try {
+					if (event === 'change') {
+						if (fsDebounce) {
+							return;
 						}
 
-						await sleep(5000);
-					} while (!objCheckIsEqual);
+						fsDebounce = setTimeout(() => {
+							fsDebounce = false;
+						}, 200);
+
+						let objCheckIsEqual = true;
+
+						do {
+							objCheckIsEqual = deepIsEqual(__serverConfig, await readConfig(config));
+
+							if (!objCheckIsEqual) {
+								log.logger('info', 'Arquivo ' + filename + ' foi modificado... Favor corrigir ou reiniciar o servidor!!', 'consoleOnly');
+							}
+
+							await sleep(5000);
+						} while (!objCheckIsEqual);
+					}
+				} catch(err) {
+					throw new Error(err);
 				}
 			});
 
