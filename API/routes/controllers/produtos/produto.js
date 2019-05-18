@@ -12,7 +12,7 @@ const log = require('@serverRoot/helpers/log');
 
 // -------------------------------------------------------------------------
 // Middleware para rotas aqui
-const gateLocal = async (req, res) => {
+const _gateLocal = async (req, res) => {
 	try {
 		log.logger('info', '=> em Controller PRODUTO', 'consoleOnly');
 		return;
@@ -24,13 +24,13 @@ const gateLocal = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Rotas
-const rotasProduto = (router) => {
+const rotasProduto = router => {
 	router.route('/produto')
 	// Colecao produtos ----------------------------------------------------
 	.all(async (req, res, next) => {
 	// Todos os verbos
 		try {
-			await gateLocal(req, res);
+			await _gateLocal(req, res);
 			next();
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
@@ -50,7 +50,7 @@ const rotasProduto = (router) => {
 	.all(async (req, res, next) => {
 	// Todos os verbos
 		try {
-			await gateLocal(req, res);
+			await _gateLocal(req, res);
 			next();
 		} catch(err) {
 			log.controllerErro(res, err, 'error');

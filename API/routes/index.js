@@ -18,7 +18,7 @@ const venda = require('@serverRoot/routes/controllers/vendas/venda');
 
 // -------------------------------------------------------------------------
 // Middleware para todas as rotas existentes e nao existentes
-router.use((req, res, next) => {
+router.use(async (req, res, next) => {
 	try {
 		let rota = req.url.match('^[^?]*')[0].replace(/[/]+$/, '') + '/',
 			ip = req.headers['x-forwarded-for'] ||
@@ -26,7 +26,7 @@ router.use((req, res, next) => {
 					req.socket.remoteAddress ||
 					(req.connection.socket ? req.connection.socket.remoteAddress : null),
 			metodo = req.method,
-			isProtected = auth.isProtected(req, rota),
+			isProtected = await auth.isProtected(rota),
 			segueFluxo = false;
 
 		log.logger('info', `${isProtected ? '* PROTEGIDA * ' : ''}Rota ${rota} (${metodo}) requisitada por ${ip}`, 'consoleOnly');
@@ -34,7 +34,7 @@ router.use((req, res, next) => {
 		if (!isProtected) {
 			segueFluxo = true;
 		} else {
-			if (auth.isLogged(req, 1)) {
+			if (await auth.isLogged(req, 1)) {
 				segueFluxo = true;
 			}
 		}

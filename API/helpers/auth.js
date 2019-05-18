@@ -7,12 +7,10 @@ const cryptoHash = require('@serverRoot/helpers/cryptoHash');
 
 // -------------------------------------------------------------------------
 // Verifica se a rota e protegida com base nas informacoes de config
-const isProtected = (req, rota) => {
-	try {
-		let rotaCheck = rota.toUpperCase(),
-			authTipo = __serverConfig.auth.authTipo,
-			exceptTable = __serverConfig.auth.except,
-			exceptInspect = (paramTable, paramRota) => {
+const isProtected = rota => {
+	return new Promise((resolve, reject) => {
+		try {
+			const exceptInspect = (paramTable, paramRota) => {
 				return paramTable.some(
 					element => {
 						let elementCheck = element.trim().toUpperCase().replace(/[/]+$/, '') + '/',
@@ -21,24 +19,29 @@ const isProtected = (req, rota) => {
 						return (elementCheck === '/' ? (elementCheck === paramRota) : regExCheck.test(paramRota));
 					}
 				);
-			},
-			exceptReturn = exceptInspect(exceptTable, rotaCheck),
-			fRet = true; // Rota protegida inicialmente
+			};
 
-		if (authTipo === 2) {
-			if (!exceptReturn) {
-				fRet = false;
+			let rotaCheck = rota.toUpperCase(),
+				authTipo = __serverConfig.auth.authTipo,
+				exceptTable = __serverConfig.auth.except,
+				exceptReturn = exceptInspect(exceptTable, rotaCheck),
+				fRet = true; // Rota protegida inicialmente
+
+			if (authTipo === 2) {
+				if (!exceptReturn) {
+					fRet = false;
+				}
+			} else {
+				if (exceptReturn) {
+					fRet = false;
+				}
 			}
-		} else {
-			if (exceptReturn) {
-				fRet = false;
-			}
+
+			resolve(fRet);
+		} catch(err) {
+			reject(err);
 		}
-
-		return fRet;
-	} catch(err) {
-		throw new Error(err);
-	}
+	});
 };
 
 // Permite acesso as rotas protegidas, analise das permissoes em um segundo momento
@@ -72,44 +75,48 @@ sess[sessWraper].permissoes = ['LST_INFO1', 'EDT_INFO1', 'EXC_INFO2', 'LST_INFO3
 
 // Finaliza a sessao no servidor, rotas protegidas ficam inascessiveis
 const logout = (req, res) => {
-	try {
-		let sess = req.session,
-			fRet = false;
+	return new Promise((resolve, reject) => {
+		try {
+			let sess = req.session,
+				fRet = false;
 
-		if (sess) {
-			sess.destroy();
-			res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date() });
+			if (sess) {
+				sess.destroy();
+				res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date() });
 
-			fRet = true;
+				fRet = true;
+			}
+
+			resolve(fRet);
+		} catch(err) {
+			reject(err);
 		}
-
-		return fRet;
-	} catch(err) {
-		throw new Error(err);
-	}
+	});
 };
 
 // Verifica se a sessao esta ativa
 const isLogged = (req, retType) => { // retType: 2: retorna object. Default: retorna boolean.
-	try {
-		let sess = req.session,
-			sessWraper = __serverConfig.auth.sessWrapper,
-			fRet = false;
+	return new Promise((resolve, reject) => {
+		try {
+			let sess = req.session,
+				sessWraper = __serverConfig.auth.sessWrapper,
+				fRet = false;
 
-		if (sess) {
-			if (sess[sessWraper]) {
-				if (retType === 2) {
-					fRet = sess[sessWraper];
-				} else {
-					fRet = true;
+			if (sess) {
+				if (sess[sessWraper]) {
+					if (retType === 2) {
+						fRet = sess[sessWraper];
+					} else {
+						fRet = true;
+					}
 				}
 			}
-		}
 
-		return fRet;
-	} catch(err) {
-		throw new Error(err);
-	}
+			resolve(fRet);
+		} catch(err) {
+			reject(err);
+		}
+	});
 };
 // -------------------------------------------------------------------------
 

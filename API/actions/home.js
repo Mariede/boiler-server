@@ -19,7 +19,7 @@ const root = async (req, res) => {
 
 const login = async (req, res) => {
 	try {
-		let fRet = auth.login(req);
+		let fRet = await auth.login(req);
 		return fRet;
 	} catch(err) {
 		throw new Error(err);
@@ -28,7 +28,7 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
 	try {
-		let fRet = auth.logout(req, res);
+		let fRet = await auth.logout(req, res);
 		return fRet;
 	} catch(err) {
 		throw new Error(err);
@@ -37,7 +37,7 @@ const logout = async (req, res) => {
 
 const isLogged = async (req, res) => {
 	try {
-		let fRet = auth.isLogged(req, 2);
+		let fRet = await auth.isLogged(req, 2);
 		return fRet;
 	} catch(err) {
 		throw new Error(err);

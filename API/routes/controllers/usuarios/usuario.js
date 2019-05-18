@@ -12,7 +12,7 @@ const usuario = require('@serverRoot/actions/usuario/usuario');
 
 // -------------------------------------------------------------------------
 // Middleware para rotas aqui
-const gateLocal = async (req, res) => {
+const _gateLocal = async (req, res) => {
 	try {
 		log.logger('info', '=> em Controller USUARIO', 'consoleOnly');
 		return;
@@ -24,13 +24,13 @@ const gateLocal = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Rotas
-const rotasUsuario = (router) => {
+const rotasUsuario = router => {
 	router.route('/usuario')
 	// Colecao usuarios ----------------------------------------------------
 	.all(async (req, res, next) => {
 	// Todos os verbos
 		try {
-			await gateLocal(req, res);
+			await _gateLocal(req, res);
 			next();
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
@@ -51,7 +51,7 @@ const rotasUsuario = (router) => {
 	.all(async (req, res, next) => {
 	// Todos os verbos
 		try {
-			await gateLocal(req, res);
+			await _gateLocal(req, res);
 			next();
 		} catch(err) {
 			log.controllerErro(res, err, 'error');

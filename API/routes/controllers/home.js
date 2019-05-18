@@ -12,7 +12,7 @@ const home = require('@serverRoot/actions/home');
 
 // -------------------------------------------------------------------------
 // Middleware para rotas aqui
-const gateLocal = async (req, res) => {
+const _gateLocal = async (req, res) => {
 	try {
 		log.logger('info', '=> em Controller HOME', 'consoleOnly');
 		return;
@@ -24,13 +24,13 @@ const gateLocal = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Rotas
-const rotasHome = (router) => {
+const rotasHome = router => {
 	router.route('/')
 	// root ----------------------------------------------------------------
 	.all(async (req, res, next) => {
 	// Todos os verbos
 		try {
-			await gateLocal(req, res);
+			await _gateLocal(req, res);
 			next();
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
@@ -51,7 +51,7 @@ const rotasHome = (router) => {
 	.all(async (req, res, next) => {
 	// Todos os verbos
 		try {
-			await gateLocal(req, res);
+			await _gateLocal(req, res);
 			next();
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
@@ -72,7 +72,7 @@ const rotasHome = (router) => {
 	.all(async (req, res) => {
 	// Todos os verbos
 		try {
-			await gateLocal(req, res);
+			await _gateLocal(req, res);
 
 			let result = await home.logout(req, res);
 			res.status(200).json(result);
@@ -87,7 +87,7 @@ const rotasHome = (router) => {
 	.all(async (req, res, next) => {
 	// Todos os verbos
 		try {
-			await gateLocal(req, res);
+			await _gateLocal(req, res);
 			next();
 		} catch(err) {
 			log.controllerErro(res, err, 'error');

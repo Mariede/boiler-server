@@ -7,7 +7,7 @@ const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Carrega arquivo de configuracao
+// Carrega arquivo de configuracao (sincrono)
 const push = config => {
 	try {
 		return Object.freeze(JSON.parse(fs.readFileSync(config, 'utf8')));
@@ -100,7 +100,7 @@ const check = config => {
 
 					fsDebounce = setTimeout(() => {
 						fsDebounce = false;
-					}, 100);
+					}, 200);
 
 					let objCheck1 = __serverConfig,
 						objCheck2 = {},
