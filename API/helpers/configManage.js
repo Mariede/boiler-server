@@ -90,32 +90,40 @@ const check = config => {
 				}
 			};
 
-			const sleep = ms => {
-				return new Promise(resolve => setTimeout(resolve, ms));
+			// mostra mensagem mantendo um debounce de wait
+			const showMessage = (func, wait) => {
+				return new Promise((resolve, reject) => {
+					try {
+						clearTimeout(timeout);
+						timeout = setTimeout(() => { resolve(func()); } , wait);
+					} catch(err) {
+						reject(err);
+					}
+				});
 			};
 
-			let fsDebounce = false;
+			let timeout = null;
+
 			const watch = fs.watch(config, async function (event, filename) {
 				try {
 					if (event === 'change') {
-						if (fsDebounce) {
-							return;
-						}
-
-						fsDebounce = setTimeout(() => {
-							fsDebounce = false;
-						}, 200);
-
 						let objCheckIsEqual = true;
 
 						do {
 							objCheckIsEqual = deepIsEqual(__serverConfig, await readConfig(config));
 
 							if (!objCheckIsEqual) {
-								log.logger('info', 'Arquivo ' + filename + ' foi modificado... Favor corrigir ou reiniciar o servidor!!', 'consoleOnly');
+								await showMessage(
+									() => {
+										log.logger('info', 'Arquivo ' + filename + ' foi modificado... Favor corrigir ou reiniciar o servidor!!', 'consoleOnly');
+									}
+								, 2000);
+							} else {
+								if (timeout) {
+									clearTimeout(timeout);
+									timeout = null;
+								}
 							}
-
-							await sleep(5000);
 						} while (!objCheckIsEqual);
 					}
 				} catch(err) {
