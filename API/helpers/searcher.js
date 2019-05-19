@@ -33,20 +33,20 @@ const searchExecute = (baseQuery, targetReplace, searchFields, searchValue) => {
 
 			if (searchFields && Array.isArray(searchFields)) {
 				searchFields.forEach(
-					function(field, index) {
+					(field, index) => {
 						searchQuery.dados.input[index] = [field, '%' + value + '%'];
 
 						if (queryWhere !== -1 || index !== 0) {
 							if (index !== 0) {
-								queryReplace = queryReplace + ' OR ';
+								queryReplace += ' OR ';
 							} else {
-								queryReplace = queryReplace + ' AND (';
+								queryReplace += ' AND (';
 							}
 						} else {
-							queryReplace = queryReplace + ' WHERE (';
+							queryReplace += ' WHERE (';
 						}
 
-						queryReplace = queryReplace + `CAST(${field} AS varchar(max)) LIKE(@${field})`;
+						queryReplace += `CAST(${field} AS varchar(max)) LIKE(@${field})`;
 					}
 				);
 

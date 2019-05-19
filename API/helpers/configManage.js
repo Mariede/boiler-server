@@ -23,7 +23,7 @@ const check = config => {
 			const readConfig = param => {
 				return new Promise((resolve, reject) => {
 					try {
-						fs.readFile(param, 'utf8', function (err, data) {
+						fs.readFile(param, 'utf8', (err, data) => {
 							if (err) {
 								reject(err);
 							} else {
@@ -102,9 +102,17 @@ const check = config => {
 				});
 			};
 
+			const message = config => {
+				try {
+					log.logger('info', 'Arquivo ' + config + ' foi modificado... Favor corrigir ou reiniciar o servidor!!', 'consoleOnly');
+				} catch(err) {
+					throw new Error(err);
+				}
+			};
+
 			let timeout = null;
 
-			const watch = fs.watch(config, async function (event, filename) {
+			const watch = fs.watch(config, async (event, filename) => {
 				try {
 					if (event === 'change') {
 						let objCheckIsEqual = true;
@@ -113,11 +121,11 @@ const check = config => {
 							objCheckIsEqual = deepIsEqual(__serverConfig, await readConfig(config));
 
 							if (!objCheckIsEqual) {
-								await showMessage(
-									() => {
-										log.logger('info', 'Arquivo ' + filename + ' foi modificado... Favor corrigir ou reiniciar o servidor!!', 'consoleOnly');
-									}
-								, 2000);
+								if (!timeout) {
+									message(filename);
+								}
+
+								await showMessage(message.bind(this, filename), 4000);
 							} else {
 								if (timeout) {
 									clearTimeout(timeout);

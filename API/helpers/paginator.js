@@ -84,11 +84,11 @@ const keysToCamelCase = jsonData => {
 						newData.push({});
 
 						Object.keys(jsonData[i]).forEach(
-							function(currentKey) {
+							currentKey => {
 								let newKey = currentKey
 													.toLowerCase()
 													.replace(/[._-]([a-z])/g,
-														function(g) {
+														g => {
 															return g[1].toUpperCase();
 														}
 													);
