@@ -31,27 +31,25 @@ const setSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 					}
 				};
 
-			if (searchFields && Array.isArray(searchFields)) {
-				searchFields.forEach(
-					(field, index) => {
-						searchQuery.dados.input[index] = [field, '%' + value + '%'];
+			searchFields.forEach(
+				(field, index) => {
+					searchQuery.dados.input[index] = [field, '%' + value + '%'];
 
-						if (queryWhere !== -1 || index !== 0) {
-							if (index !== 0) {
-								queryReplace += ' OR ';
-							} else {
-								queryReplace += ' AND (';
-							}
+					if (queryWhere !== -1 || index !== 0) {
+						if (index !== 0) {
+							queryReplace += ' OR ';
 						} else {
-							queryReplace += ' WHERE (';
+							queryReplace += ' AND (';
 						}
-
-						queryReplace += `CAST(${field} AS varchar(max)) LIKE(@${field})`;
+					} else {
+						queryReplace += ' WHERE (';
 					}
-				);
 
-				searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace + ')');
-			}
+					queryReplace += `CAST(${field} AS varchar(max)) LIKE(@${field})`;
+				}
+			);
+
+			searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace + ')');
 
 			dbCon.sqlExecuteAll(searchQuery)
 			.then(

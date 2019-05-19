@@ -10,31 +10,26 @@
 const setSort = (jsonData, sortElements = [], sortOrder = []) => {
 	return new Promise((resolve, reject) => {
 		try {
-			let newData = [];
+			const sortFunction = (a, b, i, iLen) => {
+				if (i < iLen) {
+					let aCheck = (a[sortElements[i]] || ''),
+						bCheck = (b[sortElements[i]] || ''),
+						order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
 
-			if (jsonData && Array.isArray(jsonData)) {
-				const sortFunction = (a, b, i, iLen) => {
-					if (i < iLen) {
-						let aCheck = (a[sortElements[i]] || ''),
-							bCheck = (b[sortElements[i]] || ''),
-							order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
+					return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortFunction(a, b, ++i, iLen)));
+				} else {
+					return 0;
+				}
+			};
 
-						return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortFunction(a, b, ++i, iLen)));
-					} else {
-						return 0;
-					}
-				};
+			let newData = Array.from(jsonData),
+				sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
 
-				newData = Array.from(jsonData);
-
-				let sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
-
-				newData.sort(
-					(a, b) => {
-						return sortFunction(a, b, 0, sortElementsLen);
-					}
-				);
-			}
+			newData.sort(
+				(a, b) => {
+					return sortFunction(a, b, 0, sortElementsLen);
+				}
+			);
 
 			resolve(newData);
 		} catch(err) {
