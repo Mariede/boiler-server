@@ -7,7 +7,7 @@
 
 // -------------------------------------------------------------------------
 // Ordena massa de dados: sortElements Array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
-const setSorter = (jsonData, sortElements = [], sortOrder = []) => {
+const setSort = (jsonData, sortElements = [], sortOrder = []) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let newData = [];
@@ -109,7 +109,7 @@ const keysToCamelCase = jsonData => {
 // -------------------------------------------------------------------------
 
 module.exports = {
-	setSorter,
+	setSort,
 	setPage,
 	keysToCamelCase
 };

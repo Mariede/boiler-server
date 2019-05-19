@@ -18,7 +18,7 @@ const _falsyCheck = param => {
 };
 
 // Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final
-const searchExecute = (baseQuery, targetReplace, searchFields, searchValue) => {
+const setSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let queryWhere = baseQuery.search(/ where /i),
@@ -72,5 +72,5 @@ const searchExecute = (baseQuery, targetReplace, searchFields, searchValue) => {
 // -------------------------------------------------------------------------
 
 module.exports = {
-	searchExecute
+	setSearch
 };

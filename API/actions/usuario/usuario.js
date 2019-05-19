@@ -22,13 +22,13 @@ const consultarTodos = async (req, res) => {
 
 
 // const searcher = require('@serverRoot/helpers/searcher');
-// return searcher.searchExecute('select top 10 * from usuario (nolock){{REPLACE}}', '{{REPLACE}}', ['SORTER2', 'SORTER1', 'NOME'], '56');
+// return searcher.setSearch('select top 10 * from usuario (nolock){{REPLACE}}', '{{REPLACE}}', ['SORTER2', 'SORTER1', 'NOME'], '56');
 
 
 		// Executa query
 		let result1 = await dbCon.sqlExecuteAll(query1);
 		// Sorter, sorterElements deve ser uma array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
-		result1.recordsets[0] = await paginator.setSorter(result1.recordsets[0], ['SORTER2', 'SORTER1'], ['DESC', 'ASC']);
+		result1.recordsets[0] = await paginator.setSort(result1.recordsets[0], ['SORTER2', 'SORTER1'], ['DESC', 'ASC']);
 		// Renomeia chaves no objeto JSON para o padrao CamelCase
 		result1.recordsets[0] = await paginator.keysToCamelCase(result1.recordsets[0]);
 		// Paginacao: pagina 3 / 9 itens por pagina, retorno => pageDetails, itemsList, rowsAffected
