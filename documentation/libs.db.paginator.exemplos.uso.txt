@@ -9,7 +9,7 @@ Conexão e execução de queries no MS SQL Server através do pacote NODE mssql
 // Estrutura básica queries (parâmetros de entrada)
 
 query = {
-	formato: 1,			// 1: Query String, 2: Stored Procedure
+	formato: 1, // 1: Query String, 2: Stored Procedure
 	dados: {
 		input: [
 			['ID', 'int', 1],
@@ -26,7 +26,7 @@ query = {
 }
 
 query = {
-	formato: 2,			// 1: Query String, 2: Stored Procedure
+	formato: 2, // 1: Query String, 2: Stored Procedure
 	dados: {
 		input: [
 			['ID', 'int', 1],
@@ -46,13 +46,13 @@ query = {
 // Parâmetros de entrada (exemplos)
 
 let query1 = {
-	formato: 1, // 1: Query String, 2: Stored Procedure
+	formato: 1,
 	dados: {
 		input: [
 			['NOME', 'varchar(200)', 'Joaquim Santos'],
 			['SENHA', 'varchar(20)', 'SENH@TESTE123'],
 			['ATIVO', 'bit', 1],
-			['NOMECHECK', 'varchar(200)', '%Joa%']
+			['NOMECHECK', '%Joa%']
 		],
 		output: [
 			['INSERTED_ID', 'int']
@@ -103,7 +103,7 @@ let query1 = {
 	}
 },
 query2 = {
-	formato: 2, // 1: Query String, 2: Stored Procedure
+	formato: 2,
 	dados: {
 		input: [
 			['ID_USUARIO', 'int', 1],
@@ -118,16 +118,16 @@ query2 = {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// Chamadas nos métodos
+// Chamadas nos métodos (exemplos)
 
-// Execute (promise / async await)
+// Execute (promise + async await)
 dbCon.sqlOpenCon()
 .then(
 	async transaction => {
 		try {
-			let result1 = await dbCon.sqlExecute(transaction, query1);
-			//	result2 = await dbCon.sqlExecute(transaction, query2);
+			let result1 = await dbCon.sqlExecute(transaction, query1); // Executa query ou queries
 			await dbCon.sqlCloseCon(transaction);
+
 			resolve(result1);
 		} catch(err) {
 			reject(err);
@@ -144,9 +144,9 @@ dbCon.sqlOpenCon()
 // Execute (async await)
 try {
 	let transaction = await dbCon.sqlOpenCon(),
-		result1 = await dbCon.sqlExecute(transaction, query1);
-	//	result2 = await dbCon.sqlExecute(transaction, query2);
+		result1 = await dbCon.sqlExecute(transaction, query1); // Executa query ou queries
 	await dbCon.sqlCloseCon(transaction);
+
 	return result1;
 } catch(err) {
 	throw new Error(err);
@@ -155,8 +155,9 @@ try {
 
 // ou com o método agrupador ExecuteAll (async await)
 try {
+	// Executa query ou queries
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	//	result2 = await dbCon.sqlExecuteAll(query2);
+
 	return result1;
 } catch(err) {
 	throw new Error(err);
@@ -168,9 +169,9 @@ try {
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
-	// Executa query
+	// Executa query ou queries
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	// Paginacao: pagina 3 / 9 itens por pagina, retorno => pageDetails, itemsList, rowsAffected
+	// Paginador (page): pagina 3 / 9 itens por pagina, retorno => pageDetails, itemsList, rowsAffected
 	result1.recordsets[0] = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
 
 	return result1;
@@ -180,15 +181,15 @@ try {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// Chamada com paginação e sorter (ordenado)
+// Chamada com paginação e ordenação
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
-	// Executa query
+	// Executa query ou queries
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	// Sorter, sorterElements deve ser uma array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
+	// Ordenador (sort): sortElements deve ser uma array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
 	result1.recordsets[0] = await paginator.setSort(result1.recordsets[0], ['SORTER2', 'SORTER1'], ['DESC', 'ASC']);
-	// Paginacao: pagina 3 / 9 itens por pagina, retorno => pageDetails, itemsList, rowsAffected
+	// Paginador (page): pagina 3 / 9 itens por pagina, retorno => pageDetails, itemsList, rowsAffected
 	result1.recordsets[0] = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
 
 	return result1;
@@ -198,17 +199,17 @@ try {
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
-// Chamada com paginação, sorter (ordenado) e conversao para camelcase do json do banco de dados
+// Chamada com paginação, ordenação e conversão para camelcase do json do banco de dados
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
-	// Executa query
+	// Executa query ou queries
 	let result1 = await dbCon.sqlExecuteAll(query1);
-	// Sorter, sorterElements deve ser uma array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
+	// Ordenador (sort): sortElements deve ser uma array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
 	result1.recordsets[0] = await paginator.setSort(result1.recordsets[0], ['SORTER2', 'SORTER1'], ['DESC', 'ASC']);
-	// Renomeia chaves no objeto JSON para o padrao CamelCase
+	// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
 	result1.recordsets[0] = await paginator.keysToCamelCase(result1.recordsets[0]);
-	// Paginacao: pagina 3 / 9 itens por pagina, retorno => pageDetails, itemsList, rowsAffected
+	// Paginador (page): pagina 3 / 9 itens por pagina, retorno => pageDetails, itemsList, rowsAffected
 	result1.recordsets[0] = await paginator.setPage(result1.recordsets[0], result1.rowsAffected[0], 3, 9);
 
 	return result1;
