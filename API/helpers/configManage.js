@@ -23,14 +23,21 @@ const check = config => {
 			const readConfig = param => {
 				return new Promise((resolve, reject) => {
 					try {
+						const isValidJson = json => {
+							try {
+								JSON.parse(json);
+								return true;
+							} catch(err) {
+								log.logger('warn', 'Validação do conteúdo Json: ' + (err.message || err.stack || err), 'consoleOnly');
+								return false;
+							}
+						};
+
 						fs.readFile(param, 'utf8', (err, data) => {
 							if (err) {
 								reject(err);
 							} else {
-								let isValidJson = true;
-								try { JSON.parse(data) } catch { isValidJson = false; }
-
-								resolve(isValidJson ? JSON.parse(data) : {});
+								resolve(isValidJson(data) ? JSON.parse(data) : {});
 							}
 						});
 					} catch(err) {
@@ -95,7 +102,9 @@ const check = config => {
 				return new Promise((resolve, reject) => {
 					try {
 						clearTimeout(timeout);
-						timeout = setTimeout(() => { resolve(func()); } , wait);
+						timeout = setTimeout(() => {
+							resolve(func());
+						}, wait);
 					} catch(err) {
 						reject(err);
 					}
@@ -125,7 +134,7 @@ const check = config => {
 									message(filename);
 								}
 
-								await showMessage(message.bind(this, filename), 4000);
+								await showMessage(message.bind(this, filename), 5000);
 							} else {
 								if (timeout) {
 									clearTimeout(timeout);
