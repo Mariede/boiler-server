@@ -217,3 +217,26 @@ try {
 	throw new Error(err);
 }
 ---------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------
+// Chamada com searcher
+const searcher = require('@serverRoot/helpers/searcher');
+
+try {
+	// Searcher: searchFields deve ser uma array (nomes ambiguos no search geram erro)
+	let result1 = searcher.setSearch(`
+		select top 10
+			*
+		from
+			usuario a (nolock)
+			inner join tipo b (nolock)
+				on (a.id_tipo = b.id_tipo)
+		where a.nome like('%joa%')
+			{{REPLACE}}
+		`, '{{REPLACE}}', ['SORTER2', 'SORTER1', 'NOME', 'TIPO'], 'EPSI');
+
+	return result1;
+} catch(err) {
+	throw new Error(err);
+}
+---------------------------------------------------------------------------------------------------------

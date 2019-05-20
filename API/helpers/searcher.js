@@ -21,7 +21,7 @@ const _falsyCheck = param => {
 const setSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 	return new Promise((resolve, reject) => {
 		try {
-			let queryWhere = baseQuery.search(/ where /i),
+			let queryWhere = baseQuery.search(/where[ \t\n]/i),
 				queryReplace = '',
 				value = _falsyCheck(searchValue),
 				searchQuery = {

@@ -4,6 +4,7 @@
 // Modulos de inicializacao
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
+const searcher = require('@serverRoot/helpers/searcher');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -20,11 +21,17 @@ const consultarTodos = async (req, res) => {
 				}
 			};
 
-
-// Searcher: searchFields deve ser uma array
-// const searcher = require('@serverRoot/helpers/searcher');
-// return searcher.setSearch('select top 10 * from usuario (nolock){{REPLACE}}', '{{REPLACE}}', ['SORTER2', 'SORTER1', 'NOME'], '56');
-
+		// // Searcher: searchFields deve ser uma array (nomes ambiguos no search geram erro)
+		// let result1 = searcher.setSearch(`
+		// 	select top 10
+		// 		*
+		// 	from
+		// 		usuario a (nolock)
+		// 		inner join tipo b (nolock)
+		// 			on (a.id_tipo = b.id_tipo)
+		// 	where a.nome like('%joa%')
+		// 		{{REPLACE}}
+		// 	`, '{{REPLACE}}', ['SORTER2', 'SORTER1', 'NOME', 'TIPO'], 'EPSI');
 
 		// Executa query ou queries
 		let result1 = await dbCon.sqlExecuteAll(query1);
