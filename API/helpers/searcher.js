@@ -18,12 +18,11 @@ const _falsyCheck = param => {
 };
 
 // Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final
-const setSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
+const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let queryWhere = baseQuery.search(/where[ \t\n]/i),
 				queryReplace = '',
-				value = _falsyCheck(searchValue),
 				searchQuery = {
 					formato: 1,
 					dados: {
@@ -33,7 +32,7 @@ const setSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 
 			searchFields.forEach(
 				(field, index) => {
-					searchQuery.dados.input[index] = [field, '%' + value + '%'];
+					searchQuery.dados.input[index] = [field, '%' + searchValue + '%'];
 
 					if (queryWhere !== -1 || index !== 0) {
 						if (index !== 0) {
@@ -66,6 +65,18 @@ const setSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 			reject(err);
 		}
 	});
+};
+
+// Chamada inicial, verifica os dados de entrada do cliente, executa a acao
+const setSearch = async (req, baseQuery, targetReplace) => {
+	try {
+		let searchFields = ['SORTER2', 'SORTER1', 'NOME', 'TIPO'], // temporario, vem por req
+			searchValue = _falsyCheck('EPSI'); // temporario, vem por req
+
+		return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 // -------------------------------------------------------------------------
 

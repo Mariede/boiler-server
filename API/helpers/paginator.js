@@ -6,8 +6,8 @@
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Ordena massa de dados: sortElements Array e case sensitive, sortOrder Array opcional ASC/DESC (default: ASC)
-const setSort = (jsonData, sortElements = [], sortOrder = []) => {
+// Ordenador (sort): sortElements deve ser uma array e case sensitive, sortOrder Array ASC/DESC (default: ASC)
+const _executeSort = (jsonData, sortElements, sortOrder) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const sortFunction = (a, b, i, iLen) => {
@@ -38,8 +38,8 @@ const setSort = (jsonData, sortElements = [], sortOrder = []) => {
 	});
 };
 
-// Retorna pagina especifica da massa de dados e detalhes da paginacao
-const setPage = (jsonData, jsonDataLen, currentPage = 1, itemsPerPage = 10) => {
+// Paginador (page): pagina currentPage / itemsPerPage, retorno => pageDetails, itemsList, rowsAffected
+const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let backPage = currentPage - 1,
@@ -65,6 +65,30 @@ const setPage = (jsonData, jsonDataLen, currentPage = 1, itemsPerPage = 10) => {
 			reject(err);
 		}
 	});
+};
+
+// Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordenador)
+const setSort = async (req, jsonData) => {
+	try {
+		let sortElements = ['SORTER2', 'SORTER1'], // temporario, vem por req
+			sortOrder = ['DESC', 'ASC']; // temporario, vem por req
+
+		return await _executeSort(jsonData, sortElements, sortOrder);
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
+// Chamada inicial, verifica os dados de entrada do cliente, executa a acao (paginador)
+const setPage = async (req, jsonData, jsonDataLen) => {
+	try {
+		let currentPage = 3, // temporario, vem por req
+			itemsPerPage = 9; // temporario, vem por req
+
+		return await _executePage(jsonData, jsonDataLen, currentPage, itemsPerPage);
+	} catch(err) {
+		throw new Error(err);
+	}
 };
 
 // Converte chaves de uma array com objetos para Camel Case
