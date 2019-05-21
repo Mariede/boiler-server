@@ -70,8 +70,26 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordenador)
 const setSort = async (req, jsonData) => {
 	try {
-		let sortElements = ['SORTER2', 'SORTER1'], // temporario, vem por req
-			sortOrder = ['DESC', 'ASC']; // temporario, vem por req
+		let method = req.method,
+			sortElements = [],
+			sortOrder = [];
+
+		if (method === 'GET') {
+			if (req.query.sort_fields) {
+				req.query.sort_fields.split(/[, |]/).forEach(
+					(e, i) => {
+						let sortField = e.split(/[:]/);
+
+						if (sortField[0]) {
+							sortElements.push(sortField[0]);
+							sortOrder.push((sortField[1] || ''));
+						}
+					}
+				);
+			}
+		} else {
+			throw new Error('Ordenação (Sorter): Favor utilizar verbo GET para realizar a ordenação...');
+		}
 
 		return await _executeSort(jsonData, sortElements, sortOrder);
 	} catch(err) {
@@ -82,8 +100,25 @@ const setSort = async (req, jsonData) => {
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao (paginador)
 const setPage = async (req, jsonData, jsonDataLen) => {
 	try {
-		let currentPage = 3, // temporario, vem por req
-			itemsPerPage = 9; // temporario, vem por req
+		let method = req.method,
+			currentPage = 1,
+			itemsPerPage = 10,
+			qPage,
+			qItemsPerPage;
+
+		if (method === 'GET') {
+			qPage = req.query.page;
+			if (qPage && !isNaN(parseFloat(qPage))) {
+				currentPage = parseInt(qPage, 10);
+			}
+
+			qItemsPerPage = req.query.items_per_page;
+			if (qItemsPerPage && !isNaN(parseFloat(qItemsPerPage))) {
+				itemsPerPage = parseInt(qItemsPerPage, 10);
+			}
+		} else {
+			throw new Error('Paginação (Paginator): Favor utilizar verbo GET para realizar a consulta...');
+		}
 
 		return await _executePage(jsonData, jsonDataLen, currentPage, itemsPerPage);
 	} catch(err) {

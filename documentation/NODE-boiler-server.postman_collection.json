@@ -10,10 +10,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/venda/123",
 					"host": [
@@ -32,10 +28,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/venda",
 					"host": [
@@ -53,10 +45,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/produto/34",
 					"host": [
@@ -75,10 +63,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/produto",
 					"host": [
@@ -96,10 +80,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/usuario/101",
 					"host": [
@@ -114,14 +94,118 @@
 			"response": []
 		},
 		{
+			"name": "{{serverhost}}/usuario (Searcher)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serverhost}}/usuario?fullsearch_fields=SORTER2%2CSORTER1%2CNOME%2CTIPO&fullsearch_value=epsi",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"usuario"
+					],
+					"query": [
+						{
+							"key": "fullsearch_fields",
+							"value": "SORTER2%2CSORTER1%2CNOME%2CTIPO"
+						},
+						{
+							"key": "fullsearch_value",
+							"value": "epsi"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/usuario (Sorter)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serverhost}}/usuario?sort_fields=SORTER2:DESC,SORTER1:ASC",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"usuario"
+					],
+					"query": [
+						{
+							"key": "sort_fields",
+							"value": "SORTER2:DESC,SORTER1:ASC"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/usuario (Paginator)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serverhost}}/usuario?page=3&items_per_page=9",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"usuario"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "3"
+						},
+						{
+							"key": "items_per_page",
+							"value": "9"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/usuario (Paginator + Sorter)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serverhost}}/usuario?page=3&items_per_page=9&sort_fields=SORTER2:DESC,SORTER1:ASC",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"usuario"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "3"
+						},
+						{
+							"key": "items_per_page",
+							"value": "9"
+						},
+						{
+							"key": "sort_fields",
+							"value": "SORTER2:DESC,SORTER1:ASC"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "{{serverhost}}/usuario",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/usuario",
 					"host": [
@@ -139,10 +223,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/islogged",
 					"host": [
@@ -162,13 +242,7 @@
 				"header": [],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "",
-							"value": "",
-							"type": "text"
-						}
-					]
+					"urlencoded": []
 				},
 				"url": {
 					"raw": "{{serverhost}}/logout",
@@ -189,13 +263,7 @@
 				"header": [],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "",
-							"value": "",
-							"type": "text"
-						}
-					]
+					"urlencoded": []
 				},
 				"url": {
 					"raw": "{{serverhost}}/login",
@@ -214,10 +282,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/favicon.ico",
 					"host": [
@@ -235,10 +299,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{serverhost}}/",
 					"host": [

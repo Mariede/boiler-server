@@ -30,25 +30,29 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 					}
 				};
 
-			searchFields.forEach(
-				(field, index) => {
-					searchQuery.dados.input[index] = [field, '%' + searchValue + '%'];
+			if (searchFields.length > 0) {
+				searchFields.forEach(
+					(field, index) => {
+						searchQuery.dados.input[index] = [field, '%' + searchValue + '%'];
 
-					if (queryWhere !== -1 || index !== 0) {
-						if (index !== 0) {
-							queryReplace += ' OR ';
+						if (queryWhere !== -1 || index !== 0) {
+							if (index !== 0) {
+								queryReplace += ' OR ';
+							} else {
+								queryReplace += ' AND (';
+							}
 						} else {
-							queryReplace += ' AND (';
+							queryReplace += ' WHERE (';
 						}
-					} else {
-						queryReplace += ' WHERE (';
+
+						queryReplace += `CAST(${field} AS varchar(max)) LIKE(@${field})`;
 					}
+				);
 
-					queryReplace += `CAST(${field} AS varchar(max)) LIKE(@${field})`;
-				}
-			);
+				queryReplace += ')';
+			}
 
-			searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace + ')');
+			searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace);
 
 			dbCon.sqlExecuteAll(searchQuery)
 			.then(
@@ -70,8 +74,25 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao
 const setSearch = async (req, baseQuery, targetReplace) => {
 	try {
-		let searchFields = ['SORTER2', 'SORTER1', 'NOME', 'TIPO'], // temporario, vem por req
-			searchValue = _falsyCheck('EPSI'); // temporario, vem por req
+		let method = req.method,
+			searchFields = [],
+			searchValue = '';
+
+		if (method === 'GET') {
+			if (req.query.fullsearch_fields) {
+				req.query.fullsearch_fields.split(/[, |]/).forEach(
+					(e, i) => {
+						searchFields.push(e.toUpperCase());
+					}
+				);
+			}
+
+			if (Array.isArray(searchFields) && searchFields.length > 0) {
+				searchValue += _falsyCheck(req.query.fullsearch_value);
+			}
+		} else {
+			throw new Error('Searcher: Favor utilizar verbo GET para realizar a consulta...');
+		}
 
 		return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);
 	} catch(err) {
