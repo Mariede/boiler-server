@@ -26,7 +26,7 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 				searchQuery = {
 					formato: 1,
 					dados: {
-						input: [],
+						input: []
 					}
 				};
 
