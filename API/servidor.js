@@ -95,14 +95,16 @@ app.use(
 				path: (__serverRoot + '/sessions'),
 				retries: 5,
 				secret: __serverConfig.server.session.secretStore,
-				ttl: 20 * 60 // 1 = 1 segundo (20 minutos)
+				ttl: 60 * __serverConfig.server.session.timeout // 1 = 1 segundo (timeout em minutos)
 			}),
 			secret: __serverConfig.server.session.secret,
 			resave: false,
 			saveUninitialized: false,
 			unset: 'destroy',
+			rolling: true,
 			cookie: {
-				secure: false // true: apenas em https, false: http/https
+				secure: false, // true: apenas em https, false: http/https
+				maxAge: 1000 * 60 * __serverConfig.server.session.timeout // 1000 = 1 segundo (timeout em minutos)
 			}
 		}
 	)

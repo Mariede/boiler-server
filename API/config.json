@@ -14,7 +14,8 @@
 		"session": {
 			"secret": ["SegredoIDCookies123", "Reforco1", "Reforco2"],
 			"secretStore": "SegredoArquivos123",
-			"cookieName": "cookie-server"
+			"cookieName": "cookie-server",
+			"timeout": 20
 		}
 	},
 	"auth": {
