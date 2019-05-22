@@ -6,18 +6,7 @@ const dbCon = require('@serverRoot/helpers/db');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Devolve um dados para analise (metodo privado)
-const _falsyCheck = param => {
-	try {
-		const falsy = [null, undefined, NaN]; // except 0 and false and ""
-
-		return (falsy.includes(param) ? '' : ((param === 0 || param === false) ? param.toString() : (param || '').toString()));
-	} catch(err) {
-		throw new Error(err);
-	}
-};
-
-// Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final
+// Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final (metodo privado)
 const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -32,11 +21,11 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 
 			if (searchFields.length > 0) {
 				searchFields.forEach(
-					(field, index) => {
-						searchQuery.dados.input[index] = [field, '%' + searchValue + '%'];
+					(e, i) => {
+						searchQuery.dados.input[i] = [e, '%' + searchValue + '%'];
 
-						if (queryWhere !== -1 || index !== 0) {
-							if (index !== 0) {
+						if (queryWhere !== -1 || i !== 0) {
+							if (i !== 0) {
 								queryReplace += ' OR ';
 							} else {
 								queryReplace += ' AND (';
@@ -45,7 +34,7 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 							queryReplace += ' WHERE (';
 						}
 
-						queryReplace += `CAST(${field} AS varchar(max)) LIKE(@${field})`;
+						queryReplace += `CAST(${e} AS varchar(max)) LIKE(@${e})`;
 					}
 				);
 
@@ -74,6 +63,16 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao
 const setSearch = async (req, baseQuery, targetReplace) => {
 	try {
+		const falsyCheck = param => {
+			try {
+				const falsy = [null, undefined, NaN]; // except 0 and false and ""
+
+				return (falsy.includes(param) ? '' : ((param === 0 || param === false) ? param.toString() : (param || '').toString()));
+			} catch(err) {
+				throw new Error(err);
+			}
+		};
+
 		let method = req.method,
 			searchFields = [],
 			searchValue = '';
@@ -81,14 +80,14 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 		if (method === 'GET') {
 			if (req.query.fullsearch_fields) {
 				req.query.fullsearch_fields.split(/[, |]/).forEach(
-					(e, i) => {
+					e => {
 						searchFields.push(e.toUpperCase());
 					}
 				);
 			}
 
 			if (Array.isArray(searchFields) && searchFields.length > 0) {
-				searchValue += _falsyCheck(req.query.fullsearch_value);
+				searchValue += falsyCheck(req.query.fullsearch_value);
 			}
 		} else {
 			throw new Error('Searcher: Favor utilizar verbo GET para realizar a consulta...');

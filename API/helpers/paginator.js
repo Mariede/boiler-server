@@ -6,14 +6,14 @@
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Ordenador (sort): sortElements deve ser uma array e case sensitive, sortOrder Array ASC/DESC (default: ASC)
+// Ordenador (sort): sortElements deve ser uma array e case sensitive, sortOrder Array ASC/DESC (default: ASC) (metodo privado)
 const _executeSort = (jsonData, sortElements, sortOrder) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const sortFunction = (a, b, i, iLen) => {
 				if (i < iLen) {
-					let aCheck = (a[sortElements[i]] || ''),
-						bCheck = (b[sortElements[i]] || ''),
+					let aCheck = (a[sortElements[i]] || '').toLowerCase(),
+						bCheck = (b[sortElements[i]] || '').toLowerCase(),
 						order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
 
 					return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortFunction(a, b, ++i, iLen)));
@@ -38,7 +38,7 @@ const _executeSort = (jsonData, sortElements, sortOrder) => {
 	});
 };
 
-// Paginador (page): pagina currentPage / itemsPerPage, retorno => pageDetails, itemsList, rowsAffected
+// Paginador (page): pagina currentPage / itemsPerPage, retorno => pageDetails, itemsList, rowsAffected (metodo privado)
 const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -77,7 +77,7 @@ const setSort = async (req, jsonData) => {
 		if (method === 'GET') {
 			if (req.query.sort_fields) {
 				req.query.sort_fields.split(/[, |]/).forEach(
-					(e, i) => {
+					e => {
 						let sortField = e.split(/[:]/);
 
 						if (sortField[0]) {
@@ -100,21 +100,21 @@ const setSort = async (req, jsonData) => {
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao (paginador)
 const setPage = async (req, jsonData, jsonDataLen) => {
 	try {
+		const isNumber = num => {
+			return !isNaN(num) && !isNaN(parseFloat(num));
+		};
+
 		let method = req.method,
 			currentPage = 1,
-			itemsPerPage = 10,
-			qPage,
-			qItemsPerPage;
+			itemsPerPage = 10;
 
 		if (method === 'GET') {
-			qPage = req.query.page;
-			if (qPage && !isNaN(parseFloat(qPage))) {
-				currentPage = parseInt(qPage, 10);
+			if (req.query.page && isNumber(req.query.page)) {
+				currentPage = parseInt(req.query.page, 10);
 			}
 
-			qItemsPerPage = req.query.items_per_page;
-			if (qItemsPerPage && !isNaN(parseFloat(qItemsPerPage))) {
-				itemsPerPage = parseInt(qItemsPerPage, 10);
+			if (req.query.items_per_page && isNumber(req.query.items_per_page)) {
+				itemsPerPage = parseInt(req.query.items_per_page, 10);
 			}
 		} else {
 			throw new Error('Paginação (Paginator): Favor utilizar verbo GET para realizar a consulta...');
