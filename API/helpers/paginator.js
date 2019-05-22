@@ -6,15 +6,27 @@
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Ordenador (sort): sortElements deve ser uma array e case sensitive, sortOrder Array ASC/DESC (default: ASC) (metodo privado)
-const _executeSort = (jsonData, sortElements, sortOrder) => {
+// Ordenador (sort): sortElements deve ser uma array e case sensitive para as chaves (metodo privado)
+// sortOrder Array ASC/DESC (default: ASC)
+// sortCaseInsensitive true/false
+const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const sortFunction = (a, b, i, iLen) => {
 				if (i < iLen) {
-					let aCheck = (a[sortElements[i]] || '').toLowerCase(),
-						bCheck = (b[sortElements[i]] || '').toLowerCase(),
+					let aCheck = (a[sortElements[i]] || ''),
+						bCheck = (b[sortElements[i]] || ''),
 						order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
+
+					if (sortCaseInsensitive) {
+						if (typeof aCheck === 'string') {
+							aCheck = aCheck.toLowerCase();
+						}
+
+						if (typeof bCheck === 'string') {
+							bCheck = bCheck.toLowerCase();
+						}
+					}
 
 					return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortFunction(a, b, ++i, iLen)));
 				} else {
@@ -43,11 +55,13 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let backPage = currentPage - 1,
+				_iFrom = (backPage * itemsPerPage) + 1,
+				_iTo = currentPage * itemsPerPage,
 				pageDetails = {
 					currentPage: currentPage,
 					itemsPerPage: itemsPerPage,
-					itemsFrom: (backPage * itemsPerPage) + 1,
-					itemsTo: (currentPage * itemsPerPage < jsonDataLen ? currentPage * itemsPerPage : jsonDataLen),
+					itemsFrom: (_iFrom < jsonDataLen ? _iFrom : jsonDataLen),
+					itemsTo: (_iTo < jsonDataLen ? _iTo : jsonDataLen),
 					itemsCount: jsonDataLen,
 					totalPages: Math.ceil(jsonDataLen / itemsPerPage)
 				},
@@ -72,7 +86,8 @@ const setSort = async (req, jsonData) => {
 	try {
 		let method = req.method,
 			sortElements = [],
-			sortOrder = [];
+			sortOrder = [],
+			sortCaseInsensitive = false;
 
 		if (method === 'GET') {
 			if (req.query.sort_fields) {
@@ -86,12 +101,14 @@ const setSort = async (req, jsonData) => {
 						}
 					}
 				);
+
+				sortCaseInsensitive = /^(true|yes|y|sim|s){0,1}$/i.test(req.query.sort_case_insensitive);
 			}
 		} else {
 			throw new Error('Ordenação (Sorter): Favor utilizar verbo GET para realizar a ordenação...');
 		}
 
-		return await _executeSort(jsonData, sortElements, sortOrder);
+		return await _executeSort(jsonData, sortElements, sortOrder, sortCaseInsensitive);
 	} catch(err) {
 		throw new Error(err);
 	}

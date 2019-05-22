@@ -40,10 +40,10 @@ const consultarTodos = async (req, res) => {
 
 		// Executa query ou queries
 		let result1 = await dbCon.sqlExecuteAll(query1);
-		// Ordenador (sort)
-		result1.recordsets[0] = await paginator.setSort(req, result1.recordsets[0]);
 		// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
 		result1.recordsets[0] = await paginator.keysToCamelCase(result1.recordsets[0]);
+		// Ordenador (sort)
+		result1.recordsets[0] = await paginator.setSort(req, result1.recordsets[0]);
 		// Paginador (page)
 		result1.recordsets[0] = await paginator.setPage(req, result1.recordsets[0], result1.rowsAffected[0]);
 

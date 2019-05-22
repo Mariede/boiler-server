@@ -126,7 +126,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?sort_fields=SORTER2:DESC,SORTER1:ASC",
+					"raw": "{{serverhost}}/usuario?sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -136,7 +136,11 @@
 					"query": [
 						{
 							"key": "sort_fields",
-							"value": "SORTER2:DESC,SORTER1:ASC"
+							"value": "sorter2:DESC,sorter1:ASC"
+						},
+						{
+							"key": "sort_case_insensitive",
+							"value": "true"
 						}
 					]
 				}
@@ -176,7 +180,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?page=3&items_per_page=9&sort_fields=SORTER2:DESC,SORTER1:ASC",
+					"raw": "{{serverhost}}/usuario?page=3&items_per_page=9&sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -194,7 +198,11 @@
 						},
 						{
 							"key": "sort_fields",
-							"value": "SORTER2:DESC,SORTER1:ASC"
+							"value": "sorter2:DESC,sorter1:ASC"
+						},
+						{
+							"key": "sort_case_insensitive",
+							"value": "true"
 						}
 					]
 				}
