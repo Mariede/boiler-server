@@ -115,6 +115,7 @@ const setSort = async (req, jsonData) => {
 };
 
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao (paginador)
+// page na querystring e obrigatorio para a paginacao
 const setPage = async (req, jsonData, jsonDataLen) => {
 	try {
 		const isNumber = num => {
@@ -122,7 +123,7 @@ const setPage = async (req, jsonData, jsonDataLen) => {
 		};
 
 		let method = req.method,
-			currentPage = 1,
+			currentPage = 0,
 			itemsPerPage = 10;
 
 		if (method === 'GET') {
@@ -137,7 +138,11 @@ const setPage = async (req, jsonData, jsonDataLen) => {
 			throw new Error('Paginação (Paginator): Favor utilizar verbo GET para realizar a consulta...');
 		}
 
-		return await _executePage(jsonData, jsonDataLen, currentPage, itemsPerPage);
+		if (currentPage > 0) {
+			return await _executePage(jsonData, jsonDataLen, currentPage, itemsPerPage);
+		} else {
+			return jsonData;
+		}
 	} catch(err) {
 		throw new Error(err);
 	}

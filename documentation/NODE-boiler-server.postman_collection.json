@@ -153,7 +153,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?page=3&items_per_page=9",
+					"raw": "{{serverhost}}/usuario?page=2&items_per_page=6",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -163,11 +163,11 @@
 					"query": [
 						{
 							"key": "page",
-							"value": "3"
+							"value": "2"
 						},
 						{
 							"key": "items_per_page",
-							"value": "9"
+							"value": "6"
 						}
 					]
 				}
@@ -180,7 +180,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?page=3&items_per_page=9&sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
+					"raw": "{{serverhost}}/usuario?page=2&items_per_page=6&sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -190,11 +190,11 @@
 					"query": [
 						{
 							"key": "page",
-							"value": "3"
+							"value": "2"
 						},
 						{
 							"key": "items_per_page",
-							"value": "9"
+							"value": "6"
 						},
 						{
 							"key": "sort_fields",
