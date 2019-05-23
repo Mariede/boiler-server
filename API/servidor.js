@@ -10,6 +10,7 @@ const cors = require('cors');
 const session = require('express-session');
 const sessionFileStore = require('session-file-store')(session);
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const log4js = require('log4js');
 const moduleAlias = require('module-alias');
@@ -120,6 +121,11 @@ app.use(
 	bodyParser.urlencoded({
 		extended: true
 	})
+);
+
+// Cookie parser (req.cookies) ---------------------------
+app.use(
+	cookieParser()
 );
 
 // Compressao Gzip ---------------------------------------

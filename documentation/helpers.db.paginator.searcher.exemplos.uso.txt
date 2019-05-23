@@ -1,5 +1,5 @@
-LIB db.js + paginator.js
-------------------------
+LIB db.js + paginator.js + searcher.js
+--------------------------------------
 
 Conexão e execução de queries no MS SQL Server através do pacote NODE mssql
 
@@ -7,6 +7,7 @@ Conexão e execução de queries no MS SQL Server através do pacote NODE mssql
 
 ---------------------------------------------------------------------------------------------------------
 // Estrutura básica queries (parâmetros de entrada)
+
 
 query = {
 	formato: 1, // 1: Query String, 2: Stored Procedure
@@ -24,6 +25,7 @@ query = {
 		`
 	}
 }
+
 
 query = {
 	formato: 2, // 1: Query String, 2: Stored Procedure
@@ -45,90 +47,94 @@ query = {
 ---------------------------------------------------------------------------------------------------------
 // Parâmetros de entrada (exemplos)
 
-let query1 = {
-	formato: 1,
-	dados: {
-		input: [
-			['NOME', 'varchar(200)', 'Joaquim Santos'],
-			['SENHA', 'varchar(20)', 'SENH@TESTE123'],
-			['ATIVO', 'bit', 1],
-			['NOMECHECK', '%Joa%']
-		],
-		output: [
-			['INSERTED_ID', 'int']
-		],
-		executar: `
-			SET NOCOUNT OFF;
-			DECLARE
-				@INCR int; -- variavel interna
-			SET
-				@INCR = (
-					SELECT TOP 1
-						ID_USUARIO
-					FROM
-						USUARIO U (NOLOCK)
-					WHERE
-						U.NOME LIKE(@NOMECHECK) -- variavel input externa
-					ORDER BY
-						ID_USUARIO DESC
-			);
-			INSERT INTO USUARIO (
-				NOME
-				,SENHA
-				,ATIVO
-			) VALUES (
-				@NOME + ' ' + CAST(@INCR AS varchar) -- variavel input externa + interna
-				,@SENHA -- variavel input externa
-				,@ATIVO -- variavel input externa
-			);
-			SET
-				@INSERTED_ID = SCOPE_IDENTITY(); -- variavel output
-			SELECT TOP 2
-				NOME
-			FROM
-				USUARIO U (NOLOCK)
-			WHERE
-				U.NOME LIKE(@NOMECHECK) -- variavel input externa
-			ORDER BY
-				ID_USUARIO DESC;
-			SELECT TOP 3
-				*
-			FROM
-				USUARIO U (NOLOCK)
-			WHERE
-				U.NOME LIKE(@NOMECHECK) -- variavel input externa
-			ORDER BY
-				ID_USUARIO DESC;
-		`
-	}
-},
-query2 = {
-	formato: 2,
-	dados: {
-		input: [
-			['ID_USUARIO', 'int', 1],
-			['NOME', 'varchar(200)', 'joa']
-		],
-		output: [
-			['QTD_RET', 'int']
-		],
-		executar: 'USUARIO_CONSULTAR'
-	}
-};
+
+let query = {
+		formato: 1,
+		dados: {
+			input: [
+				['NOME', 'varchar(200)', 'Joaquim Santos'],
+				['SENHA', 'varchar(20)', 'SENH@TESTE123'],
+				['ATIVO', 'bit', 1],
+				['NOMECHECK', '%Joa%']
+			],
+			output: [
+				['INSERTED_ID', 'int']
+			],
+			executar: `
+				SET NOCOUNT OFF;
+				DECLARE
+					@INCR int; -- variavel interna
+				SET
+					@INCR = (
+						SELECT TOP 1
+							ID_USUARIO
+						FROM
+							USUARIO U (NOLOCK)
+						WHERE
+							U.NOME LIKE(@NOMECHECK) -- variavel input externa
+						ORDER BY
+							ID_USUARIO DESC
+				);
+				INSERT INTO USUARIO (
+					NOME
+					,SENHA
+					,ATIVO
+				) VALUES (
+					@NOME + ' ' + CAST(@INCR AS varchar) -- variavel input externa + interna
+					,@SENHA -- variavel input externa
+					,@ATIVO -- variavel input externa
+				);
+				SET
+					@INSERTED_ID = SCOPE_IDENTITY(); -- variavel output
+				SELECT TOP 2
+					NOME
+				FROM
+					USUARIO U (NOLOCK)
+				WHERE
+					U.NOME LIKE(@NOMECHECK) -- variavel input externa
+				ORDER BY
+					ID_USUARIO DESC;
+				SELECT TOP 3
+					*
+				FROM
+					USUARIO U (NOLOCK)
+				WHERE
+					U.NOME LIKE(@NOMECHECK) -- variavel input externa
+				ORDER BY
+					ID_USUARIO DESC;
+			`
+		}
+	},
+	anotherQuery = {
+		formato: 2,
+		dados: {
+			input: [
+				['ID_USUARIO', 'int', 1],
+				['NOME', 'varchar(200)', 'joa']
+			],
+			output: [
+				['QTD_RET', 'int']
+			],
+			executar: 'USUARIO_CONSULTAR'
+		}
+	};
 ---------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------
 // Chamadas nos métodos (exemplos)
 
+
 // Execute (promise + async await)
+const dbCon = require('@serverRoot/helpers/db');
+
 dbCon.sqlOpenCon()
 .then(
 	async transaction => {
 		try {
-			let result1 = await dbCon.sqlExecute(transaction, query1); // Executa query ou queries
+			let resultSet = await dbCon.sqlExecute(transaction, query); // Executa query ou queries
 			await dbCon.sqlCloseCon(transaction);
 
-			resolve(result1);
+			resolve(resultSet);
 		} catch(err) {
 			reject(err);
 		}
@@ -142,23 +148,27 @@ dbCon.sqlOpenCon()
 
 
 // Execute (async await)
+const dbCon = require('@serverRoot/helpers/db');
+
 try {
 	let transaction = await dbCon.sqlOpenCon(),
-		result1 = await dbCon.sqlExecute(transaction, query1); // Executa query ou queries
+		resultSet = await dbCon.sqlExecute(transaction, query); // Executa query ou queries
 	await dbCon.sqlCloseCon(transaction);
 
-	return result1;
+	return resultSet;
 } catch(err) {
 	throw new Error(err);
 }
 
 
 // ou com o método agrupador ExecuteAll (async await)
+const dbCon = require('@serverRoot/helpers/db');
+
 try {
 	// Executa query ou queries
-	let result1 = await dbCon.sqlExecuteAll(query1);
+	let resultSet = await dbCon.sqlExecuteAll(query);
 
-	return result1;
+	return resultSet;
 } catch(err) {
 	throw new Error(err);
 }
@@ -166,15 +176,16 @@ try {
 
 ---------------------------------------------------------------------------------------------------------
 // Chamada com paginação
+const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
 	// Executa query ou queries
-	let result1 = await dbCon.sqlExecuteAll(query1);
+	let resultSet = await dbCon.sqlExecuteAll(query);
 	// Paginador (page)
-	result1.recordsets[0] = await paginator.setPage(req, result1.recordsets[0], result1.rowsAffected[0]);
+	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
 
-	return result1;
+	return resultSet;
 } catch(err) {
 	throw new Error(err);
 }
@@ -182,17 +193,18 @@ try {
 
 ---------------------------------------------------------------------------------------------------------
 // Chamada com paginação e ordenação
+const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
 	// Executa query ou queries
-	let result1 = await dbCon.sqlExecuteAll(query1);
+	let resultSet = await dbCon.sqlExecuteAll(query);
 	// Ordenador (sort)
-	result1.recordsets[0] = await paginator.setSort(req, result1.recordsets[0]);
+	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0]);
 	// Paginador (page)
-	result1.recordsets[0] = await paginator.setPage(req, result1.recordsets[0], result1.rowsAffected[0]);
+	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
 
-	return result1;
+	return resultSet;
 } catch(err) {
 	throw new Error(err);
 }
@@ -202,19 +214,20 @@ try {
 
 ---------------------------------------------------------------------------------------------------------
 // Chamada com paginação, ordenação e conversão para camelcase do json do banco de dados
+const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
 	// Executa query ou queries
-	let result1 = await dbCon.sqlExecuteAll(query1);
+	let resultSet = await dbCon.sqlExecuteAll(query);
 	// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
-	result1.recordsets[0] = await paginator.keysToCamelCase(result1.recordsets[0]);
+	resultSet.recordsets[0] = await paginator.keysToCamelCase(resultSet.recordsets[0]);
 	// Ordenador (sort)
-	result1.recordsets[0] = await paginator.setSort(req, result1.recordsets[0]);
+	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0]);
 	// Paginador (page)
-	result1.recordsets[0] = await paginator.setPage(req, result1.recordsets[0], result1.rowsAffected[0]);
+	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
 
-	return result1;
+	return resultSet;
 } catch(err) {
 	throw new Error(err);
 }
@@ -227,10 +240,8 @@ try {
 const searcher = require('@serverRoot/helpers/searcher');
 
 try {
-	// Searcher: searchFields deve ser uma array (nomes ambiguos no search geram erro)
-	let result1 = await searcher.setSearch(
-			req,
-			`
+	let replaceQuery = '{{REPLACE}}',
+		baseQuery = `
 			select top 10
 				*
 			from
@@ -239,12 +250,17 @@ try {
 					on (a.id_tipo = b.id_tipo)
 			where
 				a.nome like('%joa%')
-				{{REPLACE}}
-			`,
-			'{{REPLACE}}'
+				${replaceQuery}
+		`;
+
+	// Searcher: searchFields deve ser uma array (nomes ambiguos no search geram erro)
+	let resultSet = await searcher.setSearch(
+			req,
+			baseQuery,
+			replaceQuery
 		);
 
-	return result1;
+	return resultSet;
 } catch(err) {
 	throw new Error(err);
 }

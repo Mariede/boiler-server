@@ -11,7 +11,7 @@ const searcher = require('@serverRoot/helpers/searcher');
 // Acoes
 const consultarTodos = async (req, res) => {
 	try {
-		let query1 = {
+		let query = {
 				formato: 1,
 				dados: {
 					input: [
@@ -22,32 +22,22 @@ const consultarTodos = async (req, res) => {
 			};
 
 		// // Searcher: searchFields deve ser uma array (nomes ambiguos no search geram erro)
-		// let result1 = await searcher.setSearch(
+		// let resultSet = await searcher.setSearch(
 		// 		req,
-		// 		`
-		// 		select top 10
-		// 			*
-		// 		from
-		// 			usuario a (nolock)
-		// 			inner join tipo b (nolock)
-		// 				on (a.id_tipo = b.id_tipo)
-		// 		where
-		// 			a.nome like('%joa%')
-		// 			{{REPLACE}}
-		// 		`,
-		// 		'{{REPLACE}}'
+		// 		baseQuery,
+		// 		replaceQuery
 		// 	);
 
 		// Executa query ou queries
-		let result1 = await dbCon.sqlExecuteAll(query1);
+		let resultSet = await dbCon.sqlExecuteAll(query);
 		// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
-		result1.recordsets[0] = await paginator.keysToCamelCase(result1.recordsets[0]);
+		resultSet.recordsets[0] = await paginator.keysToCamelCase(resultSet.recordsets[0]);
 		// Ordenador (sort)
-		result1.recordsets[0] = await paginator.setSort(req, result1.recordsets[0]);
+		resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0]);
 		// Paginador (page)
-		result1.recordsets[0] = await paginator.setPage(req, result1.recordsets[0], result1.rowsAffected[0]);
+		resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
 
-		return result1;
+		return resultSet;
 	} catch(err) {
 		throw new Error(err);
 	}
