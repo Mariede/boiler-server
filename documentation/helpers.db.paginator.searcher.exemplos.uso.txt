@@ -1,11 +1,13 @@
+/*
 LIB db.js + paginator.js + searcher.js
 --------------------------------------
 
 Conexão e execução de queries no MS SQL Server através do pacote NODE mssql
 
 => exemplos de parâmetros JSON de entrada para queries:
+*/
 
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 // Estrutura básica queries (parâmetros de entrada)
 
 
@@ -41,10 +43,10 @@ query = {
 	}
 }
 
-** input pode utilizar também um formato de chamada com apenas dois parâmetros de entrada, omitindo o tipo de dado **
----------------------------------------------------------------------------------------------------------
+/* * input pode utilizar também um formato de chamada com apenas dois parâmetros de entrada, omitindo o tipo de dado * */
+// ---------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 // Parâmetros de entrada (exemplos)
 
 
@@ -74,7 +76,7 @@ let query = {
 							U.NOME LIKE(@NOMECHECK) -- variavel input externa
 						ORDER BY
 							ID_USUARIO DESC
-				);
+					);
 				INSERT INTO USUARIO (
 					NOME
 					,SENHA
@@ -105,7 +107,7 @@ let query = {
 			`
 		}
 	},
-	anotherQuery = {
+	otherQuery = {
 		formato: 2,
 		dados: {
 			input: [
@@ -117,10 +119,19 @@ let query = {
 			],
 			executar: 'USUARIO_CONSULTAR'
 		}
+	},
+	anotherQuery = {
+		formato: 1,
+		dados: {
+			input: [
+				['NOME', '%joa%']
+			],
+			executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+		}
 	};
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 // Chamadas nos métodos (exemplos)
 
 
@@ -131,6 +142,16 @@ dbCon.sqlOpenCon()
 .then(
 	async transaction => {
 		try {
+			let query = {
+					formato: 1,
+					dados: {
+						input: [
+							['NOME', '%joa%']
+						],
+						executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+					}
+				};
+
 			let resultSet = await dbCon.sqlExecute(transaction, query); // Executa query ou queries
 			await dbCon.sqlCloseCon(transaction);
 
@@ -151,6 +172,16 @@ dbCon.sqlOpenCon()
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
+	let query = {
+			formato: 1,
+			dados: {
+				input: [
+					['NOME', '%joa%']
+				],
+				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			}
+		};
+
 	let transaction = await dbCon.sqlOpenCon(),
 		resultSet = await dbCon.sqlExecute(transaction, query); // Executa query ou queries
 	await dbCon.sqlCloseCon(transaction);
@@ -165,6 +196,16 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
+	let query = {
+			formato: 1,
+			dados: {
+				input: [
+					['NOME', '%joa%']
+				],
+				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			}
+		};
+
 	// Executa query ou queries
 	let resultSet = await dbCon.sqlExecuteAll(query);
 
@@ -172,14 +213,24 @@ try {
 } catch(err) {
 	throw new Error(err);
 }
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 // Chamada com paginação
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
+	let query = {
+			formato: 1,
+			dados: {
+				input: [
+					['NOME', '%joa%']
+				],
+				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			}
+		};
+
 	// Executa query ou queries
 	let resultSet = await dbCon.sqlExecuteAll(query);
 	// Paginador (page)
@@ -189,14 +240,24 @@ try {
 } catch(err) {
 	throw new Error(err);
 }
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 // Chamada com paginação e ordenação
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
+	let query = {
+			formato: 1,
+			dados: {
+				input: [
+					['NOME', '%joa%']
+				],
+				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			}
+		};
+
 	// Executa query ou queries
 	let resultSet = await dbCon.sqlExecuteAll(query);
 	// Ordenador (sort)
@@ -209,15 +270,25 @@ try {
 	throw new Error(err);
 }
 
-** neste caso, utilizar nome exato (case sensitive) em setSort para identificar as chaves de sort no banco de dados **
----------------------------------------------------------------------------------------------------------
+/* * neste caso, utilizar nome exato (case sensitive) em setSort para identificar as chaves de sort no banco de dados * */
+// ---------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 // Chamada com paginação, ordenação e conversão para camelcase do json do banco de dados
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
+	let query = {
+			formato: 1,
+			dados: {
+				input: [
+					['NOME', '%joa%']
+				],
+				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			}
+		};
+
 	// Executa query ou queries
 	let resultSet = await dbCon.sqlExecuteAll(query);
 	// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
@@ -232,10 +303,10 @@ try {
 	throw new Error(err);
 }
 
-** se keysToCamelCase for chamado antes de setSort, utilizar camelcase para identificar as chaves de sort no banco de dados **
----------------------------------------------------------------------------------------------------------
+/* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase para identificar as chaves de sort no banco de dados * */
+// ---------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
 // Chamada com searcher
 const searcher = require('@serverRoot/helpers/searcher');
 
@@ -264,4 +335,43 @@ try {
 } catch(err) {
 	throw new Error(err);
 }
----------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------------------------------------
+// Chamada com searcher, paginação, ordenação e conversão para camelcase do json do banco de dados
+const searcher = require('@serverRoot/helpers/searcher');
+const paginator = require('@serverRoot/helpers/paginator');
+
+try {
+	let replaceQuery = '{{REPLACE}}',
+		baseQuery = `
+			select top 10
+				*
+			from
+				usuario a (nolock)
+				inner join tipo b (nolock)
+					on (a.id_tipo = b.id_tipo)
+			where
+				a.nome like('%joa%')
+				${replaceQuery}
+		`;
+
+	// Searcher: searchFields deve ser uma array (nomes ambiguos no search geram erro)
+	let resultSet = await searcher.setSearch(
+			req,
+			baseQuery,
+			replaceQuery
+		);
+
+	// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
+	resultSet.recordsets[0] = await paginator.keysToCamelCase(resultSet.recordsets[0]);
+	// Ordenador (sort)
+	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0]);
+	// Paginador (page)
+	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
+
+	return resultSet;
+} catch(err) {
+	throw new Error(err);
+}
+// ---------------------------------------------------------------------------------------------------------

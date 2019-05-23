@@ -245,6 +245,15 @@ const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 	}
 };
 
+// Verifica se numero valido (int ou float) estilo jquery
+const isNumber = num => {
+	try {
+		return !isNaN(parseFloat(num)) && isFinite(num);
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
 // Verifica se valor e numerico inteiro
 const isInteger = (num, signed = true) => {
 	try {
@@ -387,6 +396,7 @@ module.exports = {
 	isCep,
 	isEmpty,
 	isAlphaNumeric,
+	isNumber,
 	isInteger,
 	isIntegerOrFloat,
 	isIntegerOrFixed,

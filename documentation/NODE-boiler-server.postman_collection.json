@@ -94,6 +94,49 @@
 			"response": []
 		},
 		{
+			"name": "{{serverhost}}/usuario (Searcher + Paginator + Sorter)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serverhost}}/usuario?fullsearch_fields=SORTER2%2CSORTER1%2CNOME%2CTIPO&fullsearch_value=epsi&page=1&items_per_page=6&sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"usuario"
+					],
+					"query": [
+						{
+							"key": "fullsearch_fields",
+							"value": "SORTER2%2CSORTER1%2CNOME%2CTIPO"
+						},
+						{
+							"key": "fullsearch_value",
+							"value": "epsi"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "items_per_page",
+							"value": "6"
+						},
+						{
+							"key": "sort_fields",
+							"value": "sorter2:DESC,sorter1:ASC"
+						},
+						{
+							"key": "sort_case_insensitive",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "{{serverhost}}/usuario (Searcher)",
 			"request": {
 				"method": "GET",
@@ -114,6 +157,41 @@
 						{
 							"key": "fullsearch_value",
 							"value": "epsi"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/usuario (Paginator + Sorter)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serverhost}}/usuario?page=2&items_per_page=6&sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"usuario"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "items_per_page",
+							"value": "6"
+						},
+						{
+							"key": "sort_fields",
+							"value": "sorter2:DESC,sorter1:ASC"
+						},
+						{
+							"key": "sort_case_insensitive",
+							"value": "true"
 						}
 					]
 				}
@@ -168,41 +246,6 @@
 						{
 							"key": "items_per_page",
 							"value": "6"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "{{serverhost}}/usuario (Paginator + Sorter)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{serverhost}}/usuario?page=2&items_per_page=6&sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
-					"host": [
-						"{{serverhost}}"
-					],
-					"path": [
-						"usuario"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "2"
-						},
-						{
-							"key": "items_per_page",
-							"value": "6"
-						},
-						{
-							"key": "sort_fields",
-							"value": "sorter2:DESC,sorter1:ASC"
-						},
-						{
-							"key": "sort_case_insensitive",
-							"value": "true"
 						}
 					]
 				}

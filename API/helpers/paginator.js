@@ -118,27 +118,23 @@ const setSort = async (req, jsonData) => {
 // page na querystring e obrigatorio para a paginacao
 const setPage = async (req, jsonData, jsonDataLen) => {
 	try {
-		const isNumber = num => {
-			return !isNaN(num) && !isNaN(parseFloat(num));
-		};
-
 		let method = req.method,
 			currentPage = 0,
 			itemsPerPage = 10;
 
 		if (method === 'GET') {
-			if (req.query.page && isNumber(req.query.page)) {
+			if (/^(\d)+$/.test(req.query.page)) {
 				currentPage = parseInt(req.query.page, 10);
 			}
 
-			if (req.query.items_per_page && isNumber(req.query.items_per_page)) {
+			if (/^(\d)+$/.test(req.query.items_per_page)) {
 				itemsPerPage = parseInt(req.query.items_per_page, 10);
 			}
 		} else {
 			throw new Error('Paginação (Paginator): Favor utilizar verbo GET para realizar a consulta...');
 		}
 
-		if (currentPage > 0) {
+		if (currentPage) {
 			return await _executePage(jsonData, jsonDataLen, currentPage, itemsPerPage);
 		} else {
 			return jsonData;
