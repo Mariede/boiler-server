@@ -27,8 +27,8 @@
 			"/login",
 			"/islogged"
 		],
-		"comments - authTipo": "2: toda rota livre, exceto except / Default: toda rota protegida, exceto except",
-		"comments - except": "Except aceita rota parcial ou exata * utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2 *"
+		"_comments1": "authTipo => 2: toda rota livre, exceto except / Default: toda rota protegida, exceto except",
+		"_comments2": "except => Except aceita rota parcial ou exata; utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2"
 	},
 	"crypto": {
 		"hashAlgorithm": "sha512",
@@ -54,6 +54,21 @@
 				"idleTimeoutMillis": 30000
 			}
 		},
-		"comments - conexaoTipo": "2: sem pool / Default: com pool"
+		"_comments1": "conexaoTipo => 2: sem pool / Default: com pool"
+	},
+	"email": {
+		"transporter": {
+			"pool": false,
+			"host": "smtp.example.com",
+			"port": 587,
+			"secure": false,
+			"auth": {
+				"type": "login",
+				"user": "user",
+				"pass": "pass",
+				"authMethod": "PLAIN"
+			}
+		},
+		"_comments1": "secure: true => port 465 / secure: false => port 587 or 25"
 	}
 }
