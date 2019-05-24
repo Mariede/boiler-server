@@ -89,7 +89,7 @@ const setSort = async (req, jsonData) => {
 			sortOrder = [],
 			sortCaseInsensitive = false;
 
-		if (method === 'GET') {
+		if (method.toUpperCase() === 'GET') {
 			if (req.query.sort_fields) {
 				req.query.sort_fields.split(/[, |]/).forEach(
 					e => {
@@ -122,7 +122,7 @@ const setPage = async (req, jsonData, jsonDataLen) => {
 			currentPage = 0,
 			itemsPerPage = 10;
 
-		if (method === 'GET') {
+		if (method.toUpperCase() === 'GET') {
 			if (/^(\d)+$/.test(req.query.page)) {
 				currentPage = parseInt(req.query.page, 10);
 			}

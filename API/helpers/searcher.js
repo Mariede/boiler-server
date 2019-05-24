@@ -77,7 +77,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 			searchFields = [],
 			searchValue = '';
 
-		if (method === 'GET') {
+		if (method.toUpperCase() === 'GET') {
 			if (req.query.fullsearch_fields) {
 				req.query.fullsearch_fields.split(/[, |]/).forEach(
 					e => {

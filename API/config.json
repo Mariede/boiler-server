@@ -12,7 +12,9 @@
 			"optionsSuccessStatus": 204
 		},
 		"fileUpload": {
-			"path": "/uploads"
+			"path": "/uploads",
+			"allowedExtensions": "jpeg|jpg|gif|pdf|txt|doc|docx",
+			"maxFileSize": 5242880
 		},
 		"session": {
 			"secret": ["SegredoIDCookies123", "Reforco1", "Reforco2"],

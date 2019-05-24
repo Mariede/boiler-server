@@ -25,11 +25,11 @@ router.use(async (req, res, next) => {
 					req.connection.remoteAddress ||
 					req.socket.remoteAddress ||
 					(req.connection.socket ? req.connection.socket.remoteAddress : null),
-			metodo = req.method,
+			method = req.method,
 			isProtected = await auth.isProtected(rota),
 			segueFluxo = false;
 
-		log.logger('info', `${isProtected ? '* PROTEGIDA * ' : ''}Rota ${rota} (${metodo}) requisitada por ${ip}`, 'consoleOnly');
+		log.logger('info', `${isProtected ? '* PROTEGIDA * ' : ''}Rota ${rota} (${method.toUpperCase()}) requisitada por ${ip}`, 'consoleOnly');
 
 		if (!isProtected) {
 			segueFluxo = true;
