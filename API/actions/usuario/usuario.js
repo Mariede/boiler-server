@@ -33,10 +33,14 @@ const inserir = async (req, res) => {
 			id = req.params.id;
 
 
-
 const uploader = require('@serverRoot/helpers/uploader');
-return await uploader.execute(req, res, [['arquivoDeSubida', 2]]);
+let result = {};
 
+// Sempre array para passa nome do campo
+// true para diskStorage | false para memoryStorage (default: true)
+// se memoryStorage selecionado, utilizar buffer.toString('utf8') para converter valor da memoria
+result = await uploader.execute(req, res, [{ name: 'arquivoDeSubida' }, { name: 'arquivoDeSubida1' }], true);
+return result;
 
 
 // **** testes email
