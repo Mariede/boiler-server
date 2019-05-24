@@ -11,6 +11,9 @@
 			"preflightContinue": false,
 			"optionsSuccessStatus": 204
 		},
+		"fileUpload": {
+			"path": "/uploads"
+		},
 		"session": {
 			"secret": ["SegredoIDCookies123", "Reforco1", "Reforco2"],
 			"secretStore": "SegredoArquivos123",

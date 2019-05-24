@@ -32,6 +32,30 @@ const inserir = async (req, res) => {
 		let fRet = 'insere usuario',
 			id = req.params.id;
 
+
+
+const uploader = require('@serverRoot/helpers/uploader');
+return await uploader.execute(req, res, [['arquivoDeSubida', 2]]);
+
+
+
+// **** testes email
+
+// const email = require('@serverRoot/helpers/email');
+// let info = await email.sendEmail(
+// 		'miriede@hotmail.com',
+// 		'miriede@gmail.com',
+// 		'teste de envio - subject',
+// 		'teste de envio - body',
+// 		'[{ }]'
+// 	);
+// console.log(info);
+// **** testes email
+
+
+
+
+
 		return `${fRet} ${id}`;
 	} catch(err) {
 		throw new Error(err);
