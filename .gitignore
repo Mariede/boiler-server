@@ -13,4 +13,5 @@ build
 
 API/logs
 API/sessions
+API/uploads
 node_modules
