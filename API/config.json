@@ -13,7 +13,7 @@
 		},
 		"fileUpload": {
 			"path": "/uploads",
-			"allowedExtensions": "jpeg|jpg|gif|pdf|txt|doc|docx",
+			"allowedExtensions": ".gif:image/gif | .jpeg:image/jpeg | .jpg:image/jpeg | .png:image/png | .pdf:application/pdf | .txt:text/plain | .doc:application/msword | .docx:application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 			"maxFileSize": 5242880
 		},
 		"session": {
