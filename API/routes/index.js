@@ -42,7 +42,7 @@ router.use(async (req, res, next) => {
 		if (segueFluxo) {
 			next();
 		} else {
-			res.status(401).json('Rota protegida, acesso não autorizado');
+			res.status(401).send('Rota protegida, acesso não autorizado');
 		}
 	} catch(err) {
 		log.controllerErro(res, err, 'error');

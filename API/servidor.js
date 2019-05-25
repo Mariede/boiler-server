@@ -145,13 +145,13 @@ app.use(
 );
 
 app.all('*', (req, res) => {
-	res.status(404).json('Essa rota não existe');
+	res.status(404).send('Essa rota não existe');
 });
 
 // Handler erros sincronos -------------------------------
 app.use((err, req, res, next) => {
 	log.logger('error', err.stack || err);
-	res.status(500).json('Erro no servidor');
+	res.status(500).send('Erro no servidor');
 });
 // -------------------------------------------------------------------------
 

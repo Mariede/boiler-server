@@ -60,7 +60,7 @@ const rotasHome = router => {
 	.post(async (req, res) => {
 		try {
 			let result = await home.login(req, res);
-			res.status(200).json(result);
+			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}
@@ -75,7 +75,7 @@ const rotasHome = router => {
 			await _gateLocal(req, res);
 
 			let result = await home.logout(req, res);
-			res.status(200).json(result);
+			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}
@@ -96,7 +96,7 @@ const rotasHome = router => {
 	.get(async (req, res) => {
 		try {
 			let result = await home.isLogged(req, res);
-			res.status(200).json(result);
+			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}

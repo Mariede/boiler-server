@@ -56,7 +56,7 @@ const logger = (escopo, mensagem, incorporador = '') => {
 // Retorna erro ao usuario via controller
 const controllerErro = (res, err, escopo, incorporador = '') => {
 	logger(escopo, err.stack || err, incorporador);
-	res.status(500).json(err.stack || err);
+	res.status(500).send(err.stack || err);
 };
 // -------------------------------------------------------------------------
 

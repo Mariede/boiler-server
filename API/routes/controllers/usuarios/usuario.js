@@ -39,7 +39,7 @@ const rotasUsuario = router => {
 	.get(async (req, res) => {
 		try {
 			let result = await usuario.consultarTodos(req, res);
-			res.status(200).json(result);
+			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}
@@ -60,7 +60,7 @@ const rotasUsuario = router => {
 	.get(async (req, res) => {
 		try {
 			let result = await usuario.consultar(req, res);
-			res.status(200).json(result);
+			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}
@@ -68,7 +68,7 @@ const rotasUsuario = router => {
 	.post(async (req, res) => {
 		try {
 			let result = await usuario.inserir(req, res);
-			res.status(200).json(result);
+			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}
@@ -76,7 +76,7 @@ const rotasUsuario = router => {
 	.put(async (req, res) => {
 		try {
 			let result = await usuario.alterar(req, res);
-			res.status(200).json(result);
+			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}
@@ -84,7 +84,7 @@ const rotasUsuario = router => {
 	.delete(async (req, res) => {
 		try {
 			let result = await usuario.excluir(req, res);
-			res.status(200).json(result);
+			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}
