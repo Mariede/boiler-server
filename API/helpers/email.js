@@ -9,8 +9,26 @@ const validator = require('@serverRoot/helpers/validator');
 
 // -------------------------------------------------------------------------
 // Dados validados, envia e-mails pelo servidor (metodo privado)
-const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendChuncks) => {
+const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendChunks) => {
 	try {
+		const setChunks = (key, d) => {
+			const setMessages = value => {
+				let msg = JSON.parse(JSON.stringify(message));
+				msg[key] = value;
+				messages.push(msg);
+			};
+
+			if (sendChunks[key]) {
+				for (let i = 0; i < d.length; i++) {
+					if (i % sendChunks[key] === 0) {
+						setMessages(d.slice(i, i + sendChunks[key]));
+					}
+				}
+			} else {
+				setMessages(d);
+			}
+		};
+
 		const asyncForEach = async (a, callback) => {
 			for (let i = 0; i < a.length; i++) {
 				await callback(a[i], i, a);
@@ -23,7 +41,8 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 			await asyncForEach(
 				m,
 				async e => {
-					infos.push(await t.sendMail(e));
+					// infos.push(await t.sendMail(e)); // envia chunk de e-mails
+					infos.push(e);
 				}
 			);
 
@@ -49,21 +68,17 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 			message.attachments = attachments;
 		}
 
-		// codigo para envio por chunks aqui (preenche messages por chunks de destinatarios)
 		if (to.length !== 0) {
-			message.to = to;
+			setChunks('to', to);
 		}
 
 		if (cc.length !== 0) {
-			message.cc = cc;
+			setChunks('cc', cc);
 		}
 
 		if (bcc.length !== 0) {
-			message.bcc = bcc;
+			setChunks('bcc', bcc);
 		}
-
-		messages.push(message);
-		// codigo para envio por chunks aqui (preenche messages por chunks de destinatarios)
 
 		return await sendAndReturn(messages, transporter);
 	} catch(err) {
@@ -80,10 +95,10 @@ bcc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['m
 subject: string: opcional
 text: string: texto em html ou simples
 Attachments: Array [[arttach1], [attach2], [attach3], ... ] - opcional
-sendChuncks: Define se os e-mails serao enviados em chuncks, vazio para tudo de uma vez. ex.: sendChuncks => { to: 5, cc: 10 } ou { bcc: 15 }
+sendChunks: Define se os e-mails serao enviados em chunks, objeto vazio para tudo de uma vez. ex.: { to: 5, cc: 5, bcc: 15 }
 strictCheck: se true realiza uma validacao rigorosa dos e-mails de destino, obrigando todos os e-mails informados a serem validos e unicos
 */
-const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChuncks = {}, strictCheck = true) => {
+const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChunks = {}, strictCheck = true) => {
 	try {
 		const preencheDestinos = (a, b, i, e) => {
 			if (!validator.isEmpty(a)) {
@@ -202,8 +217,28 @@ pendente attachments / exibir nomes ao inves do e-mail / chunks de e-mails
 		// }
 
 
+		if (typeof sendChunks === 'object') {
+			if (Object.entries(sendChunks).length !== 0) {
+				if (!sendChunks.to && !sendChunks.cc && !sendChunks.bcc) {
+					errorStack.push('sendChunks deve conter pelo menos uma dessas chaves: to, cc ou bcc...');
+				} else {
+					if (sendChunks.to && (isNaN(parseFloat(sendChunks.to)) || !Number.isInteger(sendChunks.to))) {
+						errorStack.push('sendChunks: Propriedade to de deve ser um número inteiro...');
+					}
+					if (sendChunks.cc && (isNaN(parseFloat(sendChunks.cc)) || !Number.isInteger(sendChunks.cc))) {
+						errorStack.push('sendChunks: Propriedade cc deve ser um número inteiro...');
+					}
+					if (sendChunks.bcc && (isNaN(parseFloat(sendChunks.bcc)) || !Number.isInteger(sendChunks.bcc))) {
+						errorStack.push('sendChunks: Propriedade bcc deve ser um número inteiro...');
+					}
+				}
+			}
+		} else {
+			errorStack.push('sendChunks deve ser um objeto...');
+		}
+
 		if (errorStack.length === 0) {
-			return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChuncks);
+			return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChunks);
 		} else {
 			return errorStack;
 		}
