@@ -34,26 +34,29 @@ const inserir = async (req, res) => {
 
 
 
-const uploader = require('@serverRoot/helpers/uploader');
-let result = {};
+// const uploader = require('@serverRoot/helpers/uploader');
+// let result = {};
 
-// se memoryStorage selecionado, utilizar buffer.toString('utf8') para converter valor da memoria
-result = await uploader.push(req, res, [{ name: 'arquivoDeSubida' }, { name: 'arquivoDeSubida1' }], 'extra\\zzz/next/|u&;$%@"<>()+,o-i');
-return result;
+// // se memoryStorage selecionado, utilizar buffer.toString('utf8') para converter valor da memoria
+// result = await uploader.push(req, res, [{ name: 'arquivoDeSubida' }, { name: 'arquivoDeSubida1' }], 'extra\\zzz/next/|u&;$%@"<>()+,o-i');
+// return result;
 
 
 
 // **** testes email
 
-// const email = require('@serverRoot/helpers/email');
-// let info = await email.sendEmail(
-// 		'miriede@hotmail.com',
-// 		'miriede@gmail.com',
-// 		'teste de envio - subject',
-// 		'teste de envio - body',
-// 		'[{ }]'
-// 	);
-// console.log(info);
+const email = require('@serverRoot/helpers/email');
+return await email.sendEmail(
+		['testefrom@hotmail.com', 'From'],
+		[['testeto1@gmail.com', 'To 1'], ['testeto2@gmail.com']],
+		[['testecc1@hotmail.com', 'Cc 1'], ['testecc2@gmail.com', 'Cc 2'], ['testecc3@hotmail.com', 'Cc 3']],
+		[['testebcc1@hotmail.com', 'Bcc 1'], ['testebcc2@hotmail.com', 'Bcc 2'], ['testebcc3@hotmail.com', 'Bcc 3'], ['testebcc4@gmail.com', 'Bcc 4'], ['testebcc5@outlook.com', 'Bcc 5']],
+		'teste de envio - subject',
+		`<br>teste<br><br>de envio - <a href="dddd">body</a> aqui jaz!!
+		<p>ahuhauahuahua</p> gggg`,
+		[]
+	);
+
 // **** testes email
 
 

@@ -20,8 +20,8 @@ const _falsyCheck = param => {
 // Verifica se CNPJ e valido
 const isCnpj = cnpj => {
 	try {
-		let peso1 = [5,4,3,2,9,8,7,6,5,4,3,2],
-			peso2 = [6,5,4,3,2,9,8,7,6,5,4,3,2],
+		let peso1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
+			peso2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
 			resto = -1,
 			soma = 0,
 			vRet = false;
@@ -138,7 +138,7 @@ const isCpf = cpf => {
 // Verifica se PIS/PASEP e valido
 const isPisPasep = pisPasep => {
 	try {
-		let peso = [3,2,9,8,7,6,5,4,3,2],
+		let peso = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
 			resto = -1,
 			soma = 0,
 			vRet = false;
