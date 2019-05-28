@@ -54,7 +54,7 @@ return await email.sendEmail(
 			['testeto6@gmail.com'],
 			['testeto7@gmail.com'],
 			['testeto8@gmail.com'],
-			['testeto9@gmail.com', 'To 9'],
+			['testeto9@gmail.com', 'To 9']
 		],
 		[
 			['testecc1@hotmail.com', 'Cc 1'],
@@ -67,12 +67,13 @@ return await email.sendEmail(
 			['testebcc3@hotmail.com', 'Bcc 3'],
 			['testebcc4@hotmail.com', 'Bcc 4'],
 			['testebcc5@hotmail.com', 'Bcc 5'],
-			['testebcc6@hotmail.com'],
+			['testebcc6@hotmail.com']
 		],
 		'teste de envio - subject',
 		`<br>teste<br><br>de envio - <a href="dddd">body</a> aqui jaz!!
 		<p>ahuhauahuahua</p> gggg`,
-		attachments
+		attachments,
+		{ cc: 2, inheritTo: true }
 	);
 // **** testes email
 
