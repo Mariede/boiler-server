@@ -11,22 +11,30 @@ const validator = require('@serverRoot/helpers/validator');
 // Dados validados, envia e-mails pelo servidor (metodo privado)
 const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendChunks) => {
 	try {
-		const setChunks = (key, d) => {
+		const setChunks = (key, d, lastCall) => {
 			const setMessages = value => {
 				let msg = JSON.parse(JSON.stringify(message));
 				msg[key] = value;
 				messages.push(msg);
 			};
 
-			if (sendChunks[key]) {
-				for (let i = 0; i < d.length; i++) {
-					if (i % sendChunks[key] === 0) {
-						setMessages(d.slice(i, i + sendChunks[key]));
+			if (Object.entries(sendChunks).length !== 0) {
+				if (sendChunks[key]) {
+					for (let i = 0; i < d.length; i++) {
+						if (i % sendChunks[key] === 0) {
+							setMessages(d.slice(i, i + sendChunks[key]));
+						}
+					}
+				} else {
+					if (key === 'to' && sendChunks.inheritTo) {
+						message.to = d;
+					} else {
+						setMessages(d);
 					}
 				}
 			} else {
-				if (key === 'to' && sendChunks.inheritTo) {
-					message.to = d;
+				if (!lastCall) {
+					message[key] = d;
 				} else {
 					setMessages(d);
 				}
@@ -73,15 +81,15 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 		}
 
 		if (to.length !== 0) {
-			setChunks('to', to);
+			setChunks('to', to, (to.length && !cc.length && !bcc.length));
 		}
 
 		if (cc.length !== 0) {
-			setChunks('cc', cc);
+			setChunks('cc', cc, (cc.length && !bcc.length));
 		}
 
 		if (bcc.length !== 0) {
-			setChunks('bcc', bcc);
+			setChunks('bcc', bcc, true);
 		}
 
 		return await sendAndReturn(messages, transporter);
@@ -96,9 +104,9 @@ from: Array com unico recipiente, ex.: ['mail@sender', 'name sender'] ou ['mail@
 to: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@to1', 'name to1'], ['mail@to2', 'name to2'], ['mail@to3'], ... ]
 cc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@cc1', 'name cc1'], ['mail@cc2', 'namecc2'], ['mail@cc3'], ... ]
 bcc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@bcc1', 'name bcc1'], ['mail@bcc2', 'name bcc2'], ['mail@bcc3'], ... ]
-subject: string: opcional
+subject: string - opcional
 text: string: texto em html ou simples
-Attachments: Array [[arttach1], [attach2], [attach3], ... ] - opcional
+Attachments: Array [{ filename: , content: }, { filename: , path: }, { path: }, ... ] - opcional
 sendChunks: Define se os e-mails serao enviados em chunks, objeto vazio para tudo de uma vez. ex.: { to: 5, cc: 5, bcc: 15 }
 	- se "to" definido: Quantidade de e-mails de destino (to) agrupados para cada envio (apenas to)
 	- se "cc" definido: Quantidade de e-mails de destino (cc) agrupados para cada envio (apenas cc)
@@ -218,14 +226,33 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			}
 		}
 
+		if (Array.isArray(attachments) && attachments.length > 0) {
+			for (let i = 0; i < attachments.length; i++) {
+				if (typeof attachments[i] === 'object' && attachments[i] !== null) {
+					if (Object.entries(attachments[i]).length === 2 && attachments[i].hasOwnProperty('filename') && attachments[i].hasOwnProperty('content')) {
+						if (Buffer.isBuffer(attachments[i].content)) {
+							attachmentsChecked.push(attachments[i]);
+						}
+					} else {
+						if (Object.entries(attachments[i]).length === 2 && attachments[i].hasOwnProperty('filename') && attachments[i].hasOwnProperty('path')) {
+							attachmentsChecked.push(attachments[i]);
+						} else {
+							if (Object.entries(attachments[i]).length === 1 && attachments[i].hasOwnProperty('path')) {
+								attachmentsChecked.push(attachments[i]);
+							} else {
+								errorStack.push(`Anexos: ${attachments[i]} deve seguir o padrão { filename: , content: } ou { filename: , path: } ou { path: }. "Content" precisa ser um buffer de dados...`);
+							}
+						}
+					}
+				} else {
+					errorStack.push(`Anexos: ${attachments[i]} deve ser um objeto...`);
+				}
+			}
 
-/*
-pendente attachments / exibir nomes ao inves do e-mail
-*/
-		// if (Array.isArray(attachments) && attachments.length > 0) {
-		// 	attachmentsChecked.push = attachments[i];
-		// }
-
+			if (attachments.length !== attachmentsChecked.length) {
+				errorStack.push('strictCheck: Alguns anexos foram invalidados. Verifique os dados informados...');
+			}
+		}
 
 		if (typeof sendChunks === 'object') {
 			if (Object.entries(sendChunks).length !== 0) {
@@ -262,8 +289,38 @@ pendente attachments / exibir nomes ao inves do e-mail
 		throw new Error(err);
 	}
 };
+
+// Com base no componente de upload (uploader): retorna uma array com os arquivos anexados
+const getAttachments = uploaderResults => {
+	try {
+		let attachmentsResult = [];
+
+		if (uploaderResults.files) {
+			uploaderResults.files.emailAttach.forEach(
+				file => {
+					let objFile = {};
+
+					if (file.originalname) {
+						objFile.filename = file.originalname;
+					}
+
+					if (file.buffer) {
+						objFile.content = file.buffer;
+					}
+
+					attachmentsResult.push(objFile);
+				}
+			);
+		}
+
+		return attachmentsResult;
+	} catch(err) {
+		throw new Error(err);
+	}
+}
 // -------------------------------------------------------------------------
 
 module.exports = {
-	sendEmail
+	sendEmail,
+	getAttachments
 };

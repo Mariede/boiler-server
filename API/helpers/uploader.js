@@ -21,7 +21,7 @@ const path = require('path');
 -> storageToDisk true para diskStorage | false para memoryStorage (default: true)
 	-> se memoryStorage selecionado, utilizar req.buffer.toString('utf8') para converter valor da memoria
 */
-const push = async (req, res, fileNames, extraPath, maxFileUploads = Infinity, storageToDisk = true) => {
+const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storageToDisk = true) => {
 	try {
 		const diskStorage = multer.diskStorage({
 			destination: (req, file, callback) => {

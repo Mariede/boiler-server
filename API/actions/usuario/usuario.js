@@ -2,7 +2,8 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-
+const email = require('@serverRoot/helpers/email');
+const uploader = require('@serverRoot/helpers/uploader');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -34,16 +35,14 @@ const inserir = async (req, res) => {
 
 
 
-// const uploader = require('@serverRoot/helpers/uploader');
-// let result = {};
+let uploaderResults = {},
+	attachments = [];
 
-// // se memoryStorage selecionado, utilizar buffer.toString('utf8') para converter valor da memoria
-// result = await uploader.push(req, res, [{ name: 'arquivoDeSubida' }, { name: 'arquivoDeSubida1' }], 'extra\\zzz/next/|u&;$%@"<>()+,o-i');
-// return result;
-
+// se memoryStorage selecionado, utilizar buffer.toString('utf8') para converter valor da memoria
+uploaderResults = await uploader.push(req, res, [{ name: 'emailAttach' }], '', '', false);
+attachments = email.getAttachments(uploaderResults);
 
 // **** testes email
-const email = require('@serverRoot/helpers/email');
 return await email.sendEmail(
 		['testefrom@hotmail.com', 'From'],
 		[
@@ -64,17 +63,16 @@ return await email.sendEmail(
 		],
 		[
 			['testebcc1@hotmail.com', 'Bcc 1'],
-			['testebcc2@hotmail.com', 'Bcc 2'],
+			['testebcc2@gmail.com', 'Bcc 2'],
 			['testebcc3@hotmail.com', 'Bcc 3'],
-			['testebcc4@gmail.com', 'Bcc 4'],
-			['testebcc5@outlook.com', 'Bcc 5'],
-			['testebcc6@outlook.com']
+			['testebcc4@hotmail.com', 'Bcc 4'],
+			['testebcc5@hotmail.com', 'Bcc 5'],
+			['testebcc6@hotmail.com'],
 		],
 		'teste de envio - subject',
 		`<br>teste<br><br>de envio - <a href="dddd">body</a> aqui jaz!!
 		<p>ahuhauahuahua</p> gggg`,
-		[],
-		{ cc: 1, bcc: 3, inheritTo: true }
+		attachments
 	);
 // **** testes email
 
