@@ -54,7 +54,8 @@ return await email.sendEmail(
 			['testeto5@gmail.com'],
 			['testeto6@gmail.com'],
 			['testeto7@gmail.com'],
-			['testeto8@gmail.com']
+			['testeto8@gmail.com'],
+			['testeto9@gmail.com', 'To 9'],
 		],
 		[
 			['testecc1@hotmail.com', 'Cc 1'],
@@ -73,7 +74,7 @@ return await email.sendEmail(
 		`<br>teste<br><br>de envio - <a href="dddd">body</a> aqui jaz!!
 		<p>ahuhauahuahua</p> gggg`,
 		[],
-		{ to: 3, cc: 15, bcc: 1}
+		{ cc: 1, bcc: 3, inheritTo: true }
 	);
 // **** testes email
 

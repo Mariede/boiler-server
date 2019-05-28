@@ -25,7 +25,11 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 					}
 				}
 			} else {
-				setMessages(d);
+				if (key === 'to' && sendChunks.inheritTo) {
+					message.to = d;
+				} else {
+					setMessages(d);
+				}
 			}
 		};
 
@@ -96,6 +100,12 @@ subject: string: opcional
 text: string: texto em html ou simples
 Attachments: Array [[arttach1], [attach2], [attach3], ... ] - opcional
 sendChunks: Define se os e-mails serao enviados em chunks, objeto vazio para tudo de uma vez. ex.: { to: 5, cc: 5, bcc: 15 }
+	- se "to" definido: Quantidade de e-mails de destino (to) agrupados para cada envio (apenas to)
+	- se "cc" definido: Quantidade de e-mails de destino (cc) agrupados para cada envio (apenas cc)
+	- se "bcc" definido: Quantidade de e-mails de destino (bcc) agrupados para cada envio (apenas bcc)
+	- se "inheritTo" definido: quando true, propriedade "to" deve estar ausente do objeto. Neste caso, e-mails definidos para "to" serão repetidos para cada chunk cc e/ou bcc
+		* Apenas "to" sera repetido em cada envio.
+
 strictCheck: se true realiza uma validacao rigorosa dos e-mails de destino, obrigando todos os e-mails informados a serem validos e unicos
 */
 const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChunks = {}, strictCheck = true) => {
@@ -210,7 +220,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 
 
 /*
-pendente attachments / exibir nomes ao inves do e-mail / chunks de e-mails
+pendente attachments / exibir nomes ao inves do e-mail
 */
 		// if (Array.isArray(attachments) && attachments.length > 0) {
 		// 	attachmentsChecked.push = attachments[i];
@@ -219,16 +229,22 @@ pendente attachments / exibir nomes ao inves do e-mail / chunks de e-mails
 
 		if (typeof sendChunks === 'object') {
 			if (Object.entries(sendChunks).length !== 0) {
-				if (!sendChunks.to && !sendChunks.cc && !sendChunks.bcc) {
+				if (!sendChunks.hasOwnProperty('to') && !sendChunks.hasOwnProperty('cc') && !sendChunks.hasOwnProperty('bcc')) {
 					errorStack.push('sendChunks deve conter pelo menos uma dessas chaves: to, cc ou bcc...');
 				} else {
-					if (sendChunks.to && (isNaN(parseFloat(sendChunks.to)) || !Number.isInteger(sendChunks.to))) {
+					if (sendChunks.hasOwnProperty('to') && (isNaN(parseFloat(sendChunks.to)) || !Number.isInteger(sendChunks.to))) {
 						errorStack.push('sendChunks: Propriedade to de deve ser um número inteiro...');
+					} else {
+						if (sendChunks.hasOwnProperty('to') && sendChunks.hasOwnProperty('inheritTo')) {
+							errorStack.push('sendChunks: Propriedade inheritTo deve existir apenas se não existir a propriedade to...');
+						}
 					}
-					if (sendChunks.cc && (isNaN(parseFloat(sendChunks.cc)) || !Number.isInteger(sendChunks.cc))) {
+
+					if (sendChunks.hasOwnProperty('cc') && (isNaN(parseFloat(sendChunks.cc)) || !Number.isInteger(sendChunks.cc))) {
 						errorStack.push('sendChunks: Propriedade cc deve ser um número inteiro...');
 					}
-					if (sendChunks.bcc && (isNaN(parseFloat(sendChunks.bcc)) || !Number.isInteger(sendChunks.bcc))) {
+
+					if (sendChunks.hasOwnProperty('bcc') && (isNaN(parseFloat(sendChunks.bcc)) || !Number.isInteger(sendChunks.bcc))) {
 						errorStack.push('sendChunks: Propriedade bcc deve ser um número inteiro...');
 					}
 				}
