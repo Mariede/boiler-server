@@ -304,12 +304,12 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 };
 
 // Com base no componente de upload (uploader): retorna uma array com os arquivos anexados
-const getAttachments = uploaderResults => {
+const getAttachments = (uploaderResults, fileNames) => {
 	try {
 		let attachmentsResult = [];
 
-		if (uploaderResults && uploaderResults.files && uploaderResults.files.emailAttach) {
-			uploaderResults.files.emailAttach.forEach(
+		if (uploaderResults && uploaderResults.files && uploaderResults.files[fileNames]) {
+			uploaderResults.files[fileNames].forEach(
 				file => {
 					let objFile = {},
 						encodeString = 'utf8';
@@ -323,7 +323,8 @@ const getAttachments = uploaderResults => {
 					} else {
 						if (file.buffer) {
 							if (Buffer.isBuffer(file.buffer)) {
-								objFile.content = Buffer.from(file.buffer).toString(encodeString);
+								// objFile.content = Buffer.from(file.buffer, encodeString); // arquivo ok, teste de escrita/leitura no disco mas nao envia
+								objFile.content = Buffer.from(file.buffer, encodeString).toString(encodeString); // envia ok, mas arquivo fica invalido
 							}
 						}
 					}

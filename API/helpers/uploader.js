@@ -19,7 +19,7 @@ const path = require('path');
 -> maxFileUploads indica o numero maximo de arquivo permitidos para upload (default: ilimitado)
 
 -> storageToDisk true para diskStorage | false para memoryStorage (default: true)
-	-> se memoryStorage selecionado, utilizar req.buffer.toString('utf8') para converter valor da memoria
+	-> se memoryStorage selecionado, utilizar Buffer.from(req.files[].buffer, 'utf8') para converter valor da memoria
 */
 const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storageToDisk = true) => {
 	try {

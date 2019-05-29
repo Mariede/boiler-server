@@ -35,12 +35,12 @@ const inserir = async (req, res) => {
 
 
 
-let uploaderResults = {},
+let fileNames = 'emailAttach',
+	uploaderResults = {},
 	attachments = [];
 
-// se memoryStorage selecionado, utilizar buffer.toString('utf8') para converter valor da memoria
-uploaderResults = await uploader.push(req, res, [{ name: 'emailAttach' }], '', '', false);
-attachments = email.getAttachments(uploaderResults);
+uploaderResults = await uploader.push(req, res, [{ name: fileNames }], '', '', false);
+attachments = email.getAttachments(uploaderResults, fileNames);
 
 // **** testes email
 return await email.sendEmail(
