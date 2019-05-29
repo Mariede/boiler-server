@@ -26,7 +26,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 						}
 					}
 				} else {
-					if (key === 'to' && sendChunks.inheritTo) {
+					if (key === 'to' && sendChunks.inheritTo && !lastCall) {
 						message.to = d;
 					} else {
 						setMessages(d);
@@ -229,18 +229,31 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 		if (Array.isArray(attachments) && attachments.length > 0) {
 			for (let i = 0; i < attachments.length; i++) {
 				if (typeof attachments[i] === 'object' && attachments[i] !== null) {
-					if (Object.entries(attachments[i]).length === 2 && attachments[i].hasOwnProperty('filename') && attachments[i].hasOwnProperty('content')) {
-						if (Buffer.isBuffer(attachments[i].content)) {
+					let oLen = Object.entries(attachments[i]),
+						oStringify = JSON.stringify(attachments[i]);
+
+					if ((oLen.length === 2 || oLen.length === 3) && attachments[i].hasOwnProperty('filename') && attachments[i].hasOwnProperty('content')) {
+						if (oLen.length === 3 && !attachments[i].hasOwnProperty('contentType')) {
+							errorStack.push(`Anexos: ${oStringify} tem uma terceira propriedade que não é o contentType...`);
+						} else {
 							attachmentsChecked.push(attachments[i]);
 						}
 					} else {
-						if (Object.entries(attachments[i]).length === 2 && attachments[i].hasOwnProperty('filename') && attachments[i].hasOwnProperty('path')) {
-							attachmentsChecked.push(attachments[i]);
-						} else {
-							if (Object.entries(attachments[i]).length === 1 && attachments[i].hasOwnProperty('path')) {
-								attachmentsChecked.push(attachments[i]);
+						if ((oLen.length === 2 || oLen.length === 3) && attachments[i].hasOwnProperty('filename') && attachments[i].hasOwnProperty('path')) {
+							if (oLen.length === 3 && !attachments[i].hasOwnProperty('contentType')) {
+								errorStack.push(`Anexos: ${oStringify} tem uma terceira propriedade que não é o contentType...`);
 							} else {
-								errorStack.push(`Anexos: ${attachments[i]} deve seguir o padrão { filename: , content: } ou { filename: , path: } ou { path: }. "Content" precisa ser um buffer de dados...`);
+								attachmentsChecked.push(attachments[i]);
+							}
+						} else {
+							if ((oLen.length === 1 || oLen.length === 2) && attachments[i].hasOwnProperty('path')) {
+								if (oLen.length === 2 && !attachments[i].hasOwnProperty('contentType')) {
+									errorStack.push(`Anexos: ${oStringify} tem uma terceira propriedade que não é o contentType...`);
+								} else {
+									attachmentsChecked.push(attachments[i]);
+								}
+							} else {
+								errorStack.push(`Anexos: ${oStringify} deve seguir o padrão { filename: , content: , contentType: } ou { filename: , path: , contentType: } ou { path: , contentType: }. "contentType" é opcional e "Content" precisa ser um buffer de dados...`);
 							}
 						}
 					}
@@ -295,17 +308,28 @@ const getAttachments = uploaderResults => {
 	try {
 		let attachmentsResult = [];
 
-		if (uploaderResults.files) {
+		if (uploaderResults && uploaderResults.files && uploaderResults.files.emailAttach) {
 			uploaderResults.files.emailAttach.forEach(
 				file => {
-					let objFile = {};
+					let objFile = {},
+						encodeString = 'utf8';
 
 					if (file.originalname) {
 						objFile.filename = file.originalname;
 					}
 
-					if (file.buffer) {
-						objFile.content = file.buffer;
+					if (file.path) {
+						objFile.path = file.path;
+					} else {
+						if (file.buffer) {
+							if (Buffer.isBuffer(file.buffer)) {
+								objFile.content = Buffer.from(file.buffer).toString(encodeString);
+							}
+						}
+					}
+
+					if (file.mimetype) {
+						objFile.contentType = file.mimetype;
 					}
 
 					attachmentsResult.push(objFile);

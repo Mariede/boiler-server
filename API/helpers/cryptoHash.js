@@ -93,7 +93,7 @@ const hash = async (passData, ...saltData) => {
 		const algorithm = __serverConfig.crypto.hashAlgorithm;
 		const pass = (passData || '') + '';
 		const salt = await _checkSaltData(...saltData);
-		const passHash = await crypto.createHmac(algorithm, salt).update(pass).digest( __serverConfig.crypto.hashDigestEncoding);
+		const passHash = await crypto.createHmac(algorithm, salt).update(pass).digest(__serverConfig.crypto.hashDigestEncoding);
 
 		return {
 			pass: pass,
