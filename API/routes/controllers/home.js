@@ -39,7 +39,7 @@ const rotasHome = router => {
 	.get(async (req, res) => {
 		try {
 			let result = await home.root(req, res);
-			res.status(200).sendFile(result, { root: __serverRoot + '/_home' });
+			res.status(200).sendFile(result, { root: __serverRoot + '/views/_home' });
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}

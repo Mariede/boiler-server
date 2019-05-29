@@ -323,8 +323,20 @@ const getAttachments = (uploaderResults, fileNames) => {
 					} else {
 						if (file.buffer) {
 							if (Buffer.isBuffer(file.buffer)) {
+// testes
 								// objFile.content = Buffer.from(file.buffer, encodeString); // arquivo ok, teste de escrita/leitura no disco mas nao envia
-								objFile.content = Buffer.from(file.buffer, encodeString).toString(encodeString); // envia ok, mas arquivo fica invalido
+								// objFile.content = Buffer.from(file.buffer, encodeString).toString(encodeString); // envia ok, mas arquivo fica invalido
+								objFile.content = Buffer.from(JSON.parse(JSON.stringify(file.buffer)).data, encodeString);
+const fs = require('fs');
+fs.writeFile(__serverRoot + '/uploads/' + file.originalname, objFile.content, function(err) {
+	if(err) {
+		return console.log(err);
+	}
+
+	console.log("The file was saved!");
+});
+// testes
+
 							}
 						}
 					}

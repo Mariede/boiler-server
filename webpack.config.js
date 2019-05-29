@@ -47,7 +47,7 @@ module.exports = {
 				from: path.resolve(sourcePath, './config.json'), to: path.resolve(destinyPath, './config.json'), force: true
 			},
 			{
-				from: path.resolve(sourcePath, './_home'), to: path.resolve(destinyPath, './_home'), force: true
+				from: path.resolve(sourcePath, './views'), to: path.resolve(destinyPath, './views'), force: true
 			}
 		]),
 	],

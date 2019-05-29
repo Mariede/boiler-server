@@ -75,7 +75,7 @@ log4js.configure({
 
 // Favicon -----------------------------------------------
 app.use(
-	favicon(__serverRoot + '/_home/images/favicon.ico')
+	favicon(__serverRoot + '/views/_home/images/favicon.ico')
 );
 
 // CORS --------------------------------------------------
@@ -133,9 +133,21 @@ app.use(
 	compression()
 );
 
+// Views - engine padrao ---------------------------------
+app.set(
+	'view engine',
+	'ejs'
+);
+
+// Views - caminho padrao --------------------------------
+app.set(
+	'views',
+	__serverRoot + '/views'
+);
+
 // Servindo arquivos estaticos ---------------------------
 app.use(
-	checkRoutePrefix() + __serverConfig.server.pathVirtualStaticFiles, express.static(__serverRoot + '/_home/images') // De /img para pasta \images
+	checkRoutePrefix() + __serverConfig.server.pathVirtualStaticFiles, express.static(__serverRoot + '/views/_home/images') // De /img para pasta \_home\images
 );
 
 // Rotas -------------------------------------------------
@@ -151,7 +163,7 @@ app.all('*', (req, res) => {
 // Handler erros sincronos -------------------------------
 app.use((err, req, res, next) => {
 	log.logger('error', err.stack || err);
-	res.status(500).send('Erro no servidor');
+	res.status(500).send(err.stack || err);
 });
 // -------------------------------------------------------------------------
 

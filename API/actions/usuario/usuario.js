@@ -4,6 +4,7 @@
 // Modulos de inicializacao
 const email = require('@serverRoot/helpers/email');
 const uploader = require('@serverRoot/helpers/uploader');
+const ejs = require('ejs');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -35,12 +36,22 @@ const inserir = async (req, res) => {
 
 
 
+let mailTemplate = '_mailTemplates/exampleTemplate.ejs',
+	dataTemplate = res.render(mailTemplate, { tableHeader: 'TABLE HEADER!!' });
+return dataTemplate;
+
+
+
+
+
 let fileNames = 'emailAttach',
 	uploaderResults = {},
 	attachments = [];
 
 uploaderResults = await uploader.push(req, res, [{ name: fileNames }], '', '', false);
 attachments = email.getAttachments(uploaderResults, fileNames);
+
+return attachments;
 
 // **** testes email
 return await email.sendEmail(
