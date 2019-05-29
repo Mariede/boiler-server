@@ -53,8 +53,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 			await asyncForEach(
 				m,
 				async e => {
-					// infos.push(await t.sendMail(e)); // envia chunk de e-mails
-					infos.push(e);
+					infos.push(await t.sendMail(e)); // envia chunk de e-mails
 				}
 			);
 
@@ -248,12 +247,12 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 						} else {
 							if ((oLen.length === 1 || oLen.length === 2) && attachments[i].hasOwnProperty('path')) {
 								if (oLen.length === 2 && !attachments[i].hasOwnProperty('contentType')) {
-									errorStack.push(`Anexos: ${oStringify} tem uma terceira propriedade que não é o contentType...`);
+									errorStack.push(`Anexos: ${oStringify} tem uma segunda propriedade que não é o contentType...`);
 								} else {
 									attachmentsChecked.push(attachments[i]);
 								}
 							} else {
-								errorStack.push(`Anexos: ${oStringify} deve seguir o padrão { filename: , content: , contentType: } ou { filename: , path: , contentType: } ou { path: , contentType: }. "contentType" é opcional e "Content" precisa ser um buffer de dados...`);
+								errorStack.push(`Anexos: ${oStringify} deve seguir o padrão { filename: , content: , contentType: } ou { filename: , path: , contentType: } ou { path: , contentType: }. "contentType" é opcional e "Content" (caso exista) precisa ser um buffer de dados...`);
 							}
 						}
 					}
@@ -323,20 +322,9 @@ const getAttachments = (uploaderResults, fileNames) => {
 					} else {
 						if (file.buffer) {
 							if (Buffer.isBuffer(file.buffer)) {
-// testes
-								// objFile.content = Buffer.from(file.buffer, encodeString); // arquivo ok, teste de escrita/leitura no disco mas nao envia
-								// objFile.content = Buffer.from(file.buffer, encodeString).toString(encodeString); // envia ok, mas arquivo fica invalido
-								objFile.content = Buffer.from(JSON.parse(JSON.stringify(file.buffer)).data, encodeString);
-const fs = require('fs');
-fs.writeFile(__serverRoot + '/uploads/' + file.originalname, objFile.content, function(err) {
-	if(err) {
-		return console.log(err);
-	}
-
-	console.log("The file was saved!");
-});
-// testes
-
+								// !! Bug a ser avaliado no envio de arquivos binarios via buffer de dados
+								// objFile.content = Buffer.from(file.buffer, encodeString); // arquivo ok, teste de escrita/leitura no disco mas erro ao anexar
+								objFile.content = Buffer.from(file.buffer, encodeString).toString(encodeString); // envia ok, mas arquivo fica invalido para: diferente de plain text
 							}
 						}
 					}

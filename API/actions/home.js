@@ -9,8 +9,7 @@ const auth = require('@serverRoot/helpers/auth');
 // Acoes
 const root = async (req, res) => {
 	try {
-		// let fRet = '<html><body><h3>Bem vindo, servidor em NODE.js</h3></body></html>';
-		let fRet = 'index.html';
+		let fRet = { file: 'index.html', path: __serverRoot + '/views/_home' };
 		return fRet;
 	} catch(err) {
 		throw new Error(err);

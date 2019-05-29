@@ -1,0 +1,47 @@
+/*
+LIB email.js + uploader.js
+--------------------------
+
+Envio de e-mails com anexos, e-mails com templates dinâmicos
+*/
+
+// ---------------------------------------------------------------------------------------------------------
+// Exemplo de uso
+
+const email = require('@serverRoot/helpers/email');
+const uploader = require('@serverRoot/helpers/uploader');
+const ejs = require('ejs');
+
+let mailTemplate = __serverRoot + '/views/_mailTemplates/exampleTemplate.ejs',
+	dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }), // template dinamico
+	fileNames = 'emailAttach', // nome do campo html que informa os arquivos de upload
+	uploaderResults = await uploader.push(req, res, [{ name: fileNames }], 'attachments_path'),
+	attachments = email.getAttachments(uploaderResults, fileNames);
+
+return await email.sendEmail(
+		['testefrom@server.com', 'From Name'],
+		[
+			['testeto1@server.com', 'To 1'],
+			['testeto2@server.com'],
+			['testeto3@server.com', 'To 3'],
+			['testeto4@server.com', 'To 4'],
+			['testeto5@server.com'],
+			['testeto6@server.com']
+		],
+		[
+			['testecc1@server.com', 'Cc 1'],
+			['testecc2@server.com'],
+			['testecc3@server.com']
+		],
+		[
+			['testebcc1@server.com', 'Bcc 1']
+		],
+		'teste de envio - subject',
+		dataTemplate,
+		attachments,
+		{ cc: 2, inheritTo: true }
+	);
+
+
+/* * utilizar verbo POST * */
+// ---------------------------------------------------------------------------------------------------------
