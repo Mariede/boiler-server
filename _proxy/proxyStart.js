@@ -10,7 +10,7 @@ const log4js = require('log4js');
 
 // -------------------------------------------------------------------------
 // Modulos/Variaveis de apoio
-const serverAPP1 = ['/APP1/*', 'http://localhost:5000'];
+const serversToProxy = [['/APP1/*', 'http://localhost:5000'], ['/APP2/*', 'http://localhost:5000']];
 const serverPort = 80;
 // -------------------------------------------------------------------------
 
@@ -30,32 +30,37 @@ log4js.configure({
 });
 
 // proxy -------------------------------------------------
+serversToProxy.forEach(
+	server => {
+		let path = server[0],
+			origin = server[1];
 
-// serverAPP1
-app.all(serverAPP1[0], (req, res) => {
-	log4js.getLogger('default').info(`Redirecionando para ${serverAPP1[0]} (${serverAPP1[1]})`);
+		app.all(path, (req, res) => {
+			log4js.getLogger('default').info(`Redirecionando para ${path} (${origin})`);
 
-	apiProxy.web(req, res,
-		{
-			/* para https ------- */
-			// target: {
-			// 	protocol: 'https:',
-			// 	host: 'my-domain-name',
-			// 	port: 443,
-			// 	pfx: fs.readFileSync('path/to/certificate.p12'),
-			// 	passphrase: 'password',
-			// },
-			/* ------------------ */
-			target: serverAPP1[1],
-			cookiePathRewrite: false,
-			changeOrigin: true
-		}
-	);
-});
+			apiProxy.web(req, res,
+				{
+					/* para https ------- */
+					// target: {
+					// 	protocol: 'https:',
+					// 	host: 'my-domain-name',
+					// 	port: 443,
+					// 	pfx: fs.readFileSync('path/to/certificate.p12'),
+					// 	passphrase: 'password',
+					// },
+					/* ------------------ */
+					target: origin,
+					cookiePathRewrite: false,
+					changeOrigin: true
+				}
+			);
+		});
+	}
+);
 
 // Rotas -------------------------------------------------
 app.get('/', (req, res) => {
-	res.status(200).send(`<html><body><center><h3>Bem vindo, servidor de proxy está rodando na porta ${serverPort} ...</h3></center></body></html>`);
+	res.status(200).send(`<html><body><center><h4>Bem vindo, servidor de proxy está rodando na porta ${serverPort} ...</h4></center></body></html>`);
 });
 
 app.all('*', (req, res) => {
@@ -76,7 +81,7 @@ app.use((err, req, res, next) => {
 
 // -------------------------------------------------------------------------
 // Inicia servidor de proxy ouvindo na porta serverPort
-const servidor = http.createServer(app).listen(serverPort, function() {
+http.createServer(app).listen(serverPort, function() {
 	log4js.getLogger('default').info(`Servidor de proxy está rodando na porta ${serverPort} ...`);
 });
 // -------------------------------------------------------------------------
