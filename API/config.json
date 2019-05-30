@@ -23,7 +23,8 @@
 			"secretStore": "SegredoArquivos123",
 			"cookieName": "cookie-server",
 			"timeout": 20
-		}
+		},
+		"_comments1": "Se o servidor estiver 'proxyado' por uma porta 80, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)"
 	},
 	"auth": {
 		"sessWrapper": "userData",
@@ -76,6 +77,7 @@
 				"authMethod": "PLAIN"
 			}
 		},
+		"queuePath": "/mail/queue",
 		"_comments1": "secure: true => port 465 / secure: false => port 587 or 25"
 	}
 }

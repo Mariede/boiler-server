@@ -5,11 +5,32 @@
 const nodemailer = require('nodemailer');
 const htmlToText = require('html-to-text');
 const validator = require('@serverRoot/helpers/validator');
+const fs = require('fs');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+
+// Coloca os e-mails em uma fila para envio posterior (queue)
+const _executeQueue = async (e) => {
+	try {
+		let queuePath = __serverRoot + __serverConfig.email.queuePath,
+			queuePathSend = queuePath + '/send',
+			queueFile = JSON.stringify(e);
+
+		if (!fs.existsSync(queuePathSend)) {
+			fs.mkdirSync(queuePathSend);
+		}
+
+
+
+
+	} catch(err) {
+		throw new Error(err);
+	}
+};
+
 // Dados validados, envia e-mails pelo servidor (metodo privado)
-const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendChunks) => {
+const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendChunks, sendQueue) => {
 	try {
 		const setChunks = (key, d, lastCall) => {
 			const setMessages = value => {
@@ -53,7 +74,11 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 			await asyncForEach(
 				m,
 				async e => {
-					infos.push(await t.sendMail(e)); // envia chunk de e-mails
+					if (!sendQueue) {
+						infos.push(await t.sendMail(e)); // envia chunk de e-mails
+					} else {
+						infos.push(await _executeQueue(e)); // queue chunk de e-mails
+					}
 				}
 			);
 
@@ -115,7 +140,7 @@ sendChunks: Define se os e-mails serao enviados em chunks, objeto vazio para tud
 
 strictCheck: se true realiza uma validacao rigorosa dos e-mails de destino, obrigando todos os e-mails informados a serem validos e unicos
 */
-const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChunks = {}, strictCheck = true) => {
+const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChunks = {}, strictCheck = true, sendQueue = false) => {
 	try {
 		const preencheDestinos = (a, b, i, e) => {
 			if (!validator.isEmpty(a)) {
@@ -262,7 +287,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			}
 
 			if (attachments.length !== attachmentsChecked.length) {
-				errorStack.push('strictCheck: Alguns anexos foram invalidados. Verifique os dados informados...');
+				errorStack.push('Alguns anexos foram invalidados. Verifique os dados informados...');
 			}
 		}
 
@@ -293,7 +318,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 		}
 
 		if (errorStack.length === 0) {
-			return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChunks);
+			return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChunks, sendQueue);
 		} else {
 			return errorStack;
 		}
