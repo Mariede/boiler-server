@@ -56,7 +56,7 @@ const checkPathStaticFiles = pathVirtualStaticFiles => {
 	if (Array.isArray(pathVirtualStaticFiles)) {
 		pathVirtualStaticFiles.forEach(
 			path => {
-				setPathStaticFiles(path.virtualPath, path.physicalPath)
+				setPathStaticFiles(path.virtualPath, path.physicalPath);
 			}
 		);
 	}
@@ -98,7 +98,8 @@ app.use(
 		'origin': __serverConfig.server.cors.origin,
 		'methods': __serverConfig.server.cors.methods,
 		'preflightContinue': __serverConfig.server.cors.preflightContinue,
-		'optionsSuccessStatus': __serverConfig.server.cors.optionsSuccessStatus
+		'optionsSuccessStatus': __serverConfig.server.cors.optionsSuccessStatus,
+		'credentials': __serverConfig.server.cors.credentials
 	})
 );
 
