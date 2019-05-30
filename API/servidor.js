@@ -45,8 +45,27 @@ configManage.check(configPath)
 	log.logger('error', err.stack || err);
 });
 
+// Definindo pastas de conteudo estatico
+const checkPathStaticFiles = pathVirtualStaticFiles => {
+	const setPathStaticFiles = (virtualPath, physicalPath) => {
+		app.use(
+			virtualPath, express.static(__serverRoot + physicalPath)
+		);
+	};
+
+	if (Array.isArray(pathVirtualStaticFiles)) {
+		pathVirtualStaticFiles.forEach(
+			path => {
+				setPathStaticFiles(path.virtualPath, path.physicalPath)
+			}
+		);
+	}
+};
+
 // Acessando rotas prefixadas
-const checkRoutePrefix = () => (__serverConfig.server.routePrefix && __serverConfig.server.routePrefix !== '/' ? __serverConfig.server.routePrefix : '');
+const checkRoutePrefix = () => {
+	return (__serverConfig.server.routePrefix && __serverConfig.server.routePrefix !== '/' ? __serverConfig.server.routePrefix : '');
+};
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -72,11 +91,6 @@ log4js.configure({
 		fileOnly: { appenders: ['fileAppender'], level: 'warn' }
 	}
 });
-
-// Favicon -----------------------------------------------
-app.use(
-	favicon(__serverRoot + '/views/_home/images/favicon.ico')
-);
 
 // CORS --------------------------------------------------
 app.use(
@@ -133,21 +147,26 @@ app.use(
 	compression()
 );
 
-// Views - engine padrao ---------------------------------
+// Servindo arquivos estaticos ---------------------------
+checkPathStaticFiles(__serverConfig.server.pathVirtualStaticFiles);
+
+// Favicon -----------------------------------------------
+app.use(
+	favicon(__serverRoot + __serverConfig.server.pathFavicon)
+);
+
+// Views -------------------------------------------------
+
+// Engine padrao
 app.set(
 	'view engine',
 	'ejs'
 );
 
-// Views - caminho padrao --------------------------------
+// Caminho padrao
 app.set(
 	'views',
 	__serverRoot + '/views'
-);
-
-// Servindo arquivos estaticos ---------------------------
-app.use(
-	checkRoutePrefix() + __serverConfig.server.pathVirtualStaticFiles, express.static(__serverRoot + '/views/_home/images') // De /img para pasta \_home\images
 );
 
 // Rotas -------------------------------------------------

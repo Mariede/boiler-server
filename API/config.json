@@ -3,7 +3,8 @@
 		"host": "localhost",
 		"port": 5000,
 		"routePrefix": "/",
-		"pathVirtualStaticFiles": "/img",
+		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/views/_home/images" }],
+		"pathFavicon": "/views/_home/images/favicon.ico",
 		"logFileName": "logs-server.log",
 		"cors": {
 			"origin": "*",
