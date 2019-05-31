@@ -13,7 +13,8 @@
 ## Estrutura de código com pontos definidos de entrada / saída
   - Roteamento em camadas
   - Tratamento de Erros (sync e async)
-## Proxy de acesso
+## Prefixamento de rotas e Proxy geral de acesso (via porta 80)
+  - Prefixo configurável pelo arquivo de configuração, atua em todas as rotas do servidor
   - proxyStart.js
 ## Sessions com armazenamento via arquivos criptografados
   - sessionFileStore
