@@ -323,20 +323,20 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 				if (!sendChunks.hasOwnProperty('to') && !sendChunks.hasOwnProperty('cc') && !sendChunks.hasOwnProperty('bcc')) {
 					errorStack.push('sendChunks deve conter pelo menos uma dessas chaves: to, cc ou bcc...');
 				} else {
-					if (sendChunks.hasOwnProperty('to') && (isNaN(parseFloat(sendChunks.to)) || !Number.isInteger(sendChunks.to))) {
-						errorStack.push('sendChunks: Propriedade to de deve ser um número inteiro...');
+					if (sendChunks.hasOwnProperty('to') && (!Number.isInteger(sendChunks.to) || Number(sendChunks.to) < 1)) {
+						errorStack.push('sendChunks: Propriedade to de deve ser um número inteiro e positivo...');
 					} else {
 						if (sendChunks.hasOwnProperty('to') && sendChunks.hasOwnProperty('inheritTo')) {
 							errorStack.push('sendChunks: Propriedade inheritTo deve existir apenas se não existir a propriedade to...');
 						}
 					}
 
-					if (sendChunks.hasOwnProperty('cc') && (isNaN(parseFloat(sendChunks.cc)) || !Number.isInteger(sendChunks.cc))) {
-						errorStack.push('sendChunks: Propriedade cc deve ser um número inteiro...');
+					if (sendChunks.hasOwnProperty('cc') && (!Number.isInteger(sendChunks.cc) || Number(sendChunks.cc) < 1)) {
+						errorStack.push('sendChunks: Propriedade cc deve ser um número inteiro e positivo...');
 					}
 
-					if (sendChunks.hasOwnProperty('bcc') && (isNaN(parseFloat(sendChunks.bcc)) || !Number.isInteger(sendChunks.bcc))) {
-						errorStack.push('sendChunks: Propriedade bcc deve ser um número inteiro...');
+					if (sendChunks.hasOwnProperty('bcc') && (!Number.isInteger(sendChunks.bcc) || Number(sendChunks.bcc) < 1)) {
+						errorStack.push('sendChunks: Propriedade bcc deve ser um número inteiro e positivo...');
 					}
 				}
 			}

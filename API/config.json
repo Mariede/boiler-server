@@ -24,11 +24,12 @@
 			"cookieName": "cookie-server",
 			"timeout": 20
 		},
-		"_comments1": "Se o servidor estiver 'proxyado' por uma porta 80, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)"
+		"_comments1": "Se o servidor estiver 'proxyado' por uma porta 80, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
+		"_comments2": "fileUpload: maxFileSize em bytes, session: timeout em minutos"
 	},
 	"auth": {
 		"sessWrapper": "userData",
-		"authTipo": "1",
+		"authTipo": 1,
 		"except": [
 			"/",
 			"/favicon.ico",
@@ -65,6 +66,7 @@
 		"_comments1": "conexaoTipo => 2: sem pool / Default: com pool"
 	},
 	"email": {
+		"queuePath": "/mail/queue",
 		"transporter": {
 			"pool": false,
 			"host": "smtp.example.com",
@@ -77,7 +79,6 @@
 				"authMethod": "PLAIN"
 			}
 		},
-		"queuePath": "/mail/queue",
 		"_comments1": "secure: true => port 465 / secure: false => port 587 or 25"
 	}
 }

@@ -245,10 +245,12 @@ const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 	}
 };
 
-// Verifica se numero valido (int ou float) estilo jquery
+// Verifica se valor e numerico inteiro positivo (aceita espacos ao redor do numero valido)
 const isNumber = num => {
 	try {
-		return !isNaN(parseFloat(num)) && isFinite(num);
+		const falsy = [null, undefined, NaN, false, true];
+
+		return Number.isInteger(falsy.includes(num) ? num : (typeof num === 'string' ? (num.trim() === '' ? num : Number(num)) : Number(num))) && Number(num) >= 0 && !Array.isArray(num);
 	} catch(err) {
 		throw new Error(err);
 	}
