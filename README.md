@@ -4,7 +4,7 @@
   - CORS
   - favicon
   - body parser
-  = cookie parser
+  - cookie parser
   - compression
 ## Arquivo de configuração unificado do servidor
   - config.json
@@ -40,6 +40,10 @@
 ## Email
   - Envio de e-mails, com anexos, direto e/ou por chunks asyncs e/ou enfileirados em pasta no servidor
   - NODEMAILER: Configuração abrangente
+  - Templates de e-mail dinâmicos
+## Engine de templates para expor arquivos html dinâmicos
+  - EJS - Embedded Javascript Templates (semelhante ao asp)
+  - Acoplado ao sistema de views do Express
 ## Build gerável
   - Através do Webpack
   - Validação de código ESLINT
