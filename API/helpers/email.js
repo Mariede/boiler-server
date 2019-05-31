@@ -6,30 +6,53 @@ const nodemailer = require('nodemailer');
 const htmlToText = require('html-to-text');
 const validator = require('@serverRoot/helpers/validator');
 const fs = require('fs');
+const path = require('path');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 
-// Coloca os e-mails em uma fila para envio posterior (queue)
-const _executeQueue = async (e) => {
-	try {
-		let queuePath = __serverRoot + __serverConfig.email.queuePath,
-			queuePathSend = queuePath + '/send',
-			queueFile = JSON.stringify(e);
+// Queue: E-mails como arquivos em uma fila para serem enviados posteriormente (metodo privado)
+const _executeQueue = (e, counter) => {
+	return new Promise((resolve, reject) => {
+		try {
+			let initPath = __serverRoot,
+				configKey = __serverConfig.email.queuePath + '/send',
+				queuePathSend = initPath + configKey,
+				queueFile = JSON.stringify(e),
+				uniqueId = parseInt(((Math.random() * 9) + 1) * Math.pow(10, 5), 10),
+				dateNow = (new Date()).toISOString().split('T'),
+				dateLeft = (dateNow[0] || '').replace(/-/g, ''),
+				dateRight = (dateNow[1] || '').replace(/[:]/g, '').substr(0, 9),
+				fileName = queuePathSend + '\\mail-queue-' + dateLeft + dateRight + '.' + counter + '.' + uniqueId + '.send';
 
-		if (!fs.existsSync(queuePathSend)) {
-			fs.mkdirSync(queuePathSend);
+			if (!fs.existsSync(queuePathSend)) {
+				configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(
+					e => {
+						initPath = path.join(initPath, e);
+
+						if (!fs.existsSync(initPath)) {
+							fs.mkdirSync(initPath);
+						}
+					}
+				);
+			}
+
+			fs.writeFile(fileName, queueFile, 'utf8',
+				err => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(queueFile);
+					}
+				}
+			);
+		} catch(err) {
+			reject(err);
 		}
-
-
-
-
-	} catch(err) {
-		throw new Error(err);
-	}
+	});
 };
 
-// Dados validados, envia e-mails pelo servidor (metodo privado)
+// Dados validados, e-mails serao enviados ou colocados na fila (metodo privado)
 const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendChunks, sendQueue) => {
 	try {
 		const setChunks = (key, d, lastCall) => {
@@ -69,15 +92,18 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 		};
 
 		const sendAndReturn = async (m, t) => {
-			let infos = [];
+			let infos = [],
+				i = 0;
 
 			await asyncForEach(
 				m,
 				async e => {
+					i++;
+
 					if (!sendQueue) {
 						infos.push(await t.sendMail(e)); // envia chunk de e-mails
 					} else {
-						infos.push(await _executeQueue(e)); // queue chunk de e-mails
+						infos.push(await _executeQueue(e, i)); // queue chunk de e-mails
 					}
 				}
 			);
@@ -138,7 +164,8 @@ sendChunks: Define se os e-mails serao enviados em chunks, objeto vazio para tud
 	- se "inheritTo" definido: quando true, propriedade "to" deve estar ausente do objeto. Neste caso, e-mails definidos para "to" serão repetidos para cada chunk cc e/ou bcc
 		* Apenas "to" sera repetido em cada envio.
 
-strictCheck: se true realiza uma validacao rigorosa dos e-mails de destino, obrigando todos os e-mails informados a serem validos e unicos
+strictCheck: se true realiza uma validacao rigorosa dos e-mails de destino, obrigando todos os e-mails informados a serem validos e unicos => padrao true
+sendQueue: se true nao envia os e-mails instantaneamente, mas sim os colocam como arquivos em uma pasta para serem enviados posteriormente (queue) => padrao false
 */
 const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChunks = {}, strictCheck = true, sendQueue = false) => {
 	try {
@@ -329,44 +356,45 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 
 // Com base no componente de upload (uploader): retorna uma array com os arquivos anexados
 const getAttachments = (uploaderResults, fileNames) => {
-	try {
-		let attachmentsResult = [];
+	return new Promise((resolve, reject) => {
+		try {
+			let attachmentsResult = [];
 
-		if (uploaderResults && uploaderResults.files && uploaderResults.files[fileNames]) {
-			uploaderResults.files[fileNames].forEach(
-				file => {
-					let objFile = {},
-						encodeString = 'utf8';
+			if (uploaderResults && uploaderResults.files && uploaderResults.files[fileNames]) {
+				uploaderResults.files[fileNames].forEach(
+					file => {
+						let objFile = {};
 
-					if (file.originalname) {
-						objFile.filename = file.originalname;
-					}
+						if (file.originalname) {
+							objFile.filename = file.originalname;
+						}
 
-					if (file.path) {
-						objFile.path = file.path;
-					} else {
-						if (file.buffer) {
-							if (Buffer.isBuffer(file.buffer)) {
-								// !! Bug a ser avaliado no envio de arquivos binarios via buffer de dados
-								// objFile.content = Buffer.from(file.buffer, encodeString); // arquivo ok, teste de escrita/leitura no disco mas erro ao anexar
-								objFile.content = Buffer.from(file.buffer, encodeString).toString(encodeString); // envia ok, mas arquivo fica invalido para: diferente de plain text
+						if (file.path) {
+							objFile.path = file.path;
+						} else {
+							if (file.buffer) {
+								if (Buffer.isBuffer(file.buffer)) {
+									// !! Bug a ser avaliado no envio de arquivos binarios via buffer de dados
+									// objFile.content = Buffer.from(file.buffer, 'utf8'); // arquivo ok, teste de escrita/leitura no disco mas erro ao anexar
+									objFile.content = Buffer.from(file.buffer, 'utf8').toString('utf8'); // envia ok, mas arquivo fica invalido para: diferente de plain text
+								}
 							}
 						}
-					}
 
-					if (file.mimetype) {
-						objFile.contentType = file.mimetype;
-					}
+						if (file.mimetype) {
+							objFile.contentType = file.mimetype;
+						}
 
-					attachmentsResult.push(objFile);
-				}
-			);
+						attachmentsResult.push(objFile);
+					}
+				);
+			}
+
+			resolve(attachmentsResult);
+		} catch(err) {
+			reject(err);
 		}
-
-		return attachmentsResult;
-	} catch(err) {
-		throw new Error(err);
-	}
+	});
 }
 // -------------------------------------------------------------------------
 

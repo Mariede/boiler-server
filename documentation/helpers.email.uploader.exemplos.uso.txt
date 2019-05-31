@@ -16,7 +16,7 @@ let mailTemplate = __serverRoot + '/views/_mailTemplates/exampleTemplate.ejs',
 	dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }), // template dinamico
 	fileNames = 'emailAttach', // nome do campo html que informa os arquivos de upload
 	uploaderResults = await uploader.push(req, res, [{ name: fileNames }], 'attachments_path'),
-	attachments = email.getAttachments(uploaderResults, fileNames);
+	attachments = await email.getAttachments(uploaderResults, fileNames);
 
 return await email.sendEmail(
 		['testefrom@server.com', 'From Name'],
