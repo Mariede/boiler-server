@@ -6,6 +6,7 @@
   - body parser
   - cookie parser
   - compression
+  - Pastas de  arquivo estáticos
 ## Arquivo de configuração unificado do servidor
   - config.json
   - Gerenciamento em tempo real do arquivo de configuração
