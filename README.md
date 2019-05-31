@@ -4,21 +4,23 @@
   - CORS
   - favicon
   - body parser
+  = cookie parser
   - compression
 ## Arquivo de configuração unificado do servidor
   - config.json
   - Gerenciamento em tempo real do arquivo de configuração
-## Roteamento em camadas
 ## Estrutura de código com pontos definidos de entrada / saída
+  - Roteamento em camadas
   - Tratamento de Erros (sync e async)
 ## Proxy de acesso
   - proxyStart.js
 ## Sessions com armazenamento via arquivos criptografados
   - sessionFileStore
 ## Logs com informações na tela e/ou arquivos diários de log
+  - log4js
 ## Autenticação das rotas personalizável
   - Lib de autenticação
-    - Rotas protegidas
+    - Rotas protegidas (configurável)
     - isLogged
     - Login / Logout
 ## Lib parametrizada para o MS SQL Server
@@ -32,6 +34,12 @@
   - Com os métodos de validação de entradas mais comuns (cpf, alfanumérico, e-mail), personalizável via regex
 ## Criptografia
   - Hash e Cipher
+## Uploader
+  - Upload de grupos de arquivos com filtros por tamanho, quantidade de arquivos, extensão, MIME types, ... configurável
+  - MULTER: Upload direto para memória ou pastas específicas no servidor
+## Email
+  - Envio de e-mails, com anexos, direto e/ou por chunks asyncs e/ou enfileirados em pasta no servidor
+  - NODEMAILER: Configuração abrangente
 ## Build gerável
   - Através do Webpack
   - Validação de código ESLINT
