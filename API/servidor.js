@@ -35,15 +35,9 @@ const configManage = require('@serverRoot/helpers/configManage');
 // -------------------------------------------------------------------------
 // Procedimento prioritarios
 
-// Acessando e gerindo informacoes do arquivo de configuracoes do servidor
+// Acessando informacoes do arquivo de configuracoes do servidor
 const configPath = __serverRoot + '/config.json';
-
 global.__serverConfig = configManage.push(configPath);
-
-configManage.check(configPath)
-.catch(err => {
-	log.logger('error', err.stack || err);
-});
 
 // Definindo pastas de conteudo estatico
 const checkPathStaticFiles = pathVirtualStaticFiles => {
@@ -191,5 +185,19 @@ app.use((err, req, res, next) => {
 // Inicia servidor ouvindo em host:port (sem certificado https)
 http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.host, () => {
 	log.logger('info', `Servidor está rodando em ${__serverConfig.server.host}:${__serverConfig.server.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`, 'consoleOnly');
+
+	// inicia gerenciamento do arquivo de configuracao do servidor
+	configManage.check(configPath)
+	.then(result => {
+		if (typeof result === 'object') {
+			log.logger('info', `Arquivo de configuração em ${configPath} está sendo observado por mudanças`, 'consoleOnly');
+		} else {
+			log.logger('error', `Arquivo de configuração em ${configPath} falhou ao iniciar procedimento de observação automática por mudanças...`);
+		}
+	})
+	.catch(err => {
+		log.logger('error', err.stack || err);
+	});
+
 });
 // -------------------------------------------------------------------------
