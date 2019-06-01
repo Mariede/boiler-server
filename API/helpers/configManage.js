@@ -20,26 +20,46 @@ const push = config => {
 const check = config => {
 	return new Promise((resolve, reject) => {
 		try {
-			const readConfig = param => {
+			const readConfig = (param, wait) => {
 				return new Promise((resolve, reject) => {
 					try {
 						const isValidJson = json => {
-							try {
-								JSON.parse(json);
-								return true;
-							} catch(err) {
-								log.logger('warn', 'Validação do conteúdo Json: ' + (err.message || err.stack || err), 'consoleOnly');
-								return false;
-							}
+							return new Promise(resolve => {
+								try {
+									JSON.parse(json);
+									resolve(true);
+								} catch(err) {
+									log.logger('warn', 'Validação do conteúdo Json: ' + (err.message || err.stack || err), 'consoleOnly');
+									resolve(false);
+								}
+							});
 						};
 
-						fs.readFile(param, 'utf8', (err, data) => {
-							if (err) {
+						// le e valida se json permanece valido, com debounce de wait
+						clearTimeout(timeoutReadFile);
+						timeoutReadFile = setTimeout(() => {
+							try {
+								fs.readFile(param, 'utf8', (err, data) => {
+									if (err) {
+										reject(err);
+									} else {
+										isValidJson(data)
+										.then(
+											result => {
+												resolve(result ? JSON.parse(data) : {});
+											}
+										)
+										.catch(
+											err => {
+												reject(err);
+											}
+										)
+									}
+								});
+							} catch(err) {
 								reject(err);
-							} else {
-								resolve(isValidJson(data) ? JSON.parse(data) : {});
 							}
-						});
+						}, wait);
 					} catch(err) {
 						reject(err);
 					}
@@ -101,8 +121,8 @@ const check = config => {
 			const showMessage = (func, wait) => {
 				return new Promise((resolve, reject) => {
 					try {
-						clearTimeout(timeout);
-						timeout = setTimeout(() => {
+						clearTimeout(timeoutMessages);
+						timeoutMessages = setTimeout(() => {
 							resolve(func());
 						}, wait);
 					} catch(err) {
@@ -119,7 +139,10 @@ const check = config => {
 				}
 			};
 
-			let timeout = null;
+			let timeoutMessages = null,
+				waitMessages = 5000,
+				timeoutReadFile = null,
+				waitReadFile = 500;
 
 			const watch = fs.watch(config, async (event, filename) => {
 				try {
@@ -127,18 +150,18 @@ const check = config => {
 						let objCheckIsEqual = true;
 
 						do {
-							objCheckIsEqual = deepIsEqual(__serverConfig, await readConfig(config));
+							objCheckIsEqual = deepIsEqual(__serverConfig, await readConfig(config, waitReadFile));
 
 							if (!objCheckIsEqual) {
-								if (!timeout) {
+								if (!timeoutMessages) {
 									message(filename);
 								}
 
-								await showMessage(message.bind(this, filename), 5000);
+								await showMessage(message.bind(this, filename), waitMessages);
 							} else {
-								if (timeout) {
-									clearTimeout(timeout);
-									timeout = null;
+								if (timeoutMessages) {
+									clearTimeout(timeoutMessages);
+									timeoutMessages = null;
 								}
 							}
 						} while (!objCheckIsEqual);
