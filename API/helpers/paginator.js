@@ -158,12 +158,12 @@ const keysToCamelCase = jsonData => {
 						Object.keys(jsonData[i]).forEach(
 							currentKey => {
 								let newKey = currentKey
-													.toLowerCase()
-													.replace(/[._-]([a-z])/g,
-														g => {
-															return g[1].toUpperCase();
-														}
-													);
+									.toLowerCase()
+									.replace(/[._-]([a-z])/g,
+										g => {
+											return g[1].toUpperCase();
+										}
+									);
 
 								newData[i][newKey] = jsonData[i][currentKey];
 							}

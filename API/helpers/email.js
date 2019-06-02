@@ -15,15 +15,16 @@ const path = require('path');
 const _executeQueue = (e, counter) => {
 	return new Promise((resolve, reject) => {
 		try {
-			let initPath = __serverRoot,
-				configKey = __serverConfig.email.queuePath + '/send',
+			let configQueue = __serverConfig.email.queue,
+				initPath = __serverRoot,
+				configKey = configQueue.path + '/send',
 				queuePathSend = initPath + configKey,
 				queueFile = JSON.stringify(e),
 				uniqueId = parseInt(((Math.random() * 9) + 1) * Math.pow(10, 5), 10),
 				dateNow = (new Date()).toISOString().split('T'),
 				dateLeft = (dateNow[0] || '').replace(/-/g, ''),
-				dateRight = (dateNow[1] || '').replace(/[:]/g, '').substr(0, 9),
-				fileName = queuePathSend + '\\mail-queue-' + dateLeft + dateRight + '.' + counter + '.' + uniqueId + '.send';
+				dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9),
+				fileName = queuePathSend + '\\mail-queue-' + dateLeft + dateRight + counter + '.' + uniqueId + configQueue.fileExtension;
 
 			if (!fs.existsSync(queuePathSend)) {
 				configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(

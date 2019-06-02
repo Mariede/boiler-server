@@ -20,7 +20,7 @@ const push = config => {
 const check = config => {
 	return new Promise((resolve, reject) => {
 		try {
-			const readConfig = (param, wait) => {
+			const readConfig = (param, fn,  wait) => {
 				return new Promise((resolve, reject) => {
 					try {
 						const isValidJson = json => {
@@ -29,7 +29,7 @@ const check = config => {
 									JSON.parse(json);
 									resolve(true);
 								} catch(err) {
-									log.logger('warn', 'Validação do conteúdo Json: ' + (err.message || err.stack || err), 'consoleOnly');
+									log.logger('warn', `Validação de conteúdo para o arquivo ${fn}: ${(err.message || err.stack || err)}`, 'consoleOnly');
 									resolve(false);
 								}
 							});
@@ -131,9 +131,9 @@ const check = config => {
 				});
 			};
 
-			const message = config => {
+			const message = fn => {
 				try {
-					log.logger('info', 'Arquivo ' + config + ' foi modificado... Favor corrigir ou reiniciar o servidor!!', 'consoleOnly');
+					log.logger('info', `Arquivo ${fn} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'consoleOnly');
 				} catch(err) {
 					throw new Error(err);
 				}
@@ -150,7 +150,7 @@ const check = config => {
 						let objCheckIsEqual = true;
 
 						do {
-							objCheckIsEqual = deepIsEqual(__serverConfig, await readConfig(config, waitReadFile));
+							objCheckIsEqual = deepIsEqual(__serverConfig, await readConfig(config, filename, waitReadFile));
 
 							if (!objCheckIsEqual) {
 								if (!timeoutMessages) {
@@ -165,6 +165,8 @@ const check = config => {
 								}
 							}
 						} while (!objCheckIsEqual);
+
+						log.logger('info', `Arquivo ${filename} verificado`, 'consoleOnly');
 					}
 				} catch(err) {
 					throw new Error(err);

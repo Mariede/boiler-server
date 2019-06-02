@@ -12,6 +12,7 @@ results
 build
 
 API/logs
+API/mail
 API/sessions
 API/uploads
 node_modules

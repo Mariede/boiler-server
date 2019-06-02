@@ -6,6 +6,7 @@
 		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/views/_home/images" }],
 		"pathFavicon": "/views/_home/images/favicon.ico",
 		"logFileName": "logs-server.log",
+		"logMailQueueFileName": "logs-mail-queue.log",
 		"cors": {
 			"origin": "*",
 			"methods": ["GET","HEAD","PUT","PATCH","POST","DELETE"],
@@ -66,7 +67,11 @@
 		"_comments1": "conexaoTipo => 2: sem pool / Default: com pool"
 	},
 	"email": {
-		"queuePath": "/mail/queue",
+		"queue": {
+			"path": "/mail/queue",
+			"fileExtension": ".send",
+			"timeCheck": 30000
+		},
 		"transporter": {
 			"pool": false,
 			"host": "smtp.example.com",
@@ -79,6 +84,8 @@
 				"authMethod": "PLAIN"
 			}
 		},
-		"_comments1": "secure: true => port 465 / secure: false => port 587 or 25"
+		"_comments1": "secure: true => port 465 / secure: false => port 587 or 25",
+		"_comments2": "queue de e-mails usa as pastas fixas send e sent para enfileiramento",
+		"_comments3": "timeCheck tem um valor default minimo de 15 segundos (ou 15000)"
 	}
 }

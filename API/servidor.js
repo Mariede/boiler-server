@@ -30,10 +30,11 @@ moduleAlias.addAliases({
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 const log = require('@serverRoot/helpers/log');
 const configManage = require('@serverRoot/helpers/configManage');
+const queue = require('@serverRoot/helpers/queue');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Procedimento prioritarios
+// Procedimentos prioritarios
 
 // Acessando informacoes do arquivo de configuracoes do servidor
 const configPath = __serverRoot + '/config.json';
@@ -77,12 +78,20 @@ log4js.configure({
 			pattern: '.yyyy-MM-dd',
 			daysToKeep: 15,
 			compress: true
+		},
+		mailQueueAppender: {
+			type: 'dateFile',
+			filename: (__serverRoot + '/logs/' + __serverConfig.server.logMailQueueFileName),
+			pattern: '.yyyy-MM-dd',
+			daysToKeep: 15,
+			compress: true
 		}
 	},
 	categories: {
 		default: { appenders: ['consoleAppender', 'fileAppender'], level: 'warn' },
 		consoleOnly: { appenders: ['consoleAppender'], level: 'all' },
-		fileOnly: { appenders: ['fileAppender'], level: 'warn' }
+		fileOnly: { appenders: ['fileAppender'], level: 'warn' },
+		mailQueue: { appenders: ['consoleAppender', 'mailQueueAppender'], level: 'warn' }
 	}
 });
 
@@ -199,5 +208,17 @@ http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.
 		log.logger('error', err.stack || err);
 	});
 
+	// inicia o gerenciamento da pasta de e-mails para envios em fila (queue)
+	queue.queueStartMailCheck()
+	.then(result => {
+		if (typeof result === 'object') {
+			log.logger('info', 'Serviço de fila de e-mails iniciado com sucesso', 'consoleOnly');
+		} else {
+			log.logger('error', 'Serviço de fila de e-mails falhou ao iniciar...', 'mailQueue');
+		}
+	})
+	.catch(err => {
+		log.logger('error', err.stack || err, 'mailQueue');
+	});
 });
 // -------------------------------------------------------------------------
