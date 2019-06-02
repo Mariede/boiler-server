@@ -19,7 +19,7 @@
 ## Sessions com armazenamento via arquivos criptografados
   - sessionFileStore
 ## Logs com informações na tela e/ou arquivos diários de log
-  - log4js
+  - Arquivos separados de logs: servidor e fila de e-mails
 ## Autenticação das rotas personalizável
   - Lib de autenticação
     - Rotas protegidas (configurável)
@@ -43,6 +43,7 @@
   - Envio de e-mails, com anexos, direto e/ou por chunks asyncs e/ou enfileirados em pasta no servidor
   - NODEMAILER: Configuração abrangente
   - Templates de e-mail dinâmicos
+  - Serviço cíclico assíncrono, gerencia o envio dos e-mails enfileirados
 ## Engine de templates para expor arquivos html dinâmicos
   - EJS - Embedded Javascript Templates (semelhante ao asp)
   - Acoplado ao sistema de views do Express
