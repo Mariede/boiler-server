@@ -70,6 +70,7 @@
 		"queue": {
 			"path": "/mail/queue",
 			"fileExtension": ".send",
+			"limitPerRound": 20,
 			"timeCheck": 30000
 		},
 		"transporter": {
@@ -85,7 +86,7 @@
 			}
 		},
 		"_comments1": "secure: true => port 465 / secure: false => port 587 or 25",
-		"_comments2": "queue de e-mails usa as pastas fixas send e sent para enfileiramento",
+		"_comments2": "limitPerRound tem um valor default maximo de 100 e-mails por vez",
 		"_comments3": "timeCheck tem um valor default minimo de 15 segundos (ou 15000)"
 	}
 }

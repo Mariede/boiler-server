@@ -12,8 +12,6 @@ const auth = require('@serverRoot/helpers/auth');
 // Rotas (controllers)
 const home = require('@serverRoot/routes/controllers/home');
 const usuario = require('@serverRoot/routes/controllers/usuarios/usuario');
-const produto = require('@serverRoot/routes/controllers/produtos/produto');
-const venda = require('@serverRoot/routes/controllers/vendas/venda');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -54,8 +52,6 @@ router.use(async (req, res, next) => {
 // Rotas (controllers) - chamadas
 home.rotasHome(router);
 usuario.rotasUsuario(router);
-produto.rotasProduto(router);
-venda.rotasVenda(router);
 // ---------------------------------------------------------------------------------------------------------------
 
 module.exports = router;

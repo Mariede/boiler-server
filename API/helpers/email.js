@@ -93,7 +93,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 		};
 
 		const sendAndReturn = async (m, t) => {
-			let infos = [],
+			let sentInfos = [],
 				i = 0;
 
 			await asyncForEach(
@@ -102,14 +102,14 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 					i++;
 
 					if (!sendQueue) {
-						infos.push(await t.sendMail(e)); // envia chunk de e-mails
+						sentInfos.push(await t.sendMail(e)); // envia chunk de e-mails
 					} else {
-						infos.push(await _executeQueue(e, i)); // queue chunk de e-mails
+						sentInfos.push(await _executeQueue(e, i)); // queue chunk de e-mails
 					}
 				}
 			);
 
-			return infos;
+			return sentInfos;
 		};
 
 		let transporter = nodemailer.createTransport(__serverConfig.email.transporter),

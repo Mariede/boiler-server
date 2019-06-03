@@ -2,6 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
+const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const log = require('@serverRoot/helpers/log');
@@ -12,16 +13,17 @@ const log = require('@serverRoot/helpers/log');
 const queueStartMailCheck = () => {
 	return new Promise((resolve, reject) => {
 		try {
-			let configQueue = __serverConfig.email.queue,
+			let transporter = nodemailer.createTransport(__serverConfig.email.transporter),
+				configQueue = __serverConfig.email.queue,
 				initPath = __serverRoot,
-				configKey = configQueue.path,
-				configKeySend = configKey + '/send',
-				configKeySent = configKey + '/sent',
-				queuePathSend = initPath + configKeySend,
-				queuePathSent = initPath + configKeySent,
+				configKey = configQueue.path + '/send',
+				queuePathSend = initPath + configKey,
+				limitPerRound = configQueue.limitPerRound,
+				defaultLimitPerRound = 100,
+				emailsPerRound = ((Number.isInteger(limitPerRound) && Number(limitPerRound) <= defaultLimitPerRound) ? limitPerRound : defaultLimitPerRound),
 				timeCheck = configQueue.timeCheck,
 				defaultTimeCheck = 15000,
-				intervalQueueCheck = ((Number.isInteger(timeCheck) && Number(timeCheck) > defaultTimeCheck) ? timeCheck : defaultTimeCheck);
+				intervalQueueCheck = ((Number.isInteger(timeCheck) && Number(timeCheck) >= defaultTimeCheck) ? timeCheck : defaultTimeCheck);
 
 			const watch = setInterval(
 				() => {
@@ -41,18 +43,13 @@ const queueStartMailCheck = () => {
 												const readThis = f => {
 													return new Promise((resolve, reject) => {
 														try {
-															fs.readFile(queuePathSend + '\\' + f,
+															fs.readFile(f,
 															'utf8',
 															(err, data) => {
 																try {
 																	if (err) {
 																		reject(err);
 																	} else {
-
-																		/* testes */
-																		// console.log(f);
-																		/* testes */
-
 																		resolve(JSON.parse(data));
 																	}
 																} catch(err) {
@@ -80,7 +77,8 @@ const queueStartMailCheck = () => {
 																file => {
 																	return path.extname(file).toLowerCase() === extensao;
 																}
-															);
+															),
+															sentTotal = 0;
 
 														if (targetFiles.length) {
 															targetFiles.sort(
@@ -93,26 +91,24 @@ const queueStartMailCheck = () => {
 																targetFiles,
 																async file => {
 																	try {
-																		let fileContent = await readThis(file);
+																		let filePathSend = queuePathSend + '\\' + file,
+																			fileContent = await readThis(filePathSend),
+																			sentInfo = await transporter.sendMail(fileContent),
+																			sentAccepted = (Array.isArray(sentInfo.accepted) ? sentInfo.accepted.length : 0),
+																			sentRejected = (Array.isArray(sentInfo.rejected) ? sentInfo.rejected.length : 0),
+																			sentPending = (Array.isArray(sentInfo.pending) ? sentInfo.pending.length : 0);
 
-																		/* testes */
-																		// Object.keys(fileContent).forEach(
-																		// 	currentKey => {
-																		// 		if (currentKey === 'to') {
-																		// 			console.log(fileContent.to);
-																		// 		} else if (currentKey === 'cc') {
-																		// 			console.log(fileContent.cc);
-																		// 		} else if (currentKey === 'bcc') {
-																		// 			console.log(fileContent.bcc);
-																		// 		}
-																		// 	}
-																		// );
-																		/* testes */
+																		sentTotal = sentTotal + sentAccepted + sentRejected + sentPending;
 
-																		// send email ****
+																		fs.unlinkSync(filePathSend);
 
+																		log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}`, 'consoleOnly');
+
+																		// if (sentTotal > emailsPerRound) {
+																		// 	//exit loop
+																		// }
 																	} catch(err) {
-																		log.logger('error', `Leitura de arquivo mal sucedida: ${(err.stack || err)}`, 'mailQueue');
+																		log.logger('error', `Disparo de arquivo mal sucedido: ${(err.stack || err)}`, 'mailQueue');
 																	}
 																}
 															);
