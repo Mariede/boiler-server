@@ -39,23 +39,25 @@ const check = config => {
 						clearTimeout(timeoutReadFile);
 						timeoutReadFile = setTimeout(() => {
 							try {
-								fs.readFile(param, 'utf8', (err, data) => {
-									if (err) {
-										reject(err);
-									} else {
-										isValidJson(data)
-										.then(
-											result => {
-												resolve(result ? JSON.parse(data) : {});
-											}
-										)
-										.catch(
-											err => {
-												reject(err);
-											}
-										)
+								fs.readFile(param, 'utf8',
+									(err, data) => {
+										if (err) {
+											reject(err);
+										} else {
+											isValidJson(data)
+											.then(
+												result => {
+													resolve(result ? JSON.parse(data) : {});
+												}
+											)
+											.catch(
+												err => {
+													reject(err);
+												}
+											)
+										}
 									}
-								});
+								);
 							} catch(err) {
 								reject(err);
 							}

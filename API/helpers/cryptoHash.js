@@ -39,10 +39,11 @@ const _baseCipherDecipher = async (passData, ...saltData) => {
 						(err, derivedKey) => {
 							if (err) {
 								reject(err);
+							} else {
+								resolve(derivedKey);
 							}
-
-							resolve(derivedKey);
-					});
+						}
+					);
 				} catch(err) {
 					reject(err);
 				}

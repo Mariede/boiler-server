@@ -17,7 +17,7 @@ const _executeQueue = (e, counter) => {
 		try {
 			let configQueue = __serverConfig.email.queue,
 				initPath = __serverRoot,
-				configKey = configQueue.path + '/send',
+				configKey = configQueue.path,
 				queuePathSend = initPath + configKey,
 				queueFile = JSON.stringify(e),
 				uniqueId = parseInt(((Math.random() * 9) + 1) * Math.pow(10, 5), 10),

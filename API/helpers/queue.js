@@ -16,7 +16,7 @@ const queueStartMailCheck = () => {
 			let transporter = nodemailer.createTransport(__serverConfig.email.transporter),
 				configQueue = __serverConfig.email.queue,
 				initPath = __serverRoot,
-				configKey = configQueue.path + '/send',
+				configKey = configQueue.path,
 				queuePathSend = initPath + configKey,
 				limitPerRound = configQueue.limitPerRound,
 				defaultLimitPerRound = 100,
@@ -40,22 +40,52 @@ const queueStartMailCheck = () => {
 										'utf8',
 										async (err, files) => {
 											try {
+												const prepareSending = f => {
+													return new Promise((resolve, reject) => {
+														try {
+															let queuePathSending = queuePathSend + '/sending',
+																filePathSend = queuePathSend + '\\' + f,
+																filePathSending = queuePathSending + '\\' + f;
+
+		 													if (!fs.existsSync(queuePathSending)) {
+																fs.mkdirSync(queuePathSending);
+															}
+
+															fs.rename(filePathSend, filePathSending,
+																err => {
+																	try {
+																		if (err) {
+																			reject(err);
+																		} else {
+																			resolve(filePathSending);
+																		}
+																	} catch(err) {
+																		reject(err);
+																	}
+																}
+															);
+														} catch(err) {
+															reject(err);
+														}
+													});
+												};
+
 												const readThis = f => {
 													return new Promise((resolve, reject) => {
 														try {
-															fs.readFile(f,
-															'utf8',
-															(err, data) => {
-																try {
-																	if (err) {
+															fs.readFile(f, 'utf8',
+																(err, data) => {
+																	try {
+																		if (err) {
+																			reject(err);
+																		} else {
+																			resolve(JSON.parse(data));
+																		}
+																	} catch(err) {
 																		reject(err);
-																	} else {
-																		resolve(JSON.parse(data));
 																	}
-																} catch(err) {
-																	reject(err);
 																}
-															});
+															);
 														} catch(err) {
 															reject(err);
 														}
@@ -91,8 +121,8 @@ const queueStartMailCheck = () => {
 																targetFiles,
 																async file => {
 																	try {
-																		let filePathSend = queuePathSend + '\\' + file,
-																			fileContent = await readThis(filePathSend),
+																		let filePathSending = await prepareSending(file),
+																			fileContent = await readThis(filePathSending),
 																			sentInfo = await transporter.sendMail(fileContent),
 																			sentAccepted = (Array.isArray(sentInfo.accepted) ? sentInfo.accepted.length : 0),
 																			sentRejected = (Array.isArray(sentInfo.rejected) ? sentInfo.rejected.length : 0),
@@ -100,7 +130,7 @@ const queueStartMailCheck = () => {
 
 																		sentTotal = sentTotal + sentAccepted + sentRejected + sentPending;
 
-																		fs.unlinkSync(filePathSend);
+																		fs.unlinkSync(filePathSending);
 
 																		log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}`, 'consoleOnly');
 

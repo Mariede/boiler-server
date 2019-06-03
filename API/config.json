@@ -68,7 +68,7 @@
 	},
 	"email": {
 		"queue": {
-			"path": "/mail/queue",
+			"path": "/queue/mail/send",
 			"fileExtension": ".send",
 			"limitPerRound": 20,
 			"timeCheck": 30000
