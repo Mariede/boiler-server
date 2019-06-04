@@ -176,7 +176,7 @@ const queueStartMailCheck = () => {
 																		if (sentTotal < emailsPerRound) {
 																			return false;
 																		} else {
-																			log.logger('info', 'Fila de e-mails: Saindo do loop...', 'consoleOnly');
+																			log.logger('info', `Fila de e-mails: limite de ${emailsPerRound} ${emailsPerRound === 1 ? 'e-mail atingido' : 'e-mails atingidos'} na rodada (${sentTotal} ${sentTotal === 1 ? 'disparado' : 'disparados'}), saindo do loop`, 'consoleOnly');
 
 																			return true;
 																		}

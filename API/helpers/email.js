@@ -26,24 +26,34 @@ const _executeQueue = (e, counter) => {
 				dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9),
 				fileName = queuePathSend + '\\mail-queue-' + dateLeft + dateRight + counter + '.' + uniqueId + configQueue.fileExtension;
 
-			if (!fs.existsSync(queuePathSend)) {
-				configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(
-					e => {
-						initPath = path.join(initPath, e);
-
-						if (!fs.existsSync(initPath)) {
-							fs.mkdirSync(initPath);
-						}
-					}
-				);
-			}
-
-			fs.writeFile(fileName, queueFile, 'utf8',
+			fs.access(
+				queuePathSend,
+				fs.constants.F_OK, // check if exists
 				err => {
-					if (err) {
+					try {
+						if (err) {
+							configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(
+								e => {
+									initPath = path.join(initPath, e);
+
+									if (!fs.existsSync(initPath)) {
+										fs.mkdirSync(initPath);
+									}
+								}
+							);
+						}
+
+						fs.writeFile(fileName, queueFile, 'utf8',
+							err => {
+								if (err) {
+									reject(err);
+								} else {
+									resolve(queueFile);
+								}
+							}
+						);
+					} catch(err) {
 						reject(err);
-					} else {
-						resolve(queueFile);
 					}
 				}
 			);
