@@ -20,7 +20,7 @@ const queueStartMailCheck = () => {
 				queuePathSend = initPath + configKey,
 				limitPerRound = configQueue.limitPerRound,
 				defaultLimitPerRound = 100,
-				emailsPerRound = ((Number.isInteger(limitPerRound) && Number(limitPerRound) <= defaultLimitPerRound) ? limitPerRound : defaultLimitPerRound),
+				emailsPerRound = ((Number.isInteger(limitPerRound) && Number(limitPerRound) > 0 && Number(limitPerRound) <= defaultLimitPerRound) ? limitPerRound : defaultLimitPerRound),
 				timeCheck = configQueue.timeCheck,
 				defaultTimeCheck = 15000,
 				intervalQueueCheck = ((Number.isInteger(timeCheck) && Number(timeCheck) >= defaultTimeCheck) ? timeCheck : defaultTimeCheck);
@@ -126,7 +126,11 @@ const queueStartMailCheck = () => {
 
 												const asyncForEach = async (a, callback) => {
 													for (let i = 0; i < a.length; i++) {
-														await callback(a[i], i, a);
+														let result = await callback(a[i], i, a);
+
+														if (result) {
+															break;
+														}
 													}
 												};
 
@@ -169,9 +173,13 @@ const queueStartMailCheck = () => {
 
 																		log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}${emailsAffected === 0 ? ' * Favor verificar a pasta sending (arquivo não excluído) *' : ''}`, 'consoleOnly');
 
-																		// if (sentTotal > emailsPerRound) {
-																		// 	//exit loop
-																		// }
+																		if (sentTotal < emailsPerRound) {
+																			return false;
+																		} else {
+																			log.logger('info', 'Fila de e-mails: Saindo do loop...', 'consoleOnly');
+
+																			return true;
+																		}
 																	} catch(err) {
 																		log.logger('error', `Disparo de arquivo mal sucedido: ${(err.stack || err)}`, 'mailQueue');
 																	}
