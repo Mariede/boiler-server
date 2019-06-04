@@ -33,32 +33,42 @@ const queueStartMailCheck = () => {
 						err => {
 							try {
 								if (err) {
-									log.logger('warn', `Não existe uma fila de e-mails para verificação: ${(err.message || err.stack || err)}`, 'consoleOnly');
+									log.logger('info', `Fila de e-mails para verificação não encontrada: ${(err.message || err.stack || err)}`, 'consoleOnly');
 								} else {
 									fs.readdir(
 										queuePathSend,
 										'utf8',
 										async (err, files) => {
 											try {
-												const prepareSending = f => {
+												const prepareThis = f => {
 													return new Promise((resolve, reject) => {
 														try {
 															let queuePathSending = queuePathSend + '/sending',
 																filePathSend = queuePathSend + '\\' + f,
 																filePathSending = queuePathSending + '\\' + f;
 
-		 													if (!fs.existsSync(queuePathSending)) {
-																fs.mkdirSync(queuePathSending);
-															}
-
-															fs.rename(filePathSend, filePathSending,
+															fs.access(
+																queuePathSending,
+																fs.constants.F_OK, // check if exists
 																err => {
 																	try {
 																		if (err) {
-																			reject(err);
-																		} else {
-																			resolve(filePathSending);
+																			fs.mkdirSync(queuePathSending);
 																		}
+
+																		fs.rename(filePathSend, filePathSending,
+																			err => {
+																				try {
+																					if (err) {
+																						reject(err);
+																					} else {
+																						resolve(filePathSending);
+																					}
+																				} catch(err) {
+																					reject(err);
+																				}
+																			}
+																		);
 																	} catch(err) {
 																		reject(err);
 																	}
@@ -92,6 +102,28 @@ const queueStartMailCheck = () => {
 													});
 												};
 
+												const deleteThis = f => {
+													return new Promise((resolve, reject) => {
+														try {
+															fs.unlink(f,
+																err => {
+																	try {
+																		if (err) {
+																			reject(err);
+																		} else {
+																			resolve();
+																		}
+																	} catch(err) {
+																		reject(err);
+																	}
+																}
+															);
+														} catch(err) {
+															reject(err);
+														}
+													});
+												};
+
 												const asyncForEach = async (a, callback) => {
 													for (let i = 0; i < a.length; i++) {
 														await callback(a[i], i, a);
@@ -99,7 +131,7 @@ const queueStartMailCheck = () => {
 												};
 
 												if (err) {
-													log.logger('warn', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.message || err.stack || err)}`, 'mailQueue');
+													log.logger('error', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.message || err.stack || err)}`, 'mailQueue');
 												} else {
 													if (files && files.length) {
 														let extensao = configQueue.fileExtension,
@@ -121,18 +153,21 @@ const queueStartMailCheck = () => {
 																targetFiles,
 																async file => {
 																	try {
-																		let filePathSending = await prepareSending(file),
+																		let filePathSending = await prepareThis(file),
 																			fileContent = await readThis(filePathSending),
 																			sentInfo = await transporter.sendMail(fileContent),
 																			sentAccepted = (Array.isArray(sentInfo.accepted) ? sentInfo.accepted.length : 0),
 																			sentRejected = (Array.isArray(sentInfo.rejected) ? sentInfo.rejected.length : 0),
-																			sentPending = (Array.isArray(sentInfo.pending) ? sentInfo.pending.length : 0);
+																			sentPending = (Array.isArray(sentInfo.pending) ? sentInfo.pending.length : 0),
+																			emailsAffected = sentAccepted + sentRejected + sentPending;
 
-																		sentTotal = sentTotal + sentAccepted + sentRejected + sentPending;
+																		sentTotal = sentTotal + emailsAffected;
 
-																		fs.unlinkSync(filePathSending);
+																		if (emailsAffected !== 0) {
+																			await deleteThis(filePathSending);
+																		}
 
-																		log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}`, 'consoleOnly');
+																		log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}${emailsAffected === 0 ? ' * Favor verificar a pasta sending (arquivo não excluído) *' : ''}`, 'consoleOnly');
 
 																		// if (sentTotal > emailsPerRound) {
 																		// 	//exit loop
@@ -143,7 +178,7 @@ const queueStartMailCheck = () => {
 																}
 															);
 														} else {
-															log.logger('info', `Fila de e-mails verificada: nenhum arquivo na fila com a extensão ${extensao} procurada`, 'consoleOnly');
+															log.logger('info', 'Fila de e-mails verificada: nenhum arquivo na fila', 'consoleOnly');
 														}
 													} else {
 														log.logger('info', 'Fila de e-mails verificada: nenhum arquivo na fila', 'consoleOnly');
