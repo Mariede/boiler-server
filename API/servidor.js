@@ -14,6 +14,7 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const log4js = require('log4js');
 const moduleAlias = require('module-alias');
+const path = require('path');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -198,10 +199,12 @@ http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.
 	// inicia gerenciamento do arquivo de configuracao do servidor
 	configManage.check(configPath)
 	.then(result => {
+		let fileName = path.basename(configPath);
+
 		if (typeof result === 'object') {
-			log.logger('info', `Arquivo de configuração em ${configPath} está sendo observado por mudanças`, 'consoleOnly');
+			log.logger('info', `Arquivo de configuração em ${fileName} está sendo observado por mudanças`, 'consoleOnly');
 		} else {
-			log.logger('error', `Arquivo de configuração em ${configPath} falhou ao iniciar procedimento de observação automática por mudanças...`);
+			log.logger('error', `Arquivo de configuração em ${fileName} falhou ao iniciar procedimento de observação automática por mudanças...`);
 		}
 	})
 	.catch(err => {
@@ -209,16 +212,20 @@ http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.
 	});
 
 	// inicia o gerenciamento da pasta de e-mails para envios em fila (queue)
-	queue.queueStartMailCheck()
-	.then(result => {
-		if (typeof result === 'object') {
-			log.logger('info', 'Serviço de fila de e-mails iniciado com sucesso', 'consoleOnly');
-		} else {
-			log.logger('error', 'Serviço de fila de e-mails falhou ao iniciar...', 'mailQueue');
-		}
-	})
-	.catch(err => {
-		log.logger('error', err.stack || err, 'mailQueue');
-	});
+	if (__serverConfig.email.queue.on) {
+		queue.queueStartMailCheck()
+		.then(result => {
+			if (typeof result === 'object') {
+				log.logger('info', 'Serviço de fila de e-mails iniciado com sucesso', 'consoleOnly');
+			} else {
+				log.logger('error', 'Serviço de fila de e-mails falhou ao iniciar...', 'mailQueue');
+			}
+		})
+		.catch(err => {
+			log.logger('error', err.stack || err, 'mailQueue');
+		});
+	} else {
+		log.logger('info', 'Serviço de fila de e-mails não habilitado', 'consoleOnly');
+	}
 });
 // -------------------------------------------------------------------------

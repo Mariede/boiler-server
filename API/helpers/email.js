@@ -355,6 +355,10 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			errorStack.push('sendChunks deve ser um objeto...');
 		}
 
+		if (sendQueue && !__serverConfig.email.queue.on) {
+			errorStack.push('Fila de e-mails não está habilitada no servidor. Verifique o arquivo de configuração...');
+		}
+
 		if (errorStack.length === 0) {
 			return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChunks, sendQueue);
 		} else {

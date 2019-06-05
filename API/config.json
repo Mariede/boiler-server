@@ -68,6 +68,7 @@
 	},
 	"email": {
 		"queue": {
+			"on": true,
 			"path": "/queue/mail/send",
 			"fileExtension": ".send",
 			"limitPerRound": 20,
