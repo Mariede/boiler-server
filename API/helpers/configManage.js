@@ -54,7 +54,7 @@ const check = config => {
 												err => {
 													reject(err);
 												}
-											)
+											);
 										}
 									}
 								);
