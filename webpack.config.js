@@ -1,28 +1,34 @@
 // const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
+const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
-const packageJson = require('./package.json');
 
-let verPackage = (packageJson.version || ''),
-	deployFolder = './build' + (verPackage ? '/' + verPackage : '');
+const packageJsonLocation = './package.json';
+const packageJson = require(packageJsonLocation);
+
+let namePackage = (packageJson.name || ''),
+	versionPackage = (packageJson.version || ''),
+	mainPackage = (packageJson.main || ''),
+	outputNamePackage = (packageJson.outputName || 'main.js'),
+	deployFolder = './build' + (versionPackage ? '/' + versionPackage : '');
 
 const sourcePath = path.resolve(__dirname, './API');
 const destinyPath = path.resolve(__dirname, deployFolder);
 
 module.exports = {
 	target: 'node',
-	mode: 'development', // production para prod
+	mode: 'production', // development para dev | production para prod
 	node: {
 		__dirname: false,
 		__filename: false
 	},
 	entry: {
-		main: (packageJson.main || '')
+		main: mainPackage
 	},
 	output: {
-		filename: '[name].js',
+		filename: outputNamePackage,
 		path: destinyPath
 	},
 	externals: [
@@ -31,16 +37,24 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				enforce: "pre",
+				enforce: 'pre',
 				test: /\.js$/,
 				exclude: /node_modules/,
-				loader: "eslint-loader"
+				loader: 'eslint-loader'
 				// options: {
 				// }
 			}
 		]
 	},
 	plugins: [
+		new GeneratePackageJsonPlugin(
+			{
+				'name': namePackage,
+				'version': versionPackage,
+				'main': outputNamePackage
+			}
+			, packageJsonLocation
+		),
 		new CleanPlugin(),
 		new CopyPlugin([
 			{
