@@ -73,23 +73,31 @@ log4js.configure({
 		consoleAppender: {
 			type: 'console'
 		},
+		startUpAppender: {
+			type: 'dateFile',
+			filename: (__serverRoot + '/logs/' + __serverConfig.server.logStartUp),
+			pattern: '.yyyy-MM-dd',
+			daysToKeep: 15,
+			compress: false
+		},
 		fileAppender: {
 			type: 'dateFile',
 			filename: (__serverRoot + '/logs/' + __serverConfig.server.logFileName),
 			pattern: '.yyyy-MM-dd',
 			daysToKeep: 15,
-			compress: true
+			compress: false
 		},
 		mailQueueAppender: {
 			type: 'dateFile',
 			filename: (__serverRoot + '/logs/' + __serverConfig.server.logMailQueueFileName),
 			pattern: '.yyyy-MM-dd',
 			daysToKeep: 15,
-			compress: true
+			compress: false
 		}
 	},
 	categories: {
 		default: { appenders: ['consoleAppender', 'fileAppender'], level: 'warn' },
+		startUp: { appenders: ['consoleAppender', 'startUpAppender'], level: 'all' },
 		consoleOnly: { appenders: ['consoleAppender'], level: 'all' },
 		fileOnly: { appenders: ['fileAppender'], level: 'warn' },
 		mailQueue: { appenders: ['consoleAppender', 'mailQueueAppender'], level: 'warn' }
@@ -194,7 +202,9 @@ app.use((err, req, res, next) => {
 // -------------------------------------------------------------------------
 // Inicia servidor ouvindo em host:port (sem certificado https)
 http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.host, () => {
-	log.logger('info', `Servidor está rodando em ${__serverConfig.server.host}:${__serverConfig.server.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`, 'consoleOnly');
+	log.logger('info', '>>> --- --- --- --- --- --- --- >>>   Servidor ouvindo   <<< --- --- --- --- --- --- --- <<<', 'startUp');
+
+	log.logger('info', `Servidor está rodando em ${__serverConfig.server.host}:${__serverConfig.server.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`, 'startUp');
 
 	// inicia gerenciamento do arquivo de configuracao do servidor
 	configManage.check(configPath)
@@ -202,13 +212,13 @@ http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.
 		let fileName = path.basename(configPath);
 
 		if (typeof result === 'object') {
-			log.logger('info', `Arquivo de configuração em ${fileName} está sendo observado por mudanças`, 'consoleOnly');
+			log.logger('info', `Arquivo de configuração em ${fileName} está sendo observado por mudanças`, 'startUp');
 		} else {
-			log.logger('error', `Arquivo de configuração em ${fileName} falhou ao iniciar procedimento de observação automática por mudanças...`);
+			log.logger('error', `Arquivo de configuração em ${fileName} falhou ao iniciar procedimento de observação automática por mudanças...`, 'startUp');
 		}
 	})
 	.catch(err => {
-		log.logger('error', err.stack || err);
+		log.logger('error', err.stack || err, 'startUp');
 	});
 
 	// inicia o gerenciamento da pasta de e-mails para envios em fila (queue)
@@ -216,16 +226,16 @@ http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.
 		queue.queueStartMailCheck()
 		.then(result => {
 			if (typeof result === 'object') {
-				log.logger('info', 'Serviço de fila de e-mails iniciado com sucesso', 'consoleOnly');
+				log.logger('info', 'Serviço de fila de e-mails iniciado com sucesso', 'startUp');
 			} else {
-				log.logger('error', 'Serviço de fila de e-mails falhou ao iniciar...', 'mailQueue');
+				log.logger('error', 'Serviço de fila de e-mails falhou ao iniciar...', 'startUp');
 			}
 		})
 		.catch(err => {
-			log.logger('error', err.stack || err, 'mailQueue');
+			log.logger('error', err.stack || err, 'startUp');
 		});
 	} else {
-		log.logger('info', 'Serviço de fila de e-mails não habilitado', 'consoleOnly');
+		log.logger('info', 'Serviço de fila de e-mails não habilitado', 'startUp');
 	}
 });
 // -------------------------------------------------------------------------
