@@ -1,0 +1,13 @@
+{
+  "name": "proxy",
+  "version": "1.0.0",
+  "description": "Pacote realiza proxy de uma ou varias aplicacões através dele",
+  "main": "proxyStart.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "http-proxy": "^1.17.0",
+    "log4js": "^4.3.1"
+  },
+  "author": "Michel Guimarães Ariede",
+  "license": "MIT"
+}
