@@ -29,7 +29,7 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 			// Server Worker identifica ID do trabalhador (cluster) se existir
 			if (clusterId) {
-				global.__serverWorker = clusterId;
+				__serverWorker = clusterId;
 			}
 
 			// Definindo pastas de conteudo estatico
@@ -175,12 +175,12 @@ const iniciar = (configPath, configManage, clusterId) => {
 						let resultQueue = await queue.queueStartMailCheck();
 
 						if (typeof resultQueue === 'object') {
-							messages.push(['info', `Serviço de fila de e-mails iniciado com sucesso`]);
+							messages.push(['info', 'Serviço de fila de e-mails iniciado com sucesso']);
 						} else {
-							messages.push(['error', `Serviço de fila de e-mails falhou ao iniciar...`]);
+							messages.push(['error', 'Serviço de fila de e-mails falhou ao iniciar...']);
 						}
 					} else {
-						messages.push(['info', `Serviço de fila de e-mails não habilitado`]);
+						messages.push(['info', 'Serviço de fila de e-mails não habilitado']);
 					}
 
 					resolve(messages);

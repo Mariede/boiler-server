@@ -146,8 +146,10 @@ const aplicacaoIniciar = async () => {
 				cluster.on (
 					'exit',
 					(worker, code, signal) => {
-						log.logger('info', `ID ${worker.process.pid} finalizou os serviços com o código ${code}`, 'consoleOnly');
-						log.logger('info', `Iniciando novo ID`, 'consoleOnly');
+						let message = `ID ${worker.process.pid} finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`;
+
+						log.logger('info', message, 'consoleOnly');
+						log.logger('info', 'Iniciando novo ID', 'consoleOnly');
 
 						cluster.fork();
 					}

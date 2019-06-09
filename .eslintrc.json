@@ -9,7 +9,8 @@
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly",
 		"__serverRoot": "readonly",
-		"__serverConfig": "readonly"
+		"__serverConfig": "readonly",
+		"__serverWorker": "writable"
 	},
 	"parserOptions": {
 		"ecmaVersion": 2018
