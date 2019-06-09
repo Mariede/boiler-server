@@ -11,7 +11,8 @@ const svc = new service(
 	{
 		name: config.name,
 		description: config.description,
-		script: config.script
+		script: config.script,
+		env: config.env
 	}
 );
 
