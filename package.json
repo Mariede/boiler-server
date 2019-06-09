@@ -2,7 +2,7 @@
   "name": "node-boiler-server",
   "version": "0.0.1",
   "description": "Montando ambiente de teste Node com express.js",
-  "main": "./API/servidor.js",
+  "main": "./API/aplicacao.js",
   "outputName": "main.js",
   "dependencies": {
     "compression": "^1.7.4",
@@ -32,7 +32,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "serve": "cls && set NODE_ENV=development && nodemon API/servidor.js",
+    "serve": "cls && set NODE_ENV=development && nodemon API/aplicacao.js",
     "proxy": "cls && nodemon _proxy/proxyStart.js",
     "build": "webpack --config webpack.config.js"
   },
@@ -47,6 +47,7 @@
     "node",
     "express",
     "nodemon",
+    "aplicacao",
     "servidor",
     "back-end",
     "rotas"

@@ -1,3 +1,5 @@
+'use strict';
+
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const express = require('express');

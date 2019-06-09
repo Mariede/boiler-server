@@ -1,6 +1,7 @@
 # node-boiler-server (boiler para servidor web NODE / Express)
 
 ## Servidor http
+  - Clusterização opcional -> através do item clustered no arquivo de configuração (true ou 0 para todos os processos possíveis)
   - CORS
   - favicon
   - body parser
@@ -16,10 +17,12 @@
 ## Prefixamento de rotas e Proxy geral de acesso (via porta 80)
   - Prefixo configurável pelo arquivo de configuração, atua em todas as rotas do servidor
   - proxyStart.js
+## Possibilidade de utilizar a aplicação como serviço do Windows
+  - node-windows
 ## Sessions com armazenamento via arquivos criptografados
   - sessionFileStore
-## Logs com informações na tela e/ou arquivos diários de log
-  - Arquivos separados de logs: servidor e fila de e-mails
+## Logs com informações na tela e/ou arquivos diários de logs
+  - Arquivos separados de logs por grupos
 ## Autenticação das rotas personalizável
   - Lib de autenticação
     - Rotas protegidas (configurável)

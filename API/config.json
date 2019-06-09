@@ -2,6 +2,7 @@
 	"server": {
 		"host": "localhost",
 		"port": 5000,
+		"clustered": false,
 		"routePrefix": "/",
 		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/views/_home/images" }],
 		"pathFavicon": "/views/_home/images/favicon.ico",
@@ -26,8 +27,9 @@
 			"cookieName": "cookie-server",
 			"timeout": 20
 		},
-		"_comments1": "Se o servidor estiver 'proxyado' por uma porta 80, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
-		"_comments2": "fileUpload: maxFileSize em bytes, session: timeout em minutos"
+		"_comments1": "clustered: valor numerico e inteiro que indica o numero de processos a serem executados no cluster. true / 0 para todos os processos possiveis",
+		"_comments2": "Se o servidor estiver 'proxyado' por uma porta 80, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
+		"_comments3": "fileUpload: maxFileSize em bytes, session: timeout em minutos"
 	},
 	"auth": {
 		"sessWrapper": "userData",
