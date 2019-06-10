@@ -46,7 +46,7 @@ const aplicacaoIniciar = async () => {
 			messages.forEach(
 				message => {
 					if (message[0] === checkType) {
-						messagesCheckType = messagesCheckType + (i !== 0 ? padStart : '') + message[1] + '\n';
+						messagesCheckType = messagesCheckType + (i !== 0 ? padStart : '') + message[1] + '\r\n';
 					} else {
 						log.logger(message[0], message[1], 'startUp');
 					}

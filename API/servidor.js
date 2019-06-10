@@ -5,13 +5,13 @@
 const express = require('express');
 const app = express();
 const http = require('http');
-const favicon = require('serve-favicon');
 const cors = require('cors');
 const session = require('express-session');
 const sessionFileStore = require('session-file-store')(session);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const favicon = require('serve-favicon');
 const path = require('path');
 // -------------------------------------------------------------------------
 
