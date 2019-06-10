@@ -4,6 +4,7 @@
   "description": "Pacote transforma aplicação em serviço no windows",
   "main": "serviceOn.js",
   "dependencies": {
+    "minimist": "^1.2.0",
     "node-windows": "^0.1.14"
   },
   "author": "Michel Guimarães Ariede",
