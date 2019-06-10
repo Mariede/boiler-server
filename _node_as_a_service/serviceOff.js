@@ -10,7 +10,6 @@ const config = require('./config');
 const svc = new service(
 	{
 		name: config.name,
-		description: config.description,
 		script: config.script
 	}
 );
