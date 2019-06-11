@@ -12,7 +12,7 @@ const root = async (req, res) => {
 		let fRet = { file: 'index.html', path: __serverRoot + '/views/_home' };
 		return fRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -21,7 +21,7 @@ const login = async (req, res) => {
 		let fRet = await auth.login(req);
 		return fRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -30,7 +30,7 @@ const logout = async (req, res) => {
 		let fRet = await auth.logout(req, res);
 		return fRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -39,7 +39,7 @@ const isLogged = async (req, res) => {
 		let fRet = await auth.isLogged(req, 2);
 		return fRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 // -------------------------------------------------------------------------

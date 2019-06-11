@@ -141,15 +141,19 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 			});
 		};
 
-		let method = req.method;
+		let method = req.method,
+			e = new Error();
+
+		e.name = 'BADR';
 
 		if (method.toUpperCase() === 'POST') {
 			return await uploadFiles(fileNames);
 		} else {
-			throw new Error('Uploader: Favor utilizar verbo POST para realizar o upload dos arquivos...');
+			e.message = 'Uploader: Favor utilizar verbo POST para realizar o upload dos arquivos...';
+			throw e;
 		}
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 // -------------------------------------------------------------------------

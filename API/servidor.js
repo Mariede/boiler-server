@@ -148,7 +148,7 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 			// Handler erros sincronos -------------------------------
 			app.use((err, req, res, next) => {
-				reject(err.stack || err);
+				reject(err);
 			});
 			// -------------------------------------------------------------------------
 
@@ -185,11 +185,11 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 					resolve(messages);
 				} catch(err) {
-					reject(err.stack || err);
+					reject(err);
 				}
 			});
 		} catch(err) {
-			reject(err.stack || err);
+			reject(err);
 		}
 	});
 };

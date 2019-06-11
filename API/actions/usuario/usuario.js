@@ -12,7 +12,7 @@ const consultarTodos = async (req, res) => {
 		let fRet = 'consulta todos usuarios';
 		return fRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -23,7 +23,7 @@ const consultar = async (req, res) => {
 
 		return `${fRet} ${id}`;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -34,7 +34,7 @@ const inserir = async (req, res) => {
 
 		return `${fRet} ${id}`;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -45,7 +45,7 @@ const alterar = async (req, res) => {
 
 		return `${fRet} ${id}`;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -56,7 +56,7 @@ const excluir = async (req, res) => {
 
 		return `${fRet} ${id}`;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 // -------------------------------------------------------------------------

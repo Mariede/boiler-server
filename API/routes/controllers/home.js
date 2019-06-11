@@ -17,7 +17,7 @@ const _gateLocal = async (req, res) => {
 		log.logger('info', '=> em Controller HOME', 'consoleOnly');
 		return;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 // -------------------------------------------------------------------------

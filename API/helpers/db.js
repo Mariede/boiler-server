@@ -267,7 +267,7 @@ const sqlExecuteAll = async (parametros, forceClose = false) => {
 
 		return result;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 // -------------------------------------------------------------------------

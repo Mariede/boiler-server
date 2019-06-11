@@ -48,10 +48,14 @@ const isProtected = rota => {
 const login = async req => {
 	try {
 		let sess = req.session,
-			sessWraper = __serverConfig.auth.sessWrapper;
+			sessWraper = __serverConfig.auth.sessWrapper,
+			e = new Error();
+
+		e.name = 'BADR';
 
 		if (sess[sessWraper]) {
-			throw new Error('Usuário já logado');
+			e.message = 'Usuário já logado...';
+			throw e;
 		} else { // Inicia a sessao
 			sess[sessWraper] = {};
 
@@ -69,7 +73,7 @@ sess[sessWraper].permissoes = ['LST_INFO1', 'EDT_INFO1', 'EXC_INFO2', 'LST_INFO3
 
 		return sess[sessWraper];
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 

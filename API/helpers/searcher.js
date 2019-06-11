@@ -69,13 +69,16 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 
 				return (falsy.includes(param) ? '' : ((param === 0 || param === false) ? param.toString() : (param || '').toString()));
 			} catch(err) {
-				throw new Error(err);
+				throw err;
 			}
 		};
 
 		let method = req.method,
 			searchFields = [],
-			searchValue = '';
+			searchValue = '',
+			e = new Error();
+
+		e.name = 'BADR';
 
 		if (method.toUpperCase() === 'GET') {
 			if (req.query.fullsearch_fields) {
@@ -90,12 +93,13 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 				searchValue += falsyCheck(req.query.fullsearch_value);
 			}
 		} else {
-			throw new Error('Searcher: Favor utilizar verbo GET para realizar a consulta...');
+			e.message = 'Searcher: Favor utilizar verbo GET para realizar a consulta...';
+			throw e;
 		}
 
 		return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 // -------------------------------------------------------------------------

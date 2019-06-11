@@ -25,7 +25,7 @@ const _checkSaltData = async (...saltData) => {
 
 		return salt;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -64,7 +64,7 @@ const _baseCipherDecipher = async (passData, ...saltData) => {
 		};
 
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -102,7 +102,7 @@ const hash = async (passData, ...saltData) => {
 			passHash: passHash
 		};
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -117,7 +117,7 @@ const cipher = async (passData, ...saltData) => {
 
 		return cipher;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -132,7 +132,7 @@ const decipher = async (passData, ...saltData) => {
 
 		return decipher;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 // -------------------------------------------------------------------------

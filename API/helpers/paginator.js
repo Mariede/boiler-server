@@ -110,7 +110,7 @@ const setSort = async (req, jsonData) => {
 
 		return await _executeSort(jsonData, sortElements, sortOrder, sortCaseInsensitive);
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -140,7 +140,7 @@ const setPage = async (req, jsonData, jsonDataLen) => {
 			return jsonData;
 		}
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 

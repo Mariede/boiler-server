@@ -12,7 +12,7 @@ const push = config => {
 	try {
 		return Object.freeze(JSON.parse(fs.readFileSync(config, 'utf8')));
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -115,7 +115,7 @@ const check = config => {
 
 					return true;
 				} catch(err) {
-					throw new Error(err);
+					throw err;
 				}
 			};
 
@@ -137,7 +137,7 @@ const check = config => {
 				try {
 					log.logger('info', `Arquivo ${fn} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'consoleOnly');
 				} catch(err) {
-					throw new Error(err);
+					throw err;
 				}
 			};
 
@@ -171,7 +171,7 @@ const check = config => {
 						log.logger('info', `Arquivo ${filename} verificado`, 'consoleOnly');
 					}
 				} catch(err) {
-					throw new Error(err);
+					throw err;
 				}
 			});
 

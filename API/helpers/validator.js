@@ -13,7 +13,7 @@ const _falsyCheck = param => {
 
 		return (falsy.includes(param) ? param : (param === 0 ? param.toString() : (param || '').toString()));
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -73,7 +73,7 @@ const isCnpj = cnpj => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -131,7 +131,7 @@ const isCpf = cpf => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -172,7 +172,7 @@ const isPisPasep = pisPasep => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -188,7 +188,7 @@ const isEmail = email => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -204,7 +204,7 @@ const isCep = (cep, separator = '-') => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -224,7 +224,7 @@ const isEmpty = (param, trimmed = true) => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -241,7 +241,7 @@ const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -252,7 +252,7 @@ const isNumber = num => {
 
 		return Number.isInteger(falsy.includes(num) ? num : (typeof num === 'string' ? (num.trim() === '' ? num : Number(num)) : Number(num))) && Number(num) >= 0 && !Array.isArray(num);
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -269,7 +269,7 @@ const isInteger = (num, signed = true) => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -286,7 +286,7 @@ const isIntegerOrFloat = (num, signed = true) => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -303,7 +303,7 @@ const isIntegerOrFixed = (num, fixedDecimal, signed = true) => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -320,7 +320,7 @@ const isDate = date => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -344,7 +344,7 @@ const contains = (param, paramCompare, caseInsensitive = true) => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -368,7 +368,7 @@ const equal = (param, paramCompare, caseInsensitive = true) => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -385,7 +385,7 @@ const len = (param, lMin = 0, lMax = 0) => {
 
 		return vRet;
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 // -------------------------------------------------------------------------

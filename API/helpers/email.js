@@ -155,7 +155,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 
 		return await sendAndReturn(messages, transporter);
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
@@ -365,7 +365,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			return errorStack;
 		}
 	} catch(err) {
-		throw new Error(err);
+		throw err;
 	}
 };
 
