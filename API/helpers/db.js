@@ -4,6 +4,7 @@
 // Modulos de inicializacao
 const sql = require('mssql');
 const log = require('@serverRoot/helpers/log');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -160,13 +161,13 @@ const sqlExecute = (transaction, parametros) => {
 												r.input(key[0], sql[dataType.base], key[2]);
 											}
 										} else {
-											throw new Error(`Tipo de dados ${key[1]} definido no input de ${p.dados.executar} não configurado no método, favor corrigir ou avise um administrador...`);
+											errWrapper.throwThis('DB', 400, `Tipo de dados ${key[1]} definido no input de ${p.dados.executar} não configurado no método, favor corrigir ou avise um administrador...`);
 										}
 									} else {
 										if (key.length === 2) {
 											r.input(key[0], key[1]);
 										} else {
-											throw new Error(`Formato { ${key} } inválido para input da query { ${p.dados.executar} }, necessita de duas ou três chaves, dependendo do modelo da chamada...`);
+											errWrapper.throwThis('DB', 400, `Formato { ${key} } inválido para input da query { ${p.dados.executar} }, necessita de duas ou três chaves, dependendo do modelo da chamada...`);
 										}
 									}
 								});
@@ -185,10 +186,10 @@ const sqlExecute = (transaction, parametros) => {
 												r.output(key[0], sql[dataType.base]);
 											}
 										} else {
-											throw new Error(`Tipo de dados ${key[1]} definido no output de ${p.dados.executar} não configurado no método, favor corrigir ou avise um administrador...`);
+											errWrapper.throwThis('DB', 400, `Tipo de dados ${key[1]} definido no output de ${p.dados.executar} não configurado no método, favor corrigir ou avise um administrador...`);
 										}
 									} else {
-										throw new Error(`Formato { ${key} } inválido para output da query { ${p.dados.executar} }, necessita de duas chaves...`);
+										errWrapper.throwThis('DB', 400, `Formato { ${key} } inválido para output da query { ${p.dados.executar} }, necessita de duas chaves...`);
 									}
 								});
 							}
@@ -205,10 +206,10 @@ const sqlExecute = (transaction, parametros) => {
 							return r.execute(p.dados.executar);
 						}
 					} else {
-						throw new Error('Executar não foi corretamente definido nos parâmetros JSON para execução da query, verifique seu código...');
+						errWrapper.throwThis('DB', 400, 'Executar não foi corretamente definido nos parâmetros JSON para execução da query, verifique seu código...');
 					}
 				} else {
-					throw new Error('O formato e/ou os dados não foram corretamente definidos nos parâmetros JSON para execução da query, verifique seu código...');
+					errWrapper.throwThis('DB', 400, 'O formato e/ou os dados não foram corretamente definidos nos parâmetros JSON para execução da query, verifique seu código...');
 				}
 			};
 
