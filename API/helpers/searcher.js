@@ -3,6 +3,7 @@
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const dbCon = require('@serverRoot/helpers/db');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -75,10 +76,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 
 		let method = req.method,
 			searchFields = [],
-			searchValue = '',
-			e = new Error();
-
-		e.name = 'BADR';
+			searchValue = '';
 
 		if (method.toUpperCase() === 'GET') {
 			if (req.query.fullsearch_fields) {
@@ -93,8 +91,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 				searchValue += falsyCheck(req.query.fullsearch_value);
 			}
 		} else {
-			e.message = 'Searcher: Favor utilizar verbo GET para realizar a consulta...';
-			throw e;
+			errWrapper.throwThis('SEARCHER', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 		}
 
 		return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);

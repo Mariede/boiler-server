@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -105,7 +105,7 @@ const setSort = async (req, jsonData) => {
 				sortCaseInsensitive = /^(true|yes|y|sim|s){0,1}$/i.test(req.query.sort_case_insensitive);
 			}
 		} else {
-			throw new Error('Ordenação (Sorter): Favor utilizar verbo GET para realizar a ordenação...');
+			errWrapper.throwThis('ORDENAÇÃO (SORTER)', 400, 'Favor utilizar verbo GET para realizar a ordenação...');
 		}
 
 		return await _executeSort(jsonData, sortElements, sortOrder, sortCaseInsensitive);
@@ -131,7 +131,7 @@ const setPage = async (req, jsonData, jsonDataLen) => {
 				itemsPerPage = parseInt(req.query.items_per_page, 10);
 			}
 		} else {
-			throw new Error('Paginação (Paginator): Favor utilizar verbo GET para realizar a consulta...');
+			errWrapper.throwThis('PAGINAÇÃO (PAGINATOR)', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 		}
 
 		if (currentPage) {

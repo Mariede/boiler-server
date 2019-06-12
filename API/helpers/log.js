@@ -58,18 +58,23 @@ const logger = (escopo, mensagem, incorporador = '') => {
 
 // Retorna erro ao usuario via controller
 const controllerErro = (res, err, escopo, incorporador = '') => {
-	let httpStatusCode = 500;
+	let httpStatusCode = 500,
+		message = {};
 
-	switch (err.name) {
-		case 'BADR': {
-			httpStatusCode = 400;
-			err.showStack = err.stack;
-			break;
+	if (typeof err === 'object') {
+		err.stackTrace = err.stack;
+		message = err;
+
+		switch (err.code) {
+			case 400: {
+				httpStatusCode = 400;
+				break;
+			}
 		}
 	}
 
 	logger(escopo, err.stack || err, incorporador);
-	res.status(httpStatusCode).send(err);
+	res.status(httpStatusCode).send(message);
 };
 // -------------------------------------------------------------------------
 

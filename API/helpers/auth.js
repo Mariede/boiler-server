@@ -3,6 +3,7 @@
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const cryptoHash = require('@serverRoot/helpers/cryptoHash');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -48,14 +49,10 @@ const isProtected = rota => {
 const login = async req => {
 	try {
 		let sess = req.session,
-			sessWraper = __serverConfig.auth.sessWrapper,
-			e = new Error();
-
-		e.name = 'BADR';
+			sessWraper = __serverConfig.auth.sessWrapper;
 
 		if (sess[sessWraper]) {
-			e.message = 'Usuário já logado...';
-			throw e;
+			errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
 		} else { // Inicia a sessao
 			sess[sessWraper] = {};
 

@@ -7,6 +7,7 @@ const htmlToText = require('html-to-text');
 const validator = require('@serverRoot/helpers/validator');
 const fs = require('fs');
 const path = require('path');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -362,7 +363,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 		if (errorStack.length === 0) {
 			return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChunks, sendQueue);
 		} else {
-			return errorStack;
+			errWrapper.throwThis('EMAIL', 400, errorStack);
 		}
 	} catch(err) {
 		throw err;

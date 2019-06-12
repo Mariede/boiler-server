@@ -5,6 +5,7 @@
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -100,7 +101,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 									if (extName && mimeType) {
 										return callback(null, true);
 									} else {
-										callback('Uploader: Upload de arquivos apenas suporta as seguintes extensões - ' + checkExtensions.join(', ') + ' com seus respectivos MIME Types - ' + checkMimeTypes.join(', ') + '...');
+										callback('Upload de arquivos apenas suporta as seguintes extensões - ' + checkExtensions.join(', ') + ' com seus respectivos MIME Types - ' + checkMimeTypes.join(', ') + '...');
 									}
 								} catch(err) {
 									callback(err);
@@ -141,16 +142,12 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 			});
 		};
 
-		let method = req.method,
-			e = new Error();
-
-		e.name = 'BADR';
+		let method = req.method;
 
 		if (method.toUpperCase() === 'POST') {
 			return await uploadFiles(fileNames);
 		} else {
-			e.message = 'Uploader: Favor utilizar verbo POST para realizar o upload dos arquivos...';
-			throw e;
+			errWrapper.throwThis('UPLOADER', 400, 'Favor utilizar verbo POST para realizar o upload dos arquivos...');
 		}
 	} catch(err) {
 		throw err;
