@@ -126,7 +126,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 		let transporter = nodemailer.createTransport(__serverConfig.email.transporter),
 			message = {
 				'from': from,
-				'subject': subject,
+				'subject': subject
 			},
 			messages = [];
 
@@ -411,7 +411,7 @@ const getAttachments = (uploaderResults, fileNames) => {
 			reject(err);
 		}
 	});
-}
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
