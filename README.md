@@ -8,12 +8,13 @@
   - cookie parser
   - compression
   - Pastas de  arquivo estáticos
+  - Permite aplicações RESTFUL
 ## Arquivo de configuração unificado do servidor
   - config.json
   - Gerenciamento em tempo real do arquivo de configuração
 ## Estrutura de código com pontos definidos de entrada / saída
   - Roteamento em camadas
-  - Tratamento de Erros (sync e async)
+  - Tratamento conjunto da pilha de Erros (sync e async)
 ## Prefixamento de rotas e Proxy geral de acesso (via porta 80)
   - Prefixo configurável pelo arquivo de configuração, atua em todas as rotas do servidor
   - proxyStart.js
