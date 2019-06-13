@@ -7,7 +7,7 @@ const log = require('@serverRoot/helpers/log');
 
 // -------------------------------------------------------------------------
 // Acoes
-const usuario = require('@serverRoot/actions/usuario/usuario');
+const usuario = require('@serverRoot/actions/usuario');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

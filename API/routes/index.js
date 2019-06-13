@@ -5,13 +5,14 @@
 const express = require('express');
 const router = express.Router();
 const log = require('@serverRoot/helpers/log');
-const auth = require('@serverRoot/helpers/auth');
+const helpersAuth = require('@serverRoot/helpers/auth');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Rotas (controllers)
+const auth = require('@serverRoot/routes/controllers/auth');
 const home = require('@serverRoot/routes/controllers/home');
-const usuario = require('@serverRoot/routes/controllers/usuarios/usuario');
+const usuario = require('@serverRoot/routes/controllers/usuario');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -24,7 +25,7 @@ router.use(async (req, res, next) => {
 					req.socket.remoteAddress ||
 					(req.connection.socket ? req.connection.socket.remoteAddress : null),
 			method = req.method,
-			isProtected = await auth.isProtected(rota),
+			isProtected = await helpersAuth.isProtected(rota),
 			segueFluxo = false;
 
 		log.logger('info', `${isProtected ? '* PROTEGIDA * ' : ''}Rota ${rota} (${method.toUpperCase()}) requisitada por ${ip}`, 'consoleOnly');
@@ -32,7 +33,7 @@ router.use(async (req, res, next) => {
 		if (!isProtected) {
 			segueFluxo = true;
 		} else {
-			if (await auth.isLogged(req, 1)) {
+			if (await helpersAuth.isLogged(req, 1)) {
 				segueFluxo = true;
 			}
 		}
@@ -50,6 +51,7 @@ router.use(async (req, res, next) => {
 
 // -------------------------------------------------------------------------
 // Rotas (controllers) - chamadas
+auth.rotasAuth(router);
 home.rotasHome(router);
 usuario.rotasUsuario(router);
 // ---------------------------------------------------------------------------------------------------------------
