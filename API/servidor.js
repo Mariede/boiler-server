@@ -133,7 +133,7 @@ const iniciar = (configPath, configManage, clusterId) => {
 			// Caminho padrao
 			app.set(
 				'views',
-				__serverRoot + '/views'
+				__serverRoot + '/_client/views'
 			);
 
 			// Rotas -------------------------------------------------
