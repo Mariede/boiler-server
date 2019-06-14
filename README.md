@@ -45,7 +45,7 @@
 ## Criptografia
   - Hash e Cipher
 ## Uploader
-  - Upload de grupos de arquivos com filtros por tamanho, quantidade de arquivos, extensão, MIME types, ... configurável
+  - Upload de grupos de arquivos com filtros por tamanho, quantidade de arquivos, extensão, MIME types, ...
   - MULTER: Upload direto para memória ou pastas específicas no servidor
 ## Email
   - Envio de e-mails, com anexos, direto e/ou por chunks asyncs e/ou enfileirados em pasta no servidor
@@ -59,14 +59,14 @@
   - Através do Webpack
   - Validação de código ESLINT
 ## Estrutura das pasta do servidor
-  - client : arquivos do front-end como views (htmls dinâmicos), imagens, css etc...
+  - client : arquivos do front-end como views e templates (htmls dinâmicos), imagens, css etc...
   - actions : métodos com as regras de negócio e codificação dos processos
-    - é local a rota em execução
+    - é local, relacionado a rota em execução
     - uma action pode chamar uma ou mais actions e/ou um ou mais helpers
   - custom : pasta com APIs de interfaceamento para outros serviços externos
     - é como um helper interfaceando exclusivamente serviços externos
   - helpers : métodos com as regras de negócio e codificação dos processos
-    - é global e pode ser utilizado por qualquer action
+    - é global, relacionado ao projeto e pode ser utilizado por qualquer action
     - um helper pode chamar um ou mais helpers
   - logs
     - arquivos de logs do servidor
@@ -74,9 +74,9 @@
     - arquivos da fila de e-mails (e-mails agendados a serem enviados)
   - routes
     - define um ou mais controllers para o projeto
-      - ponto centralizador do contato client/server
     - define as rotas do servidor
-    - todas requisição/retorno do cliente é realizado aqui
+    - ponto centralizador do contato client/server
+      - todas requisição/retorno do cliente é realizado aqui
   - sessions
     - arquivos contendo as sessões ativas
   - uplods
