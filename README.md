@@ -1,25 +1,29 @@
-# node-boiler-server (boiler para servidor web NODE / Express)
+# node-boiler-server (boiler para servidor web em Express NODE.js)
 
 ## Servidor http
-  - Clusterização opcional -> através do item clustered no arquivo de configuração (true ou 0 para todos os processos possíveis)
+  - Clusterização opcional
   - CORS
   - favicon
   - body parser
   - cookie parser
   - compression
-  - Pastas de  arquivo estáticos
+  - Pastas de arquivo estáticos
   - Permite aplicações RESTFUL
+  - Permite APIs de terceiros
 ## Arquivo de configuração unificado do servidor
   - config.json
   - Gerenciamento em tempo real do arquivo de configuração
 ## Estrutura de código com pontos definidos de entrada / saída
   - Roteamento em camadas
   - Tratamento conjunto da pilha de Erros (sync e async)
+  - Erros personalizados
 ## Prefixamento de rotas e Proxy geral de acesso (via porta 80)
-  - Prefixo configurável pelo arquivo de configuração, atua em todas as rotas do servidor
+  - Prefixo configurável, atua em todas as rotas do servidor
   - proxyStart.js
 ## Possibilidade de utilizar a aplicação como serviço do Windows
   - node-windows
+  - Inicia junto com a máquina
+  - Serviço reinicia automáticamente, se houver problemas
 ## Sessions com armazenamento via arquivos criptografados
   - sessionFileStore
 ## Logs com informações na tela e/ou arquivos diários de logs
@@ -54,3 +58,26 @@
 ## Build gerável
   - Através do Webpack
   - Validação de código ESLINT
+## Estrutura das pasta do servidor
+  - client : arquivos do front-end como views (htmls dinâmicos), imagens, css etc...
+  - actions : métodos com as regras de negócio e codificação dos processos
+    - é local a rota em execução
+    - uma action pode chamar uma ou mais actions e/ou um ou mais helpers
+  - custom : pasta com APIs de interfaceamento para outros serviços externos
+    - é como um helper interfaceando exclusivamente serviços externos
+  - helpers : métodos com as regras de negócio e codificação dos processos
+    - é global e pode ser utilizado por qualquer action
+    - um helper pode chamar um ou mais helpers
+  - logs
+    - arquivos de logs do servidor
+  - queue
+    - arquivos da fila de e-mails (e-mails agendados a serem enviados)
+  - routes
+    - define um ou mais controllers para o projeto
+      - ponto centralizador do contato client/server
+    - define as rotas do servidor
+    - todas requisição/retorno do cliente é realizado aqui
+  - sessions
+    - arquivos contendo as sessões ativas
+  - uplods
+    - contém pastas e arquivos de upload dos clientes
