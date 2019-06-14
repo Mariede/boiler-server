@@ -96,21 +96,21 @@ const aplicacaoIniciar = async () => {
 				},
 				startUpAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/' + __serverConfig.server.logStartUp),
+					filename: (__serverRoot + '/logs/startUp/logs-startUp.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
 				},
 				fileAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/' + __serverConfig.server.logFileName),
+					filename: (__serverRoot + '/logs/server/logs-server.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
 				},
 				mailQueueAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/' + __serverConfig.server.logMailQueueFileName),
+					filename: (__serverRoot + '/logs/mailQueue/logs-mailQueue.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false

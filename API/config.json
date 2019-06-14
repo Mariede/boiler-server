@@ -6,9 +6,6 @@
 		"routePrefix": "/",
 		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/_client/assets/images" },{ "virtualPath": "/css", "physicalPath": "/_client/assets/css" }],
 		"pathFavicon": "/_client/assets/images/favicon.ico",
-		"logStartUp": "/start-up/logs-start-up.log",
-		"logFileName": "/server/logs-server.log",
-		"logMailQueueFileName": "/mail-queue/logs-mail-queue.log",
 		"cors": {
 			"origin": "*",
 			"methods": ["GET","HEAD","PUT","PATCH","POST","DELETE"],

@@ -8,7 +8,7 @@ body {
 	margin: 0px;
 	padding: 30px;
 	box-sizing: border-box;
-	background-color: #f0f6f0;
+	background-color: #fcfffc;
 }
 
 #wrapper {
@@ -24,7 +24,7 @@ body {
 }
 
 h2 {
-	text-shadow: 0 0 3px #1d3, 0 0 5px #fff;
+	text-shadow: 0 0 3px #8c3, 0 0 5px #fff;
 }
 
 #panel-bottom {
