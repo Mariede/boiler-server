@@ -5,10 +5,17 @@
 	<meta charset="utf-8" />
 	<title>Servidor em NODE.js</title>
 	<link rel="shortcut icon" href="img/favicon.ico">
+	<link rel="stylesheet" href="css/estilo.css" type="text/css">
 </head>
 <body>
-	<center>
-		<img src="img/nodeserver-logo.png" /><h3>Bem vindo, servidor em Express NODE.js</h3><%= data %>
-	</center>
+	<div id="wrapper">
+		<div id="content">
+			<img class="logo" src="img/nodeserver-logo.png" alt="logo" />
+			<h2>Bem vindo, servidor em Express NODE.js</h2>
+		</div>
+		<div id="panel-bottom">
+			<%= data %>
+		</div>
+	</div>
 </body>
 </html>

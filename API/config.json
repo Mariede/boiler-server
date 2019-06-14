@@ -4,7 +4,7 @@
 		"port": 5000,
 		"clustered": false,
 		"routePrefix": "/",
-		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/_client/assets/images" }],
+		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/_client/assets/images" },{ "virtualPath": "/css", "physicalPath": "/_client/assets/css" }],
 		"pathFavicon": "/_client/assets/images/favicon.ico",
 		"logStartUp": "/start-up/logs-start-up.log",
 		"logFileName": "/server/logs-server.log",

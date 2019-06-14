@@ -14,7 +14,7 @@ const root = async (req, res) => {
 		};
 
 		let agora = new Date(),
-			agoraFormatado = `${formatZeroLeft(agora.getDate())}/${formatZeroLeft(agora.getMonth() + 1)}/${agora.getFullYear()} ${formatZeroLeft(agora.getHours())}:${formatZeroLeft(agora.getMinutes())}:${formatZeroLeft(agora.getSeconds())} h`,
+			agoraFormatado = `${formatZeroLeft(agora.getDate())}/${formatZeroLeft(agora.getMonth() + 1)}/${agora.getFullYear()} ${formatZeroLeft(agora.getHours())}:${formatZeroLeft(agora.getMinutes())} h`,
 			fRet = { file: 'index.ejs', path: '_home/', data: `Hora do servidor : ${agoraFormatado}` };
 
 		return fRet;

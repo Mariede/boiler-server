@@ -39,7 +39,9 @@
   "nodemonConfig": {
     "ignore": [
       "API/logs/*",
+      "API/queue/*",
       "API/sessions/*",
+      "API/uploads/*",
       "API/config.json"
     ]
   },
