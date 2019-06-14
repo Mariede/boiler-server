@@ -11,7 +11,7 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 const logon = (login, senha, idTipoUsuario = 0) => {
 	return new Promise((resolve, reject) => {
 		try {
-			let address = __serverConfig.server.custom.permisys.address + '/PERMISYSSERVICE/permisys/verificarLogon',
+			let address = __serverConfig.server.custom.permisys.address + '/verificarLogon',
 				config = {
 					headers: {
 						'Authorization': __serverConfig.server.custom.permisys.headers.authorization
