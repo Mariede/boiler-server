@@ -13,6 +13,16 @@
 			"optionsSuccessStatus": 204,
 			"credentials": true
 		},
+		"custom": {
+			"permisys": {
+				"address": "https://address-permisys-service.com",
+				"siglaSistema": "SYS",
+				"idModulo": 15,
+				"headers": {
+					"authorization": "Basic XPTO="
+				}
+			}
+		},
 		"fileUpload": {
 			"path": "/uploads",
 			"allowedExtensions": ".gif:image/gif | .jpeg:image/jpeg | .jpg:image/jpeg | .png:image/png | .pdf:application/pdf | .txt:text/plain | .doc:application/msword | .docx:application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -68,7 +78,7 @@
 	},
 	"email": {
 		"queue": {
-			"on": true,
+			"on": false,
 			"path": "/queue/mail/send",
 			"fileExtension": ".send",
 			"limitPerRound": 20,

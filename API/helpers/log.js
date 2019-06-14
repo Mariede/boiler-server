@@ -62,8 +62,8 @@ const controllerErro = (res, err, escopo, incorporador = '') => {
 		message = {};
 
 	if (typeof err === 'object') {
-		err.stackTrace = err.stack;
 		message = err;
+		message.stackTrace = err.stack;
 
 		switch (err.code) {
 			case 400: {
