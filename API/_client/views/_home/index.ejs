@@ -2,19 +2,38 @@
 
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
+	<meta charset="utf-8">
 	<title>Servidor em NODE.js</title>
 	<link rel="shortcut icon" href="img/favicon.ico">
 	<link rel="stylesheet" href="css/homeStyle.css" type="text/css">
+
+	<script type="text/javascript" src="https://unpkg.com/moment"></script>
+
+	<script type="text/javascript">
+		const showDate = el => {
+			let date = moment('<%= data %>', 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY HH:mm:ss');
+
+			el.innerHTML = `${date} h`;
+
+			window.setInterval(
+				() => {
+					date = moment(date, 'DD/MM/YYYY HH:mm:ss').add(1, 'second').format('DD/MM/YYYY HH:mm:ss');
+					el.innerHTML = `${date} h`;
+				}
+			, 1000);
+		};
+	</script>
+
 </head>
-<body>
+<body onload="showDate(document.getElementById('panel-bottom-date'));">
 	<div id="wrapper">
 		<div id="content">
 			<img class="logo" src="img/nodeserver-logo.png" alt="logo" />
 			<h2>Bem vindo, servidor em Express NODE.js</h2>
 		</div>
+		<hr>
 		<div id="panel-bottom">
-			<%= data %>
+			Hora do servidor : <span id="panel-bottom-date"></span>
 		</div>
 	</div>
 </body>
