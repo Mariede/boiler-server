@@ -14,7 +14,7 @@ const home = require('@serverRoot/actions/home');
 // Middleware para rotas aqui
 const _gateLocal = async (req, res) => {
 	try {
-		log.logger('info', '=> em Controller HOME', 'consoleOnly');
+		res.locals.routeControllerRoute = 'HOME';
 		return;
 	} catch(err) {
 		throw err;

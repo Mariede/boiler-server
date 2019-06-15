@@ -5,6 +5,7 @@
 const express = require('express');
 const router = express.Router();
 const log = require('@serverRoot/helpers/log');
+const routeProfiler = require('@serverRoot/helpers/routeProfiler');
 const helpersAuth = require('@serverRoot/helpers/auth');
 // -------------------------------------------------------------------------
 
@@ -19,16 +20,11 @@ const usuario = require('@serverRoot/routes/controllers/usuario');
 // Middleware para todas as rotas existentes e nao existentes
 router.use(async (req, res, next) => {
 	try {
+		await routeProfiler.showDetails(req, res);
+
 		let rota = req.url.match('^[^?]*')[0].replace(/[/]+$/, '') + '/',
-			ip = req.headers['x-forwarded-for'] ||
-					req.connection.remoteAddress ||
-					req.socket.remoteAddress ||
-					(req.connection.socket ? req.connection.socket.remoteAddress : null),
-			method = req.method,
 			isProtected = await helpersAuth.isProtected(rota),
 			segueFluxo = false;
-
-		log.logger('info', `${isProtected ? '* PROTEGIDA * ' : ''}Rota ${rota} (${method.toUpperCase()}) requisitada por ${ip}`, 'consoleOnly');
 
 		if (!isProtected) {
 			segueFluxo = true;
@@ -37,6 +33,10 @@ router.use(async (req, res, next) => {
 				segueFluxo = true;
 			}
 		}
+
+		res.locals.routeEscapedRoute = rota;
+		res.locals.routeIsProtectedRoute = isProtected;
+		res.locals.routeControllerRoute = 'HUB';
 
 		if (segueFluxo) {
 			next();

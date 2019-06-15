@@ -14,7 +14,7 @@ const usuario = require('@serverRoot/actions/usuario');
 // Middleware para rotas aqui
 const _gateLocal = async (req, res) => {
 	try {
-		log.logger('info', '=> em Controller USUARIO', 'consoleOnly');
+		res.locals.routeControllerRoute = 'USUARIO';
 		return;
 	} catch(err) {
 		throw err;

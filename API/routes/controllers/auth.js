@@ -14,7 +14,7 @@ const auth = require('@serverRoot/actions/auth');
 // Middleware para rotas aqui
 const _gateLocal = async (req, res) => {
 	try {
-		log.logger('info', '=> em Controller AUTH', 'consoleOnly');
+		res.locals.routeControllerRoute = 'AUTH';
 		return;
 	} catch(err) {
 		throw err;
