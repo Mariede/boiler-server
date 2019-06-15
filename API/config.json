@@ -34,9 +34,10 @@
 			"cookieName": "cookie-server",
 			"timeout": 20
 		},
-		"_comments1": "clustered: valor numerico e inteiro que indica o numero de processos a serem executados no cluster. true / 0 para todos os processos possiveis",
-		"_comments2": "Se o servidor estiver 'proxyado' por uma porta 80, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
-		"_comments3": "fileUpload: maxFileSize em bytes, session: timeout em minutos"
+		"_comments1": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
+		"_comments2": "se o servidor estiver proxyado, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
+		"_comments3": "fileUpload: maxFileSize em bytes, session: timeout em minutos",
+		"_comments4": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada"
 	},
 	"auth": {
 		"sessWrapper": "userData",
@@ -96,8 +97,7 @@
 				"authMethod": "PLAIN"
 			}
 		},
-		"_comments1": "secure: true => port 465 / secure: false => port 587 or 25",
-		"_comments2": "limitPerRound tem um valor default maximo de 100 e-mails por vez",
-		"_comments3": "timeCheck tem um valor default minimo de 15 segundos (ou 15000)"
+		"_comments1": "limitPerRound tem um valor default maximo de 100 e-mails por vez",
+		"_comments2": "timeCheck tem um valor default minimo de 15 segundos (ou 15000)"
 	}
 }
