@@ -136,14 +136,14 @@ const aplicacaoIniciar = async () => {
 					cluster.fork();
 				}
 
-				cluster.on (
+				cluster.on(
 					'online',
 					worker => {
 						log.logger('info', `ID ${worker.process.pid} está ativo`, 'startUp');
 					}
 				);
 
-				cluster.on (
+				cluster.on(
 					'exit',
 					(worker, code, signal) => {
 						let message = `ID ${worker.process.pid} finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`;

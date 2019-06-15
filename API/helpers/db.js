@@ -25,7 +25,6 @@ const sqlOpenCon = () => {
 				sql.connect(__serverConfig.db.configSql)
 				.then(
 					pool => {
-						log.logger('info', 'Conectado ao banco de dados', 'consoleOnly');
 						return new sql.Transaction(pool);
 					}
 				)
@@ -49,7 +48,6 @@ const sqlOpenCon = () => {
 				new sql.ConnectionPool(__serverConfig.db.configSql).connect()
 				.then(
 					pool => {
-						log.logger('info', 'Conectado ao pool do banco de dados', 'consoleOnly');
 						return new sql.Transaction(pool);
 					}
 				)
@@ -235,7 +233,6 @@ const sqlCloseCon = (transaction, forceClose = false) => {
 		try {
 			const sqlClose = p => {
 				p.close();
-				log.logger('info', 'Desconectado do banco de dados', 'consoleOnly');
 			};
 
 			transaction.commit()
