@@ -3,7 +3,6 @@
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const sql = require('mssql');
-const log = require('@serverRoot/helpers/log');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
@@ -88,7 +87,7 @@ const sqlExecute = (transaction, parametros) => {
 		try {
 			const request = new sql.Request(transaction);
 
-			const sqlAction = (r, p) => {
+			const sqlAction = async (r, p) => {
 				if (p.hasOwnProperty('formato') && p.hasOwnProperty('dados')) {
 					if (p.dados.hasOwnProperty('executar')) {
 						const dataTypeCheck = param => {
@@ -198,10 +197,10 @@ const sqlExecute = (transaction, parametros) => {
 
 						if (p.formato === 1) {
 						// Query Simples
-							return r.query(p.dados.executar);
+							return await r.query(p.dados.executar);
 						} else if (p.formato === 2) {
 						// Stored Procedure
-							return r.execute(p.dados.executar);
+							return await r.execute(p.dados.executar);
 						}
 					} else {
 						errWrapper.throwThis('DB', 400, 'Executar não foi corretamente definido nos parâmetros JSON para execução da query, verifique seu código...');
@@ -211,7 +210,17 @@ const sqlExecute = (transaction, parametros) => {
 				}
 			};
 
-			resolve(sqlAction(request, parametros));
+			sqlAction(request, parametros)
+			.then(
+				res => {
+					resolve(res);
+				}
+			)
+			.catch(
+				err => {
+					failReturn(err);
+				}
+			);
 		} catch(err) {
 			failReturn(err);
 		}
