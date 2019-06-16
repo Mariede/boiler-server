@@ -27,11 +27,21 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 		const diskStorage = multer.diskStorage({
 			destination: (req, file, callback) => {
 				try {
-					let filePath = __serverRoot + __serverConfig.server.fileUpload.path;
+					let initPath = __serverRoot,
+						configKey = configUpload.path,
+						filePath = initPath + configKey;
 
 					if (storageToDisk) {
 						if (!fs.existsSync(filePath)) {
-							fs.mkdirSync(filePath);
+							configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(
+								e => {
+									initPath = path.join(initPath, e);
+
+									if (!fs.existsSync(initPath)) {
+										fs.mkdirSync(initPath);
+									}
+								}
+							);
 						}
 
 						if (extraPath) {
@@ -75,7 +85,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 						{
 							fileFilter: (req, file, callback) => {
 								try {
-									const checkExtensions = [ ...new Set((__serverConfig.server.fileUpload.allowedExtensions || '').split('|').map(
+									const checkExtensions = [ ...new Set((configUpload.allowedExtensions || '').split('|').map(
 										item => {
 											return item.substr(0, (item.indexOf(':') !== -1 ? item.indexOf(':') : item.length)).trim();
 										}
@@ -85,7 +95,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 										}
 									); // new Set para valores unicos e nao vazios, assim podemos repetir extensoes para eventuais novos MIME Types
 
-									const checkMimeTypes = [ ...new Set((__serverConfig.server.fileUpload.allowedExtensions || '').split('|').map(
+									const checkMimeTypes = [ ...new Set((configUpload.allowedExtensions || '').split('|').map(
 										item => {
 											return item.substr((item.indexOf(':') !== -1 ? item.indexOf(':') + 1 : '')).trim();
 										}
@@ -109,7 +119,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 							},
 							storage: (storageToDisk ? diskStorage : multer.memoryStorage()),
 							limits: {
-								fileSize: (__serverConfig.server.fileUpload.maxFileSize || Infinity),
+								fileSize: (configUpload.maxFileSize || Infinity),
 								files: (maxFileUploads || Infinity)
 							}
 						}
@@ -142,7 +152,8 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 			});
 		};
 
-		let method = req.method;
+		let configUpload = __serverConfig.server.fileUpload,
+			method = req.method;
 
 		if (method.toUpperCase() === 'POST') {
 			return await uploadFiles(fileNames);
