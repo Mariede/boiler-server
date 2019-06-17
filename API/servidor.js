@@ -24,6 +24,11 @@ const queue = require('@serverRoot/helpers/queue'); // queue de e-mails
 const iniciar = (configPath, configManage, clusterId) => {
 	return new Promise((resolve, reject) => {
 		try {
+			const serverHost = (process.env.HOSTNAME || __serverConfig.server.host);
+			const serverPort = (process.env.PORT || __serverConfig.server.port);
+			const serverEnv = process.env.NODE_ENV;
+			const routePrefix = __serverConfig.server.routePrefix;
+
 			// -------------------------------------------------------------------------
 			// Procedimentos prioritarios
 
@@ -51,7 +56,7 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 			// Acessando rotas prefixadas
 			const checkRoutePrefix = () => {
-				return (__serverConfig.server.routePrefix && __serverConfig.server.routePrefix !== '/' ? __serverConfig.server.routePrefix : '');
+				return (routePrefix && routePrefix !== '/' ? routePrefix : '');
 			};
 			// -------------------------------------------------------------------------
 
@@ -154,11 +159,10 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 			// -------------------------------------------------------------------------
 			// Inicia servidor ouvindo em host:port (sem certificado https)
-			const server = http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.host, async () => {
+			const server = http.createServer(app).listen(serverPort, serverHost, async () => {
 				try {
 					let messages = [];
-
-					messages.push(['info', `Servidor está rodando em ${__serverConfig.server.host}:${__serverConfig.server.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
+					messages.push(['info', `Servidor está rodando em ${serverHost}:${serverPort} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${serverEnv}...`]);
 
 					// inicia gerenciamento do arquivo de configuracao do servidor
 					let resultConfig = await configManage.check(configPath),
