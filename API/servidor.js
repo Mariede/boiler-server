@@ -133,7 +133,7 @@ const iniciar = (configPath, configManage, clusterId) => {
 			// Caminho padrao
 			app.set(
 				'views',
-				__serverRoot + '/_client/views'
+				__serverRoot + '/views/serverSide/pages'
 			);
 
 			// Rotas -------------------------------------------------
@@ -154,7 +154,7 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 			// -------------------------------------------------------------------------
 			// Inicia servidor ouvindo em host:port (sem certificado https)
-			http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.host, async () => {
+			const server = http.createServer(app).listen(__serverConfig.server.port, __serverConfig.server.host, async () => {
 				try {
 					let messages = [];
 
@@ -188,6 +188,8 @@ const iniciar = (configPath, configManage, clusterId) => {
 					reject(err);
 				}
 			});
+
+			server.setTimeout(__serverConfig.server.timeout * 1000);
 		} catch(err) {
 			reject(err);
 		}

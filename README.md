@@ -59,7 +59,6 @@
   - Através do Webpack
   - Validação de código ESLINT
 ## Estrutura das pasta do servidor
-  - client : arquivos do front-end como views e templates (htmls dinâmicos), imagens, css etc...
   - actions : métodos com as regras de negócio e codificação dos processos
     - é local, relacionado a rota em execução
     - uma action pode chamar uma ou mais actions e/ou um ou mais helpers
@@ -70,7 +69,7 @@
     - um helper pode chamar um ou mais helpers
   - logs
     - arquivos de logs do servidor
-  - queue
+  - queue (* configurável)
     - arquivos da fila de e-mails (e-mails agendados a serem enviados)
   - routes
     - define um ou mais controllers para o projeto
@@ -79,5 +78,8 @@
       - todas requisição/retorno do cliente é realizado aqui
   - sessions
     - arquivos contendo as sessões ativas
-  - uplods
+  - uploads (* configurável)
     - contém pastas e arquivos de upload dos clientes
+  - views : arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
+    - serverSide : páginas interpretadas diretamente no servidor (.ejs)
+    - clientSide : páginas dinâmicas no cliente, contato via AJAX / RESTFUL

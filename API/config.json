@@ -2,10 +2,11 @@
 	"server": {
 		"host": "localhost",
 		"port": 5000,
+		"timeout": 240,
 		"clustered": false,
 		"routePrefix": "/",
-		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/_client/assets/images" },{ "virtualPath": "/css", "physicalPath": "/_client/assets/css" }],
-		"pathFavicon": "/_client/assets/images/favicon.ico",
+		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/views/serverSide/assets/images" },{ "virtualPath": "/css", "physicalPath": "/views/serverSide/assets/css" }],
+		"pathFavicon": "/views/serverSide/assets/images/favicon.ico",
 		"cors": {
 			"origin": "*",
 			"methods": ["GET","HEAD","PUT","PATCH","POST","DELETE"],
@@ -36,7 +37,7 @@
 		},
 		"_comments1": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
 		"_comments2": "se o servidor estiver proxyado, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
-		"_comments3": "fileUpload: maxFileSize em bytes, session: timeout em minutos",
+		"_comments3": "server: timeout (inatividade durante conexao) em segundos, fileUpload: maxFileSize em bytes, session: timeout em minutos",
 		"_comments4": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada"
 	},
 	"auth": {
