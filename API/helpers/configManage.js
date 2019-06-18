@@ -69,50 +69,54 @@ const check = config => {
 			};
 
 			const deepIsEqual = (first, second) => {
-				if (first === second) {
-					return true;
-				}
+				let fRet = true;
 
-				// Try a quick compare by seeing if the length of properties are the same
-				let firstProps = Object.getOwnPropertyNames(first),
-					secondProps = Object.getOwnPropertyNames(second);
+				if (first !== second) {
+					// Try a quick compare by seeing if the length of properties are the same
+					let firstProps = (typeof first === 'object' ? Object.getOwnPropertyNames(first) : ''),
+						secondProps = (typeof second === 'object' ? Object.getOwnPropertyNames(second) : '');
 
-				// Check different amount of properties
-				if (firstProps.length !== secondProps.length) {
-					return false;
-				}
+					// Check different amount of properties
+					if (firstProps.length !== secondProps.length) {
+						fRet = false;
+					} else {
+						// Go through properties of first object
+						for (let i = 0; i < firstProps.length; i++) {
+							let prop = firstProps[i];
 
-				// Go through properties of first object
-				for (let i = 0; i < firstProps.length; i++) {
-					let prop = firstProps[i];
-
-					// Check the type of property to perform different comparisons
-					switch (typeof(first[prop])) {
-					// If it is an object, decend for deep compare
-						case 'object': {
-							if (!deepIsEqual(first[prop], second[prop])) {
-								return false;
-							}
-							break;
-						}
-						case 'number': {
-						// with JavaScript NaN != NaN so we need a special check
-							if (!isNaN(first[prop]) || !isNaN(second[prop])) {
-								if (first[prop] !== second[prop]) {
-									return false;
+							// Check the type of property to perform different comparisons
+							switch (typeof(first[prop])) {
+							// If it is an object, decend for deep compare
+								case 'object': {
+									if (!deepIsEqual(first[prop], second[prop])) {
+										fRet = false;
+									}
+									break;
+								}
+								case 'number': {
+								// with JavaScript NaN != NaN so we need a special check
+									if (!isNaN(first[prop]) || !isNaN(second[prop])) {
+										if (first[prop] !== second[prop]) {
+											fRet = false;
+										}
+									}
+									break;
+								}
+								default: {
+									if (first[prop] !== second[prop]) {
+										fRet = false;
+									}
 								}
 							}
-							break;
-						}
-						default: {
-							if (first[prop] !== second[prop]) {
-								return false;
+
+							if (!fRet) {
+								break;
 							}
 						}
 					}
 				}
 
-				return true;
+				return fRet;
 			};
 
 			// mostra mensagem mantendo um debounce de wait
