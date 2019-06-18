@@ -16,7 +16,7 @@ const showDetails = (req, res) => {
 			res.once(
 				'finish',
 				() => {
-					log.logger('info', `${res.locals.routeIsProtectedRoute ? '* PROTEGIDA * ' : ''}Rota ${res.locals.routeEscapedRoute} (método: ${req.method.toUpperCase()}, status: ${res.statusCode}) solicitada por ${ip} => em Controller ${res.locals.routeControllerRoute} (${Date.now() - start} ms)`, 'consoleOnly');
+					log.logger('info', `${res.locals.routeIsProtectedRoute ? '* PROTEGIDA * ' : ''}Rota ${(res.locals.routeEscapedRoute || '')} (método: ${req.method.toUpperCase()}, status: ${res.statusCode}) solicitada por ${ip} => em Controller ${(res.locals.routeControllerRoute || '')} (${Date.now() - start} ms)`, 'consoleOnly');
 				}
 			);
 
