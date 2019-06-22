@@ -13,7 +13,7 @@
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "html-to-text": "^5.1.1",
-    "log4js": "^4.3.1",
+    "log4js": "^4.3.2",
     "module-alias": "^2.2.0",
     "mssql": "^5.1.0",
     "multer": "^1.4.1",
@@ -28,7 +28,7 @@
     "eslint-loader": "^2.1.2",
     "generate-package-json-webpack-plugin": "^1.0.0",
     "nodemon": "^1.19.1",
-    "webpack": "^4.34.0",
+    "webpack": "^4.35.0",
     "webpack-cli": "^3.3.4",
     "webpack-node-externals": "^1.7.2"
   },
