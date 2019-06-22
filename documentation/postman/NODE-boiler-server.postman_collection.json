@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2e700310-6da4-4c24-8dfe-3ed24a989170",
+		"_postman_id": "01fa0dbb-64dc-4fd6-b248-7b4c7e243055",
 		"name": "NODE-boiler-server",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -241,10 +241,28 @@
 			"name": "{{serverhost}}/login",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": []
+					"urlencoded": [
+						{
+							"key": "login",
+							"value": "_testesistemas_",
+							"type": "text"
+						},
+						{
+							"key": "pass",
+							"value": "  Testesenh@123  ",
+							"type": "text"
+						}
+					]
 				},
 				"url": {
 					"raw": "{{serverhost}}/login",

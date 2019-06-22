@@ -2,9 +2,10 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const cryptoHash = require('@serverRoot/helpers/cryptoHash');
-const errWrapper = require('@serverRoot/helpers/errWrapper');
 const auth = require('@serverRoot/helpers/auth');
+const cryptoHash = require('@serverRoot/helpers/cryptoHash');
+const validator = require('@serverRoot/helpers/validator');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -16,21 +17,37 @@ const login = async (req, res) => {
 		let sess = req.session,
 			sessWraper = __serverConfig.auth.sessWrapper;
 
-		if (sess[sessWraper]) {
+		if (typeof sess[sessWraper] === 'object') {
 			errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
-		} else { // Inicia a sessao
-			sess[sessWraper] = {};
+		} else {
+			let login = req.body.login,
+				pass = req.body.pass;
+
+			if (!validator.isEmpty(login)) {
+				if (validator.isAlphaNumeric(login)) {
+					if (!validator.isEmpty(pass)) { // Inicia a sessao
+						sess[sessWraper] = {};
 
 
-/* login process - EM DESENVOLVIMENTO */
-sess[sessWraper].id = 1;
-sess[sessWraper].nome = 'João da Silva';
-sess[sessWraper].email = 'joãosnow@provedor.com.br';
-sess[sessWraper].senhaHash = await cryptoHash.hash('SenhaTeste123', 'dfdf');
-sess[sessWraper].permissoes = ['LST_INFO1', 'EDT_INFO1', 'EXC_INFO2', 'LST_INFO3'];
-/* login process - EM DESENVOLVIMENTO */
+
+						/* login process - ACESSO AO DB */
+						sess[sessWraper].id = 1;
+						sess[sessWraper].login = login.trim();
+						sess[sessWraper].senhaHash = await cryptoHash.hash(pass, '123Abc');
+						sess[sessWraper].permissoes = ['LST_INFO1', 'EDT_INFO1', 'EXC_INFO2', 'LST_INFO3'];
+						/* login process - ACESSO AO DB */
 
 
+
+					} else {
+						errWrapper.throwThis('AUTH', 400, 'Favor preencher a senha...');
+					}
+				} else {
+					errWrapper.throwThis('AUTH', 400, 'Login deve conter um valor alfanumérico, underscore ou espaço...');
+				}
+			} else {
+				errWrapper.throwThis('AUTH', 400, 'Favor preencher o login...');
+			}
 		}
 
 		return sess[sessWraper];

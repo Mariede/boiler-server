@@ -209,17 +209,21 @@ const isCep = (cep, separator = '-') => {
 };
 
 // Verifica se valor e vazio
-const isEmpty = (param, trimmed = true) => {
+const isEmpty = (param, trimmed = true, inclusive = true) => {
 	try {
 		let paramCheck = _falsyCheck(param),
 			vRet = false;
 
-		if (paramCheck && trimmed) {
+		if (trimmed && paramCheck) {
 			paramCheck = paramCheck.trim();
 		}
 
 		if (paramCheck === '') {
 			vRet = true;
+		} else {
+			if (inclusive && !paramCheck) {
+				vRet = true;
+			}
 		}
 
 		return vRet;
