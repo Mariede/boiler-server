@@ -11,12 +11,15 @@ const isProtected = rota => {
 	return new Promise((resolve, reject) => {
 		try {
 			const exceptInspect = (paramTable, paramRota) => {
+				const routePrefix = (__serverConfig.server.routePrefix || '').replace(/\/+$/, '') + '/';
+
 				return paramTable.some(
 					element => {
-						let elementCheck = element.trim().toUpperCase().replace(/[/]+$/, '') + '/',
+						let elementPick = element.trim().toUpperCase().replace(/^\/+|\/+$/, ''),
+							elementCheck = routePrefix + (elementPick !== '' ? elementPick + '/' : ''),
 							regExCheck = new RegExp(elementCheck);
 
-						return (elementCheck === '/' ? (elementCheck === paramRota) : regExCheck.test(paramRota));
+						return (elementCheck === routePrefix ? (elementCheck === paramRota) : regExCheck.test(paramRota));
 					}
 				);
 			};

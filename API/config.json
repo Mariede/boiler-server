@@ -45,7 +45,6 @@
 		"authTipo": 1,
 		"except": [
 			"/",
-			"/favicon.ico",
 			"/login",
 			"/islogged"
 		],

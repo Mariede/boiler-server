@@ -22,7 +22,7 @@ router.use(async (req, res, next) => {
 	try {
 		await routeProfiler.showDetails(req, res);
 
-		let rota = req.url.match('^[^?]*')[0].replace(/[/]+$/, '') + '/',
+		let rota = req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '') + '/',
 			isProtected = await helpersAuth.isProtected(rota),
 			segueFluxo = false;
 

@@ -12,7 +12,7 @@ const log4js = require('log4js');
 
 // -------------------------------------------------------------------------
 // Modulos/Variaveis de apoio
-const serversToProxy = [['/APP1/*', 'http://localhost:5000'], ['/APP2/*', 'http://localhost:5000']];
+const serversToProxy = [['/APP1/*', 'http://localhost:5000'], ['/APP2/*', 'http://localhost:6000']];
 const serverPort = 80;
 // -------------------------------------------------------------------------
 
