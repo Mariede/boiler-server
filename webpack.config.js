@@ -8,11 +8,13 @@ const path = require('path');
 const packageJsonLocation = './package.json';
 const packageJson = require(packageJsonLocation);
 
-let namePackage = (packageJson.name || ''),
-	versionPackage = (packageJson.version || ''),
-	mainPackage = (packageJson.main || ''),
-	outputNamePackage = (packageJson.outputName || 'main.js'),
-	deployFolder = './build' + (versionPackage ? '/' + versionPackage : '');
+const namePackage = (packageJson.name || '');
+const versionPackage = (packageJson.version || '');
+const descriptionPackage = (packageJson.description || '');
+const mainPackage = (packageJson.main || '');
+const licensePackage = (packageJson.license || '');
+const outputNamePackage = (packageJson.outputName || 'main.js');
+const deployFolder = './build' + (versionPackage ? '/' + versionPackage : '');
 
 const sourcePath = path.resolve(__dirname, './API');
 const destinyPath = path.resolve(__dirname, deployFolder);
@@ -51,7 +53,10 @@ module.exports = {
 			{
 				'name': namePackage,
 				'version': versionPackage,
-				'main': outputNamePackage
+				'description': descriptionPackage,
+				'main': outputNamePackage,
+				'license': licensePackage,
+				'private': true
 			}
 			, packageJsonLocation
 		),

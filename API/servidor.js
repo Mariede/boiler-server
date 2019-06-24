@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const favicon = require('serve-favicon');
+const ejs = require('ejs');
 const path = require('path');
 // -------------------------------------------------------------------------
 
@@ -129,16 +130,22 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 			// Views -------------------------------------------------
 
+			// Caminho padrao
+			app.set(
+				'views',
+				__serverRoot + '/views/serverSide/pages'
+			);
+
 			// Engine padrao
 			app.set(
 				'view engine',
 				'ejs'
 			);
 
-			// Caminho padrao
-			app.set(
-				'views',
-				__serverRoot + '/views/serverSide/pages'
+			// Extensoes da engine (e webpack)
+			app.engine(
+				'ejs',
+				ejs.__express
 			);
 
 			// Rotas -------------------------------------------------

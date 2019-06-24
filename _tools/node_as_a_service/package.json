@@ -2,11 +2,12 @@
   "name": "node_as_a_service",
   "version": "1.0.0",
   "description": "Pacote transforma aplicação em serviço no windows",
-  "main": "serviceOn.js",
+  "main": "_nodeAsAService.js",
+  "license": "MIT",
+  "private": true,
   "dependencies": {
     "minimist": "^1.2.0",
     "node-windows": "^0.1.14"
   },
-  "author": "Michel Guimarães Ariede",
-  "license": "MIT"
+  "author": "Michel Guimarães Ariede"
 }

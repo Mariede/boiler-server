@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "description": "Montando ambiente de teste Node com express.js",
   "main": "./API/aplicacao.js",
+  "license": "MIT",
+  "private": true,
   "outputName": "main.js",
   "dependencies": {
     "axios": "^0.19.0",
@@ -59,6 +61,5 @@
     "back-end",
     "rotas"
   ],
-  "author": "Michel Guimarães Ariede",
-  "license": "MIT"
+  "author": "Michel Guimarães Ariede"
 }
