@@ -188,7 +188,7 @@ try {
 
 	return resultSet;
 } catch(err) {
-	throw new Error(err);
+	throw Error(err);
 }
 
 
@@ -211,7 +211,7 @@ try {
 
 	return resultSet;
 } catch(err) {
-	throw new Error(err);
+	throw Error(err);
 }
 // ---------------------------------------------------------------------------------------------------------
 
@@ -238,7 +238,7 @@ try {
 
 	return resultSet;
 } catch(err) {
-	throw new Error(err);
+	throw Error(err);
 }
 // ---------------------------------------------------------------------------------------------------------
 
@@ -267,7 +267,7 @@ try {
 
 	return resultSet;
 } catch(err) {
-	throw new Error(err);
+	throw Error(err);
 }
 
 /* * neste caso, utilizar nome exato (case sensitive) em setSort para identificar as chaves de sort no banco de dados * */
@@ -300,7 +300,7 @@ try {
 
 	return resultSet;
 } catch(err) {
-	throw new Error(err);
+	throw Error(err);
 }
 
 /* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase para identificar as chaves de sort no banco de dados * */
@@ -333,7 +333,7 @@ try {
 
 	return resultSet;
 } catch(err) {
-	throw new Error(err);
+	throw Error(err);
 }
 // ---------------------------------------------------------------------------------------------------------
 
@@ -372,6 +372,6 @@ try {
 
 	return resultSet;
 } catch(err) {
-	throw new Error(err);
+	throw Error(err);
 }
 // ---------------------------------------------------------------------------------------------------------

@@ -29,7 +29,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?fullsearch_fields=SORTER2%2CSORTER1%2CNOME%2CTIPO&fullsearch_value=epsi&page=1&items_per_page=6&sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
+					"raw": "{{serverhost}}/usuario?fullsearch_fields=NOME,TIPO,ATIVO,ID_USUARIO&fullsearch_value=beta&page=1&items_per_page=4&sort_fields=tipo:DESC,nome:ASC&sort_case_insensitive=true",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -39,11 +39,11 @@
 					"query": [
 						{
 							"key": "fullsearch_fields",
-							"value": "SORTER2%2CSORTER1%2CNOME%2CTIPO"
+							"value": "NOME,TIPO,ATIVO,ID_USUARIO"
 						},
 						{
 							"key": "fullsearch_value",
-							"value": "epsi"
+							"value": "beta"
 						},
 						{
 							"key": "page",
@@ -51,11 +51,11 @@
 						},
 						{
 							"key": "items_per_page",
-							"value": "6"
+							"value": "4"
 						},
 						{
 							"key": "sort_fields",
-							"value": "sorter2:DESC,sorter1:ASC"
+							"value": "tipo:DESC,nome:ASC"
 						},
 						{
 							"key": "sort_case_insensitive",
@@ -72,7 +72,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?fullsearch_fields=SORTER2%2CSORTER1%2CNOME%2CTIPO&fullsearch_value=epsi",
+					"raw": "{{serverhost}}/usuario?fullsearch_fields=NOME,TIPO,ATIVO,ID_USUARIO&fullsearch_value=beta",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -82,11 +82,11 @@
 					"query": [
 						{
 							"key": "fullsearch_fields",
-							"value": "SORTER2%2CSORTER1%2CNOME%2CTIPO"
+							"value": "NOME,TIPO,ATIVO,ID_USUARIO"
 						},
 						{
 							"key": "fullsearch_value",
-							"value": "epsi"
+							"value": "beta"
 						}
 					]
 				}
@@ -99,7 +99,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?page=2&items_per_page=6&sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
+					"raw": "{{serverhost}}/usuario?page=2&items_per_page=5&sort_fields=tipo:DESC,nome:ASC&sort_case_insensitive=true",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -113,11 +113,11 @@
 						},
 						{
 							"key": "items_per_page",
-							"value": "6"
+							"value": "5"
 						},
 						{
 							"key": "sort_fields",
-							"value": "sorter2:DESC,sorter1:ASC"
+							"value": "tipo:DESC,nome:ASC"
 						},
 						{
 							"key": "sort_case_insensitive",
@@ -134,7 +134,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?sort_fields=sorter2:DESC,sorter1:ASC&sort_case_insensitive=true",
+					"raw": "{{serverhost}}/usuario?sort_fields=tipo:DESC,nome:ASC&sort_case_insensitive=true",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -144,7 +144,7 @@
 					"query": [
 						{
 							"key": "sort_fields",
-							"value": "sorter2:DESC,sorter1:ASC"
+							"value": "tipo:DESC,nome:ASC"
 						},
 						{
 							"key": "sort_case_insensitive",
@@ -161,7 +161,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario?page=2&items_per_page=6",
+					"raw": "{{serverhost}}/usuario?page=2&items_per_page=5",
 					"host": [
 						"{{serverhost}}"
 					],
@@ -175,7 +175,7 @@
 						},
 						{
 							"key": "items_per_page",
-							"value": "6"
+							"value": "5"
 						}
 					]
 				}
