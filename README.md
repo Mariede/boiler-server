@@ -1,4 +1,17 @@
-# node-boiler-server (boiler para servidor web em Express NODE.js)
+# node-boiler-server (boilerplate)
+
+Servidor boilerplate para aplicações Web em Express/Node.js - back-end
+
+* Rodar local:
+```
+npm install
+npm run serve
+```
+
+* Build (Webpack):
+```
+npm run build
+```
 
 ## Servidor http
   - Clusterização opcional
@@ -7,7 +20,7 @@
   - body parser
   - cookie parser
   - compression
-  - Pastas de arquivo estáticos
+  - Pastas de arquivo estáticos (imagens, css ...)
   - Permite aplicações RESTFUL
   - Permite APIs de terceiros
 ## Arquivo de configuração unificado do servidor
@@ -19,13 +32,15 @@
   - Erros personalizados
 ## Prefixamento de rotas e Proxy geral de acesso (via porta 80)
   - Prefixo configurável, atua em todas as rotas do servidor
-  - proxyStart.js
+  - _tools/proxy/_proxyStart.js
 ## Possibilidade de utilizar a aplicação como serviço do Windows
-  - node-windows
+  - Pacote node-windows
   - Inicia junto com a máquina
-  - Serviço reinicia automáticamente, se houver problemas
+  - Serviço reinicia automaticamente, se houver problemas
+  - _tools/node_as_a_service/_nodeAsAService.js
 ## Sessions com armazenamento via arquivos criptografados
   - sessionFileStore
+  - Utiliza o sistema de arquivos
 ## Logs com informações na tela e/ou arquivos diários de logs
   - Arquivos separados de logs por grupos
 ## Autenticação das rotas personalizável
@@ -69,7 +84,7 @@
     - um helper pode chamar um ou mais helpers
   - logs
     - arquivos de logs do servidor
-  - queue (* configurável)
+  - queue (* opcional, configurável)
     - arquivos da fila de e-mails (e-mails agendados a serem enviados)
   - routes
     - define um ou mais controllers para o projeto
@@ -78,8 +93,8 @@
       - todas requisição/retorno do cliente é realizado aqui
   - sessions
     - arquivos contendo as sessões ativas
-  - uploads (* configurável)
+  - uploads (* opcional, configurável)
     - contém pastas e arquivos de upload dos clientes
   - views : arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
     - serverSide : páginas interpretadas diretamente no servidor (.ejs)
-    - clientSide : páginas dinâmicas no cliente, contato via AJAX / RESTFUL
+    - clientSide : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)
