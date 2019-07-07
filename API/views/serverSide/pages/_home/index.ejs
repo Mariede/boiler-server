@@ -7,25 +7,20 @@
 	<link rel="shortcut icon" href="img/favicon.ico">
 	<link rel="stylesheet" href="css/homeStyle.css" type="text/css">
 
-	<script type="text/javascript" src="https://unpkg.com/moment"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
 
 	<script type="text/javascript">
-		const showDate = el => {
-			let date = moment('<%= data %>', 'DD/MM/YYYY HH:mm:ss').format('DD/MM/YYYY HH:mm:ss');
+		const socket = io.connect('<%= ioNameSpace %>');
 
-			el.innerHTML = `${date} h`;
+		socket.on('serverTimeTick', data => {
+			const el = document.getElementById('panel-bottom-date');
+			el.innerHTML = `${data} h`;
+		});
 
-			window.setInterval(
-				() => {
-					date = moment(date, 'DD/MM/YYYY HH:mm:ss').add(1, 'second').format('DD/MM/YYYY HH:mm:ss');
-					el.innerHTML = `${date} h`;
-				}
-			, 1000);
-		};
+		socket.emit('serverTimeStart');
 	</script>
-
 </head>
-<body onload="showDate(document.getElementById('panel-bottom-date'));">
+<body>
 	<div id="wrapper">
 		<div id="content">
 			<img class="logo" src="img/nodeserver-logo.png" alt="logo">
@@ -33,7 +28,7 @@
 		</div>
 		<hr>
 		<div id="panel-bottom">
-			Hora do servidor : <span id="panel-bottom-date"></span>
+			Hora do servidor : <span id="panel-bottom-date"><%= data %> h</span>
 		</div>
 	</div>
 </body>

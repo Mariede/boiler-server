@@ -5,6 +5,7 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const cors = require('cors');
 const session = require('express-session');
 const sessionFileStore = require('session-file-store')(session);
@@ -18,6 +19,7 @@ const path = require('path');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const socketIoListeners = require('@serverRoot/helpers/socketIo/listeners'); // listeners agrupados (socket.io)
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 const queue = require('@serverRoot/helpers/queue'); // queue de e-mails
 // -------------------------------------------------------------------------
@@ -63,6 +65,14 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 			// -------------------------------------------------------------------------
 			// Middleware
+
+			// SOCKET.IO ---------------------------------------------
+			socketIoListeners.listenersRoot(io);
+
+			app.use((req, res, next) => {
+				req.io = io;
+				next();
+			});
 
 			// CORS --------------------------------------------------
 			app.use(

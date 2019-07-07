@@ -33,6 +33,9 @@ npm run build
 ## Prefixamento de rotas e Proxy geral de acesso (via porta 80)
   - Prefixo configurável, atua em todas as rotas do servidor
   - _tools/proxy/_proxyStart.js
+## Websockets configurado junto ao servidor http para conversação bidirecional cliente <-> servidor
+  - Biblioteca Socket.io - mesma porta e middleware http / ws
+  - Ambiente integrado (pendente funcionamento conjunto clusterizado, apenas single thread)
 ## Possibilidade de utilizar a aplicação como serviço do Windows
   - Pacote node-windows
   - Inicia junto com a máquina

@@ -38,7 +38,7 @@ const rotasHome = router => {
 	.get(async (req, res) => {
 		try {
 			let result = await home.root(req, res);
-			res.status(200).render(result.path + result.file, { data: result.data });
+			res.status(200).render(result.path + result.file, { data: result.data, ioNameSpace: result.ioNameSpace });
 		} catch(err) {
 			log.controllerErro(res, err, 'error');
 		}

@@ -2,21 +2,14 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-
+const home = require('@serverRoot/helpers/home');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Acoes
 const root = async (req, res) => {
 	try {
-		const formatZeroLeft = num => {
-			return ('0' + num).slice(-2);
-		};
-
-		let agora = new Date(),
-			agoraFormatado = `${formatZeroLeft(agora.getDate())}/${formatZeroLeft(agora.getMonth() + 1)}/${agora.getFullYear()} ${formatZeroLeft(agora.getHours())}:${formatZeroLeft(agora.getMinutes())}:${formatZeroLeft(agora.getSeconds())}`,
-			fRet = { file: 'index.ejs', path: '_home/', data: agoraFormatado };
-
+		let fRet = { file: 'index.ejs', path: '_home/', data: home.rootFormatDateNow(), ioNameSpace: home.rootIoNameSpace };
 		return fRet;
 	} catch(err) {
 		throw err;
