@@ -4,7 +4,7 @@
 // Modulos de inicializacao
 const express = require('express');
 const app = express();
-const http = require('http');
+const http = require('http').Server(app);
 const cors = require('cors');
 const session = require('express-session');
 const sessionFileStore = require('session-file-store')(session);
@@ -166,7 +166,7 @@ const iniciar = (configPath, configManage, clusterId) => {
 
 			// -------------------------------------------------------------------------
 			// Inicia servidor ouvindo em host:port (sem certificado https)
-			const server = http.createServer(app).listen(serverPort, serverHost, async () => {
+			const server = http.listen(serverPort, serverHost, async () => {
 				try {
 					let messages = [];
 					messages.push(['info', `Servidor está rodando em ${serverHost}:${serverPort} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${serverEnv}...`]);
