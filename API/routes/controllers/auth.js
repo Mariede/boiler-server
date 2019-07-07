@@ -11,7 +11,7 @@ const auth = require('@serverRoot/actions/auth');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Middleware para rotas aqui
+// Middleware
 const _gateLocal = async (req, res) => {
 	try {
 		res.locals.routeControllerRoute = 'AUTH';
@@ -25,10 +25,9 @@ const _gateLocal = async (req, res) => {
 // -------------------------------------------------------------------------
 // Rotas
 const rotasAuth = router => {
-	router.route('/login')
 	// login ---------------------------------------------------------------
+	router.route('/login')
 	.all(async (req, res, next) => {
-	// Todos os verbos
 		try {
 			await _gateLocal(req, res);
 			next();
@@ -46,10 +45,9 @@ const rotasAuth = router => {
 	});
 	// ---------------------------------------------------------------------
 
-	router.route('/logout')
 	// logout --------------------------------------------------------------
+	router.route('/logout')
 	.all(async (req, res) => {
-	// Todos os verbos
 		try {
 			await _gateLocal(req, res);
 
@@ -61,10 +59,9 @@ const rotasAuth = router => {
 	});
 	// ---------------------------------------------------------------------
 
-	router.route('/isLogged')
 	// isLogged ------------------------------------------------------------
+	router.route('/isLogged')
 	.all(async (req, res, next) => {
-	// Todos os verbos
 		try {
 			await _gateLocal(req, res);
 			next();

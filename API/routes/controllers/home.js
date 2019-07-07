@@ -11,7 +11,7 @@ const home = require('@serverRoot/actions/home');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Middleware para rotas aqui
+// Middleware
 const _gateLocal = async (req, res) => {
 	try {
 		res.locals.routeControllerRoute = 'HOME';
@@ -25,10 +25,9 @@ const _gateLocal = async (req, res) => {
 // -------------------------------------------------------------------------
 // Rotas
 const rotasHome = router => {
-	router.route('/')
 	// root ----------------------------------------------------------------
+	router.route('/')
 	.all(async (req, res, next) => {
-	// Todos os verbos
 		try {
 			await _gateLocal(req, res);
 			next();

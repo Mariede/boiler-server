@@ -17,7 +17,7 @@ const usuario = require('@serverRoot/routes/controllers/usuario');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Middleware para todas as rotas existentes e nao existentes
+// Middleware (rotas existentes e nao existentes)
 router.use(async (req, res, next) => {
 	try {
 		await routeProfiler.showDetails(req, res);
