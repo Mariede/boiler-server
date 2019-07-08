@@ -19,7 +19,7 @@ moduleAlias.addAliases({
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const servidor = require('@serverRoot/server/_servidor');
+const _server = require('@serverRoot/server/_server');
 const configManage = require('@serverRoot/server/configManage');
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
@@ -62,7 +62,7 @@ const aplicacaoIniciar = async () => {
 
 		let serverClustered = __serverConfig.server.clustered,
 			osNumThreads = os.cpus().length,
-			clustered = 0;
+			clustered = __serverWorker;
 
 		// -------------------------------------------------------------------------
 		// Verificar se servidor e clusterizado
@@ -156,12 +156,12 @@ const aplicacaoIniciar = async () => {
 				);
 			} else {
 				if (cluster.isWorker) {
-					let messages = await servidor.iniciar(configPath, configManage, cluster.worker.process.pid);
+					let messages = await _server.iniciar(configPath, configManage, cluster.worker.process.pid);
 					showMessages(messages);
 				}
 			}
 		} else {
-			let messages = await servidor.iniciar(configPath, configManage, __serverWorker);
+			let messages = await _server.iniciar(configPath, configManage, __serverWorker);
 			showMessages(messages);
 		}
 	} catch(err) {
