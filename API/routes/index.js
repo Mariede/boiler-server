@@ -4,8 +4,8 @@
 // Modulos de inicializacao
 const express = require('express');
 const router = express.Router();
+const routeProfiler = require('@serverRoot/server/routeProfiler');
 const log = require('@serverRoot/helpers/log');
-const routeProfiler = require('@serverRoot/helpers/routeProfiler');
 const helpersAuth = require('@serverRoot/helpers/auth');
 // -------------------------------------------------------------------------
 

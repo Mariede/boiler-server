@@ -19,8 +19,8 @@ moduleAlias.addAliases({
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const servidor = require('@serverRoot/servidor');
-const configManage = require('@serverRoot/helpers/configManage');
+const servidor = require('@serverRoot/server/_servidor');
+const configManage = require('@serverRoot/server/configManage');
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 

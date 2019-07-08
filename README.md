@@ -33,9 +33,11 @@ npm run build
 ## Prefixamento de rotas e Proxy geral de acesso (via porta 80)
   - Prefixo configurável, atua em todas as rotas do servidor
   - _tools/proxy/_proxyStart.js
-## Websockets configurado junto ao servidor http para conversação bidirecional cliente <-> servidor
-  - Biblioteca Socket.io - mesma porta e middleware http / ws
-  - Ambiente integrado (pendente funcionamento conjunto clusterizado, apenas single thread)
+## Websockets configurado junto ao servidor http
+  - Conversação bidirecional cliente <-> servidor
+  - Biblioteca Socket.io
+  - Ambiente integrado - mesma porta e middleware http / ws
+  - (pendente funcionamento conjunto clusterizado, apenas single thread)
 ## Possibilidade de utilizar a aplicação como serviço do Windows
   - Pacote node-windows
   - Inicia junto com a máquina
@@ -83,7 +85,7 @@ npm run build
   - custom : pasta com APIs de interfaceamento para outros serviços externos
     - é como um helper interfaceando exclusivamente serviços externos
   - helpers : métodos com as regras de negócio e codificação dos processos
-    - é global, relacionado ao projeto e pode ser utilizado por qualquer action
+    - é global, relacionado ao projeto e pode ser utilizado por qualquer action ou middleware
     - um helper pode chamar um ou mais helpers
   - logs
     - arquivos de logs do servidor
@@ -94,6 +96,8 @@ npm run build
     - define as rotas do servidor
     - ponto centralizador do contato client/server
       - todas requisição/retorno do cliente é realizado aqui
+  - server
+    - arquivos de inicialização do servidor e assistência ao seu funcionamento
   - sessions
     - arquivos contendo as sessões ativas
   - uploads (* opcional, configurável)
