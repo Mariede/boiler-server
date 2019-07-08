@@ -10,18 +10,18 @@ const home = require('@serverRoot/helpers/home');
 
 // Home do servidor
 const listenersRoot = io => {
-	const ioNameSpace = home.rootIoNameSpace;
+	const ioChannel = io.of(home.rootIoNameSpace);
 
-	let rootServerTime = null;
+	ioChannel.on('connection', socket => {
+		let rootServerTime = null;
 
-	io.of(ioNameSpace).on('connection', data => {
-		data.once('serverTimeStart', () => {
+		socket.once('serverTimeStart', () => {
 			rootServerTime = setInterval(() => {
-				io.of(ioNameSpace).emit('serverTimeTick', home.rootFormatDateNow());
+				ioChannel.to(socket.id).emit('serverTimeTick', home.rootFormatDateNow());
 			}, 1000);
 		});
 
-		data.once('disconnect', () => {
+		socket.once('disconnect', () => {
 			clearInterval(rootServerTime);
 		});
 	});
