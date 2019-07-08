@@ -31,7 +31,7 @@
     "eslint-loader": "^2.2.1",
     "generate-package-json-webpack-plugin": "^1.0.0",
     "nodemon": "^1.19.1",
-    "webpack": "^4.35.2",
+    "webpack": "^4.35.3",
     "webpack-cli": "^3.3.5",
     "webpack-node-externals": "^1.7.2"
   },
