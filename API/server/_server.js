@@ -4,8 +4,8 @@
 // Modulos de inicializacao
 const express = require('express');
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const _server = require('http').Server(app);
+const io = require('socket.io')(_server);
 const cors = require('cors');
 const session = require('express-session');
 const sessionFileStore = require('session-file-store')(session);
@@ -24,7 +24,7 @@ const queue = require('@serverRoot/server/queue'); // queue de e-mails
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 // -------------------------------------------------------------------------
 
-const iniciar = (configPath, configManage, clusterId) => {
+const iniciar = (configPath, configManage, clustered, ...clusterId) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const serverHost = (process.env.HOSTNAME || __serverConfig.server.host);
@@ -36,8 +36,8 @@ const iniciar = (configPath, configManage, clusterId) => {
 			// Procedimentos prioritarios
 
 			// Server Worker identifica ID do trabalhador (cluster) se existir
-			if (clusterId) {
-				__serverWorker = clusterId;
+			if (clustered && clusterId[0]) {
+				__serverWorker = clusterId[0];
 			}
 
 			// Definindo pastas de conteudo estatico
@@ -70,7 +70,6 @@ const iniciar = (configPath, configManage, clusterId) => {
 			socketIoListeners.listenersRoot(io);
 
 			app.use((req, res, next) => {
-				// io.adapter();
 				req.io = io;
 				next();
 			});
@@ -176,8 +175,8 @@ const iniciar = (configPath, configManage, clusterId) => {
 			// -------------------------------------------------------------------------
 
 			// -------------------------------------------------------------------------
-			// Inicia servidor ouvindo em host:port (sem certificado https)
-			const server = http.listen(serverPort, serverHost, async () => {
+			// Inicia servidor ouvindo em host:port
+			const serverStarter = async s => {
 				try {
 					let messages = [];
 					messages.push(['info', `Servidor está rodando em ${serverHost}:${serverPort} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${serverEnv}...`]);
@@ -205,13 +204,15 @@ const iniciar = (configPath, configManage, clusterId) => {
 						messages.push(['info', 'Serviço de fila de e-mails não habilitado']);
 					}
 
+					s.setTimeout(__serverConfig.server.timeout * 1000);
+
 					resolve(messages);
 				} catch(err) {
 					reject(err);
 				}
-			});
+			};
 
-			server.setTimeout(__serverConfig.server.timeout * 1000);
+			_server.listen(serverPort, serverHost, serverStarter(_server));
 		} catch(err) {
 			reject(err);
 		}

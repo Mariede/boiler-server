@@ -32,7 +32,7 @@ const configPath = __serverRoot + '/config.json';
 global.__serverConfig = configManage.push(configPath);
 
 // Server Worker (cluster) inicialmente sem cluster (trabalhador unico)
-global.__serverWorker = 0;
+global.__serverWorker = null;
 // -------------------------------------------------------------------------
 
 const aplicacaoIniciar = async () => {
@@ -62,7 +62,7 @@ const aplicacaoIniciar = async () => {
 
 		let serverClustered = __serverConfig.server.clustered,
 			osNumThreads = os.cpus().length,
-			clustered = __serverWorker;
+			clustered = 0;
 
 		// -------------------------------------------------------------------------
 		// Verificar se servidor e clusterizado
@@ -156,12 +156,12 @@ const aplicacaoIniciar = async () => {
 				);
 			} else {
 				if (cluster.isWorker) {
-					let messages = await _server.iniciar(configPath, configManage, cluster.worker.process.pid);
+					let messages = await _server.iniciar(configPath, configManage, clustered, cluster.worker.process.pid);
 					showMessages(messages);
 				}
 			}
 		} else {
-			let messages = await _server.iniciar(configPath, configManage, __serverWorker);
+			let messages = await _server.iniciar(configPath, configManage, clustered);
 			showMessages(messages);
 		}
 	} catch(err) {
