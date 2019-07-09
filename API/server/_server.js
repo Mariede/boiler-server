@@ -24,7 +24,7 @@ const queue = require('@serverRoot/server/queue'); // queue de e-mails
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 // -------------------------------------------------------------------------
 
-const iniciar = (configPath, configManage, clustered, ...clusterId) => {
+const iniciar = (configPath, configManage, numWorkers, ...clusterId) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const serverHost = (process.env.HOSTNAME || __serverConfig.server.host);
@@ -36,7 +36,7 @@ const iniciar = (configPath, configManage, clustered, ...clusterId) => {
 			// Procedimentos prioritarios
 
 			// Server Worker identifica ID do trabalhador (cluster) se existir
-			if (clustered && clusterId[0]) {
+			if (numWorkers && clusterId[0]) {
 				__serverWorker = clusterId[0];
 			}
 

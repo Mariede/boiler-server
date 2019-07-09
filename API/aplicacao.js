@@ -60,24 +60,25 @@ const aplicacaoIniciar = async () => {
 			}
 		};
 
+		const osNumThreads = os.cpus().length;
+
 		let serverClustered = __serverConfig.server.clustered,
-			osNumThreads = os.cpus().length,
-			clustered = 0;
+			numWorkers = 0;
 
 		// -------------------------------------------------------------------------
 		// Verificar se servidor e clusterizado
 		if (osNumThreads > 1) {
 			if (typeof serverClustered === 'boolean' && serverClustered) {
-				clustered = osNumThreads;
+				numWorkers = osNumThreads;
 			} else {
 				if (Number.isInteger(serverClustered)) {
 					serverClustered = Number(serverClustered);
 
 					if (serverClustered > 1 && serverClustered < osNumThreads) {
-						clustered = serverClustered;
+						numWorkers = serverClustered;
 					} else {
 						if (serverClustered === 0 || serverClustered >= osNumThreads) {
-							clustered = osNumThreads;
+							numWorkers = osNumThreads;
 						}
 					}
 				}
@@ -126,10 +127,8 @@ const aplicacaoIniciar = async () => {
 		});
 		// -------------------------------------------------------------------------
 
-		if (clustered) {
+		if (numWorkers) {
 			if (cluster.isMaster) {
-				const numWorkers = clustered;
-
 				log.logger('info', `Cluster mestre definindo ${numWorkers} IDs`, 'startUp');
 
 				for (let i = 0; i < numWorkers; i++) {
@@ -156,12 +155,12 @@ const aplicacaoIniciar = async () => {
 				);
 			} else {
 				if (cluster.isWorker) {
-					let messages = await _server.iniciar(configPath, configManage, clustered, cluster.worker.process.pid);
+					let messages = await _server.iniciar(configPath, configManage, numWorkers, cluster.worker.process.pid);
 					showMessages(messages);
 				}
 			}
 		} else {
-			let messages = await _server.iniciar(configPath, configManage, clustered);
+			let messages = await _server.iniciar(configPath, configManage, numWorkers);
 			showMessages(messages);
 		}
 	} catch(err) {
