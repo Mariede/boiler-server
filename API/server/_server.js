@@ -23,7 +23,7 @@ const queue = require('@serverRoot/server/queue'); // queue de e-mails
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 // -------------------------------------------------------------------------
 
-const iniciar = (configPath, configManage, numWorkers, ...clusterId) => {
+const iniciar = (configPath, configManage, numWorkers, ...cluster) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const serverHost = (process.env.HOSTNAME || __serverConfig.server.host);
@@ -34,9 +34,9 @@ const iniciar = (configPath, configManage, numWorkers, ...clusterId) => {
 			// -------------------------------------------------------------------------
 			// Procedimentos prioritarios
 
-			// Server Worker identifica ID do trabalhador (cluster) se existir
-			if (numWorkers && clusterId[0]) {
-				__serverWorker = clusterId[0];
+			// Server Worker identifica o cluster trabalhador, se existir
+			if (numWorkers && typeof(cluster[0]) === 'object') {
+				__serverWorker = cluster[0].worker.id;
 			}
 
 			// Definindo pastas de conteudo estatico

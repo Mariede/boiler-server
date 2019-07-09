@@ -12,8 +12,8 @@ const home = require('@serverRoot/helpers/home');
 
 // -------------------------------------------------------------------------
 // Inicia um novo servidor io
-const startIo = server => {
-	return io.listen(server);
+const startIo = s => {
+	return io.listen(s);
 };
 
 // listeners para socket.io separados por rota ou funcao
