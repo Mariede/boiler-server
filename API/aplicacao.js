@@ -138,14 +138,14 @@ const aplicacaoIniciar = async () => {
 				cluster.on(
 					'online',
 					worker => {
-						log.logger('info', `Cluster ${worker.process.pid} (trabalhador ${worker.id}) está ativo`, 'startUp');
+						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.id} - está ativo`, 'startUp');
 					}
 				);
 
 				cluster.on(
 					'exit',
 					(worker, code, signal) => {
-						log.logger('info', `Cluster ${worker.process.pid} (trabalhador ${worker.id}) finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`, 'consoleOnly');
+						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.id} - finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`, 'consoleOnly');
 						log.logger('info', 'Iniciando novo trabalhador', 'consoleOnly');
 
 						cluster.fork();

@@ -68,8 +68,6 @@ const iniciar = (configPath, configManage, numWorkers, ...cluster) => {
 			// SOCKET.IO ---------------------------------------------
 			const io = socketIo.startIo(_server);
 
-			socketIo.listeners.root(io);
-
 			app.use((req, res, next) => {
 				req.io = io;
 				next();
