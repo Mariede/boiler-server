@@ -5,6 +5,7 @@
 const express = require('express');
 const app = express();
 const _server = require('http').Server(app);
+const httpProxy = require('http-proxy');
 const cors = require('cors');
 const session = require('express-session');
 const sessionFileStore = require('session-file-store')(session);
@@ -63,6 +64,21 @@ const iniciar = (configPath, configManage, numWorkers, ...cluster) => {
 
 			// -------------------------------------------------------------------------
 			// Middleware
+
+			// Proxy para o servidor de Websockets (Socket.io)
+			// Se mais de uma aplicacao estiver rodando no mesmo servidor, diferenciar pelas portas em config
+			const wsProxy = httpProxy.createProxyServer({
+				target: `${__serverConfig.socketIo.serverUrl}:${__serverConfig.socketIo.serverPort}`,
+				ws: true
+			});
+
+			app.all('/socket.io/*', function(req, res) {
+				wsProxy.web(req, res);
+			});
+
+			_server.on('upgrade', function (req, socket, head) {
+				wsProxy.ws(req, socket, head);
+			});
 
 			// CORS --------------------------------------------------
 			app.use(

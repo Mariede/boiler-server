@@ -37,6 +37,7 @@ npm run build
   - Conversação bidirecional cliente <-> servidor
   - Biblioteca Socket.io (websockets / pooling)
   - Integrado com a aplicação, mas com processo próprio em porta separada
+  - Proxy automático, direto pela aplicação
   - Funciona normalmente single-thread e multi-thread (cluster)
 ## Possibilidade de utilizar a aplicação como serviço do Windows
   - Pacote node-windows
