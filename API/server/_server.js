@@ -18,7 +18,6 @@ const path = require('path');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const socketIo = require('@serverRoot/server/socketIo'); // socket.io
 const queue = require('@serverRoot/server/queue'); // queue de e-mails
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 // -------------------------------------------------------------------------
@@ -64,14 +63,6 @@ const iniciar = (configPath, configManage, numWorkers, ...cluster) => {
 
 			// -------------------------------------------------------------------------
 			// Middleware
-
-			// SOCKET.IO ---------------------------------------------
-			const io = socketIo.startIo(_server);
-
-			app.use((req, res, next) => {
-				req.io = io;
-				next();
-			});
 
 			// CORS --------------------------------------------------
 			app.use(

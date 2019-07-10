@@ -7,7 +7,7 @@
 
 // -------------------------------------------------------------------------
 // Define o namespace do listener em root (home)
-const rootIoNameSpace = '/home';
+const rootIoNameSpace = '/home.io';
 
 // Verifica a data atual do servidor (formatado)
 const rootFormatDateNow = () => {

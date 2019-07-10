@@ -51,6 +51,11 @@
 		"_comments1": "authTipo => 2: toda rota livre, exceto except / Default: toda rota protegida, exceto except",
 		"_comments2": "except => Except aceita rota parcial ou exata; utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2"
 	},
+	"socketIo": {
+		"clientUrl": "http://localhost:6001",
+		"serverUrl": "http://localhost",
+		"serverPort": 6001
+	},
 	"crypto": {
 		"hashAlgorithm": "sha512",
 		"hashDigestEncoding": "hex",

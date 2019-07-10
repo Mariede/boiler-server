@@ -35,9 +35,9 @@ npm run build
   - _tools/proxy/_proxyStart.js
 ## Websockets configurado junto ao servidor http
   - Conversação bidirecional cliente <-> servidor
-  - Biblioteca Socket.io
-  - Ambiente integrado - mesma porta e middleware http / ws
-  - (pendente funcionamento conjunto clusterizado, apenas single thread)
+  - Biblioteca Socket.io (websockets / pooling)
+  - Integrado com a aplicação, mas com processo próprio em porta separada
+  - Funciona normalmente single-thread e multi-thread (cluster)
 ## Possibilidade de utilizar a aplicação como serviço do Windows
   - Pacote node-windows
   - Inicia junto com a máquina

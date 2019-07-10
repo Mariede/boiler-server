@@ -19,6 +19,7 @@ moduleAlias.addAliases({
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const socketIo = require('@serverRoot/server/socketIo'); // socket.io
 const _server = require('@serverRoot/server/_server');
 const configManage = require('@serverRoot/server/configManage');
 const log = require('@serverRoot/helpers/log');
@@ -126,6 +127,10 @@ const aplicacaoIniciar = async () => {
 			}
 		});
 		// -------------------------------------------------------------------------
+
+		if (!numWorkers || (numWorkers && cluster.isMaster)) {
+			socketIo.startIo();
+		}
 
 		if (numWorkers) {
 			if (cluster.isMaster) {
