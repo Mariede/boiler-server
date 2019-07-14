@@ -45,7 +45,7 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 
 			searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace);
 
-			dbCon.sqlExecuteAll(searchQuery)
+			dbCon.msSqlServer.sqlExecuteAll(searchQuery)
 			.then(
 				result => {
 					resolve(result);

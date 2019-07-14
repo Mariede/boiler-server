@@ -138,7 +138,7 @@ let query = {
 // Execute (promise + async await)
 const dbCon = require('@serverRoot/helpers/db');
 
-dbCon.sqlOpenCon()
+dbCon.msSqlServer.sqlOpenCon()
 .then(
 	async transaction => {
 		try {
@@ -152,8 +152,8 @@ dbCon.sqlOpenCon()
 					}
 				};
 
-			let resultSet = await dbCon.sqlExecute(transaction, query); // Executa query ou queries
-			await dbCon.sqlCloseCon(transaction);
+			let resultSet = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
+			await dbCon.msSqlServer.sqlCloseCon(transaction);
 
 			resolve(resultSet);
 		} catch(err) {
@@ -182,9 +182,9 @@ try {
 			}
 		};
 
-	let transaction = await dbCon.sqlOpenCon(),
-		resultSet = await dbCon.sqlExecute(transaction, query); // Executa query ou queries
-	await dbCon.sqlCloseCon(transaction);
+	let transaction = await dbCon.msSqlServer.sqlOpenCon(),
+		resultSet = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
+	await dbCon.msSqlServer.sqlCloseCon(transaction);
 
 	return resultSet;
 } catch(err) {
@@ -207,7 +207,7 @@ try {
 		};
 
 	// Executa query ou queries
-	let resultSet = await dbCon.sqlExecuteAll(query);
+	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 	return resultSet;
 } catch(err) {
@@ -232,7 +232,7 @@ try {
 		};
 
 	// Executa query ou queries
-	let resultSet = await dbCon.sqlExecuteAll(query);
+	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 	// Paginador (page)
 	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
 
@@ -259,7 +259,7 @@ try {
 		};
 
 	// Executa query ou queries
-	let resultSet = await dbCon.sqlExecuteAll(query);
+	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 	// Ordenador (sort)
 	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0]);
 	// Paginador (page)
@@ -270,7 +270,8 @@ try {
 	throw Error(err);
 }
 
-/* * neste caso, utilizar nome exato (case sensitive) em setSort para identificar as chaves de sort no banco de dados * */
+/* * neste caso, utilizar nome de coluna exato (case sensitive) em setSort para identificar as chaves de sort no banco de dados * */
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -290,7 +291,7 @@ try {
 		};
 
 	// Executa query ou queries
-	let resultSet = await dbCon.sqlExecuteAll(query);
+	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 	// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
 	resultSet.recordsets[0] = await paginator.keysToCamelCase(resultSet.recordsets[0]);
 	// Ordenador (sort)
@@ -303,7 +304,7 @@ try {
 	throw Error(err);
 }
 
-/* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase para identificar as chaves de sort no banco de dados * */
+/* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados * */
 
 // ---------------------------------------------------------------------------------------------------------
 
@@ -325,7 +326,7 @@ try {
 				${replaceQuery}
 		`;
 
-	// Searcher: searchFields deve ser uma array (nomes ambiguos no search geram erro)
+	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
 	let resultSet = await searcher.setSearch(
 			req,
 			baseQuery,
@@ -336,6 +337,9 @@ try {
 } catch(err) {
 	throw Error(err);
 }
+
+/* * REPLACE (via http GET) é case insensitive, mas deve ser igual o nome da coluna no banco de dados * */
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -357,7 +361,7 @@ try {
 				${replaceQuery}
 		`;
 
-	// Searcher: searchFields deve ser uma array (nomes ambiguos no search geram erro)
+	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
 	let resultSet = await searcher.setSearch(
 			req,
 			baseQuery,
@@ -376,6 +380,7 @@ try {
 	throw Error(err);
 }
 
-/* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase para identificar as chaves de sort no banco de dados * */
+/* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados * */
+/* * REPLACE (via http GET) é case insensitive, mas deve ser igual o nome da coluna no banco de dados * */
 
 // ---------------------------------------------------------------------------------------------------------
