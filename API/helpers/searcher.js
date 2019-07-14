@@ -8,6 +8,7 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 
 // -------------------------------------------------------------------------
 // Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final (metodo privado)
+// Se WHERE for definido na query, deve conter uma condição ANTES do replace
 const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 	return new Promise((resolve, reject) => {
 		try {

@@ -19,9 +19,9 @@ const sqlOpenCon = () => {
 		};
 
 		try {
-			if (__serverConfig.db.conexaoTipo === 2) {
+			if (__serverConfig.db.msSqlServer.conexaoTipo === 2) {
 			// Conexao simples, direta, sem pool
-				sql.connect(__serverConfig.db.configSql)
+				sql.connect(__serverConfig.db.msSqlServer.configSql)
 				.then(
 					pool => {
 						return new sql.Transaction(pool);
@@ -44,7 +44,7 @@ const sqlOpenCon = () => {
 				);
 			} else {
 			// DEFAULT - Conexao com pool
-				new sql.ConnectionPool(__serverConfig.db.configSql).connect()
+				new sql.ConnectionPool(__serverConfig.db.msSqlServer.configSql).connect()
 				.then(
 					pool => {
 						return new sql.Transaction(pool);
@@ -247,7 +247,7 @@ const sqlCloseCon = (transaction, forceClose = false) => {
 			transaction.commit()
 			.then(
 				() => {
-					if (__serverConfig.db.conexaoTipo === 2 || forceClose) {
+					if (__serverConfig.db.msSqlServer.conexaoTipo === 2 || forceClose) {
 					// Conexao simples, direta, sem pool
 						sqlClose(sql);
 					}

@@ -62,24 +62,26 @@
 		"cipherKeyLen": 24
 	},
 	"db": {
-		"conexaoTipo": 1,
-		"configSql": {
-			"user": "user",
-			"password": "pass",
-			"server": "server",
-			"port": 1433,
-			"database": "database",
-			"connectionTimeout": 15000,
-			"requestTimeout": 15000,
-			"stream": true,
-			"parseJSON": true,
-			"pool": {
-				"max": 10,
-				"min": 0,
-				"idleTimeoutMillis": 30000
-			}
-		},
-		"_comments1": "conexaoTipo => 2: sem pool / Default: com pool"
+		"msSqlServer": {
+			"conexaoTipo": 1,
+			"configSql": {
+				"user": "user",
+				"password": "pass",
+				"server": "server",
+				"port": 1433,
+				"database": "database",
+				"connectionTimeout": 15000,
+				"requestTimeout": 15000,
+				"stream": true,
+				"parseJSON": true,
+				"pool": {
+					"max": 10,
+					"min": 0,
+					"idleTimeoutMillis": 30000
+				}
+			},
+			"_comments1": "conexaoTipo => 2: sem pool / Default: com pool"
+		}
 	},
 	"email": {
 		"queue": {

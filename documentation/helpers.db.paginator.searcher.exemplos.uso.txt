@@ -126,7 +126,7 @@ let query = {
 			input: [
 				['NOME', '%joa%']
 			],
-			executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
 		}
 	};
 // ---------------------------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ dbCon.sqlOpenCon()
 						input: [
 							['NOME', '%joa%']
 						],
-						executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+						executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
 					}
 				};
 
@@ -178,7 +178,7 @@ try {
 				input: [
 					['NOME', '%joa%']
 				],
-				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
 			}
 		};
 
@@ -202,7 +202,7 @@ try {
 				input: [
 					['NOME', '%joa%']
 				],
-				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
 			}
 		};
 
@@ -227,7 +227,7 @@ try {
 				input: [
 					['NOME', '%joa%']
 				],
-				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
 			}
 		};
 
@@ -254,7 +254,7 @@ try {
 				input: [
 					['NOME', '%joa%']
 				],
-				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
 			}
 		};
 
@@ -285,7 +285,7 @@ try {
 				input: [
 					['NOME', '%joa%']
 				],
-				executar: 'SELECT SORTER2, SORTER1, ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
 			}
 		};
 
@@ -304,6 +304,7 @@ try {
 }
 
 /* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase para identificar as chaves de sort no banco de dados * */
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -374,4 +375,7 @@ try {
 } catch(err) {
 	throw Error(err);
 }
+
+/* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase para identificar as chaves de sort no banco de dados * */
+
 // ---------------------------------------------------------------------------------------------------------
