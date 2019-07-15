@@ -303,7 +303,7 @@ try {
 	throw Error(err);
 }
 
-/* * REPLACE (via http GET) é case insensitive, mas deve ser igual o nome da coluna no banco de dados * */
+/* * REPLACE (via http GET) é case insensitive e pode ser enviado em SNAKE_CASE (padrão do banco deve ser SNAKE_CASE) ou camelCase * */
 
 // ---------------------------------------------------------------------------------------------------------
 
@@ -340,7 +340,7 @@ try {
 	throw Error(err);
 }
 
-/* * REPLACE (via http GET) é case insensitive, mas deve ser igual o nome da coluna no banco de dados * */
+/* * REPLACE (via http GET) é case insensitive e pode ser enviado em SNAKE_CASE (padrão do banco deve ser SNAKE_CASE) ou camelCase * */
 
 // ---------------------------------------------------------------------------------------------------------
 
@@ -380,8 +380,10 @@ try {
 	throw Error(err);
 }
 
-/* * REPLACE (via http GET) é case insensitive, mas deve ser igual o nome da coluna no banco de dados * */
+/* * REPLACE (via http GET) é case insensitive e pode ser enviado em SNAKE_CASE (padrão do banco deve ser SNAKE_CASE) ou camelCase * */
+
 /* * Apenas UM toCamelCase é necessário em todas as chamadas * */
+
 /*
    * se toCamelCase = true no setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados *
    * se toCamelCase = false no setSort, utilizar nome da coluna exato (case sensitive) para identificar as chaves de sort no banco de dados *

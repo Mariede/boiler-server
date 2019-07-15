@@ -60,7 +60,7 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 				pageDetails = {
 					currentPage: currentPage,
 					itemsPerPage: itemsPerPage,
-					itemsFrom: (_iFrom <= jsonDataLen ? _iFrom : 0),
+					itemsFrom: (_iFrom <= jsonDataLen ? (_iTo !== 0 ? _iFrom : 0) : 0),
 					itemsTo: (_iFrom <= jsonDataLen ? (_iTo <= jsonDataLen ? _iTo : jsonDataLen) : 0),
 					itemsCount: jsonDataLen,
 					totalPages: Math.ceil(jsonDataLen / itemsPerPage)
@@ -81,7 +81,7 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 	});
 };
 
-// Converte chaves de uma array com objetos para Camel Case
+// Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
 const keysToCamelCase = jsonData => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -94,13 +94,17 @@ const keysToCamelCase = jsonData => {
 
 						Object.keys(jsonData[i]).forEach(
 							currentKey => {
-								let newKey = currentKey
-									.toLowerCase()
-									.replace(/[._-]([a-z])/g,
+								const transformP = p => {
+									const changedP = p.toLowerCase().replace(/[_]([a-z])/g,
 										g => {
 											return g[1].toUpperCase();
 										}
 									);
+
+									return changedP;
+								};
+
+								let newKey = transformP(currentKey);
 
 								newData[i][newKey] = jsonData[i][currentKey];
 							}
@@ -126,7 +130,7 @@ const setSort = async (req, jsonData, toCamelCase = false) => {
 
 		if (method.toUpperCase() === 'GET') {
 			if (req.query.sort_fields) {
-				req.query.sort_fields.split(/[, |]/).forEach(
+				req.query.sort_fields.split(/[,|]/).forEach(
 					e => {
 						let sortField = e.split(/[:]/);
 

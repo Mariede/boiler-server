@@ -7,6 +7,42 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+
+
+// Converte searchFields de camelCase para SNAKE_CASE
+const _camelCaseToSnakeCase = searchFields => {
+	return new Promise((resolve, reject) => {
+		try {
+			let newSearchFields = [];
+
+			if (searchFields && Array.isArray(searchFields)) {
+				searchFields.forEach(
+					e => {
+						const transformP = p => {
+							const changedP = p.replace(/([A-Z])/g,
+								g => {
+									return '_' + g[0];
+								}
+							)
+							.toUpperCase();
+
+							return changedP;
+						};
+
+						let newField = (/(_)+/.test(e) ? e : transformP(e));
+
+						newSearchFields.push(newField);
+					}
+				);
+			}
+
+			resolve(newSearchFields);
+		} catch(err) {
+			reject(err);
+		}
+	});
+};
+
 // Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final (metodo privado)
 // Se WHERE for definido na query, deve conter uma condição ANTES do replace
 const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
@@ -81,9 +117,9 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 
 		if (method.toUpperCase() === 'GET') {
 			if (req.query.fullsearch_fields) {
-				req.query.fullsearch_fields.split(/[, |]/).forEach(
+				req.query.fullsearch_fields.split(/[,|]/).forEach(
 					e => {
-						searchFields.push(e.toUpperCase());
+						searchFields.push(e.trim());
 					}
 				);
 			}
@@ -94,6 +130,8 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 		} else {
 			errWrapper.throwThis('SEARCHER', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 		}
+
+		searchFields = await _camelCaseToSnakeCase(searchFields);
 
 		return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);
 	} catch(err) {
