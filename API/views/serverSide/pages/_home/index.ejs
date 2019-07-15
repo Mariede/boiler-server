@@ -39,16 +39,38 @@
 
 		ioConnection();
 	</script>
+	<script type="text/javascript">
+		let resizeDebounce;
+
+		const logoOriginalWidth = <%= logoWidth %>;
+		const resized = () => {
+				clearTimeout(resizeDebounce);
+				resizeDebounce = setTimeout(() => {
+					let logo = document.getElementById('logo-img'),
+						windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - 60; // padding de 60
+
+					if (windowWidth < logoOriginalWidth) {
+						logo.style.width = windowWidth + 'px';
+					} else {
+						logo.style.width = logoOriginalWidth + 'px';
+					}
+				}, 100);
+			};
+
+		window.onresize = () => {
+			resized();
+		};
+	</script>
 </head>
 <body>
 	<div id="wrapper">
 		<div id="content">
-			<img class="logo" src="img/nodeserver-logo.png" alt="logo">
+			<img id="logo-img" class="logo" src="img/nodeserver-logo.png" width="<%= logoWidth %>" alt="logo">
 			<h2>Bem vindo, servidor em Express NODE.js</h2>
 		</div>
 		<hr>
 		<div id="panel-bottom">
-			Hora do servidor : <span id="panel-bottom-date"><%= data %> h</span>
+			Hora do servidor : <span id="panel-bottom-date"><%= date %> h</span>
 		</div>
 	</div>
 </body>
