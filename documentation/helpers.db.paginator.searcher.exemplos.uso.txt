@@ -10,7 +10,6 @@ Conexão e execução de queries no MS SQL Server através do pacote NODE mssql
 // ---------------------------------------------------------------------------------------------------------
 // Estrutura básica queries (parâmetros de entrada)
 
-
 query = {
 	formato: 1, // 1: Query String, 2: Stored Procedure
 	dados: {
@@ -28,7 +27,6 @@ query = {
 	}
 }
 
-
 query = {
 	formato: 2, // 1: Query String, 2: Stored Procedure
 	dados: {
@@ -43,12 +41,12 @@ query = {
 	}
 }
 
-/* * input pode utilizar também um formato de chamada com apenas dois parâmetros de entrada, omitindo o tipo de dado * */
+/* * input pode utilizar também um formato de chamada com apenas dois parâmetros de entrada, omitindo o tipo do dado * */
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
 // Parâmetros de entrada (exemplos)
-
 
 let query = {
 		formato: 1,
@@ -134,7 +132,6 @@ let query = {
 // ---------------------------------------------------------------------------------------------------------
 // Chamadas nos métodos (exemplos)
 
-
 // Execute (promise + async await)
 const dbCon = require('@serverRoot/helpers/db');
 
@@ -167,7 +164,6 @@ dbCon.msSqlServer.sqlOpenCon()
 	}
 );
 
-
 // Execute (async await)
 const dbCon = require('@serverRoot/helpers/db');
 
@@ -190,7 +186,6 @@ try {
 } catch(err) {
 	throw Error(err);
 }
-
 
 // ou com o método agrupador ExecuteAll (async await)
 const dbCon = require('@serverRoot/helpers/db');
@@ -216,7 +211,7 @@ try {
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com paginação
+// Chamada com PAGINAÇÃO
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
@@ -234,7 +229,7 @@ try {
 	// Executa query ou queries
 	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 	// Paginador (page)
-	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
+	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0], true);
 
 	return resultSet;
 } catch(err) {
@@ -243,7 +238,7 @@ try {
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com paginação e ordenação
+// Chamada com PAGINAÇÃO e ORDENAÇÃO
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
@@ -261,7 +256,7 @@ try {
 	// Executa query ou queries
 	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 	// Ordenador (sort)
-	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0]);
+	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0], true);
 	// Paginador (page)
 	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
 
@@ -270,46 +265,16 @@ try {
 	throw Error(err);
 }
 
-/* * neste caso, utilizar nome de coluna exato (case sensitive) em setSort para identificar as chaves de sort no banco de dados * */
+/* * Apenas UM toCamelCase é necessário em todas as chamadas * */
+/*
+   * se toCamelCase = true no setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados *
+   * se toCamelCase = false no setSort, utilizar nome da coluna exato (case sensitive) para identificar as chaves de sort no banco de dados *
+*/
 
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com paginação, ordenação e conversão para camelcase do json do banco de dados
-const dbCon = require('@serverRoot/helpers/db');
-const paginator = require('@serverRoot/helpers/paginator');
-
-try {
-	let query = {
-			formato: 1,
-			dados: {
-				input: [
-					['NOME', '%joa%']
-				],
-				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
-			}
-		};
-
-	// Executa query ou queries
-	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
-	// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
-	resultSet.recordsets[0] = await paginator.keysToCamelCase(resultSet.recordsets[0]);
-	// Ordenador (sort)
-	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0]);
-	// Paginador (page)
-	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
-
-	return resultSet;
-} catch(err) {
-	throw Error(err);
-}
-
-/* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados * */
-
-// ---------------------------------------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------------------------------------
-// Chamada com searcher
+// Chamada com SEARCHER
 const searcher = require('@serverRoot/helpers/searcher');
 
 try {
@@ -343,7 +308,7 @@ try {
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com searcher, paginação, ordenação e conversão para camelcase do json do banco de dados
+// Chamada com SEARCHER (apenas para CamelCase)
 const searcher = require('@serverRoot/helpers/searcher');
 const paginator = require('@serverRoot/helpers/paginator');
 
@@ -368,10 +333,45 @@ try {
 			replaceQuery
 		);
 
-	// Camel Case: renomeia chaves no objeto JSON para o padrao Camel Case
 	resultSet.recordsets[0] = await paginator.keysToCamelCase(resultSet.recordsets[0]);
+
+	return resultSet;
+} catch(err) {
+	throw Error(err);
+}
+
+/* * REPLACE (via http GET) é case insensitive, mas deve ser igual o nome da coluna no banco de dados * */
+
+// ---------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------------------------------------
+// Chamada com SEARCHER, PAGINACAO e ORDENAÇÃO
+const searcher = require('@serverRoot/helpers/searcher');
+const paginator = require('@serverRoot/helpers/paginator');
+
+try {
+	let replaceQuery = '{{REPLACE}}',
+		baseQuery = `
+			select top 10
+				*
+			from
+				usuario a (nolock)
+				inner join tipo b (nolock)
+					on (a.id_tipo = b.id_tipo)
+			where
+				a.nome like('%joa%')
+				${replaceQuery}
+		`;
+
+	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
+	let resultSet = await searcher.setSearch(
+			req,
+			baseQuery,
+			replaceQuery
+		);
+
 	// Ordenador (sort)
-	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0]);
+	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0], true);
 	// Paginador (page)
 	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
 
@@ -380,7 +380,11 @@ try {
 	throw Error(err);
 }
 
-/* * se keysToCamelCase for chamado antes de setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados * */
 /* * REPLACE (via http GET) é case insensitive, mas deve ser igual o nome da coluna no banco de dados * */
+/* * Apenas UM toCamelCase é necessário em todas as chamadas * */
+/*
+   * se toCamelCase = true no setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados *
+   * se toCamelCase = false no setSort, utilizar nome da coluna exato (case sensitive) para identificar as chaves de sort no banco de dados *
+*/
 
 // ---------------------------------------------------------------------------------------------------------
