@@ -10,7 +10,7 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // Conexao e execucao de queries no MS SQL Server
 // atraves do pacote mssql
 const msSqlServer = {
-	sqlOpenCon() { // Inicia uma transacao
+	sqlOpenCon: () => { // Inicia uma transacao
 		return new Promise((resolve, reject) => {
 			const failReturn = err => {
 				sql.close();
@@ -70,7 +70,7 @@ const msSqlServer = {
 			}
 		});
 	},
-	sqlExecute(transaction, parametros) { // Executa uma query ou stored procedure para uma transacao ja iniciada
+	sqlExecute: (transaction, parametros) => { // Executa uma query ou stored procedure para uma transacao ja iniciada
 		return new Promise((resolve, reject) => {
 			const failReturn = async err => {
 				try {
@@ -223,7 +223,7 @@ const msSqlServer = {
 			}
 		});
 	},
-	sqlCloseCon(transaction, forceClose = false) { // Commit ou rollback na transacao existente
+	sqlCloseCon: (transaction, forceClose = false) => { // Commit ou rollback na transacao existente
 		return new Promise((resolve, reject) => {
 			const failReturn = async err => {
 				try {
@@ -259,7 +259,7 @@ const msSqlServer = {
 			}
 		});
 	},
-	async sqlExecuteAll(parametros, forceClose = false) { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
+	sqlExecuteAll: async (parametros, forceClose = false) => { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
 		try {
 			let transaction = await msSqlServer.sqlOpenCon(),
 				result = await msSqlServer.sqlExecute(transaction, parametros);

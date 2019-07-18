@@ -21,7 +21,7 @@ const startIo = () => {
 
 // listeners para socket.io separados por rota ou funcao
 const listeners = {
-	root(io) { // Listeners para Home do servidor
+	root: io => { // Listeners para Home do servidor
 		const ioChannel = io.of(home.rootIoNameSpace);
 
 		ioChannel.on('connection', socket => {
