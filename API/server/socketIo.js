@@ -11,16 +11,8 @@ const home = require('@serverRoot/helpers/home');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Inicia um novo servidor io
-const startIo = () => {
-	const ios = io.listen(__serverConfig.socketIo.serverPort);
-
-	// listeners aqui
-	listeners.root(ios);
-};
-
-// listeners para socket.io separados por rota ou funcao
-const listeners = {
+// Listeners para socket.io separados por rota ou funcao (metodo privado)
+const _listeners = {
 	root: io => { // Listeners para Home do servidor
 		const ioChannel = io.of(home.rootIoNameSpace);
 
@@ -39,9 +31,16 @@ const listeners = {
 		});
 	}
 };
+
+// Inicia um novo servidor io
+const startIo = () => {
+	const ios = io.listen(__serverConfig.socketIo.serverPort);
+
+	// Listeners aqui
+	_listeners.root(ios);
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
-	startIo,
-	listeners
+	startIo
 };
