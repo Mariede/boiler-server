@@ -38,7 +38,8 @@
   },
   "scripts": {
     "serve": "cls && nodemon API/aplicacao.js",
-    "proxy": "cls && nodemon _proxy/proxyStart.js",
+    "inspect": "cls && nodemon --inspect API/aplicacao.js",
+    "proxy": "cls && nodemon _tools/proxy/_proxyStart.js",
     "build": "webpack --config webpack.config.js"
   },
   "nodemonConfig": {
