@@ -2,7 +2,7 @@
   "name": "node-boiler-server",
   "version": "0.0.1",
   "description": "Montando ambiente de teste Node com express.js",
-  "main": "./API/aplicacao.js",
+  "main": "./src/aplicacao.js",
   "license": "MIT",
   "private": true,
   "outputName": "main.js",
@@ -37,18 +37,18 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "serve": "cls && nodemon API/aplicacao.js",
-    "inspect": "cls && nodemon --inspect API/aplicacao.js",
+    "serve": "cls && nodemon ./src/aplicacao.js",
+    "inspect": "cls && nodemon --inspect ./src/aplicacao.js",
     "proxy": "cls && nodemon _tools/proxy/_proxyStart.js",
     "build": "webpack --config webpack.config.js"
   },
   "nodemonConfig": {
     "ignore": [
-      "API/logs/*",
-      "API/queue/*",
-      "API/sessions/*",
-      "API/uploads/*",
-      "API/config.json"
+      "src/logs/*",
+      "src/queue/*",
+      "src/sessions/*",
+      "src/uploads/*",
+      "src/config.json"
     ],
     "env": {
       "NODE_ENV": "development"

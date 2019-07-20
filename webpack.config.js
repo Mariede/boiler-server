@@ -16,7 +16,7 @@ const licensePackage = (packageJson.license || '');
 const outputNamePackage = (packageJson.outputName || 'main.js');
 const deployFolder = './build' + (versionPackage ? '/' + versionPackage : '');
 
-const sourcePath = path.resolve(__dirname, './API');
+const sourcePath = path.resolve(__dirname, './src');
 const destinyPath = path.resolve(__dirname, deployFolder);
 
 module.exports = {

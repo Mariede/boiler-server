@@ -1,18 +1,11 @@
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
-
-pids
-results
-build
-
-API/logs
-API/queue
-API/sessions
-API/uploads
+# dependencies
 node_modules
+
+# production
+/build
+
+# misc
+/src/logs
+/src/queue
+/src/sessions
+/src/uploads
