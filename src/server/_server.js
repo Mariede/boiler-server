@@ -23,7 +23,7 @@ const queue = require('@serverRoot/server/queue'); // queue de e-mails
 const index = require('@serverRoot/routes/index'); // gate de roteamento
 // -------------------------------------------------------------------------
 
-const iniciar = (configPath, configManage, numWorkers, ...cluster) => {
+const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const serverHost = (process.env.HOSTNAME || __serverConfig.server.host);
@@ -227,5 +227,5 @@ const iniciar = (configPath, configManage, numWorkers, ...cluster) => {
 // -------------------------------------------------------------------------
 
 module.exports = {
-	iniciar
+	startServer
 };

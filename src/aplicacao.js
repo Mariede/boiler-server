@@ -36,7 +36,7 @@ global.__serverConfig = configManage.push(configPath);
 global.__serverWorker = null;
 // -------------------------------------------------------------------------
 
-const aplicacaoIniciar = async () => {
+const startApp = async () => {
 	try {
 		const showMessages = messages => {
 			let checkType = 'info',
@@ -158,12 +158,12 @@ const aplicacaoIniciar = async () => {
 				);
 			} else {
 				if (cluster.isWorker) {
-					let messages = await _server.iniciar(configPath, configManage, numWorkers, cluster);
+					let messages = await _server.startServer(configPath, configManage, numWorkers, cluster);
 					showMessages(messages);
 				}
 			}
 		} else {
-			let messages = await _server.iniciar(configPath, configManage, numWorkers);
+			let messages = await _server.startServer(configPath, configManage, numWorkers);
 			showMessages(messages);
 		}
 	} catch(err) {
@@ -171,4 +171,4 @@ const aplicacaoIniciar = async () => {
 	}
 };
 
-aplicacaoIniciar();
+startApp();
