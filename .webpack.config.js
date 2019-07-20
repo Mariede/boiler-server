@@ -1,4 +1,3 @@
-// const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');

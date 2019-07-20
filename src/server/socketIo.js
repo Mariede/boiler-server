@@ -7,6 +7,7 @@ const io = require('socket.io');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const log = require('@serverRoot/helpers/log');
 const home = require('@serverRoot/helpers/home');
 // -------------------------------------------------------------------------
 
@@ -32,12 +33,16 @@ const _listeners = {
 	}
 };
 
-// Inicia um novo servidor io
+// Inicia um novo servidor socket.io
 const startIo = () => {
 	const ios = io.listen(__serverConfig.socketIo.serverPort);
 
 	// Listeners aqui
 	_listeners.root(ios);
+
+	ios.httpServer.once('listening', () => {
+		log.logger('info', `Servidor socket.io está rodando na porta ${ios.httpServer.address().port}...`, 'startUp');
+	});
 };
 // -------------------------------------------------------------------------
 

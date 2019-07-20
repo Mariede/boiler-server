@@ -37,10 +37,10 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "serve": "cls && nodemon ./src/index.js",
+    "start": "cls && nodemon ./src/index.js",
     "inspect": "cls && nodemon --inspect ./src/index.js",
-    "proxy": "cls && nodemon _tools/proxy/_proxyStart.js",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config .webpack.config.js",
+    "proxy": "cls && nodemon _tools/proxy/_proxyStart.js"
   },
   "nodemonConfig": {
     "ignore": [

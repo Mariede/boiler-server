@@ -5,7 +5,7 @@ Servidor boilerplate para aplicações Web em Express/Node.js - back-end
 * Rodar local:
 ```
 npm install
-npm run serve
+npm start
 ```
 
 * Build (Webpack):
