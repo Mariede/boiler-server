@@ -2,7 +2,7 @@
   "name": "node-boiler-server",
   "version": "0.0.1",
   "description": "Boilerplate em express.js",
-  "main": "./src/aplicacao.js",
+  "main": "./src/index.js",
   "license": "MIT",
   "private": true,
   "outputName": "main.js",
@@ -37,8 +37,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "serve": "cls && nodemon ./src/aplicacao.js",
-    "inspect": "cls && nodemon --inspect ./src/aplicacao.js",
+    "serve": "cls && nodemon ./src/index.js",
+    "inspect": "cls && nodemon --inspect ./src/index.js",
     "proxy": "cls && nodemon _tools/proxy/_proxyStart.js",
     "build": "webpack --config webpack.config.js"
   },
@@ -58,11 +58,9 @@
   "keywords": [
     "node",
     "express",
-    "nodemon",
     "aplicacao",
     "servidor",
-    "back-end",
-    "rotas"
+    "back-end"
   ],
   "author": "Michel Guimarães Ariede"
 }
