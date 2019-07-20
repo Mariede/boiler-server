@@ -53,7 +53,7 @@
 	},
 	"socketIo": {
 		"serverUrl": "http://localhost",
-		"serverPort": 6001
+		"serverPort": 5001
 	},
 	"crypto": {
 		"hashAlgorithm": "sha512",
