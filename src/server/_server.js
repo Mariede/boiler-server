@@ -20,7 +20,7 @@ const path = require('path');
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const queue = require('@serverRoot/server/queue'); // queue de e-mails
-const index = require('@serverRoot/routes/index'); // gate de roteamento
+const routes = require('@serverRoot/routes/routes'); // gate de roteamento
 // -------------------------------------------------------------------------
 
 const startServer = (configPath, configManage, numWorkers, ...cluster) => {
@@ -167,7 +167,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Rotas -------------------------------------------------
 			app.use(
 				checkRoutePrefix(),
-				index
+				routes
 			);
 
 			app.all('*', (req, res) => {
