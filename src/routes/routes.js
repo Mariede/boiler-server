@@ -29,7 +29,7 @@ router.use(async (req, res, next) => {
 		if (!isProtected) {
 			segueFluxo = true;
 		} else {
-			if (await helpersAuth.isLogged(req, 1)) {
+			if (await helpersAuth.isLogged(req, 'a')) {
 				segueFluxo = true;
 			}
 		}
