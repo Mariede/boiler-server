@@ -264,7 +264,7 @@ const isNumber = num => {
 const isInteger = (num, signed = true) => {
 	try {
 		let numCheck = _falsyCheck(num),
-			regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([+]?[0-9]+)$/),
+			regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([0-9]+)$/),
 			vRet = false;
 
 		if (numCheck && numCheck.match(regExp)) {
@@ -281,7 +281,7 @@ const isInteger = (num, signed = true) => {
 const isIntegerOrFloat = (num, signed = true) => {
 	try {
 		let numCheck = _falsyCheck(num),
-			regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([+]?[0-9]+)((\.{1}[0-9]+)|())$/),
+			regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([0-9]+)((\.{1}[0-9]+)|())$/),
 			vRet = false;
 
 		if (numCheck && numCheck.match(regExp)) {
@@ -298,7 +298,7 @@ const isIntegerOrFloat = (num, signed = true) => {
 const isIntegerOrFixed = (num, fixedDecimal, signed = true) => {
 	try {
 		let numCheck = _falsyCheck(num),
-			regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([+]?[0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$')),
+			regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$')),
 			vRet = false;
 
 		if (numCheck && numCheck.match(regExp)) {

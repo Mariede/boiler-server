@@ -6,18 +6,18 @@
 	},
 	"item": [
 		{
-			"name": "{{serverhost}}/usuario/10",
+			"name": "{{serverhost}}/usuario/{id}",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{serverhost}}/usuario/101",
+					"raw": "{{serverhost}}/usuario/1",
 					"host": [
 						"{{serverhost}}"
 					],
 					"path": [
 						"usuario",
-						"101"
+						"1"
 					]
 				}
 			},
@@ -259,7 +259,7 @@
 						},
 						{
 							"key": "pass",
-							"value": "  Testesenh@123  ",
+							"value": "@123",
 							"type": "text"
 						}
 					]

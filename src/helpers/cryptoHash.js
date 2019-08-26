@@ -14,7 +14,7 @@ const _checkSaltData = async (...saltData) => {
 
 		switch (saltDataLen) {
 			case 1: {
-				salt = saltData[0]; // retorna o salt informado
+				salt = saltData[0].toString(); // retorna o salt informado
 				break;
 			}
 			case 2: {
@@ -75,7 +75,7 @@ const generateSalt = (length, onlyNumbers = true) => {
 			let salt;
 
 			if (onlyNumbers) {
-				salt = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10);
+				salt = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10).toString();
 			} else {
 				salt = crypto.randomBytes(length).toString('hex').slice(0, length);
 			}

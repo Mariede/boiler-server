@@ -33,7 +33,7 @@ const login = async (req, res) => {
 					sess[sessWraper].id = 1;
 					sess[sessWraper].login = login.trim();
 					sess[sessWraper].nome = 'Michel Ariede';
-					sess[sessWraper].senhaHash = await cryptoHash.hash(pass, '123Abc');
+					sess[sessWraper].senhaHash = await cryptoHash.hash(pass, '0361f');
 					sess[sessWraper].permissoes = ['LST_INFO1', 'EDT_INFO1', 'EXC_INFO2', 'LST_INFO3'];
 					/* login process - ACESSO AO DB */
 
