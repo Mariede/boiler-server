@@ -2,6 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
+const dbCon = require('@serverRoot/helpers/db');
 const auth = require('@serverRoot/helpers/auth');
 const cryptoHash = require('@serverRoot/helpers/cryptoHash');
 const validator = require('@serverRoot/helpers/validator');
@@ -25,20 +26,50 @@ const login = async (req, res) => {
 
 			if (!validator.isEmpty(login)) {
 				if (!validator.isEmpty(pass)) { // Inicia a sessao
-					sess[sessWraper] = {};
+					const query = {
+						formato: 1,
+						dados: {
+							executar: `
+								SELECT
+									A.ID_USUARIO
+									,A.ID_TIPO
+									,A.NOME
+									,A.EMAIL
+									,A.SENHA
+									,A.SALT
+									,A.ATIVO
+									,B.TIPO
+								FROM
+									USUARIO A (NOLOCK)
+									INNER JOIN TIPO B (NOLOCK)
+										ON (A.ID_TIPO = B.ID_TIPO)
+								WHERE
+									A.EMAIL = '${login}';
+							`
+						}
+					};
 
+					let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query),
+						dataUser = resultSet.recordset && resultSet.recordset.length === 1 && resultSet.recordset[0],
+						passInfo = (dataUser ? await cryptoHash.hash(pass, dataUser.SALT) : undefined);
 
+					if (passInfo && (passInfo.passHash === dataUser.SENHA)) {
+						if (dataUser.ATIVO) {
+							sess[sessWraper] = {};
 
-					/* login process - ACESSO AO DB */
-					sess[sessWraper].id = 1;
-					sess[sessWraper].login = login.trim();
-					sess[sessWraper].nome = 'Michel Ariede';
-					sess[sessWraper].senhaHash = await cryptoHash.hash(pass, '0361f');
-					sess[sessWraper].permissoes = ['LST_INFO1', 'EDT_INFO1', 'EXC_INFO2', 'LST_INFO3'];
-					/* login process - ACESSO AO DB */
-
-
-
+							/* Session data */
+							sess[sessWraper].id = dataUser.ID_USUARIO;
+							sess[sessWraper].idTipo = dataUser.ID_TIPO;
+							sess[sessWraper].nome = dataUser.NOME;
+							sess[sessWraper].login = dataUser.EMAIL;
+							sess[sessWraper].tipo = dataUser.TIPO;
+							/* Session data */
+						} else {
+							errWrapper.throwThis('AUTH', 400, 'Login inativo...');
+						}
+					} else {
+						errWrapper.throwThis('AUTH', 400, 'Login e/ou senha inválidos...');
+					}
 				} else {
 					errWrapper.throwThis('AUTH', 400, 'Favor preencher a senha...');
 				}
