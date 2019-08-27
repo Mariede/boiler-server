@@ -45,7 +45,7 @@
 		"authTipo": 1,
 		"except": [
 			"/",
-			"/login",
+			"/logon",
 			"/islogged"
 		],
 		"_comments1": "authTipo => 2: toda rota livre, exceto except / Default: toda rota protegida, exceto except",

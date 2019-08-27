@@ -25,8 +25,8 @@ const _gateLocal = async (req, res) => {
 // -------------------------------------------------------------------------
 // Rotas
 const rotasAuth = router => {
-	// login ---------------------------------------------------------------
-	router.route('/login')
+	// logon ---------------------------------------------------------------
+	router.route('/logon')
 	.all(async (req, res, next) => {
 		try {
 			await _gateLocal(req, res);
@@ -37,7 +37,7 @@ const rotasAuth = router => {
 	})
 	.post(async (req, res) => {
 		try {
-			let result = await auth.login(req, res);
+			let result = await auth.logon(req, res);
 			res.status(200).send(result);
 		} catch(err) {
 			log.controllerErro(res, err, 'error');

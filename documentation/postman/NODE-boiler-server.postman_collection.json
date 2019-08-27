@@ -238,7 +238,7 @@
 			"response": []
 		},
 		{
-			"name": "{{serverhost}}/login",
+			"name": "{{serverhost}}/logon",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -265,12 +265,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{serverhost}}/login",
+					"raw": "{{serverhost}}/logon",
 					"host": [
 						"{{serverhost}}"
 					],
 					"path": [
-						"login"
+						"logon"
 					]
 				}
 			},

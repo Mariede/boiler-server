@@ -13,7 +13,7 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // Acoes
 
 // Permite acesso as rotas protegidas, analise das permissoes em um segundo momento
-const login = async (req, res) => {
+const logon = async (req, res) => {
 	try {
 		let sess = req.session,
 			sessWraper = __serverConfig.auth.sessWrapper;
@@ -61,20 +61,20 @@ const login = async (req, res) => {
 							sess[sessWraper].id = dataUser.ID_USUARIO;
 							sess[sessWraper].idTipo = dataUser.ID_TIPO;
 							sess[sessWraper].nome = dataUser.NOME;
-							sess[sessWraper].login = dataUser.EMAIL;
+							sess[sessWraper].email = dataUser.EMAIL;
 							sess[sessWraper].tipo = dataUser.TIPO;
 							/* Session data */
 						} else {
-							errWrapper.throwThis('AUTH', 400, 'Login inativo...');
+							errWrapper.throwThis('AUTH', 400, 'Usuário inativo...');
 						}
 					} else {
-						errWrapper.throwThis('AUTH', 400, 'Login e/ou senha inválidos...');
+						errWrapper.throwThis('AUTH', 400, 'Usuário e/ou senha inválidos...');
 					}
 				} else {
 					errWrapper.throwThis('AUTH', 400, 'Favor preencher a senha...');
 				}
 			} else {
-				errWrapper.throwThis('AUTH', 400, 'Favor preencher o login...');
+				errWrapper.throwThis('AUTH', 400, 'Favor preencher o usuário...');
 			}
 		}
 
@@ -118,7 +118,7 @@ const isLogged = async (req, res) => {
 // -------------------------------------------------------------------------
 
 module.exports = {
-	login,
+	logon,
 	logout,
 	isLogged
 };
