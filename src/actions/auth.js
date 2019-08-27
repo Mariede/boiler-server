@@ -50,7 +50,7 @@ const logon = async (req, res) => {
 					};
 
 					let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query),
-						dataUser = resultSet.recordset && resultSet.recordset.length === 1 && resultSet.recordset[0],
+						dataUser = resultSet && resultSet.recordset.length === 1 && resultSet.recordset[0],
 						passInfo = (dataUser ? await cryptoHash.hash(pass, dataUser.SALT) : undefined);
 
 					if (passInfo && (passInfo.passHash === dataUser.SENHA)) {

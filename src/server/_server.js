@@ -171,7 +171,11 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			);
 
 			app.all('*', (req, res) => {
-				res.status(404).send('Essa rota não existe');
+				res.status(404).send({
+					name: 'ROUTER',
+					code: 404,
+					message: 'Essa rota não existe...'
+				});
 			});
 
 			// Handler erros sincronos -------------------------------
