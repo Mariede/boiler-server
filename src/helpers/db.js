@@ -85,8 +85,8 @@ const msSqlServer = {
 				const request = new sql.Request(transaction);
 
 				const sqlAction = async (r, p) => {
-					if (p.hasOwnProperty('formato') && p.hasOwnProperty('dados')) {
-						if (p.dados.hasOwnProperty('executar')) {
+					if (Object.prototype.hasOwnProperty.call(p, 'formato') && Object.prototype.hasOwnProperty.call(p, 'dados')) {
+						if (Object.prototype.hasOwnProperty.call(p.dados, 'executar')) {
 							const dataTypeCheck = param => {
 								const dataTypesSupported = [
 									'Bit',
@@ -144,7 +144,7 @@ const msSqlServer = {
 							};
 
 							const inputCheck = (r, p) => {
-								if (p.dados.hasOwnProperty('input')) {
+								if (Object.prototype.hasOwnProperty.call(p.dados, 'input')) {
 									p.dados.input.forEach(key => {
 										if (key.length === 3) {
 											let dataType = dataTypeCheck(key[1]);
@@ -169,7 +169,7 @@ const msSqlServer = {
 							};
 
 							const outputCheck = (r, p) => {
-								if (p.dados.hasOwnProperty('output')) {
+								if (Object.prototype.hasOwnProperty.call(p.dados, 'output')) {
 									p.dados.output.forEach(key => {
 										if (key.length === 2) {
 											let dataType = dataTypeCheck(key[1]);

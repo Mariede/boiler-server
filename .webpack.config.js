@@ -1,7 +1,7 @@
 const nodeExternals = require('webpack-node-externals');
 const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
-const CleanPlugin = require('clean-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 const packageJsonLocation = './package.json';
@@ -59,8 +59,8 @@ module.exports = {
 			}
 			, packageJsonLocation
 		),
-		new CleanPlugin(),
-		new CopyPlugin([
+		new CleanWebpackPlugin(),
+		new CopyWebpackPlugin([
 			{
 				from: path.resolve(sourcePath, './config.json'), to: path.resolve(destinyPath, './config.json'), force: true
 			},

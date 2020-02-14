@@ -29,7 +29,13 @@ const _camelCaseToSnakeCase = searchFields => {
 							return changedP;
 						};
 
-						let newField = (/(_)+/.test(e) ? e : transformP(e));
+						const isUpperCase = s => {
+							s = s + '';
+
+							return (s === s.toUpperCase());
+						};
+
+						let newField = ((/(_)+/.test(e) || isUpperCase(e)) ? e : transformP(e));
 
 						newSearchFields.push(newField);
 					}

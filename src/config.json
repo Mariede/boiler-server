@@ -74,6 +74,9 @@
 				"requestTimeout": 15000,
 				"stream": true,
 				"parseJSON": true,
+				"options": {
+					"enableArithAbort": true
+				},
 				"pool": {
 					"max": 10,
 					"min": 0,

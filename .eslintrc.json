@@ -42,6 +42,7 @@
 		"no-extra-bind": 2,
 		"no-useless-return": 2,
 		"no-async-promise-executor": 2,
-		"array-callback-return": 2
+		"array-callback-return": 2,
+		"no-useless-catch": 0
 	}
 }

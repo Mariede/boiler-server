@@ -295,22 +295,22 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 					let oLen = Object.entries(attachments[i]),
 						oStringify = JSON.stringify(attachments[i]);
 
-					if ((oLen.length === 2 || oLen.length === 3) && attachments[i].hasOwnProperty('filename') && attachments[i].hasOwnProperty('content')) {
-						if (oLen.length === 3 && !attachments[i].hasOwnProperty('contentType')) {
+					if ((oLen.length === 2 || oLen.length === 3) && Object.prototype.hasOwnProperty.call(attachments[i], 'filename') && Object.prototype.hasOwnProperty.call(attachments[i], 'content')) {
+						if (oLen.length === 3 && !Object.prototype.hasOwnProperty.call(attachments[i], 'contentType')) {
 							errorStack.push(`Anexos: ${oStringify} tem uma terceira propriedade que não é o contentType...`);
 						} else {
 							attachmentsChecked.push(attachments[i]);
 						}
 					} else {
-						if ((oLen.length === 2 || oLen.length === 3) && attachments[i].hasOwnProperty('filename') && attachments[i].hasOwnProperty('path')) {
-							if (oLen.length === 3 && !attachments[i].hasOwnProperty('contentType')) {
+						if ((oLen.length === 2 || oLen.length === 3) && Object.prototype.hasOwnProperty.call(attachments[i], 'filename') && Object.prototype.hasOwnProperty.call(attachments[i], 'path')) {
+							if (oLen.length === 3 && !Object.prototype.hasOwnProperty.call(attachments[i], 'contentType')) {
 								errorStack.push(`Anexos: ${oStringify} tem uma terceira propriedade que não é o contentType...`);
 							} else {
 								attachmentsChecked.push(attachments[i]);
 							}
 						} else {
-							if ((oLen.length === 1 || oLen.length === 2) && attachments[i].hasOwnProperty('path')) {
-								if (oLen.length === 2 && !attachments[i].hasOwnProperty('contentType')) {
+							if ((oLen.length === 1 || oLen.length === 2) && Object.prototype.hasOwnProperty.call(attachments[i], 'path')) {
+								if (oLen.length === 2 && !Object.prototype.hasOwnProperty.call(attachments[i], 'contentType')) {
 									errorStack.push(`Anexos: ${oStringify} tem uma segunda propriedade que não é o contentType...`);
 								} else {
 									attachmentsChecked.push(attachments[i]);
@@ -332,22 +332,22 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 
 		if (typeof sendChunks === 'object') {
 			if (Object.entries(sendChunks).length !== 0) {
-				if (!sendChunks.hasOwnProperty('to') && !sendChunks.hasOwnProperty('cc') && !sendChunks.hasOwnProperty('bcc')) {
+				if (!Object.prototype.hasOwnProperty.call(sendChunks, 'to') && !Object.prototype.hasOwnProperty.call(sendChunks, 'cc') && !Object.prototype.hasOwnProperty.call(sendChunks, 'bcc')) {
 					errorStack.push('sendChunks deve conter pelo menos uma dessas chaves: to, cc ou bcc...');
 				} else {
-					if (sendChunks.hasOwnProperty('to') && (!Number.isInteger(sendChunks.to) || Number(sendChunks.to) < 1)) {
+					if (Object.prototype.hasOwnProperty.call(sendChunks, 'to') && (!Number.isInteger(sendChunks.to) || Number(sendChunks.to) < 1)) {
 						errorStack.push('sendChunks: Propriedade to de deve ser um número inteiro e positivo...');
 					} else {
-						if (sendChunks.hasOwnProperty('to') && sendChunks.hasOwnProperty('inheritTo')) {
+						if (Object.prototype.hasOwnProperty.call(sendChunks, 'to') && Object.prototype.hasOwnProperty.call(sendChunks, 'inheritTo')) {
 							errorStack.push('sendChunks: Propriedade inheritTo deve existir apenas se não existir a propriedade to...');
 						}
 					}
 
-					if (sendChunks.hasOwnProperty('cc') && (!Number.isInteger(sendChunks.cc) || Number(sendChunks.cc) < 1)) {
+					if (Object.prototype.hasOwnProperty.call(sendChunks, 'cc') && (!Number.isInteger(sendChunks.cc) || Number(sendChunks.cc) < 1)) {
 						errorStack.push('sendChunks: Propriedade cc deve ser um número inteiro e positivo...');
 					}
 
-					if (sendChunks.hasOwnProperty('bcc') && (!Number.isInteger(sendChunks.bcc) || Number(sendChunks.bcc) < 1)) {
+					if (Object.prototype.hasOwnProperty.call(sendChunks, 'bcc') && (!Number.isInteger(sendChunks.bcc) || Number(sendChunks.bcc) < 1)) {
 						errorStack.push('sendChunks: Propriedade bcc deve ser um número inteiro e positivo...');
 					}
 				}
