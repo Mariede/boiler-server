@@ -29,7 +29,7 @@ const check = config => {
 									JSON.parse(json);
 									resolve(true);
 								} catch(err) {
-									log.logger('warn', `Validação de conteúdo para o arquivo ${fn}: ${(err.message || err.stack || err)}`, 'consoleOnly');
+									log.logger('warn', `Validação de conteúdo para o arquivo ${fn}: ${(err.message || err.stack || err)}`, 'startUp');
 									resolve(false);
 								}
 							});
@@ -134,7 +134,7 @@ const check = config => {
 			};
 
 			const message = fn => {
-				log.logger('info', `Arquivo ${fn} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'consoleOnly');
+				log.logger('info', `Arquivo ${fn} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'startUp');
 			};
 
 			let timeoutMessages = null,

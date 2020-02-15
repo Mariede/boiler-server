@@ -103,11 +103,18 @@ const startApp = async () => {
 					daysToKeep: 15,
 					compress: false
 				},
-				fileAppender: {
+				errorsAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/server/logs-server.log'),
+					filename: (__serverRoot + '/logs/errors/logs-errors.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
+					compress: false
+				},
+				routesAppender: {
+					type: 'dateFile',
+					filename: (__serverRoot + '/logs/routes/logs-routes.log'),
+					pattern: '.yyyy-MM-dd',
+					daysToKeep: 30,
 					compress: false
 				},
 				mailQueueAppender: {
@@ -119,11 +126,11 @@ const startApp = async () => {
 				}
 			},
 			categories: {
-				default: { appenders: ['consoleAppender', 'fileAppender'], level: 'warn' },
-				startUp: { appenders: ['consoleAppender', 'startUpAppender'], level: 'all' },
+				default: { appenders: ['consoleAppender', 'errorsAppender'], level: 'warn' },
 				consoleOnly: { appenders: ['consoleAppender'], level: 'all' },
-				fileOnly: { appenders: ['fileAppender'], level: 'warn' },
-				mailQueue: { appenders: ['consoleAppender', 'mailQueueAppender'], level: 'warn' }
+				startUp: { appenders: ['consoleAppender', 'startUpAppender'], level: 'all' },
+				routes: { appenders: ['consoleAppender', 'routesAppender'], level: 'all' },
+				mailQueue: { appenders: ['consoleAppender', 'mailQueueAppender'], level: 'all' }
 			}
 		});
 		// -------------------------------------------------------------------------
@@ -134,6 +141,8 @@ const startApp = async () => {
 
 		if (numWorkers) {
 			if (cluster.isMaster) {
+				log.logger('info', '|| Processo de inicialização do servidor - clusterizado ||', 'startUp');
+
 				log.logger('info', `Cluster mestre definindo ${numWorkers} trabalhadores`, 'startUp');
 
 				for (let i = 0; i < numWorkers; i++) {
@@ -150,8 +159,8 @@ const startApp = async () => {
 				cluster.on(
 					'exit',
 					(worker, code, signal) => {
-						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.id} - finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`, 'consoleOnly');
-						log.logger('info', 'Iniciando novo trabalhador', 'consoleOnly');
+						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.id} - finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`, 'startUp');
+						log.logger('info', 'Iniciando novo trabalhador', 'startUp');
 
 						cluster.fork();
 					}
@@ -163,6 +172,8 @@ const startApp = async () => {
 				}
 			}
 		} else {
+			log.logger('info', '|| Processo de inicialização do servidor - não clusterizado ||', 'startUp');
+
 			let messages = await _server.startServer(configPath, configManage, numWorkers);
 			showMessages(messages);
 		}

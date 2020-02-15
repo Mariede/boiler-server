@@ -49,6 +49,9 @@ npm run build
   - Utiliza o sistema de arquivos
 ## Logs com informações na tela e/ou arquivos diários de logs
   - Arquivos separados de logs por grupos
+  - Logs de inicialização e acessos ao servidor
+  - Logs de erros
+  - Logs de uso da fila de e-mails
 ## Autenticação das rotas personalizável
   - Lib de autenticação
     - Rotas protegidas (configurável)

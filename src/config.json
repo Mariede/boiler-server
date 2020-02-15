@@ -4,6 +4,7 @@
 		"port": 5000,
 		"timeout": 240,
 		"clustered": false,
+		"saveRouteLogs": true,
 		"routePrefix": "/",
 		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/views/serverSide/assets/images" },{ "virtualPath": "/css", "physicalPath": "/views/serverSide/assets/css" }],
 		"pathFavicon": "/views/serverSide/assets/images/favicon.ico",

@@ -175,12 +175,12 @@ const queueStartMailCheck = () => {
 															await deleteThis(filePathSending);
 														}
 
-														log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}${emailsAffected === 0 ? ' * Favor verificar a pasta sending (arquivo não excluído) *' : ''}`, 'consoleOnly');
+														log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}${emailsAffected === 0 ? ' * Favor verificar a pasta sending (arquivo não excluído) *' : ''}`, 'mailQueue');
 
 														if (sentTotal < emailsPerRound) {
 															return false;
 														} else {
-															log.logger('info', `Fila de e-mails: limite de ${emailsPerRound} ${emailsPerRound === 1 ? 'e-mail atingido' : 'e-mails atingidos'} na rodada (${sentTotal} ${sentTotal === 1 ? 'disparado' : 'disparados'}), saindo do loop`, 'consoleOnly');
+															log.logger('info', `Fila de e-mails: limite de ${emailsPerRound} ${emailsPerRound === 1 ? 'e-mail atingido' : 'e-mails atingidos'} na rodada (${sentTotal} ${sentTotal === 1 ? 'disparado' : 'disparados'}), saindo do loop`, 'mailQueue');
 
 															return true;
 														}
