@@ -233,11 +233,11 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			errorStack = [];
 
 		if (Array.isArray(from)) {
-			if (from[0].constructor !== Array) {
-				from = [from];
-			}
-
 			if (from.length === 1) {
+				if (from[0].constructor !== Array) {
+					from = [from];
+				}
+
 				from.forEach(
 					e => {
 						let email = (e[0] || ''),

@@ -59,30 +59,55 @@ const logger = (escopo, mensagem, incorporador = '') => {
 // Retorna erro ao usuario via controller
 const controllerErro = (res, err, escopo, incorporador = '') => {
 	let httpStatusCode = 500,
-		error = new Error();
+		error = new Error(),
+		genericErrorName = 'Error';
 
-	if (typeof err === 'object') {
-		error = err;
-		error.stackTrace = err.stack;
-
-		switch (err.code) {
-			case 400:
-			case 401:
-			case 403:
-			case 404:
-			case 405:
-			case 501:
-			case 502:
-			case 503: {
-				httpStatusCode = err.code;
-				break;
+	switch (typeof err) {
+		case 'object': {
+			if (err.name) {
+				error.name = err.name;
+			} else {
+				error.name = genericErrorName;
 			}
+
+			if (err.code) {
+				error.code = err.code;
+
+				switch (err.code) {
+					case 400:
+					case 401:
+					case 403:
+					case 404:
+					case 405:
+					case 501:
+					case 502:
+					case 503: {
+						httpStatusCode = err.code;
+						break;
+					}
+				}
+			} else {
+				error.code = httpStatusCode;
+			}
+
+			if (err.message) {
+				error.message = err.message;
+			}
+
+			if (err.stack) {
+				error.stackTrace = err.stack;
+			}
+
+			break;
 		}
-	} else {
-		error.name = 'ERROR - LOG';
-		error.code = httpStatusCode;
-		error.message = err;
-		error.stackTrace = error.stack;
+		default: {
+			error.name = genericErrorName;
+			error.code = httpStatusCode;
+			error.message = err;
+			error.stackTrace = error.stack;
+
+			break;
+		}
 	}
 
 	logger(escopo, err.stack || err, incorporador);
