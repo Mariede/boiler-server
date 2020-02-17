@@ -233,11 +233,15 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			errorStack = [];
 
 		if (Array.isArray(from)) {
-			if (from.length === 1) {
+			if (from.length !== 0) {
 				if (from[0].constructor !== Array) {
 					from = [from];
 				}
+			} else {
+				from = [''];
+			}
 
+			if (from.length === 1) {
 				from.forEach(
 					e => {
 						let email = (e[0] || ''),
@@ -253,7 +257,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 					}
 				);
 			} else {
-				errorStack.push(`Array de entrada para e-mail de origem ( ${from} ) não possui conteúdo ou possui mais de um recipiente informado...`);
+				errorStack.push(`Array de entrada para e-mail de origem ( ${from} ) contém estrutura inválida ou possui mais de um recipiente informado...`);
 			}
 		} else {
 			errorStack.push(`E-mail de origem ( ${from} ): entrada não está no formato de Array...`);
@@ -295,9 +299,9 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 					let oLen = Object.entries(attachments[i]),
 						oStringify = JSON.stringify(attachments[i]);
 
-					if ((oLen.length === 2 || oLen.length === 3) && Object.prototype.hasOwnProperty.call(attachments[i], 'filename') && Object.prototype.hasOwnProperty.call(attachments[i], 'content')) {
-						if (oLen.length === 3 && !Object.prototype.hasOwnProperty.call(attachments[i], 'contentType')) {
-							errorStack.push(`Anexos: ${oStringify} tem uma terceira propriedade que não é o contentType...`);
+					if ((oLen.length === 3 || oLen.length === 4) && Object.prototype.hasOwnProperty.call(attachments[i], 'filename') && Object.prototype.hasOwnProperty.call(attachments[i], 'content') && Object.prototype.hasOwnProperty.call(attachments[i], 'encoding')) {
+						if (oLen.length === 4 && !Object.prototype.hasOwnProperty.call(attachments[i], 'contentType')) {
+							errorStack.push(`Anexos: ${oStringify} tem uma quarta propriedade que não é o contentType...`);
 						} else {
 							attachmentsChecked.push(attachments[i]);
 						}
@@ -316,7 +320,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 									attachmentsChecked.push(attachments[i]);
 								}
 							} else {
-								errorStack.push(`Anexos: ${oStringify} deve seguir o padrão { filename: , content: , contentType: } ou { filename: , path: , contentType: } ou { path: , contentType: }. "contentType" é opcional e "Content" (caso exista) precisa ser um buffer de dados...`);
+								errorStack.push(`Anexos: ${oStringify} deve seguir o padrão { filename: , content: , encoding: , contentType: } ou { filename: , path: , contentType: } ou { path: , contentType: }. "contentType" é opcional e "Content" (caso exista) precisa ser um buffer de dados...`);
 							}
 						}
 					}
@@ -390,9 +394,8 @@ const getAttachments = (uploaderResults, fileNames) => {
 						} else {
 							if (file.buffer) {
 								if (Buffer.isBuffer(file.buffer)) {
-									// !! Bug a ser avaliado no envio de arquivos binarios via buffer de dados
-									// objFile.content = Buffer.from(file.buffer, 'utf8'); // arquivo ok, teste de escrita/leitura no disco mas erro ao anexar
-									objFile.content = Buffer.from(file.buffer, 'utf8').toString('utf8'); // envia ok, mas arquivo fica invalido para: diferente de plain text
+									objFile.content = Buffer.from(file.buffer).toString('base64');
+									objFile.encoding = 'base64';
 								}
 							}
 						}
