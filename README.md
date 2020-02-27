@@ -41,9 +41,9 @@ npm run build
   - Funciona normalmente single-thread e multi-thread (cluster)
 ## Possibilidade de utilizar a aplicação como serviço do Windows ou via "Forever"
   - Pacote node-windows
-      - Inicia junto com a máquina
-      - Serviço reinicia automaticamente, se houver problemas
-      - _tools/node_as_a_service/_nodeAsAService.js
+    - Inicia junto com a máquina
+    - Serviço reinicia automaticamente, se houver problemas
+    - _tools/node_as_a_service/_nodeAsAService.js
   - Pacote Forever (instalar global)
     - Funciona em Windows ou Linux
 ## Sessions com armazenamento via arquivos criptografados
