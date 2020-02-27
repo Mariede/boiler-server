@@ -39,26 +39,31 @@ npm run build
   - Integrado com a aplicação, mas com processo próprio em porta separada
   - Proxy automático, direto pela aplicação
   - Funciona normalmente single-thread e multi-thread (cluster)
-## Possibilidade de utilizar a aplicação como serviço do Windows
+## Possibilidade de utilizar a aplicação como serviço do Windows ou via "Forever"
   - Pacote node-windows
-  - Inicia junto com a máquina
-  - Serviço reinicia automaticamente, se houver problemas
-  - _tools/node_as_a_service/_nodeAsAService.js
+      - Inicia junto com a máquina
+      - Serviço reinicia automaticamente, se houver problemas
+      - _tools/node_as_a_service/_nodeAsAService.js
+  - Pacote Forever (instalar global)
+    - Funciona em Windows ou Linux
 ## Sessions com armazenamento via arquivos criptografados
   - sessionFileStore
   - Utiliza o sistema de arquivos
 ## Logs com informações na tela e/ou arquivos diários de logs
   - Arquivos separados de logs por grupos
-  - Logs de inicialização e acessos ao servidor
-  - Logs de erros
-  - Logs de uso da fila de e-mails
+    - Logs de inicialização e acessos ao servidor
+    - Logs de erros
+    - Logs de uso da fila de e-mails
 ## Autenticação das rotas personalizável
   - Lib de autenticação
     - Rotas protegidas (configurável)
     - isLogged
     - Login / Logout
-## Lib parametrizada para o MS SQL Server
-  - Transacional, acesso a queries e stored procedures, variáveis de output, etc
+## Lib de acesso a bancos de dados
+  - Parametrizável para MS SQL Server
+    - Transacional, acesso a múltiplas queries e stored procedures, variáveis de output, etc
+  - Parametrizável para MongoDB
+    - Transacional, via esquemas Mongoose, noSql
 ## Paginador e Ordenador (Paginator & Sorter)
   - Com opções configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
   - Conversão configurável "Camel Case" do json (record set de retorno)
@@ -93,6 +98,8 @@ npm run build
     - um helper pode chamar um ou mais helpers
   - logs
     - arquivos de logs do servidor
+  - models
+    - arquivo contendo os esquemas de acesso ao mongoDB, via mongoose
   - queue (* opcional, configurável)
     - arquivos da fila de e-mails (e-mails agendados a serem enviados)
   - routes

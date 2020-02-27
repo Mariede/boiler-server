@@ -3,6 +3,8 @@
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const sql = require('mssql');
+const mongoose = require('mongoose');
+const mongooseSchemas = require('@serverRoot/models/mongooseSchemas');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
@@ -271,8 +273,101 @@ const msSqlServer = {
 		}
 	}
 };
+
+const mongoDB = {
+	noSqlOpenCon: () => { // Inicia uma conexao
+		return new Promise((resolve, reject) => {
+			try {
+				// 0: disconnected, 1: connected, 2: connecting, 3: disconnecting, 4: invalid credentials
+				const checkConnection = mongoose.connection.readyState;
+
+				if (checkConnection === 1) {
+					resolve();
+				} else {
+					const uri = __serverConfig.db.mongoose.connectionString;
+
+					const dbOptions = {
+						useNewUrlParser: true,
+						useFindAndModify: false,
+						useCreateIndex: true,
+						useUnifiedTopology: true
+					};
+
+					let options = Object.assign(__serverConfig.db.mongoose.configDb, dbOptions);
+
+					mongoose.connect(uri, options)
+					.then(
+						() => {
+							resolve();
+						}
+					)
+					.catch(
+						err => {
+							reject(err);
+						}
+					);
+				}
+			} catch(err) {
+				reject(err);
+			}
+		});
+	},
+
+	noSqlGetModel: (schema, schemaOptions = {}) => {
+		return new Promise((resolve, reject) => {
+			try {
+				let myModel = mongoose.models[schema];
+
+				if (!myModel) {
+					let options = Object.assign(__serverConfig.db.mongoose.configSchema, schemaOptions);
+
+					myModel = mongoose.model(schema, new mongoose.Schema(mongooseSchemas.schemas[schema], options));
+
+					myModel.syncIndexes()
+					.then(
+						() => {
+							myModel.init();
+						}
+					)
+					.then(
+						() => {
+							resolve(myModel);
+						}
+					)
+					.catch(
+						err => {
+							reject(err);
+						}
+					);
+				} else {
+					resolve(myModel);
+				}
+			} catch(err) {
+				reject(err);
+			}
+		});
+	},
+
+	noSqlCloseCon: () => {
+		try {
+			mongoose.connection.close();
+		} catch(err) {
+			throw err;
+		}
+	},
+
+	noSqlExecute: async (schema, schemaOptions = {}) => {
+		try {
+			await mongoDB.noSqlOpenCon();
+			return await mongoDB.noSqlGetModel(schema, schemaOptions);
+		} catch(err) {
+			throw err;
+		}
+	}
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
-	msSqlServer
+	msSqlServer,
+	mongoDB
 };

@@ -85,6 +85,30 @@
 				}
 			},
 			"_comments1": "conexaoTipo => 2: sem pool / Default: com pool"
+		},
+		"mongoose": {
+			"connectionString": "mongodb://user:pass@10.28.10.21:27017/database",
+			"configDb": {
+				"bufferMaxEntries": 0,
+				"autoIndex": true,
+				"keepAlive": true,
+				"poolSize": 10,
+				"connectTimeoutMS": 15000,
+				"socketTimeoutMS": 45000,
+				"authSource": "nodetest"
+			},
+			"configSchema": {
+				"bufferCommands": false,
+				"collation": {
+					"locale": "pt",
+					"strength": 2
+				},
+				"timestamps": {
+					"createdAt": "dataCriacao",
+					"updatedAt": "dataAlteracao"
+				}
+			},
+			"_comments1": "authSource opcional"
 		}
 	},
 	"email": {

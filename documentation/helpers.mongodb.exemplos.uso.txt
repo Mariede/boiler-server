@@ -1,0 +1,69 @@
+/*
+LIB db.js (MongoDB)
+-------------------
+
+Conexão e execução de comandos noSql em mongoDB
+
+É preciso configurar previamente os esquemas mongoose em /src/models/mongooseSchemas.js
+*/
+
+// ---------------------------------------------------------------------------------------------------------
+// Parâmetros de entrada (exemplos)
+
+// Insert / Select
+const dbCon = require('@serverRoot/helpers/db');
+
+try {
+	let userModel = await dbCon.mongoDB.noSqlExecute('users');
+
+	await userModel.create(
+		{
+			name: 'Joaquim Silva',
+			email: '   joaquim.silva@email.com   ',
+			age: 29,
+			pass: '$#$#$565611',
+			salt: '12345111',
+			active: true
+		}
+	);
+
+	return userModel.find();
+} catch(err) {
+	throw Error(err);
+}
+
+// Update / Select
+const dbCon = require('@serverRoot/helpers/db');
+
+try {
+	let userModel = await dbCon.mongoDB.noSqlExecute('users');
+
+	await userModel.findOneAndUpdate(
+		{
+			name: /^[ ]*joaquim/i
+		},
+		{
+			name: 'Joaquim Santos'
+		}
+	);
+
+	return userModel.find();
+} catch(err) {
+	throw Error(err);
+}
+
+// Delete / Select
+const dbCon = require('@serverRoot/helpers/db');
+
+try {
+	let userModel = await dbCon.mongoDB.noSqlExecute('users');
+
+	await userModel.deleteMany({
+		name: /^[ ]*joaquim/i
+	});
+
+	return userModel.find();
+} catch(err) {
+	throw Error(err);
+}
+// ---------------------------------------------------------------------------------------------------------
