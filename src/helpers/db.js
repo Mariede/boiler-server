@@ -195,12 +195,18 @@ const msSqlServer = {
 							inputCheck(r, p);
 							outputCheck(r, p);
 
-							if (p.formato === 1) {
-							// Query Simples
-								return await r.query(p.dados.executar);
-							} else if (p.formato === 2) {
-							// Stored Procedure
-								return await r.execute(p.dados.executar);
+							switch (p.formato) {
+								case 1: {
+								// Query Simples
+									return await r.query(p.dados.executar);
+								}
+								case 2: {
+								// Stored Procedure
+									return await r.execute(p.dados.executar);
+								}
+								default: {
+									errWrapper.throwThis('DB', 400, 'Formato não foi corretamente definido nos parâmetros JSON para execução da query, ele contempla apenas os valores numéricos: 1 (Query simples) ou 2 (Stored Procedure)...');
+								}
 							}
 						} else {
 							errWrapper.throwThis('DB', 400, 'Executar não foi corretamente definido nos parâmetros JSON para execução da query, verifique seu código...');

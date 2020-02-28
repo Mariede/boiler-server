@@ -105,8 +105,6 @@ const controllerErro = (res, err, escopo, incorporador = '') => {
 			error.code = httpStatusCode;
 			error.message = err;
 			error.stackTrace = error.stack;
-
-			break;
 		}
 	}
 
