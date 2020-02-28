@@ -164,7 +164,7 @@ const check = config => {
 							}
 						} while (!objCheckIsEqual);
 
-						log.logger('info', `Arquivo ${filename} verificado`, 'consoleOnly');
+						log.logger('info', `Arquivo ${filename} verificado`, 'startUp');
 					}
 				} catch(err) {
 					throw err;
