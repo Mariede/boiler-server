@@ -63,7 +63,7 @@ npm run build
   - Parametrizável para MS SQL Server
     - Transacional, acesso a múltiplas queries e stored procedures, variáveis de output, etc
   - Parametrizável para MongoDB
-    - Transacional, via esquemas Mongoose, noSql
+    - Transacional, via esquemas Mongoose, índices compostos, noSql, etc
 ## Paginador e Ordenador (Paginator & Sorter)
   - Com opções configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
   - Conversão configurável "Camel Case" do json (record set de retorno)

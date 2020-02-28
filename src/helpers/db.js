@@ -72,6 +72,7 @@ const msSqlServer = {
 			}
 		});
 	},
+
 	sqlExecute: (transaction, parametros) => { // Executa uma query ou stored procedure para uma transacao ja iniciada
 		return new Promise((resolve, reject) => {
 			const failReturn = async err => {
@@ -225,6 +226,7 @@ const msSqlServer = {
 			}
 		});
 	},
+
 	sqlCloseCon: (transaction, forceClose = false) => { // Commit ou rollback na transacao existente
 		return new Promise((resolve, reject) => {
 			const failReturn = async err => {
@@ -261,6 +263,11 @@ const msSqlServer = {
 			}
 		});
 	},
+
+	/*
+	parametros => Seguem o formato json: { formato: , dados: { input: , output: , executar: } }
+		* verificar arquivo de ajuda
+	*/
 	sqlExecuteAll: async (parametros, forceClose = false) => { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
 		try {
 			let transaction = await msSqlServer.sqlOpenCon(),
@@ -313,15 +320,31 @@ const mongoDB = {
 		});
 	},
 
-	noSqlGetModel: (schema, schemaOptions = {}) => {
+	noSqlGetModel: (schema, schemaOptions = {}, compoundIndexes = []) => {
 		return new Promise((resolve, reject) => {
 			try {
 				let myModel = mongoose.models[schema];
 
 				if (!myModel) {
-					let options = Object.assign(__serverConfig.db.mongoose.configSchema, schemaOptions);
+					let options = Object.assign(__serverConfig.db.mongoose.configSchema, schemaOptions),
+						mySchema = new mongoose.Schema(mongooseSchemas.schemas[schema], options);
 
-					myModel = mongoose.model(schema, new mongoose.Schema(mongooseSchemas.schemas[schema], options));
+					if (compoundIndexes.length) {
+						compoundIndexes.forEach(
+							cVal => {
+								if (typeof cVal === 'object') {
+									if (Object.prototype.hasOwnProperty.call(cVal, '_unique')) {
+										delete cVal._unique;
+										mySchema.index(cVal, { unique: true });
+									} else {
+										mySchema.index(cVal);
+									}
+								}
+							}
+						);
+					}
+
+					myModel = mongoose.model(schema, mySchema);
 
 					myModel.syncIndexes()
 					.then(
@@ -356,10 +379,19 @@ const mongoDB = {
 		}
 	},
 
-	noSqlExecute: async (schema, schemaOptions = {}) => {
+	/*
+	schema			=> Nome do esquema a ser instaciado (criado em /models)
+	schemaOptions	=> Opcoes extras a serem acopladas as opcoes gerais (em config) ao instanciar do esquesma
+	compoundIndexes	=> Criacao de um ou mais indexes compostos no esquema. ex [{ key1: 1, key2: -1 }, { ke5: 1, key6: 1, _unique: true }]
+		 1: Ascendente
+		-1: Descendente
+
+		* Acrescentar a chave _unique: true ao objeto de indice para indice unico
+	*/
+	noSqlExecute: async (schema, schemaOptions = {}, compoundIndexes = []) => {
 		try {
 			await mongoDB.noSqlOpenCon();
-			return await mongoDB.noSqlGetModel(schema, schemaOptions);
+			return await mongoDB.noSqlGetModel(schema, schemaOptions, compoundIndexes);
 		} catch(err) {
 			throw err;
 		}

@@ -66,4 +66,22 @@ try {
 } catch(err) {
 	throw Error(err);
 }
+
+// Indices compostos
+try {
+	let userModel = await dbCon.mongoDB.noSqlExecute('users', {}, [{ email: 1, age: -1, _unique: true }, { email: 1, name: -1 }]);
+
+	await userModel.findOneAndUpdate(
+		{
+			name: /^[ ]*joaquim/i
+		},
+		{
+			name: 'Joaquim Santos'
+		}
+	);
+
+	return userModel.find();
+} catch(err) {
+	throw Error(err);
+}
 // ---------------------------------------------------------------------------------------------------------
