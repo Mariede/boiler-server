@@ -2,7 +2,11 @@
 	"server": {
 		"host": "localhost",
 		"port": 5000,
+		"backlog": 511,
 		"timeout": 240,
+		"keepAliveTimeout": 60,
+		"maxHeadersCount": 2000,
+		"headersTimeout": 65,
 		"clustered": false,
 		"saveRouteLogs": true,
 		"routePrefix": "/",
@@ -38,7 +42,7 @@
 		},
 		"_comments1": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
 		"_comments2": "se o servidor estiver proxyado, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
-		"_comments3": "server: timeout (inatividade durante conexao) em segundos, fileUpload: maxFileSize em bytes, session: timeout em minutos",
+		"_comments3": "server: timeout (inatividade durante conexao) em segundos, keepAliveTimeout (tempo de inatividade para destruir um socket) em segundos, headersTimeout (tempo de espera para receber um header completo HTTP) em segundos, fileUpload: maxFileSize em bytes, session: timeout em minutos",
 		"_comments4": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada"
 	},
 	"auth": {

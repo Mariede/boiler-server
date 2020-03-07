@@ -28,6 +28,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 		try {
 			const serverHost = (process.env.HOSTNAME || __serverConfig.server.host);
 			const serverPort = (process.env.PORT || __serverConfig.server.port);
+			const serverBacklog = (process.env.BACKLOG || __serverConfig.server.backlog);
 			const serverEnv = process.env.NODE_ENV;
 			const routePrefix = __serverConfig.server.routePrefix;
 
@@ -214,7 +215,10 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						messages.push(['info', 'Serviço de fila de e-mails não habilitado']);
 					}
 
-					s.setTimeout(__serverConfig.server.timeout * 1000);
+					s.timeout = __serverConfig.server.timeout * 1000;
+					s.keepAliveTimeout = __serverConfig.server.keepAliveTimeout * 1000;
+					s.maxHeadersCount = __serverConfig.server.maxHeadersCount;
+					s.headersTimeout = __serverConfig.server.headersTimeout * 1000;
 
 					resolve(messages);
 				} catch(err) {
@@ -222,7 +226,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 				}
 			};
 
-			_server.listen(serverPort, serverHost, serverStarter(_server));
+			_server.listen({ port: serverPort, host: serverHost, backlog: serverBacklog }, serverStarter(_server));
 		} catch(err) {
 			reject(err);
 		}
