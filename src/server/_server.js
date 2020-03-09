@@ -4,8 +4,8 @@
 // Modulos de inicializacao
 const express = require('express');
 const app = express();
-const _server = require('http').Server(app);
-const httpProxy = require('http-proxy');
+const protocol = require('http');
+const proxy = require('http-proxy');
 const cors = require('cors');
 const session = require('express-session');
 const sessionFileStore = require('session-file-store')(session);
@@ -26,19 +26,16 @@ const routes = require('@serverRoot/routes/routes'); // gate de roteamento
 const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 	return new Promise((resolve, reject) => {
 		try {
-			const serverHost = (process.env.HOSTNAME || __serverConfig.server.host);
-			const serverPort = (process.env.PORT || __serverConfig.server.port);
-			const serverBacklog = (process.env.BACKLOG || __serverConfig.server.backlog);
-			const serverEnv = process.env.NODE_ENV;
-			const routePrefix = __serverConfig.server.routePrefix;
+			const serverOptions = {};
+
+			const listenOptions = {
+				port: __serverConfig.server.port,
+				host: __serverConfig.server.host,
+				backlog: __serverConfig.server.backlog
+			};
 
 			// -------------------------------------------------------------------------
 			// Procedimentos prioritarios
-
-			// Server Worker identifica o cluster trabalhador, se existir
-			if (numWorkers && typeof(cluster[0]) === 'object') {
-				__serverWorker = cluster[0].worker.id;
-			}
 
 			// Definindo pastas de conteudo estatico
 			const checkPathStaticFiles = pathVirtualStaticFiles => {
@@ -59,29 +56,20 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 
 			// Acessando rotas prefixadas
 			const checkRoutePrefix = () => {
+				const routePrefix = __serverConfig.server.routePrefix;
 				return (routePrefix && routePrefix !== '/' ? routePrefix : '');
 			};
+
+			// Server Worker identifica o cluster trabalhador, se existir
+			if (numWorkers && typeof(cluster[0]) === 'object') {
+				__serverWorker = cluster[0].worker.id;
+			}
 			// -------------------------------------------------------------------------
 
 			// -------------------------------------------------------------------------
 			// Middleware
 
-			// Proxy para o servidor de Websockets (Socket.io)
-			// Se mais de uma aplicacao estiver rodando no mesmo servidor, diferenciar pelas portas em config
-			const wsProxy = httpProxy.createProxyServer({
-				target: `${__serverConfig.socketIo.serverUrl}:${__serverConfig.socketIo.serverPort}`,
-				ws: true
-			});
-
-			app.all('/socket.io/*', function(req, res) {
-				wsProxy.web(req, res);
-			});
-
-			_server.on('upgrade', function (req, socket, head) {
-				wsProxy.ws(req, socket, head);
-			});
-
-			// CORS --------------------------------------------------
+			// CORS --------------------------------------------------------------------
 			app.use(
 				cors({
 					'origin': __serverConfig.server.cors.origin,
@@ -92,7 +80,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 				})
 			);
 
-			// Sessions - store no file system -----------------------
+			// Sessions - store no file system -----------------------------------------
 			app.use(
 				session({
 						name: __serverConfig.server.session.cookieName,
@@ -115,37 +103,37 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 				)
 			);
 
-			// Body parser, application/json -------------------------
+			// Body parser, application/json -------------------------------------------
 			app.use(
 				bodyParser.json()
 			);
 
-			// Body parser, application/x-www-form-urlencoded --------
+			// Body parser, application/x-www-form-urlencoded --------------------------
 			app.use(
 				bodyParser.urlencoded({
 					extended: true
 				})
 			);
 
-			// Cookie parser (req.cookies) ---------------------------
+			// Cookie parser (req.cookies) ---------------------------------------------
 			app.use(
 				cookieParser()
 			);
 
-			// Compressao Gzip ---------------------------------------
+			// Compressao Gzip ---------------------------------------------------------
 			app.use(
 				compression()
 			);
 
-			// Servindo arquivos estaticos ---------------------------
+			// Servindo arquivos estaticos ---------------------------------------------
 			checkPathStaticFiles(__serverConfig.server.pathVirtualStaticFiles);
 
-			// Favicon -----------------------------------------------
+			// Favicon -----------------------------------------------------------------
 			app.use(
 				favicon(__serverRoot + __serverConfig.server.pathFavicon)
 			);
 
-			// Views -------------------------------------------------
+			// Views -------------------------------------------------------------------
 
 			// Caminho padrao
 			app.set(
@@ -165,7 +153,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 				ejs.__express
 			);
 
-			// Rotas -------------------------------------------------
+			// Rotas -------------------------------------------------------------------
 			app.use(
 				checkRoutePrefix(),
 				routes
@@ -179,7 +167,31 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 				});
 			});
 
-			// Handler erros sincronos -------------------------------
+			// Cria servidor -----------------------------------------------------------
+			const _server = protocol.createServer(serverOptions, app);
+
+			_server.timeout = __serverConfig.server.timeout * 1000;
+			_server.keepAliveTimeout = __serverConfig.server.keepAliveTimeout * 1000;
+			_server.maxHeadersCount = __serverConfig.server.maxHeadersCount;
+			_server.headersTimeout = __serverConfig.server.headersTimeout * 1000;
+
+			// Proxy para o servidor de Websockets (Socket.io) -------------------------
+			// Se mais de uma aplicacao estiver rodando no mesmo servidor, diferenciar pelas portas em config
+			const wsProxy = proxy.createProxyServer({
+				target: `${__serverConfig.socketIo.serverUrl}:${__serverConfig.socketIo.serverPort}`,
+				ws: true
+			});
+
+			// Rotas de resposta para socket.io ---------------------------------------
+			app.all('/socket.io/*', function(req, res) {
+				wsProxy.web(req, res);
+			});
+
+			_server.on('upgrade', function (req, socket, head) {
+				wsProxy.ws(req, socket, head);
+			});
+
+			// Handler erros sincronos -------------------------------------------------
 			app.use((err, req, res, next) => {
 				reject(err);
 			});
@@ -187,10 +199,10 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 
 			// -------------------------------------------------------------------------
 			// Inicia servidor ouvindo em host:port
-			const serverStarter = async s => {
+			const serverStarter = async () => {
 				try {
 					let messages = [];
-					messages.push(['info', `Servidor está rodando em ${serverHost}:${serverPort} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${serverEnv}...`]);
+					messages.push(['info', `Servidor está rodando em ${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
 
 					// inicia gerenciamento do arquivo de configuracao do servidor
 					let resultConfig = await configManage.check(configPath),
@@ -215,18 +227,13 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						messages.push(['info', 'Serviço de fila de e-mails não habilitado']);
 					}
 
-					s.timeout = __serverConfig.server.timeout * 1000;
-					s.keepAliveTimeout = __serverConfig.server.keepAliveTimeout * 1000;
-					s.maxHeadersCount = __serverConfig.server.maxHeadersCount;
-					s.headersTimeout = __serverConfig.server.headersTimeout * 1000;
-
 					resolve(messages);
 				} catch(err) {
 					reject(err);
 				}
 			};
 
-			_server.listen({ port: serverPort, host: serverHost, backlog: serverBacklog }, serverStarter(_server));
+			_server.listen(listenOptions, serverStarter());
 		} catch(err) {
 			reject(err);
 		}
