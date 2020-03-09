@@ -26,6 +26,7 @@ npm run build
 ## Arquivo de configuração unificado do servidor
   - config.json
   - Gerenciamento em tempo real do arquivo de configuração
+  - Diversos parâmetros reunidos para configuração do servidor
 ## Estrutura de código com pontos definidos de entrada / saída
   - Roteamento em camadas
   - Tratamento conjunto da pilha de Erros (sync e async)

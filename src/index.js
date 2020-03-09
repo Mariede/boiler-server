@@ -141,7 +141,9 @@ const startApp = async () => {
 
 		if (numWorkers) {
 			if (cluster.isMaster) {
+				log.logger('info', '|| **************************************************** ||', 'startUp');
 				log.logger('info', '|| Processo de inicialização do servidor - clusterizado ||', 'startUp');
+				log.logger('info', '|| **************************************************** ||', 'startUp');
 
 				log.logger('info', `Cluster mestre definindo ${numWorkers} trabalhadores`, 'startUp');
 
@@ -172,7 +174,9 @@ const startApp = async () => {
 				}
 			}
 		} else {
+			log.logger('info', '|| ******************************************************** ||', 'startUp');
 			log.logger('info', '|| Processo de inicialização do servidor - não clusterizado ||', 'startUp');
+			log.logger('info', '|| ******************************************************** ||', 'startUp');
 
 			let messages = await _server.startServer(configPath, configManage, numWorkers);
 			showMessages(messages);
