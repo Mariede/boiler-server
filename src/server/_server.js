@@ -170,6 +170,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Cria servidor -----------------------------------------------------------
 			const _server = protocol.createServer(serverOptions, app);
 
+			_server.maxConnections = __serverConfig.server.maxConnections;
 			_server.timeout = __serverConfig.server.timeout * 1000;
 			_server.keepAliveTimeout = __serverConfig.server.keepAliveTimeout * 1000;
 			_server.maxHeadersCount = __serverConfig.server.maxHeadersCount;
