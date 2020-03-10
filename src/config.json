@@ -119,6 +119,7 @@
 	"email": {
 		"queue": {
 			"on": false,
+			"saveFullLogs": false,
 			"path": "/queue/mail/send",
 			"fileExtension": ".send",
 			"limitPerRound": 20,

@@ -13,17 +13,20 @@ const log = require('@serverRoot/helpers/log');
 const queueStartMailCheck = () => {
 	return new Promise((resolve, reject) => {
 		try {
-			let transporter = nodemailer.createTransport(__serverConfig.email.transporter),
-				configQueue = __serverConfig.email.queue,
-				initPath = __serverRoot,
-				configKey = configQueue.path,
-				queuePathSend = initPath + configKey,
-				limitPerRound = configQueue.limitPerRound,
-				defaultLimitPerRound = 100,
-				emailsPerRound = ((Number.isInteger(limitPerRound) && Number(limitPerRound) > 0 && Number(limitPerRound) <= defaultLimitPerRound) ? limitPerRound : defaultLimitPerRound),
-				timeCheck = configQueue.timeCheck,
-				defaultTimeCheck = 15000,
-				intervalQueueCheck = ((Number.isInteger(timeCheck) && Number(timeCheck) >= defaultTimeCheck) ? timeCheck : defaultTimeCheck);
+			const transporter = nodemailer.createTransport(__serverConfig.email.transporter);
+			const configQueue = __serverConfig.email.queue;
+			const saveFullLogs = (configQueue.saveFullLogs ? 'mailQueue' : 'consoleOnly');
+			const configKey = configQueue.path;
+			const fileExtension = configQueue.fileExtension;
+			const limitPerRound = configQueue.limitPerRound;
+			const timeCheck = configQueue.timeCheck;
+			const defaultLimitPerRound = 100;
+			const defaultTimeCheck = 15000;
+			const emailsPerRound = ((Number.isInteger(limitPerRound) && Number(limitPerRound) > 0 && Number(limitPerRound) <= defaultLimitPerRound) ? limitPerRound : defaultLimitPerRound);
+			const intervalQueueCheck = ((Number.isInteger(timeCheck) && Number(timeCheck) >= defaultTimeCheck) ? timeCheck : defaultTimeCheck);
+
+			let initPath = __serverRoot,
+				queuePathSend = initPath + configKey;
 
 			if (!fs.existsSync(queuePathSend)) {
 				configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(
@@ -142,10 +145,9 @@ const queueStartMailCheck = () => {
 									log.logger('error', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.message || err.stack || err)}`, 'mailQueue');
 								} else {
 									if (files && files.length) {
-										let extensao = configQueue.fileExtension,
-											targetFiles = files.filter(
+										let targetFiles = files.filter(
 												file => {
-													return path.extname(file).toLowerCase() === extensao;
+													return path.extname(file).toLowerCase() === fileExtension;
 												}
 											),
 											sentTotal = 0;
@@ -190,10 +192,10 @@ const queueStartMailCheck = () => {
 												}
 											);
 										} else {
-											log.logger('info', 'Fila de e-mails verificada: nenhum arquivo na fila', 'consoleOnly');
+											log.logger('info', 'Fila de e-mails verificada: nenhum arquivo na fila', saveFullLogs);
 										}
 									} else {
-										log.logger('info', 'Fila de e-mails verificada: nenhum arquivo na fila', 'consoleOnly');
+										log.logger('info', 'Fila de e-mails verificada: nenhum arquivo na fila', saveFullLogs);
 									}
 								}
 							} catch(err) {

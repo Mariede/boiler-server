@@ -128,7 +128,8 @@ const startApp = async () => {
 			categories: {
 				default: { appenders: ['consoleAppender', 'errorsAppender'], level: 'warn' },
 				consoleOnly: { appenders: ['consoleAppender'], level: 'all' },
-				startUp: { appenders: ['consoleAppender', 'startUpAppender'], level: 'all' },
+				startUp: { appenders: ['consoleAppender', 'startUpAppender', 'mailQueueAppender'], level: 'all' },
+				configFile: { appenders: ['consoleAppender', 'startUpAppender'], level: 'all' },
 				routes: { appenders: ['consoleAppender', 'routesAppender'], level: 'all' },
 				mailQueue: { appenders: ['consoleAppender', 'mailQueueAppender'], level: 'all' }
 			}

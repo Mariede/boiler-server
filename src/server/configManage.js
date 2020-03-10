@@ -29,7 +29,7 @@ const check = config => {
 									JSON.parse(json);
 									resolve(true);
 								} catch(err) {
-									log.logger('warn', `Validação de conteúdo para o arquivo ${fn}: ${(err.message || err.stack || err)}`, 'startUp');
+									log.logger('warn', `Validação de conteúdo para o arquivo ${fn}: ${(err.message || err.stack || err)}`, 'configFile');
 									resolve(false);
 								}
 							});
@@ -134,7 +134,7 @@ const check = config => {
 			};
 
 			const message = fn => {
-				log.logger('info', `Arquivo ${fn} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'startUp');
+				log.logger('info', `Arquivo ${fn} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'configFile');
 			};
 
 			let timeoutMessages = null,
@@ -164,7 +164,7 @@ const check = config => {
 							}
 						} while (!objCheckIsEqual);
 
-						log.logger('info', `Arquivo ${filename} verificado`, 'startUp');
+						log.logger('info', `Arquivo ${filename} verificado`, 'configFile');
 					}
 				} catch(err) {
 					throw err;

@@ -220,7 +220,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						let resultQueue = await queue.queueStartMailCheck();
 
 						if (typeof resultQueue === 'object') {
-							messages.push(['info', 'Serviço de fila de e-mails iniciado com sucesso']);
+							messages.push(['info', `Serviço de fila de e-mails iniciado com sucesso${__serverConfig.email.queue.saveFullLogs ? ' (logs completos)' : ''}`]);
 						} else {
 							messages.push(['error', 'Serviço de fila de e-mails falhou ao iniciar...']);
 						}
