@@ -1,6 +1,12 @@
+/*
+Para modo silencioso (eliminar stderr e stdout) atualizar chave logmode para none no arquivo xml pasta daemon
+*/
+
+const project = 'BOILER-SERVER';
+
 const config = {
-	name: 'NODE - {{projeto}}', // Nome do servico
-	description: 'Serviço associado a aplicação NODE - {{projeto}}', // Descricao que vai aparecer no Gerenciamento de serviço do Windows
+	name: `NODE - ${project}`, // Nome do servico
+	description: `Serviço associado a aplicação NODE - ${project}`, // Descricao que vai aparecer no Gerenciamento de serviço do Windows
 	script: 'C:\\project-path\\API\\app.js', //caminho absoluto do script ou aplicacao no servidor
 	env: [
 		{

@@ -58,7 +58,7 @@ const _servicoOnOff = param => {
 		'uninstall',
 		() => {
 			console.log('Uninstall complete.');
-			console.log('The service exists: ', svc.exists);
+			console.log(`${svc.exists ? 'Service still seems to exist... check it manually.' : 'Service does not exist.'}`);
 		}
 	);
 
@@ -66,13 +66,11 @@ const _servicoOnOff = param => {
 		case sOn: {
 			// instalando o servico
 			svc.install();
-
 			break;
 		}
 		case sOff: {
 			// Desinstalando o serviço
 			svc.uninstall();
-
 			break;
 		}
 		default: {
