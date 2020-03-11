@@ -1,6 +1,6 @@
-# node-boiler-server (boilerplate)
+# boiler-server (boilerplate)
 
-Servidor boilerplate para aplicações Web em Express/Node.js - back-end
+Servidor boilerplate para aplicações Web em Express Node.js - back-end
 
 * Rodar local:
 ```
