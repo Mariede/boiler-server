@@ -14,7 +14,33 @@ Conexão e execução de comandos noSql em mongoDB
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
+	let userTypes = await dbCon.mongoDB.noSqlExecute('types');
+
+	// 	await userTypes.deleteMany({
+	// 		type: /^[ ]*Alpha/i
+	// 	});
+
+	await userTypes.create(
+		{
+			type: 'Alpha'
+		}
+	);
+
+	return userTypes.find();
+} catch(err) {
+	throw Error(err);
+}
+
+// Insert / Select (com integridade referencial)
+// Retorno com populate (model "types" instanciado no metodo noSqlGetIds)
+const dbCon = require('@serverRoot/helpers/db');
+
+try {
 	let userModel = await dbCon.mongoDB.noSqlExecute('users');
+
+	// await userModel.deleteMany({
+	// 	name: /^[ ]*joaquim/i
+	// });
 
 	await userModel.create(
 		{
@@ -23,7 +49,29 @@ try {
 			age: 29,
 			pass: '$#$#$565611',
 			salt: '12345111',
-			active: true
+			active: true,
+			type: await dbCon.mongoDB.noSqlGetIds({ type: 'Alpha' }, 'types')
+		}
+	);
+
+	return userModel.find().populate('type');
+} catch(err) {
+	throw Error(err);
+}
+
+// Update / Select
+// Retorno sem populate
+const dbCon = require('@serverRoot/helpers/db');
+
+try {
+	let userModel = await dbCon.mongoDB.noSqlExecute('users');
+
+	await userModel.findOneAndUpdate(
+		{
+			name: /^[ ]*joaquim/i
+		},
+		{
+			name: 'Joaquim Santos'
 		}
 	);
 
@@ -33,10 +81,13 @@ try {
 }
 
 // Update / Select
+// Indices compostos
+// Retorno com populate
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let userModel = await dbCon.mongoDB.noSqlExecute('users');
+	let userTypes = await dbCon.mongoDB.noSqlExecute('types'),
+		userModel = await dbCon.mongoDB.noSqlExecute('users', {}, [{ email: 1, age: -1, _unique: true }, { email: 1, name: -1 }]);
 
 	await userModel.findOneAndUpdate(
 		{
@@ -47,12 +98,13 @@ try {
 		}
 	);
 
-	return userModel.find();
+	return userModel.find().populate({ path: 'type', model: userTypes });
 } catch(err) {
 	throw Error(err);
 }
 
 // Delete / Select
+// Retorno sem populate
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
@@ -61,24 +113,6 @@ try {
 	await userModel.deleteMany({
 		name: /^[ ]*joaquim/i
 	});
-
-	return userModel.find();
-} catch(err) {
-	throw Error(err);
-}
-
-// Indices compostos
-try {
-	let userModel = await dbCon.mongoDB.noSqlExecute('users', {}, [{ email: 1, age: -1, _unique: true }, { email: 1, name: -1 }]);
-
-	await userModel.findOneAndUpdate(
-		{
-			name: /^[ ]*joaquim/i
-		},
-		{
-			name: 'Joaquim Santos'
-		}
-	);
 
 	return userModel.find();
 } catch(err) {

@@ -39,9 +39,12 @@ const schemas = {
 		}
 	},
 	types: {
-		type: String,
-		required: true,
-		trim: true
+		type: {
+			type: String,
+			required: true,
+			unique: true,
+			trim: true
+		}
 	}
 };
 
