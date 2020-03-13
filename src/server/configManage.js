@@ -68,7 +68,7 @@ const check = config => {
 				});
 			};
 
-			const deepIsEqual = (first, second) => {
+			const jsonIsEqual = (first, second) => {
 				let fRet = false;
 
 				if (JSON.stringify(first) === JSON.stringify(second)) {
@@ -99,15 +99,14 @@ const check = config => {
 			let timeoutMessages = null,
 				waitMessages = 5000,
 				timeoutReadFile = null,
-				waitReadFile = 500;
+				waitReadFile = 500,
+				objCheckIsEqual = false;
 
 			const watch = fs.watch(config, async (event, filename) => {
 				try {
 					if (event === 'change') {
-						let objCheckIsEqual = true;
-
 						do {
-							objCheckIsEqual = deepIsEqual(__serverConfig, await readConfig(config, filename, waitReadFile));
+							objCheckIsEqual = jsonIsEqual(__serverConfig, await readConfig(config, filename, waitReadFile));
 
 							if (!objCheckIsEqual) {
 								if (!timeoutMessages) {
