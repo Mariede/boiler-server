@@ -94,6 +94,11 @@
 		"mongoose": {
 			"connectionString": "mongodb://user:pass@10.28.10.21:27017/database",
 			"configDb": {
+				"useNewUrlParser": true,
+				"useFindAndModify": false,
+				"useCreateIndex": true,
+				"useUnifiedTopology": true,
+				"serverSelectionTimeoutMS": 5000,
 				"bufferMaxEntries": 0,
 				"autoIndex": true,
 				"keepAlive": true,
@@ -137,7 +142,6 @@
 				"authMethod": "PLAIN"
 			}
 		},
-		"_comments1": "limitPerRound tem um valor default maximo de 100 e-mails por vez",
-		"_comments2": "timeCheck tem um valor default minimo de 15 segundos (ou 15000)"
+		"_comments1": "limitPerRound tem um valor default maximo de 100 e-mails por vez, timeCheck tem um valor default minimo de 15 segundos (ou 15000)"
 	}
 }

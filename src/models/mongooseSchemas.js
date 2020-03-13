@@ -35,7 +35,7 @@ const schemas = {
 		type: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'types',
-			required: false
+			required: true
 		}
 	},
 	types: {
@@ -48,6 +48,11 @@ const schemas = {
 	}
 };
 
+const schemasCompoundIndexes = {
+	users: [{ name: 1, age: -1, _unique: true }, { name: 1, type: -1 }]
+};
+
 module.exports = {
-	schemas
+	schemas,
+	schemasCompoundIndexes
 };

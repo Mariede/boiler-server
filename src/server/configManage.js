@@ -69,51 +69,10 @@ const check = config => {
 			};
 
 			const deepIsEqual = (first, second) => {
-				let fRet = true;
+				let fRet = false;
 
-				if (first !== second) {
-					// Try a quick compare by seeing if the length of properties are the same
-					let firstProps = (typeof first === 'object' ? Object.getOwnPropertyNames(first) : ''),
-						secondProps = (typeof second === 'object' ? Object.getOwnPropertyNames(second) : '');
-
-					// Check different amount of properties
-					if (firstProps.length !== secondProps.length) {
-						fRet = false;
-					} else {
-						// Go through properties of first object
-						for (let i = 0; i < firstProps.length; i++) {
-							let prop = firstProps[i];
-
-							// Check the type of property to perform different comparisons
-							switch (typeof(first[prop])) {
-							// If it is an object, decend for deep compare
-								case 'object': {
-									if (!deepIsEqual(first[prop], second[prop])) {
-										fRet = false;
-									}
-									break;
-								}
-								case 'number': {
-								// with JavaScript NaN != NaN so we need a special check
-									if (!isNaN(first[prop]) || !isNaN(second[prop])) {
-										if (first[prop] !== second[prop]) {
-											fRet = false;
-										}
-									}
-									break;
-								}
-								default: {
-									if (first[prop] !== second[prop]) {
-										fRet = false;
-									}
-								}
-							}
-
-							if (!fRet) {
-								break;
-							}
-						}
-					}
+				if (JSON.stringify(first) === JSON.stringify(second)) {
+					fRet = true;
 				}
 
 				return fRet;

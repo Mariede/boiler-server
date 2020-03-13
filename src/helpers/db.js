@@ -299,16 +299,7 @@ const mongoDB = {
 				} else {
 					const uri = __serverConfig.db.mongoose.connectionString;
 
-					const dbOptions = {
-						useNewUrlParser: true,
-						useFindAndModify: false,
-						useCreateIndex: true,
-						useUnifiedTopology: true
-					};
-
-					let options = Object.assign(__serverConfig.db.mongoose.configDb, dbOptions);
-
-					mongoose.connect(uri, options)
+					mongoose.connect(uri, __serverConfig.db.mongoose.configDb)
 					.then(
 						() => {
 							resolve();
@@ -407,6 +398,14 @@ const mongoDB = {
 			}
 
 			return resultSearch;
+		} catch(err) {
+			throw err;
+		}
+	},
+
+	noSqlGetCompoundIndexes: schema => {
+		try {
+			return (mongooseSchemas.schemasCompoundIndexes[schema] || {});
 		} catch(err) {
 			throw err;
 		}
