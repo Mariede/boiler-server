@@ -81,7 +81,10 @@
 				"stream": true,
 				"parseJSON": true,
 				"options": {
-					"enableArithAbort": true
+					"abortTransactionOnError": true,
+					"enableArithAbort": true,
+					"encrypt": false,
+					"instanceName": ""
 				},
 				"pool": {
 					"max": 10,
