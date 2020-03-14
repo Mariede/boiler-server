@@ -96,6 +96,13 @@ const startApp = async () => {
 				consoleAppender: {
 					type: 'console'
 				},
+				controllerErrorsAppender: {
+					type: 'dateFile',
+					filename: (__serverRoot + '/logs/controllerErrors/logs-controllerErrors.log'),
+					pattern: '.yyyy-MM-dd',
+					daysToKeep: 15,
+					compress: false
+				},
 				startUpAppender: {
 					type: 'dateFile',
 					filename: (__serverRoot + '/logs/startUp/logs-startUp.log'),
@@ -103,9 +110,9 @@ const startApp = async () => {
 					daysToKeep: 15,
 					compress: false
 				},
-				errorsAppender: {
+				configFileAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/errors/logs-errors.log'),
+					filename: (__serverRoot + '/logs/configFile/logs-configFile.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
@@ -126,12 +133,14 @@ const startApp = async () => {
 				}
 			},
 			categories: {
-				default: { appenders: ['consoleAppender', 'errorsAppender'], level: 'warn' },
+				default: { appenders: ['consoleAppender', 'controllerErrorsAppender'], level: 'warn' },
 				consoleOnly: { appenders: ['consoleAppender'], level: 'all' },
-				startUp: { appenders: ['consoleAppender', 'startUpAppender', 'mailQueueAppender'], level: 'all' },
-				configFile: { appenders: ['consoleAppender', 'startUpAppender'], level: 'all' },
+				startUp: { appenders: ['consoleAppender', 'startUpAppender'], level: 'all' },
+				configFile: { appenders: ['consoleAppender', 'configFileAppender'], level: 'all' },
 				routes: { appenders: ['consoleAppender', 'routesAppender'], level: 'all' },
-				mailQueue: { appenders: ['consoleAppender', 'mailQueueAppender'], level: 'all' }
+				mailQueue: { appenders: ['consoleAppender', 'mailQueueAppender'], level: 'all' },
+				startUpAll: { appenders: ['consoleAppender', 'controllerErrorsAppender', 'startUpAppender', 'configFileAppender', 'routesAppender', 'mailQueueAppender'], level: 'all' }
+
 			}
 		});
 		// -------------------------------------------------------------------------
@@ -142,9 +151,9 @@ const startApp = async () => {
 
 		if (numWorkers) {
 			if (cluster.isMaster) {
-				log.logger('info', '|| **************************************************** ||', 'startUp');
-				log.logger('info', '|| Processo de inicialização do servidor - clusterizado ||', 'startUp');
-				log.logger('info', '|| **************************************************** ||', 'startUp');
+				log.logger('info', '|| ********************************************************* ||', 'startUpAll');
+				log.logger('info', '|| Processo de inicialização do servidor - clusterizado: SIM ||', 'startUpAll');
+				log.logger('info', '|| ********************************************************* ||', 'startUpAll');
 
 				log.logger('info', `Cluster mestre definindo ${numWorkers} trabalhadores`, 'startUp');
 
@@ -175,9 +184,9 @@ const startApp = async () => {
 				}
 			}
 		} else {
-			log.logger('info', '|| ******************************************************** ||', 'startUp');
-			log.logger('info', '|| Processo de inicialização do servidor - não clusterizado ||', 'startUp');
-			log.logger('info', '|| ******************************************************** ||', 'startUp');
+			log.logger('info', '|| ********************************************************* ||', 'startUpAll');
+			log.logger('info', '|| Processo de inicialização do servidor - clusterizado: NÃO ||', 'startUpAll');
+			log.logger('info', '|| ********************************************************* ||', 'startUpAll');
 
 			let messages = await _server.startServer(configPath, configManage, numWorkers);
 			showMessages(messages);

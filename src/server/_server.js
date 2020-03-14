@@ -203,6 +203,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			const serverStarter = async () => {
 				try {
 					let messages = [];
+
 					messages.push(['info', `Servidor está rodando em ${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
 
 					// inicia gerenciamento do arquivo de configuracao do servidor
