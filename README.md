@@ -24,7 +24,7 @@ npm run build
   - Permite aplicações RESTFUL
   - Permite APIs de terceiros
   - Monitoramento do loop de eventos para análises de performance e testes
-    - opcional
+    - Opcional
 
 ## Arquivo de configuração unificado do servidor
   - config.json
@@ -59,11 +59,12 @@ npm run build
   - sessionFileStore
   - Utiliza o sistema de arquivos
 
-## Logs com informações na tela e/ou arquivos diários de logs
-  - Arquivos separados de logs por grupos
-    - Logs de inicialização e acessos ao servidor
-    - Logs de erros
-    - Logs de uso da fila de e-mails
+## Logs com informações na tela e/ou arquivos diários
+  - Arquivos de logs separados por grupos
+    - Inicialização e acessos ao servidor
+    - Erros originários dos controllers
+    - Fila de e-mails
+    - Acessos e modificações no arquivo de configuração (config.json)
 
 ## Autenticação das rotas personalizável
   - Lib de autenticação
