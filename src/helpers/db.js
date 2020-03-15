@@ -75,13 +75,9 @@ const msSqlServer = {
 
 	sqlExecute: (transaction, parametros) => { // Executa uma query ou stored procedure para uma transacao ja iniciada
 		return new Promise((resolve, reject) => {
-			const failReturn = async err => {
-				try {
-					await transaction.rollback();
-				} finally {
-					sql.close();
-					reject(err);
-				}
+			const failReturn = err => {
+				sql.close();
+				reject(err);
 			};
 
 			try {
@@ -233,15 +229,11 @@ const msSqlServer = {
 		});
 	},
 
-	sqlCloseCon: (transaction, forceClose = false) => { // Commit ou rollback na transacao existente
+	sqlCloseCon: (transaction, forceClose = false) => { // Commit na transacao existente (rollback automatico via config)
 		return new Promise((resolve, reject) => {
-			const failReturn = async err => {
-				try {
-					await transaction.rollback();
-				} finally {
-					sql.close();
-					reject(err);
-				}
+			const failReturn = err => {
+				sql.close();
+				reject(err);
 			};
 
 			try {

@@ -204,7 +204,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			const serverStarter = async () => {
 				try {
 					const eventLoopMonitor = () => {
-					// monitora o loop de eventos do servidor, para analise de performance e testes de desenvolvimento
+					// monitora o loop de eventos no servidor, para analise de performance e testes de desenvolvimento
 					// evitar usar em producao, desabilitando esta opcao em config
 						const start = Date.now();
 
@@ -248,7 +248,12 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 					}
 
 					// inicia o monitoramento do loop de eventos no servidor
-					eventLoopMonitor();
+					if (__serverConfig.server.eventLoopMonitor) {
+						eventLoopMonitor();
+						messages.push(['info', 'Monitoramento do loop de eventos no servidor habilitado (testes de performance)']);
+					} else {
+						messages.push(['info', 'Monitoramento do loop de eventos no servidor não habilitado (padrão)']);
+					}
 
 					resolve(messages);
 				} catch(err) {

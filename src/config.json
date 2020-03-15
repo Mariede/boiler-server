@@ -8,6 +8,7 @@
 		"keepAliveTimeout": 60,
 		"maxHeadersCount": 2000,
 		"headersTimeout": 65,
+		"eventLoopMonitor": false,
 		"clustered": false,
 		"saveRouteLogs": true,
 		"routePrefix": "/",
@@ -41,10 +42,11 @@
 			"cookieName": "cookie-server",
 			"timeout": 20
 		},
-		"_comments1": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
-		"_comments2": "se o servidor estiver proxyado, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
-		"_comments3": "server: backlog (default 511), maxConnections (default depende), timeout em segundos (default 120s), keepAliveTimeout em segundos (default 5s), maxHeadersCount (default 2000), headersTimeout em segundos (default 40s), fileUpload: maxFileSize em bytes, session: timeout em minutos",
-		"_comments4": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada"
+		"_comments1": "backlog (default 511), maxConnections (default depende), timeout em segundos (default 120s), keepAliveTimeout em segundos (default 5s), maxHeadersCount (default 2000), headersTimeout em segundos (default 40s)",
+		"_comments2": "eventLoopMonitor: ativa monitoramento do loop de eventos. Apenas para fins de analise de performance e testes (default: false)",
+		"_comments3": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
+		"_comments4": "se o servidor estiver ativo via proxy, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
+		"_comments5": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada, fileUpload: maxFileSize em bytes, session: timeout em minutos"
 	},
 	"auth": {
 		"sessWrapper": "userData",
