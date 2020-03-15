@@ -21,6 +21,7 @@ const path = require('path');
 // Modulos de apoio
 const queue = require('@serverRoot/server/queue'); // queue de e-mails
 const routes = require('@serverRoot/routes/routes'); // gate de roteamento
+const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
 const startServer = (configPath, configManage, numWorkers, ...cluster) => {
@@ -202,6 +203,23 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Inicia servidor ouvindo em host:port
 			const serverStarter = async () => {
 				try {
+					const eventLoopMonitor = () => {
+					// monitora o loop de eventos do servidor, para analise de performance e testes de desenvolvimento
+					// evitar usar em producao, desabilitando esta opcao em config
+						const start = Date.now();
+
+						setTimeout(() => {
+							const eventLooplag = Date.now() - start;
+							const eventLooplagTrigger = 10;
+
+							if (eventLooplag > eventLooplagTrigger) {
+								log.logger('warn', `Loop de eventos deste servidor reportou lag acentuado: ${eventLooplag} ms`, 'consoleOnly');
+							}
+
+							eventLoopMonitor();
+						}, 0);
+					};
+
 					let messages = [];
 
 					messages.push(['info', `Servidor está rodando em ${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
@@ -228,6 +246,9 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 					} else {
 						messages.push(['info', 'Serviço de fila de e-mails não habilitado']);
 					}
+
+					// inicia o monitoramento do loop de eventos no servidor
+					eventLoopMonitor();
 
 					resolve(messages);
 				} catch(err) {
