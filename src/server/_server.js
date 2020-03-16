@@ -45,7 +45,8 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						p.virtualPath,
 						express.static(
 							__serverRoot + p.physicalPath, {
-							etag: true, // false para no cache
+							etag: true,
+							lastModified: true,
 							maxAge: 1000 * 60 * p.maxAge // 1000 = 1 segundo (timeout em minutos)
 						})
 					);
