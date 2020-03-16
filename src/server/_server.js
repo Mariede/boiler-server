@@ -40,16 +40,21 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 
 			// Definindo pastas de conteudo estatico
 			const checkPathStaticFiles = pathVirtualStaticFiles => {
-				const setPathStaticFiles = (virtualPath, physicalPath) => {
+				const setPathStaticFiles = p => {
 					app.use(
-						virtualPath, express.static(__serverRoot + physicalPath)
+						p.virtualPath,
+						express.static(
+							__serverRoot + p.physicalPath, {
+							etag: true, // false para no cache
+							maxAge: 1000 * 60 * p.maxAge // 1000 = 1 segundo (timeout em minutos)
+						})
 					);
 				};
 
 				if (Array.isArray(pathVirtualStaticFiles)) {
 					pathVirtualStaticFiles.forEach(
 						path => {
-							setPathStaticFiles(path.virtualPath, path.physicalPath);
+							setPathStaticFiles(path);
 						}
 					);
 				}
@@ -69,6 +74,9 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 
 			// -------------------------------------------------------------------------
 			// Middleware
+
+			// Headers -----------------------------------------------------------------
+			app.disable('x-powered-by'); // desabilita header (seguranca)
 
 			// CORS --------------------------------------------------------------------
 			app.use(

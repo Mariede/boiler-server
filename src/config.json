@@ -3,7 +3,7 @@
 		"host": "localhost",
 		"port": 5000,
 		"backlog": 511,
-		"maxConnections": 100,
+		"maxConnections": 50,
 		"timeout": 240,
 		"keepAliveTimeout": 60,
 		"maxHeadersCount": 2000,
@@ -12,7 +12,7 @@
 		"clustered": false,
 		"saveRouteLogs": true,
 		"routePrefix": "/",
-		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/views/serverSide/assets/images" },{ "virtualPath": "/css", "physicalPath": "/views/serverSide/assets/css" }],
+		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/views/serverSide/assets/images", "maxAge": 0 },{ "virtualPath": "/css", "physicalPath": "/views/serverSide/assets/css", "maxAge": 0 }],
 		"pathFavicon": "/views/serverSide/assets/images/favicon.ico",
 		"cors": {
 			"origin": "*",
@@ -46,7 +46,8 @@
 		"_comments2": "eventLoopMonitor: ativa monitoramento do loop de eventos. Apenas para fins de analise de performance e testes (default: false)",
 		"_comments3": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
 		"_comments4": "se o servidor estiver ativo via proxy, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
-		"_comments5": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada, fileUpload: maxFileSize em bytes, session: timeout em minutos"
+		"_comments5": "maxAge em pathVirtualStaticFiles em minutos",
+		"_comments6": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada, fileUpload: maxFileSize em bytes, session: timeout em minutos"
 	},
 	"auth": {
 		"sessWrapper": "userData",
