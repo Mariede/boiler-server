@@ -403,7 +403,7 @@ const mongoDB = {
 	search				=> Objeto que identifica o filtro da consulta ao model relacionado (via esquema)
 	schema				=> Nome do esquema a ser instaciado (definido em /models)
 	returnAlwaysArray	=> Metodo sempre retorna tipo array, independente da quantidade de elementos encontrados
-		- padrao: 1 elemento retorna objeto, 0 ou > 1 array
+		- padrao: 1 elemento retorna somento o objeto, > 1 retorna array de objetos, 0 retorna undefined
 	*/
 	noSqlGetIds: async (search, schema, returnAlwaysArray = false) => {
 		try {
