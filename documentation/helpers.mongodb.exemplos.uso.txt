@@ -36,7 +36,7 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let userModel = await dbCon.mongoDB.noSqlExecute('users', {}, dbCon.mongoDB.noSqlGetCompoundIndexes('users'));
+	let userModel = await dbCon.mongoDB.noSqlExecute('users');
 
 	// await userModel.deleteMany({
 	// 	name: /^[ ]*joaquim/i
@@ -64,7 +64,7 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let userModel = await dbCon.mongoDB.noSqlExecute('users', {}, dbCon.mongoDB.noSqlGetCompoundIndexes('users'));
+	let userModel = await dbCon.mongoDB.noSqlExecute('users');
 
 	await userModel.findOneAndUpdate(
 		{
@@ -86,7 +86,7 @@ const dbCon = require('@serverRoot/helpers/db');
 
 try {
 	let userTypes = await dbCon.mongoDB.noSqlExecute('types'),
-		userModel = await dbCon.mongoDB.noSqlExecute('users', {}, dbCon.mongoDB.noSqlGetCompoundIndexes('users'));
+		userModel = await dbCon.mongoDB.noSqlExecute('users');
 
 	await userModel.findOneAndUpdate(
 		{

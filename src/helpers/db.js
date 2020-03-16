@@ -309,19 +309,48 @@ const mongoDB = {
 		});
 	},
 
-	noSqlGetModel: (schema, schemaExtraOptions = {}, compoundIndexes = []) => {
+	/*
+	schema				=> Nome do esquema a ser instaciado (definido em /models)
+	*/
+	noSqlGetModel: schema => {
 		return new Promise((resolve, reject) => {
 			try {
+				const getCompoundIndexes = s => {
+					try {
+						return (mongooseSchemas.schemasCompoundIndexes[s] || []);
+					} catch(err) {
+						throw err;
+					}
+				};
+
+				const getExtraOptions = s => {
+					try {
+						return (mongooseSchemas.schemasExtraOptions[s] || {});
+					} catch(err) {
+						throw err;
+					}
+				};
+
 				let myModel = mongoose.models[schema];
 
 				if (myModel) {
 					resolve(myModel);
 				} else {
-					let options = Object.assign(__serverConfig.db.mongoose.configSchema, schemaExtraOptions),
-						mySchema = new mongoose.Schema(mongooseSchemas.schemas[schema], options);
+					let checkedSchema = mongooseSchemas.schemas[schema];
 
-					if (compoundIndexes.length) {
-						compoundIndexes.forEach(
+					if (checkedSchema) {
+						let options = Object.assign(__serverConfig.db.mongoose.configSchema, getExtraOptions(schema)),
+							mySchema = new mongoose.Schema(checkedSchema, options),
+							compoundIndexes = getCompoundIndexes(schema),
+							verifiedCompoundIndexes = [];
+
+						if (Array.isArray(compoundIndexes)) {
+							verifiedCompoundIndexes = [...compoundIndexes];
+						} else {
+							verifiedCompoundIndexes.push(compoundIndexes);
+						}
+
+						verifiedCompoundIndexes.forEach(
 							cVal => {
 								if (typeof cVal === 'object') {
 									if (Object.prototype.hasOwnProperty.call(cVal, '_unique')) {
@@ -333,26 +362,28 @@ const mongoDB = {
 								}
 							}
 						);
+
+						myModel = mongoose.model(schema, mySchema);
+
+						myModel.syncIndexes()
+						.then(
+							() => {
+								myModel.init();
+							}
+						)
+						.then(
+							() => {
+								resolve(myModel);
+							}
+						)
+						.catch(
+							err => {
+								reject(err);
+							}
+						);
+					} else {
+						reject('Esquema não encontrado...');
 					}
-
-					myModel = mongoose.model(schema, mySchema);
-
-					myModel.syncIndexes()
-					.then(
-						() => {
-							myModel.init();
-						}
-					)
-					.then(
-						() => {
-							resolve(myModel);
-						}
-					)
-					.catch(
-						err => {
-							reject(err);
-						}
-					);
 				}
 			} catch(err) {
 				reject(err);
@@ -369,24 +400,22 @@ const mongoDB = {
 	},
 
 	/*
-	search				=> Objeto que identifica o filtro da consulta ao model relacionado ao esquema
-	schema				=> Nome do esquema a ser instaciado (criado em /models)
-	schemaExtraOptions	=> Opcoes extras a serem acopladas as opcoes gerais (em config) ao instanciar do esquema
-	compoundIndexes		=> Criacao de um ou mais indexes compostos no esquema. ex [{ key1: 1, key2: -1 }, { ke5: 1, key6: 1, _unique: true }]
-		 1: Ascendente
-		-1: Descendente
-
-		* Acrescentar a chave _unique: true ao objeto de indice para indice unico
-
+	search				=> Objeto que identifica o filtro da consulta ao model relacionado (via esquema)
+	schema				=> Nome do esquema a ser instaciado (definido em /models)
 	returnAlwaysArray	=> Metodo sempre retorna tipo array, independente da quantidade de elementos encontrados
+		- padrao: 1 elemento retorna objeto, 0 ou > 1 array
 	*/
-	noSqlGetIds: async (search, schema, schemaExtraOptions = {}, compoundIndexes = [], returnAlwaysArray = false) => {
+	noSqlGetIds: async (search, schema, returnAlwaysArray = false) => {
 		try {
-			let myModel = await mongoDB.noSqlExecute(schema, schemaExtraOptions, compoundIndexes),
+			let myModel = await mongoDB.noSqlExecute(schema),
 				resultSearch = await myModel.find(search).select('_id');
 
-			if (!returnAlwaysArray && resultSearch.length === 1) {
-				resultSearch = resultSearch[0];
+			if (resultSearch.length === 0) {
+				resultSearch = undefined;
+			} else {
+				if (!returnAlwaysArray && resultSearch.length === 1) {
+					resultSearch = resultSearch[0];
+				}
 			}
 
 			return resultSearch;
@@ -395,27 +424,13 @@ const mongoDB = {
 		}
 	},
 
-	noSqlGetCompoundIndexes: schema => {
-		try {
-			return (mongooseSchemas.schemasCompoundIndexes[schema] || {});
-		} catch(err) {
-			throw err;
-		}
-	},
-
 	/*
-	schema				=> Nome do esquema a ser instaciado (criado em /models)
-	schemaExtraOptions	=> Opcoes extras a serem acopladas as opcoes gerais (em config) ao instanciar do esquema
-	compoundIndexes		=> Criacao de um ou mais indexes compostos no esquema. ex [{ key1: 1, key2: -1 }, { ke5: 1, key6: 1, _unique: true }]
-		 1: Ascendente
-		-1: Descendente
-
-		* Acrescentar a chave _unique: true ao objeto de indice para indice unico
+	schema				=> Nome do esquema a ser instaciado (definido em /models)
 	*/
-	noSqlExecute: async (schema, schemaExtraOptions = {}, compoundIndexes = []) => {
+	noSqlExecute: async schema => {
 		try {
 			await mongoDB.noSqlOpenCon();
-			return await mongoDB.noSqlGetModel(schema, schemaExtraOptions, compoundIndexes);
+			return await mongoDB.noSqlGetModel(schema);
 		} catch(err) {
 			throw err;
 		}

@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 
+// esquemas
 const schemas = {
 	users: {
 		name: {
@@ -48,11 +49,23 @@ const schemas = {
 	}
 };
 
+/*
+indices compostos associados a criacao dos esquemas
+	-> ex: [{ key1: 1, key2: -1 }, { ke5: 1, key6: 1, _unique: true }]
+		 1: Ascendente
+		-1: Descendente
+
+	-> Acrescentar a chave _unique: true ao objeto de indice para indice unico
+*/
 const schemasCompoundIndexes = {
 	users: [{ name: 1, age: -1, _unique: true }, { name: 1, type: -1 }]
 };
 
+// opcoes extras associadas a criacao dos esquema e acopladas as opcoes gerais (em config)
+const schemasExtraOptions = {};
+
 module.exports = {
 	schemas,
-	schemasCompoundIndexes
+	schemasCompoundIndexes,
+	schemasExtraOptions
 };
