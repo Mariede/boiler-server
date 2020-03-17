@@ -106,6 +106,8 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						unset: 'destroy',
 						rolling: true,
 						cookie: {
+							httpOnly: true,
+							sameSite: true, // opcoes: true | false | lax | none | strict
 							secure: false, // true: apenas em https, false: http/https
 							maxAge: 1000 * 60 * __serverConfig.server.session.timeout // 1000 = 1 segundo (timeout em minutos)
 						}
@@ -219,7 +221,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 
 						setTimeout(() => {
 							const eventLooplag = Date.now() - start;
-							const eventLooplagTrigger = 10;
+							const eventLooplagTrigger = 50; // milisegundos
 
 							if (eventLooplag > eventLooplagTrigger) {
 								log.logger('warn', `Loop de eventos deste servidor reportou lag acentuado: ${eventLooplag} ms`, 'consoleOnly');

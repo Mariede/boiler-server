@@ -14,47 +14,52 @@ Conexão e execução de comandos noSql em mongoDB
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let userTypes = await dbCon.mongoDB.noSqlExecute('types');
+	let typesModel = await dbCon.mongoDB.noSqlExecute('types');
 
-	// await userTypes.deleteMany({
+	// await typesModel.deleteMany({
 	// 	type: /^[ ]*Alpha/i
 	// });
 
-	await userTypes.create(
-		{
-			type: 'Alpha'
-		}
+	await typesModel.create(
+		[
+			{
+				type: 'Alpha'
+			}
+		]
 	);
 
-	return userTypes.find();
+	return typesModel.find();
 } catch(err) {
 	throw Error(err);
 }
 
 // Insert / Select (com integridade referencial)
-// Retorno com populate (model "types" instanciado no metodo noSqlGetIds)
+// Retorno com populate
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let userModel = await dbCon.mongoDB.noSqlExecute('users');
+	let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
+		usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-	// await userModel.deleteMany({
+	// await usersModel.deleteMany({
 	// 	name: /^[ ]*joaquim/i
 	// });
 
-	await userModel.create(
-		{
-			name: 'Joaquim Silva',
-			email: '   joaquim.silva@email.com   ',
-			age: 29,
-			pass: '$#$#$565611',
-			salt: '12345111',
-			active: true,
-			type: await dbCon.mongoDB.noSqlGetIds({ type: 'Alpha' }, 'types')
-		}
+	await usersModel.create(
+		[
+			{
+				name: 'Joaquim Silva',
+				email: '   joaquim.silva@email.com   ',
+				age: 29,
+				pass: '$#$#$565611',
+				salt: '12345111',
+				active: true,
+				type: await dbCon.mongoDB.noSqlGetIds({ type: 'Alpha' }, 'types')
+			}
+		]
 	);
 
-	return userModel.find().populate('type');
+	return usersModel.find().populate({ path: 'type', model: typesModel });
 } catch(err) {
 	throw Error(err);
 }
@@ -64,9 +69,9 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let userModel = await dbCon.mongoDB.noSqlExecute('users');
+	let usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-	await userModel.findOneAndUpdate(
+	await usersModel.findOneAndUpdate(
 		{
 			name: /^[ ]*joaquim/i
 		},
@@ -75,7 +80,7 @@ try {
 		}
 	);
 
-	return userModel.find();
+	return usersModel.find();
 } catch(err) {
 	throw Error(err);
 }
@@ -85,10 +90,10 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let userTypes = await dbCon.mongoDB.noSqlExecute('types'),
-		userModel = await dbCon.mongoDB.noSqlExecute('users');
+	let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
+		usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-	await userModel.findOneAndUpdate(
+	await usersModel.findOneAndUpdate(
 		{
 			name: /^[ ]*joaquim/i
 		},
@@ -97,7 +102,7 @@ try {
 		}
 	);
 
-	return userModel.find().populate({ path: 'type', model: userTypes });
+	return usersModel.find().populate({ path: 'type', model: typesModel });
 } catch(err) {
 	throw Error(err);
 }
@@ -107,18 +112,130 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let userTypes = await dbCon.mongoDB.noSqlExecute('types'),
-		userModel = await dbCon.mongoDB.noSqlExecute('users');
+	let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
+		usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-	await userTypes.deleteMany({
+	await typesModel.deleteMany({
 		type: /^[ ]*Alpha/i
 	});
 
-	await userModel.deleteMany({
+	await usersModel.deleteMany({
 		name: /^[ ]*joaquim/i
 	});
 
-	return userModel.find();
+	return usersModel.find();
+} catch(err) {
+	throw Error(err);
+}
+
+// Transações - MongoDB precisa estar configurado como "replica set server" e não como "standalone server"
+// ?replicaSet=replicaset na string de conexão
+const dbCon = require('@serverRoot/helpers/db');
+
+try {
+	let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
+		usersModel = await dbCon.mongoDB.noSqlExecute('users'),
+		session = await dbCon.mongoDB.noSqlTransactionStart();
+
+	await typesModel.deleteMany({
+		type: /^[ ]*Alpha/i
+	}).session(session);
+
+	await typesModel.create(
+		[
+			{
+				type: 'Alpha'
+			}
+		],
+		{
+			session: session
+		}
+	);
+
+	await usersModel.deleteMany({
+		name: /^[ ]*joaquim/i
+	}).session(session);
+
+	await usersModel.create(
+		[
+			{
+				name: 'Joaquim Silva',
+				email: '   joaquim.silva@email.com   ',
+				age: 29,
+				pass: '$#$#$565611',
+				salt: '12345111',
+				active: true,
+				type: await dbCon.mongoDB.noSqlGetIds({ type: 'Alpha' }, 'types', session)
+			}
+		],
+		{
+			session: session
+		}
+	);
+
+	await usersModel.findOneAndUpdate(
+		{
+			name: /^[ ]*joaquim/i
+		},
+		{
+			name: 'Joaquim Santos Silva'
+		}
+	).session(session);
+
+	await dbCon.mongoDB.noSqlTransactionCommit(session);
+
+	return usersModel.find().populate({ path: 'type', model: typesModel });
+} catch(err) {
+	throw Error(err);
+}
+
+// Análogo ao de cima, sem transações
+const dbCon = require('@serverRoot/helpers/db');
+
+try {
+	let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
+		usersModel = await dbCon.mongoDB.noSqlExecute('users');
+
+	await typesModel.deleteMany({
+		type: /^[ ]*Alpha/i
+	});
+
+	await typesModel.create(
+		[
+			{
+				type: 'Alpha'
+			}
+		]
+	);
+
+	await usersModel.deleteMany({
+		name: /^[ ]*joaquim/i
+	});
+
+	await usersModel.create(
+		[
+			{
+				name: 'Joaquim Silva',
+				email: '   joaquim.silva@email.com   ',
+				age: 29,
+				pass: '$#$#$565611',
+				salt: '12345111',
+				active: true,
+				type: await dbCon.mongoDB.noSqlGetIds({ type: 'Alpha' }, 'types')
+			}
+		]
+	);
+
+	await usersModel.findOneAndUpdate(
+		{
+			name: /^[ ]*joaquim/i
+		},
+		{
+			name: 'Joaquim Santos Silva'
+		}
+	);
+
+	return usersModel.find().populate({ path: 'type', model: typesModel });
 } catch(err) {
 	throw Error(err);
 }
