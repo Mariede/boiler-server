@@ -50,7 +50,7 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 	});
 };
 
-// Paginador (page): pagina currentPage / itemsPerPage, retorno => pageDetails, itemsList, rowsAffected (metodo privado)
+// Paginador (page): pagina currentPage / itemsPerPage, retorno => pageDetails, recordset, rowsAffected (metodo privado)
 const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -67,14 +67,14 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 				},
 				indexSearchStart = backPage * itemsPerPage,
 				indexSearchStop = indexSearchStart + itemsPerPage,
-				itemsList = jsonData.filter(
+				recordSet = jsonData.filter(
 					(e, i) => {
 						return (i >= indexSearchStart && i < indexSearchStop);
 					}
 				),
-				rowsAffected = itemsList.length;
+				rowsAffected = [recordSet.length];
 
-			resolve({ pageDetails: pageDetails, itemsList: itemsList, rowsAffected: rowsAffected });
+			resolve({ pageDetails: pageDetails, recordset: recordSet, rowsAffected: rowsAffected });
 		} catch(err) {
 			reject(err);
 		}
@@ -177,12 +177,12 @@ const setPage = async (req, jsonData, jsonDataLen, toCamelCase = false) => {
 			errWrapper.throwThis('PAGINAÇÃO (PAGINATOR)', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 		}
 
-		if (toCamelCase) {
-			jsonData = await keysToCamelCase(jsonData);
+		if (toCamelCase && jsonData.recordset) {
+			jsonData.recordset = await keysToCamelCase(jsonData.recordset);
 		}
 
-		if (currentPage) {
-			return await _executePage(jsonData, jsonDataLen, currentPage, itemsPerPage);
+		if (currentPage && jsonData.recordset) {
+			return await _executePage(jsonData.recordset, jsonDataLen, currentPage, itemsPerPage);
 		} else {
 			return jsonData;
 		}

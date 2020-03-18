@@ -52,7 +52,7 @@ let query = {
 				['NOME', 'varchar(200)', 'Joaquim Santos'],
 				['SENHA', 'varchar(20)', 'SENH@TESTE123'],
 				['ATIVO', 'bit', 1],
-				['NOMECHECK', '%Joa%']
+				['NOMECHECK', '%Jo%']
 			],
 			output: [
 				['INSERTED_ID', 'int']
@@ -107,7 +107,7 @@ let query = {
 		dados: {
 			input: [
 				['ID_USUARIO', 'int', 1],
-				['NOME', 'varchar(200)', 'joa']
+				['NOME', 'varchar(200)', 'jo']
 			],
 			output: [
 				['QTD_RET', 'int']
@@ -119,7 +119,7 @@ let query = {
 		formato: 1,
 		dados: {
 			input: [
-				['NOME', '%joa%']
+				['NOME', '%jo%']
 			],
 			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
 		}
@@ -133,18 +133,18 @@ let query = {
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let query = {
-			formato: 1,
-			dados: {
-				input: [
-					['NOME', '%joa%']
-				],
-				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
-			}
-		};
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['NOME', '%jo%']
+			],
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+		}
+	};
 
 	let transaction = await dbCon.msSqlServer.sqlOpenCon(),
-		resultSet = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
+		{ recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
 
 	await dbCon.msSqlServer.sqlCloseCon(transaction);
 
@@ -157,18 +157,18 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
-	let query = {
-			formato: 1,
-			dados: {
-				input: [
-					['NOME', '%joa%']
-				],
-				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
-			}
-		};
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['NOME', '%jo%']
+			],
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+		}
+	};
 
 	// Executa query ou queries
-	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 	return resultSet;
 } catch(err) {
@@ -182,20 +182,21 @@ const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
-	let query = {
-			formato: 1,
-			dados: {
-				input: [
-					['NOME', '%joa%']
-				],
-				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
-			}
-		};
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['NOME', '%jo%']
+			],
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+		}
+	};
 
 	// Executa query ou queries
-	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+
 	// Paginador (page)
-	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0], true);
+	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected, true);
 
 	return resultSet;
 } catch(err) {
@@ -209,22 +210,23 @@ const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
-	let query = {
-			formato: 1,
-			dados: {
-				input: [
-					['NOME', '%joa%']
-				],
-				executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
-			}
-		};
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['NOME', '%jo%']
+			],
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+		}
+	};
 
 	// Executa query ou queries
-	let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+
 	// Ordenador (sort)
-	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0], true);
+	resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true);
 	// Paginador (page)
-	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
+	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected);
 
 	return resultSet;
 } catch(err) {
@@ -244,25 +246,25 @@ try {
 const searcher = require('@serverRoot/helpers/searcher');
 
 try {
-	let replaceQuery = '{{REPLACE}}',
-		baseQuery = `
-			select top 10
-				*
-			from
-				usuario a (nolock)
-				inner join tipo b (nolock)
-					on (a.id_tipo = b.id_tipo)
-			where
-				a.nome like('%joa%')
-				${replaceQuery}
-		`;
+	const replaceQuery = '{{REPLACE}}';
+	const baseQuery = `
+		select top 10
+			*
+		from
+			usuario a (nolock)
+			inner join tipo b (nolock)
+				on (a.id_tipo = b.id_tipo)
+		where
+			a.nome like('%jo%')
+			${replaceQuery}
+	`;
 
 	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-	let resultSet = await searcher.setSearch(
-			req,
-			baseQuery,
-			replaceQuery
-		);
+	let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+		req,
+		baseQuery,
+		replaceQuery
+	);
 
 	return resultSet;
 } catch(err) {
@@ -279,27 +281,27 @@ const searcher = require('@serverRoot/helpers/searcher');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
-	let replaceQuery = '{{REPLACE}}',
-		baseQuery = `
-			select top 10
-				*
-			from
-				usuario a (nolock)
-				inner join tipo b (nolock)
-					on (a.id_tipo = b.id_tipo)
-			where
-				a.nome like('%joa%')
-				${replaceQuery}
-		`;
+	const replaceQuery = '{{REPLACE}}';
+	const baseQuery = `
+		select top 10
+			*
+		from
+			usuario a (nolock)
+			inner join tipo b (nolock)
+				on (a.id_tipo = b.id_tipo)
+		where
+			a.nome like('%jo%')
+			${replaceQuery}
+	`;
 
 	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-	let resultSet = await searcher.setSearch(
-			req,
-			baseQuery,
-			replaceQuery
-		);
+	let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+		req,
+		baseQuery,
+		replaceQuery
+	);
 
-	resultSet.recordsets[0] = await paginator.keysToCamelCase(resultSet.recordsets[0]);
+	resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset);
 
 	return resultSet;
 } catch(err) {
@@ -316,30 +318,28 @@ const searcher = require('@serverRoot/helpers/searcher');
 const paginator = require('@serverRoot/helpers/paginator');
 
 try {
-	let replaceQuery = '{{REPLACE}}',
-		baseQuery = `
-			select top 10
-				*
-			from
-				usuario a (nolock)
-				inner join tipo b (nolock)
-					on (a.id_tipo = b.id_tipo)
-			where
-				a.nome like('%joa%')
-				${replaceQuery}
-		`;
+	const replaceQuery = '{{REPLACE}}';
+	const baseQuery = `
+		select top 10
+			*
+		from
+			usuario a (nolock)
+			inner join tipo b (nolock)
+				on (a.id_tipo = b.id_tipo)
+		${replaceQuery}
+	`;
 
 	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-	let resultSet = await searcher.setSearch(
-			req,
-			baseQuery,
-			replaceQuery
-		);
+	let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+		req,
+		baseQuery,
+		replaceQuery
+	);
 
 	// Ordenador (sort)
-	resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0], true);
+	resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true);
 	// Paginador (page)
-	resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]);
+	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected);
 
 	return resultSet;
 } catch(err) {

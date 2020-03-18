@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "64e99811-9562-4480-8fde-d1360ded4b43",
+		"_postman_id": "a112baaa-9e02-497a-a843-d929feb71b5a",
 		"name": "boiler-server",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -293,5 +293,6 @@
 			},
 			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

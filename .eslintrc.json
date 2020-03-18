@@ -1,3 +1,8 @@
+/*
+	0 => rule off
+	1 => rule on: warn (no exit)
+	2 => rule on: error (exit with code 1)
+*/
 {
 	"env": {
 		"commonjs": true,
@@ -18,7 +23,7 @@
 	"rules": {
 		"strict": [2, "global"],
 		"global-require": 2,
-		"no-unused-vars": [2, { "argsIgnorePattern": "next|req|res" }],
+		"no-unused-vars": [2, { "argsIgnorePattern": "next|req|res", "ignoreRestSiblings": true }],
 		"vars-on-top": 2,
 		"no-var": 2,
 		"block-scoped-var": 2,

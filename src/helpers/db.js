@@ -73,7 +73,7 @@ const msSqlServer = {
 		});
 	},
 
-	sqlExecute: (transaction, parametros) => { // Executa uma query ou stored procedure para uma transacao ja iniciada
+	sqlExecute: (transaction, parametros) => { // Executa uma query ou stored procedure para uma transacao
 		return new Promise((resolve, reject) => {
 			const failReturn = err => {
 				sql.close();
@@ -229,7 +229,7 @@ const msSqlServer = {
 		});
 	},
 
-	sqlCloseCon: (transaction, forceClose = false) => { // Commit na transacao existente (rollback automatico via config)
+	sqlCloseCon: (transaction, forceClose = false) => { // Commit na transacao (rollback automatico via config)
 		return new Promise((resolve, reject) => {
 			const failReturn = err => {
 				sql.close();
@@ -400,26 +400,51 @@ const mongoDB = {
 	},
 
 	// inicia uma transacao com o mongoose e retorna o id da sessao
-	noSqlTransactionStart: async () => {
-		try {
-			await mongoDB.noSqlOpenCon();
-			const session = await mongoose.startSession();
-			session.startTransaction();
-
-			return session;
-		} catch(err) {
-			throw err;
-		}
+	noSqlTransactionStart: () => {
+		return new Promise((resolve, reject) => {
+			try {
+				mongoDB.noSqlOpenCon()
+				.then(
+					() => {
+						return mongoose.startSession();
+					}
+				)
+				.then(
+					session => {
+						session.startTransaction();
+						resolve(session);
+					}
+				)
+				.catch(
+					err => {
+						reject(err);
+					}
+				);
+			} catch(err) {
+				reject(err);
+			}
+		});
 	},
 
 	// finaliza uma transacao com o mongoose
-	noSqlTransactionCommit: async session => {
-		try {
-			await session.commitTransaction();
-			return;
-		} catch(err) {
-			throw err;
-		}
+	noSqlTransactionCommit: session => {
+		return new Promise((resolve, reject) => {
+			try {
+				session.commitTransaction()
+				.then(
+					() => {
+						resolve();
+					}
+				)
+				.catch(
+					err => {
+						reject(err);
+					}
+				);
+			} catch(err) {
+				reject(err);
+			}
+		});
 	},
 
 	/*

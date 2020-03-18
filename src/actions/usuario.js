@@ -12,8 +12,6 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // Acoes
 const consultarTodos = async (req, res) => {
 	try {
-		let resultSet;
-
 		const query = {
 			formato: 1,
 			dados: {
@@ -35,11 +33,12 @@ const consultarTodos = async (req, res) => {
 			}
 		};
 
-		resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
-		resultSet.recordsets[0] = await paginator.setSort(req, resultSet.recordsets[0], true); // ordenador
-		resultSet.recordsets[0] = await paginator.setPage(req, resultSet.recordsets[0], resultSet.rowsAffected[0]); // paginador
+		let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-		return resultSet.recordsets[0];
+		resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true); // ordenador
+		resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected); // paginador
+
+		return resultSet;
 	} catch(err) {
 		throw err;
 	}
@@ -47,9 +46,9 @@ const consultarTodos = async (req, res) => {
 
 const consultar = async (req, res) => {
 	try {
-		let resultSet;
-
 		const id = req.params.id;
+
+		let firstResult = {};
 
 		if (validator.isInteger(id, false)) {
 			const query = {
@@ -75,12 +74,16 @@ const consultar = async (req, res) => {
 				}
 			};
 
-			resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+			firstResult = await dbCon.msSqlServer.sqlExecuteAll(query);
 		} else {
 			errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
 		}
 
-		return resultSet.recordsets[0];
+		let { recordsets: recordSets, ...resultSet } = firstResult;
+
+		resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset);
+
+		return resultSet;
 	} catch(err) {
 		throw err;
 	}
