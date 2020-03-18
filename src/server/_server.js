@@ -76,8 +76,14 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// -------------------------------------------------------------------------
 			// Middleware
 
-			// Headers -----------------------------------------------------------------
-			app.disable('x-powered-by'); // desabilita header (seguranca)
+			// Headers (seguranca) -----------------------------------------------------
+			app.disable('x-powered-by'); // desabilita header x-powered-by (hidepoweredby)
+
+			app.use(function (req, res, next) {
+				res.set('X-Content-Type-Options', 'nosniff'); // browser sniffing mime types (nosniff)
+				res.set('X-XSS-Protection', '1; mode=block'); // Cross Site Scripting (xssfilter)
+				next();
+			});
 
 			// CORS --------------------------------------------------------------------
 			app.use(
