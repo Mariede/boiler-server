@@ -1,14 +1,11 @@
-/*
 LIB db.js (SQL Server) + paginator.js + searcher.js
----------------------------------------------------
+===================================================
 
-Conex„o e execuÁ„o de queries no MS SQL Server atravÈs do pacote NODE mssql
+Conex√£o e execu√ß√£o de queries no MS SQL Server atrav√©s do pacote NODE mssql
 
-=> exemplos de par‚metros JSON de entrada para queries:
-*/
 
 // ---------------------------------------------------------------------------------------------------------
-// Estrutura b·sica queries (par‚metros de entrada)
+// Estrutura b√°sica queries (par√¢metros de entrada)
 
 query = {
 	formato: 1, // 1: Query String, 2: Stored Procedure
@@ -41,12 +38,12 @@ query = {
 	}
 }
 
-/* * input pode utilizar tambÈm um formato de chamada com apenas dois par‚metros de entrada, omitindo o tipo do dado * */
+/* * input pode utilizar tamb√©m um formato de chamada com apenas dois par√¢metros de entrada, omitindo o tipo do dado * */
 
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Par‚metros de entrada (exemplos)
+// Par√¢metros de entrada (exemplos)
 
 let query = {
 		formato: 1,
@@ -130,39 +127,7 @@ let query = {
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamadas nos mÈtodos (exemplos)
-
-// Execute (promise + async await)
-const dbCon = require('@serverRoot/helpers/db');
-
-dbCon.msSqlServer.sqlOpenCon()
-.then(
-	async transaction => {
-		try {
-			let query = {
-					formato: 1,
-					dados: {
-						input: [
-							['NOME', '%joa%']
-						],
-						executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
-					}
-				};
-
-			let resultSet = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
-			await dbCon.msSqlServer.sqlCloseCon(transaction);
-
-			resolve(resultSet);
-		} catch(err) {
-			reject(err);
-		}
-	}
-)
-.catch(
-	err => {
-		reject(err);
-	}
-);
+// Chamadas nos m√©todos (exemplos)
 
 // Execute (async await)
 const dbCon = require('@serverRoot/helpers/db');
@@ -180,6 +145,7 @@ try {
 
 	let transaction = await dbCon.msSqlServer.sqlOpenCon(),
 		resultSet = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
+
 	await dbCon.msSqlServer.sqlCloseCon(transaction);
 
 	return resultSet;
@@ -187,7 +153,7 @@ try {
 	throw Error(err);
 }
 
-// ou com o mÈtodo agrupador ExecuteAll (async await)
+// ou com o m√©todo agrupador ExecuteAll (async await)
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
@@ -211,7 +177,7 @@ try {
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com PAGINA«√O
+// Chamada com PAGINA√á√ÉO
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
@@ -238,7 +204,7 @@ try {
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com PAGINA«√O e ORDENA«√O
+// Chamada com PAGINA√á√ÉO e ORDENA√á√ÉO
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
@@ -265,7 +231,7 @@ try {
 	throw Error(err);
 }
 
-/* * Apenas UM toCamelCase È necess·rio em todas as chamadas * */
+/* * Apenas UM toCamelCase √© necess√°rio em todas as chamadas * */
 /*
    * se toCamelCase = true no setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados *
    * se toCamelCase = false no setSort, utilizar nome da coluna exato (case sensitive) para identificar as chaves de sort no banco de dados *
@@ -291,7 +257,7 @@ try {
 				${replaceQuery}
 		`;
 
-	// Searcher: searchFields deve ser uma array (colunas inv·lidas para pesquisa geram erro)
+	// Searcher: searchFields deve ser uma array (colunas inv√°lidas para pesquisa geram erro)
 	let resultSet = await searcher.setSearch(
 			req,
 			baseQuery,
@@ -303,7 +269,7 @@ try {
 	throw Error(err);
 }
 
-/* * REPLACE (via http GET) È case insensitive e pode ser enviado em SNAKE_CASE (padr„o do banco deve ser SNAKE_CASE) ou camelCase * */
+/* * REPLACE (via http GET) √© case insensitive e pode ser enviado em SNAKE_CASE (padr√£o do banco deve ser SNAKE_CASE) ou camelCase * */
 
 // ---------------------------------------------------------------------------------------------------------
 
@@ -326,7 +292,7 @@ try {
 				${replaceQuery}
 		`;
 
-	// Searcher: searchFields deve ser uma array (colunas inv·lidas para pesquisa geram erro)
+	// Searcher: searchFields deve ser uma array (colunas inv√°lidas para pesquisa geram erro)
 	let resultSet = await searcher.setSearch(
 			req,
 			baseQuery,
@@ -340,12 +306,12 @@ try {
 	throw Error(err);
 }
 
-/* * REPLACE (via http GET) È case insensitive e pode ser enviado em SNAKE_CASE (padr„o do banco deve ser SNAKE_CASE) ou camelCase * */
+/* * REPLACE (via http GET) √© case insensitive e pode ser enviado em SNAKE_CASE (padr√£o do banco deve ser SNAKE_CASE) ou camelCase * */
 
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com SEARCHER, PAGINACAO e ORDENA«√O
+// Chamada com SEARCHER, PAGINACAO e ORDENA√á√ÉO
 const searcher = require('@serverRoot/helpers/searcher');
 const paginator = require('@serverRoot/helpers/paginator');
 
@@ -363,7 +329,7 @@ try {
 				${replaceQuery}
 		`;
 
-	// Searcher: searchFields deve ser uma array (colunas inv·lidas para pesquisa geram erro)
+	// Searcher: searchFields deve ser uma array (colunas inv√°lidas para pesquisa geram erro)
 	let resultSet = await searcher.setSearch(
 			req,
 			baseQuery,
@@ -380,9 +346,9 @@ try {
 	throw Error(err);
 }
 
-/* * REPLACE (via http GET) È case insensitive e pode ser enviado em SNAKE_CASE (padr„o do banco deve ser SNAKE_CASE) ou camelCase * */
+/* * REPLACE (via http GET) √© case insensitive e pode ser enviado em SNAKE_CASE (padr√£o do banco deve ser SNAKE_CASE) ou camelCase * */
 
-/* * Apenas UM toCamelCase È necess·rio em todas as chamadas * */
+/* * Apenas UM toCamelCase √© necess√°rio em todas as chamadas * */
 
 /*
    * se toCamelCase = true no setSort, utilizar camelcase exato (case sensitive) para identificar as chaves de sort no banco de dados *
