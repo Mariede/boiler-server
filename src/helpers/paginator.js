@@ -50,8 +50,8 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 	});
 };
 
-// Paginador (page): pagina currentPage / itemsPerPage, retorno => pageDetails, recordset, rowsAffected (metodo privado)
-const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
+// Paginador (page): pagina currentPage / itemsPerPage, retorno => pageDetails, recordset, output, rowsAffected (metodo privado)
+const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output = {}) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let backPage = currentPage - 1,
@@ -74,7 +74,7 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage) => {
 				),
 				rowsAffected = [recordSet.length];
 
-			resolve({ pageDetails: pageDetails, recordset: recordSet, rowsAffected: rowsAffected });
+			resolve({ pageDetails: pageDetails, recordset: recordSet, output: output, rowsAffected: rowsAffected });
 		} catch(err) {
 			reject(err);
 		}
@@ -182,7 +182,7 @@ const setPage = async (req, jsonData, jsonDataLen, toCamelCase = false) => {
 		}
 
 		if (currentPage && jsonData.recordset) {
-			return await _executePage(jsonData.recordset, jsonDataLen, currentPage, itemsPerPage);
+			return await _executePage(jsonData.recordset, jsonDataLen, currentPage, itemsPerPage, jsonData.output);
 		} else {
 			return jsonData;
 		}

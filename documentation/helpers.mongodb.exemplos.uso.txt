@@ -127,8 +127,15 @@ try {
 	throw Error(err);
 }
 
-// Transações - MongoDB precisa estar configurado como "replica set server" e não como "standalone server"
-// ?replicaSet=replicaset na string de conexão
+/*
+   Transações - MongoDB precisa estar configurado como "replica set server" e não como "standalone server"
+
+   String de conexâo:
+   - ?replicaSet=replicaset na string de conexão pode ser necessário
+   - ?retryWrites=true&w=majority para performance quando possível
+
+   * Conexão com Atlas Free usa "authSource": "admin"
+*/
 const dbCon = require('@serverRoot/helpers/db');
 
 try {
