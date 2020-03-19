@@ -4,11 +4,10 @@ LIB db.js (SQL Server) + paginator.js + searcher.js
 Conexão e execução de queries no MS SQL Server através do pacote NODE mssql
 
 
-
 // ---------------------------------------------------------------------------------------------------------
 // Recordsets - padrão de retorno:
 
-Não paginado:
+Não paginado (Lib MSSQL / Searcher):
 {
 	"recordset": [],
 	"output": {},

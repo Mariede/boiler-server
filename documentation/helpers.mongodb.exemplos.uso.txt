@@ -7,6 +7,16 @@ Conexão e execução de comandos noSql em mongoDB
 
 
 // ---------------------------------------------------------------------------------------------------------
+// Recordsets - padrão de retorno com o método dbCon.mongoDB.noSqlFormattedResult:
+
+{
+	"recordset": [],
+	"rowsAffected": [
+		0
+	]
+}
+
+// ---------------------------------------------------------------------------------------------------------
 // Parâmetros de entrada (exemplos)
 
 // Insert / Select
@@ -27,7 +37,7 @@ try {
 		]
 	);
 
-	return typesModel.find();
+	return await dbCon.mongoDB.noSqlFormattedResult(await typesModel.find());
 } catch(err) {
 	throw Error(err);
 }
@@ -58,7 +68,7 @@ try {
 		]
 	);
 
-	return usersModel.find().populate({ path: 'type', model: typesModel });
+	return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
 } catch(err) {
 	throw Error(err);
 }
@@ -79,7 +89,7 @@ try {
 		}
 	);
 
-	return usersModel.find();
+	return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
 } catch(err) {
 	throw Error(err);
 }
@@ -101,7 +111,7 @@ try {
 		}
 	);
 
-	return usersModel.find().populate({ path: 'type', model: typesModel });
+	return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
 } catch(err) {
 	throw Error(err);
 }
@@ -122,7 +132,7 @@ try {
 		name: /^[ ]*joaquim/i
 	});
 
-	return usersModel.find();
+	return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
 } catch(err) {
 	throw Error(err);
 }
@@ -190,7 +200,7 @@ try {
 
 	await dbCon.mongoDB.noSqlTransactionCommit(session);
 
-	return usersModel.find().populate({ path: 'type', model: typesModel });
+	return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
 } catch(err) {
 	throw Error(err);
 }
@@ -241,7 +251,7 @@ try {
 		}
 	);
 
-	return usersModel.find().populate({ path: 'type', model: typesModel });
+	return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
 } catch(err) {
 	throw Error(err);
 }

@@ -473,6 +473,28 @@ const mongoDB = {
 	},
 
 	/*
+	arrayData			=> Array com dados retornados
+
+	* Padrao de retorno dos dados (base comparativa resultSet da lib MSSQL)
+	*/
+	noSqlFormattedResult: arrayData => {
+		return new Promise((resolve, reject) => {
+			try {
+				let resultSet = {};
+
+				if (Array.isArray(arrayData)) {
+					resultSet.recordset = arrayData;
+					resultSet.rowsAffected = [arrayData.length];
+				}
+
+				resolve(resultSet);
+			} catch(err) {
+				reject(err);
+			}
+		});
+	},
+
+	/*
 	schema				=> Nome do esquema a ser instaciado (definido em /models)
 	*/
 	noSqlExecute: async schema => {
