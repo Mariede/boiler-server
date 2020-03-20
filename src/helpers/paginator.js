@@ -85,32 +85,62 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output =
 const keysToCamelCase = jsonData => {
 	return new Promise((resolve, reject) => {
 		try {
-			let newData = [];
+			const convertKeys = (cKey, cValue, nDocument) => {
+				const transformP = p => {
+					const changedP = p.toLowerCase().replace(/[_]([a-z])/g,
+						g => {
+							return g[1].toUpperCase();
+						}
+					);
 
-			if (jsonData && Array.isArray(jsonData)) {
-				for (let i = 0; i < jsonData.length; i++) {
-					if (typeof jsonData[i] === 'object' && jsonData[i] !== null) {
-						newData.push({});
+					return changedP;
+				};
 
-						Object.keys(jsonData[i]).forEach(
-							currentKey => {
-								const transformP = p => {
-									const changedP = p.toLowerCase().replace(/[_]([a-z])/g,
-										g => {
-											return g[1].toUpperCase();
-										}
-									);
+				let nKey = transformP(cKey);
 
-									return changedP;
-								};
-
-								let newKey = transformP(currentKey);
-
-								newData[i][newKey] = jsonData[i][currentKey];
-							}
-						);
+				if (Array.isArray(cValue)) {
+					nDocument[nKey] = [];
+					loopKeys(cValue, nDocument[nKey]);
+				} else {
+					if (typeof cValue === 'object') {
+						nDocument[nKey] = {};
+						loopKeys(cValue, nDocument[nKey]);
 					}
 				}
+
+				return nKey;
+			};
+
+			const loopKeys = (cDocument, nDocument) => {
+				Object.keys(cDocument).forEach(
+					currentKey => {
+						let currentValue = cDocument[currentKey],
+							newKey = convertKeys(currentKey, currentValue, nDocument);
+
+						if (typeof currentValue !== 'object') {
+							nDocument[newKey] = currentValue;
+						}
+					}
+				);
+			};
+
+			const loopArray = jData => {
+				if (Array.isArray(jData)) {
+					for (let i = 0; i < jData.length; i++) {
+						let currentDocument = jData[i];
+
+						if (typeof currentDocument === 'object' && currentDocument !== null) {
+							newData.push({});
+							loopKeys(currentDocument, newData[i]);
+						}
+					}
+				}
+			};
+
+			let newData = [];
+
+			if (jsonData) {
+				loopArray(jsonData);
 			}
 
 			resolve(newData);
