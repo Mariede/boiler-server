@@ -102,7 +102,7 @@ const keysToCamelCase = jsonData => {
 					nDocument[nKey] = [];
 					loopKeys(cValue, nDocument[nKey]);
 				} else {
-					if (typeof cValue === 'object') {
+					if (typeof cValue === 'object' && cValue !== null) {
 						nDocument[nKey] = {};
 						loopKeys(cValue, nDocument[nKey]);
 					}
@@ -117,7 +117,7 @@ const keysToCamelCase = jsonData => {
 						let currentValue = cDocument[currentKey],
 							newKey = convertKeys(currentKey, currentValue, nDocument);
 
-						if (typeof currentValue !== 'object') {
+						if (currentValue === null || typeof currentValue !== 'object') {
 							nDocument[newKey] = currentValue;
 						}
 					}
