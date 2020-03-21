@@ -78,7 +78,7 @@ npm run build
   * Parametrizável para MongoDB
     - Transacional, via esquemas Mongoose, índices compostos por esquemas, opções extras por esquemas, noSql, etc
 
-## Lib Paginator com paginador e ordenador (setPage & setSort & keysToCamelCase)
+## Lib Paginator com paginador e ordenador
   * Configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
   * Conversão configurável para "lowerCamelCase" do json (recordset de retorno)
 
