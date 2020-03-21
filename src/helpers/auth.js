@@ -7,10 +7,10 @@
 
 // -------------------------------------------------------------------------
 // Verifica se a rota e protegida com base nas informacoes de config
-const isProtected = rota => {
+const isProtected = route => {
 	return new Promise((resolve, reject) => {
 		try {
-			const exceptInspect = (paramTable, paramRota) => {
+			const exceptInspect = (paramTable, paramRoute) => {
 				const routePrefix = (__serverConfig.server.routePrefix || '').replace(/\/+$/, '') + '/';
 
 				return paramTable.some(
@@ -19,15 +19,15 @@ const isProtected = rota => {
 							elementCheck = routePrefix + (elementPick !== '' ? elementPick + '/' : ''),
 							regExCheck = new RegExp(elementCheck);
 
-						return (elementCheck === routePrefix ? (elementCheck === paramRota) : regExCheck.test(paramRota));
+						return (elementCheck === routePrefix ? (elementCheck === paramRoute) : regExCheck.test(paramRoute));
 					}
 				);
 			};
 
-			let rotaCheck = rota.toUpperCase(),
+			let routeCheck = route.toUpperCase(),
 				authTipo = __serverConfig.auth.authTipo,
 				exceptTable = __serverConfig.auth.except,
-				exceptReturn = exceptInspect(exceptTable, rotaCheck),
+				exceptReturn = exceptInspect(exceptTable, routeCheck),
 				fRet = true; // Rota protegida inicialmente
 
 			if (authTipo === 2) {

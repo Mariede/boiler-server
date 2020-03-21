@@ -7,8 +7,6 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-
-
 // Converte searchFields de camelCase para SNAKE_CASE
 const _camelCaseToSnakeCase = searchFields => {
 	return new Promise((resolve, reject) => {
@@ -31,7 +29,6 @@ const _camelCaseToSnakeCase = searchFields => {
 
 						const isUpperCase = s => {
 							s = s + '';
-
 							return (s === s.toUpperCase());
 						};
 

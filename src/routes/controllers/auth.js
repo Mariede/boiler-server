@@ -12,7 +12,7 @@ const auth = require('@serverRoot/actions/auth');
 
 // -------------------------------------------------------------------------
 // Middleware
-const _gateLocal = async (req, res) => {
+const _commonGate = async (req, res) => {
 	try {
 		res.locals.routeControllerRoute = 'AUTH';
 		return;
@@ -24,15 +24,15 @@ const _gateLocal = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Rotas
-const rotasAuth = router => {
+const authRoutes = router => {
 	// logon ---------------------------------------------------------------
 	router.route('/logon')
 	.all(async (req, res, next) => {
 		try {
-			await _gateLocal(req, res);
+			await _commonGate(req, res);
 			next();
 		} catch(err) {
-			log.controllerErro(res, err, 'error');
+			log.controllerError(res, err, 'error');
 		}
 	})
 	.post(async (req, res) => {
@@ -40,21 +40,21 @@ const rotasAuth = router => {
 			let result = await auth.logon(req, res);
 			res.status(200).send(result);
 		} catch(err) {
-			log.controllerErro(res, err, 'error');
+			log.controllerError(res, err, 'error');
 		}
 	});
 	// ---------------------------------------------------------------------
 
 	// logout --------------------------------------------------------------
 	router.route('/logout')
-	.all(async (req, res) => {
+	.all(async (req, res, next) => {
 		try {
-			await _gateLocal(req, res);
+			await _commonGate(req, res);
 
 			let result = await auth.logout(req, res);
 			res.status(200).send(result);
 		} catch(err) {
-			log.controllerErro(res, err, 'error');
+			log.controllerError(res, err, 'error');
 		}
 	});
 	// ---------------------------------------------------------------------
@@ -63,10 +63,10 @@ const rotasAuth = router => {
 	router.route('/isLogged')
 	.all(async (req, res, next) => {
 		try {
-			await _gateLocal(req, res);
+			await _commonGate(req, res);
 			next();
 		} catch(err) {
-			log.controllerErro(res, err, 'error');
+			log.controllerError(res, err, 'error');
 		}
 	})
 	.get(async (req, res) => {
@@ -74,7 +74,7 @@ const rotasAuth = router => {
 			let result = await auth.isLogged(req, res);
 			res.status(200).send(result);
 		} catch(err) {
-			log.controllerErro(res, err, 'error');
+			log.controllerError(res, err, 'error');
 		}
 	});
 	// ---------------------------------------------------------------------
@@ -82,5 +82,5 @@ const rotasAuth = router => {
 // -------------------------------------------------------------------------
 
 module.exports = {
-	rotasAuth
+	authRoutes
 };

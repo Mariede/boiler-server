@@ -12,7 +12,7 @@ const home = require('@serverRoot/actions/home');
 
 // -------------------------------------------------------------------------
 // Middleware
-const _gateLocal = async (req, res) => {
+const _commonGate = async (req, res) => {
 	try {
 		res.locals.routeControllerRoute = 'HOME';
 		return;
@@ -24,15 +24,15 @@ const _gateLocal = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Rotas
-const rotasHome = router => {
+const homeRoutes = router => {
 	// root ----------------------------------------------------------------
 	router.route('/')
 	.all(async (req, res, next) => {
 		try {
-			await _gateLocal(req, res);
+			await _commonGate(req, res);
 			next();
 		} catch(err) {
-			log.controllerErro(res, err, 'error');
+			log.controllerError(res, err, 'error');
 		}
 	})
 	.get(async (req, res) => {
@@ -40,7 +40,7 @@ const rotasHome = router => {
 			let result = await home.root(req, res);
 			res.status(200).render(result.path + result.file, result.pageData);
 		} catch(err) {
-			log.controllerErro(res, err, 'error');
+			log.controllerError(res, err, 'error');
 		}
 	});
 	// ---------------------------------------------------------------------
@@ -48,5 +48,5 @@ const rotasHome = router => {
 // -------------------------------------------------------------------------
 
 module.exports = {
-	rotasHome
+	homeRoutes
 };

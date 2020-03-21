@@ -10,6 +10,7 @@ const crypto = require('crypto');
 const _checkSaltData = async (...saltData) => {
 	try {
 		const saltDataLen = saltData.length;
+
 		let salt = '';
 
 		switch (saltDataLen) {
@@ -128,7 +129,7 @@ const cipher = async (passData, ...saltData) => {
 const decipher = async (passData, ...saltData) => {
 	try {
 		const baseDecipher = await _baseCipherDecipher(passData, ...saltData);
-		const decipher = crypto.createDecipheriv(baseDecipher.algorithm, baseDecipher.key, baseDecipher.iv);
+		const decipher = await crypto.createDecipheriv(baseDecipher.algorithm, baseDecipher.key, baseDecipher.iv);
 
 		return decipher;
 	} catch(err) {

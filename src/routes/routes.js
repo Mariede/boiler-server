@@ -13,7 +13,7 @@ const helpersAuth = require('@serverRoot/helpers/auth');
 // Rotas (controllers)
 const auth = require('@serverRoot/routes/controllers/auth');
 const home = require('@serverRoot/routes/controllers/home');
-const usuario = require('@serverRoot/routes/controllers/usuario');
+const user = require('@serverRoot/routes/controllers/user');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -22,23 +22,23 @@ router.use(async (req, res, next) => {
 	try {
 		await routeProfiler.showDetails(req, res);
 
-		let rota = req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '') + '/',
-			isProtected = await helpersAuth.isProtected(rota),
-			segueFluxo = false;
+		let route = req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '') + '/',
+			isProtected = await helpersAuth.isProtected(route),
+			releasedReq = false;
 
 		if (!isProtected) {
-			segueFluxo = true;
+			releasedReq = true;
 		} else {
 			if (await helpersAuth.isLogged(req, 'a')) {
-				segueFluxo = true;
+				releasedReq = true;
 			}
 		}
 
-		res.locals.routeEscapedRoute = rota;
+		res.locals.routeEscapedRoute = route;
 		res.locals.routeIsProtectedRoute = isProtected;
 		res.locals.routeControllerRoute = 'HUB';
 
-		if (segueFluxo) {
+		if (releasedReq) {
 			next();
 		} else {
 			res.status(401).send({
@@ -48,16 +48,16 @@ router.use(async (req, res, next) => {
 			});
 		}
 	} catch(err) {
-		log.controllerErro(res, err, 'error');
+		log.controllerError(res, err, 'error');
 	}
 });
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Rotas (controllers) - chamadas
-auth.rotasAuth(router);
-home.rotasHome(router);
-usuario.rotasUsuario(router);
+auth.authRoutes(router);
+home.homeRoutes(router);
+user.userRoutes(router);
 // ---------------------------------------------------------------------------------------------------------------
 
 module.exports = router;

@@ -11,13 +11,13 @@ const rootIoNameSpace = '/home.io';
 
 // Verifica a data atual do servidor (formatado)
 const rootFormatDateNow = () => {
-	const formatZeroLeft = num => {
+	const formatLeftZeros = num => {
 		return ('0' + num).slice(-2);
 	};
 
 	const agora = new Date();
 
-	return `${formatZeroLeft(agora.getDate())}/${formatZeroLeft(agora.getMonth() + 1)}/${agora.getFullYear()} ${formatZeroLeft(agora.getHours())}:${formatZeroLeft(agora.getMinutes())}:${formatZeroLeft(agora.getSeconds())}`;
+	return `${formatLeftZeros(agora.getDate())}/${formatLeftZeros(agora.getMonth() + 1)}/${agora.getFullYear()} ${formatLeftZeros(agora.getHours())}:${formatLeftZeros(agora.getMinutes())}:${formatLeftZeros(agora.getSeconds())}`;
 };
 // -------------------------------------------------------------------------
 

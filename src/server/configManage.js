@@ -37,6 +37,7 @@ const check = config => {
 
 						// le e valida se json permanece valido, com debounce de wait
 						clearTimeout(timeoutReadFile);
+
 						timeoutReadFile = setTimeout(() => {
 							try {
 								fs.readFile(param, 'utf8',

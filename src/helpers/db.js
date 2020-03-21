@@ -73,7 +73,7 @@ const msSqlServer = {
 		});
 	},
 
-	sqlExecute: (transaction, parametros) => { // Executa uma query ou stored procedure para uma transacao
+	sqlExecute: (transaction, params) => { // Executa uma query ou stored procedure para uma transacao
 		return new Promise((resolve, reject) => {
 			const failReturn = err => {
 				sql.close();
@@ -212,7 +212,7 @@ const msSqlServer = {
 					}
 				};
 
-				sqlAction(request, parametros)
+				sqlAction(request, params)
 				.then(
 					res => {
 						resolve(res);
@@ -263,13 +263,13 @@ const msSqlServer = {
 	},
 
 	/*
-	parametros => Seguem o formato json: { formato: , dados: { input: , output: , executar: } }
+	params => Seguem o formato json: { formato: , dados: { input: , output: , executar: } }
 		* verificar arquivo de ajuda
 	*/
-	sqlExecuteAll: async (parametros, forceClose = false) => { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
+	sqlExecuteAll: async (params, forceClose = false) => { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
 		try {
 			let transaction = await msSqlServer.sqlOpenCon(),
-				result = await msSqlServer.sqlExecute(transaction, parametros);
+				result = await msSqlServer.sqlExecute(transaction, params);
 				await msSqlServer.sqlCloseCon(transaction, forceClose);
 
 			return result;

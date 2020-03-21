@@ -16,16 +16,18 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 const _executeQueue = (e, counter) => {
 	return new Promise((resolve, reject) => {
 		try {
-			let configQueue = __serverConfig.email.queue,
-				initPath = __serverRoot,
-				configKey = configQueue.path,
-				queuePathSend = initPath + configKey,
-				queueFile = JSON.stringify(e),
-				uniqueId = parseInt(((Math.random() * 9) + 1) * Math.pow(10, 5), 10),
-				dateNow = (new Date()).toISOString().split('T'),
-				dateLeft = (dateNow[0] || '').replace(/-/g, ''),
-				dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9),
-				fileName = queuePathSend + '\\mail-queue-' + dateLeft + dateRight + counter + '.' + uniqueId + configQueue.fileExtension;
+			const configQueue = __serverConfig.email.queue;
+			const configKey = configQueue.path;
+			const queueFile = JSON.stringify(e);
+			const dateNow = (new Date()).toISOString().split('T');
+			const dateLeft = (dateNow[0] || '').replace(/-/g, '');
+			const dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9);
+			const uniqueId = parseInt(((Math.random() * 9) + 1) * Math.pow(10, 5), 10);
+
+			let initPath = __serverRoot,
+				queuePathSend = initPath + configKey;
+
+			const fileName = queuePathSend + '\\mail-queue-' + dateLeft + dateRight + counter + '.' + uniqueId + configQueue.fileExtension;
 
 			fs.access(
 				queuePathSend,
@@ -123,8 +125,9 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 			return sentInfos;
 		};
 
-		let transporter = nodemailer.createTransport(__serverConfig.email.transporter),
-			message = {
+		const transporter = nodemailer.createTransport(__serverConfig.email.transporter);
+
+		let message = {
 				'from': from,
 				'subject': subject
 			},
@@ -192,7 +195,7 @@ sendQueue: se true nao envia os e-mails instantaneamente, mas sim os colocam com
 */
 const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChunks = {}, strictCheck = true, sendQueue = false) => {
 	try {
-		const preencheDestinos = (a, b, i, e) => {
+		const fillDestinations = (a, b, i, e) => {
 			if (!validator.isEmpty(a)) {
 				if (Array.isArray(a)) {
 					if (a[0].constructor !== Array) {
@@ -211,13 +214,14 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 								if (validator.isEmail(email)) {
 									if (!emailListCheckUnique.includes(emailCheckUnique)) {
 										emailListCheckUnique.push(emailCheckUnique);
-										i++;
 
 										if (!validator.isEmpty(name)) {
 											b.push(`${name} <${email}>`);
 										} else {
 											b.push(email);
 										}
+
+										i++;
 									}
 								}
 							}
@@ -274,9 +278,9 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			errorStack.push(`E-mail de origem ( ${from} ): entrada não está no formato de Array...`);
 		}
 
-		toCount = preencheDestinos(to, toChecked, toCount, errorStack);
-		ccCount = preencheDestinos(cc, ccChecked, ccCount, errorStack);
-		bccCount = preencheDestinos(bcc, bccChecked, bccCount, errorStack);
+		toCount = fillDestinations(to, toChecked, toCount, errorStack);
+		ccCount = fillDestinations(cc, ccChecked, ccCount, errorStack);
+		bccCount = fillDestinations(bcc, bccChecked, bccCount, errorStack);
 
 		if (fromChecked.length === 0) {
 			errorStack.push('Nenhum e-mail de origem válido. Verifique os dados informados...');
@@ -345,7 +349,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			}
 		}
 
-		if (typeof sendChunks === 'object') {
+		if (typeof sendChunks === 'object' && sendChunks !== null) {
 			if (Object.entries(sendChunks).length !== 0) {
 				if (!Object.prototype.hasOwnProperty.call(sendChunks, 'to') && !Object.prototype.hasOwnProperty.call(sendChunks, 'cc') && !Object.prototype.hasOwnProperty.call(sendChunks, 'bcc')) {
 					errorStack.push('sendChunks deve conter pelo menos uma dessas chaves: to, cc ou bcc...');
