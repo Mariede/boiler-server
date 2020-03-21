@@ -78,12 +78,13 @@ npm run build
   * Parametrizável para MongoDB
     - Transacional, via esquemas Mongoose, índices compostos por esquemas, opções extras por esquemas, noSql, etc
 
-## Paginador e Ordenador (Paginator & Sorter)
+## Lib Paginator com paginador e ordenador (setPage & setSort & keysToCamelCase)
   * Configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
-  * Conversão configurável "Camel Case" do json (record set de retorno)
+  * Conversão configurável para "lowerCamelCase" do json (recordset de retorno)
 
 ## Lib Searcher
-  * Facilita as consultas em geral com algorítmo unificado de pesquisa
+  * Facilita as consultas em geral com algorítmo unificado de pesquisa em múltiplas colunas
+  * Apenas para MS SQL Server
 
 ## Lib validator
   * Com os métodos de validação de entradas mais comuns (cpf, alfanumérico, e-mail), personalizável via regex
