@@ -12,7 +12,7 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) => {
 	return new Promise((resolve, reject) => {
 		try {
-			const sortFunction = (a, b, i, iLen) => {
+			const sortThis = (a, b, i, iLen) => {
 				if (i < iLen) {
 					let aCheck = (a[sortElements[i]] || ''),
 						bCheck = (b[sortElements[i]] || ''),
@@ -28,7 +28,7 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 						}
 					}
 
-					return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortFunction(a, b, ++i, iLen)));
+					return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortThis(a, b, ++i, iLen)));
 				} else {
 					return 0;
 				}
@@ -39,7 +39,7 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 
 			newData.sort(
 				(a, b) => {
-					return sortFunction(a, b, 0, sortElementsLen);
+					return sortThis(a, b, 0, sortElementsLen);
 				}
 			);
 

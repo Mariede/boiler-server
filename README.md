@@ -24,7 +24,7 @@ npm run build
   * Permite aplicações RESTFUL
   * Permite APIs de terceiros
   * Monitoramento do loop de eventos para análises de performance e testes
-    * Opcional
+    - Opcional
 
 ## Arquivo de configuração unificado do servidor
   * config.json
@@ -49,11 +49,11 @@ npm run build
 
 ## Possibilidade de utilizar a aplicação como serviço do Windows ou via "Forever"
   * Pacote node-windows
-    * Inicia junto com a máquina
-    * Serviço reinicia automaticamente, se houver problemas
-    * _tools/node_as_a_service/_nodeAsAService.js
+    - Inicia junto com a máquina
+    - Serviço reinicia automaticamente, se houver problemas
+    - _tools/node_as_a_service/_nodeAsAService.js
   * Pacote Forever (instalar global)
-    * Funciona em Windows ou Linux
+    - Funciona em Windows ou Linux
 
 ## Sessions com armazenamento via arquivos criptografados
   * sessionFileStore
@@ -61,22 +61,22 @@ npm run build
 
 ## Logs com informações na tela e/ou arquivos diários
   * Arquivos de logs separados por grupos
-    * Inicialização e acessos ao servidor
-    * Erros originários dos controllers
-    * Fila de e-mails
-    * Acessos e modificações no arquivo de configuração (config.json)
+    - Inicialização e acessos ao servidor
+    - Erros originários dos controllers
+    - Fila de e-mails
+    - Acessos e modificações no arquivo de configuração (config.json)
 
 ## Autenticação das rotas personalizável
   * Lib de autenticação
-    * Rotas protegidas (configurável)
-    * isLogged
-    * Login / Logout
+    - Rotas protegidas (configurável)
+    - isLogged
+    - Login / Logout
 
 ## Lib de acesso a bancos de dados
   * Parametrizável para MS SQL Server
-    * Transacional, acesso a múltiplas queries e stored procedures, agrupadas ou desmembradas, variáveis de output, etc
+    - Transacional, acesso a múltiplas queries e stored procedures, agrupadas ou desmembradas, variáveis de output, etc
   * Parametrizável para MongoDB
-    * Transacional, via esquemas Mongoose, índices compostos por esquemas, opções extras por esquemas, noSql, etc
+    - Transacional, via esquemas Mongoose, índices compostos por esquemas, opções extras por esquemas, noSql, etc
 
 ## Paginador e Ordenador (Paginator & Sorter)
   * Configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
@@ -111,30 +111,33 @@ npm run build
 
 ## Estrutura das pasta do servidor
   * actions : métodos com as regras de negócio e codificação dos processos
-    * é local, relacionado a rota em execução
-    * uma action pode chamar uma ou mais actions e/ou um ou mais helpers
+    - é local, relacionado a rota em execução
+    - uma action pode chamar uma ou mais actions e/ou um ou mais helpers
+    - pode ser quebrado em subpastas, componentizado após os controllers
   * custom : pasta com APIs de interfaceamento para outros serviços externos
-    * é como um helper interfaceando exclusivamente serviços externos
+    - é como um helper interfaceando exclusivamente serviços externos
   * helpers : métodos com as regras de negócio e codificação dos processos
-    * é global, relacionado ao projeto e pode ser utilizado por qualquer action ou middleware
-    * um helper pode chamar um ou mais helpers
+    - é global, relacionado ao projeto e pode ser utilizado por qualquer action ou middleware
+    - um helper pode chamar um ou mais helpers
+  * listeners
+    - Agrupa os listeners e os namespaces (caminhos) do servidor para comunicação via Socket.io (ws)
   * logs
-    * arquivos de logs do servidor
+    - arquivos de logs do servidor
   * models
-    * arquivo contendo os esquemas de acesso ao mongoDB, via mongoose
+    - arquivo contendo os esquemas de acesso ao mongoDB e detalhes relacionados, via mongoose
   * queue (* opcional, configurável)
-    * arquivos da fila de e-mails (e-mails agendados a serem enviados)
+    - arquivos da fila de e-mails (e-mails agendados a serem enviados)
   * routes
-    * define um ou mais controllers para o projeto
-    * define as rotas do servidor
-    * ponto centralizador do contato client/server
-      * todas as requisições/retornos do cliente são realizadas aqui
+    - define um ou mais controllers para o projeto
+    - define as rotas do servidor
+    - ponto centralizador do contato client/server
+      + todas as requisições/retornos do cliente são realizadas aqui
   * server
-    * arquivos de inicialização do servidor e assistência ao seu funcionamento
+    - arquivos de inicialização do servidor e assistência ao seu funcionamento
   * sessions
-    * arquivos contendo as sessões ativas
+    - arquivos contendo as sessões ativas
   * uploads (* opcional, configurável)
-    * contém pastas e arquivos de upload dos clientes
+    - contém pastas e arquivos de upload dos clientes
   * views : arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
-    * serverSide : páginas interpretadas diretamente no servidor (.ejs)
-    * clientSide : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)
+    - serverSide : páginas interpretadas diretamente no servidor (.ejs)
+    - clientSide : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)

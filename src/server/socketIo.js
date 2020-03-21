@@ -7,41 +7,50 @@ const io = require('socket.io');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const socketIoListeners = require('@serverRoot/listeners/socketIoListeners');
 const log = require('@serverRoot/helpers/log');
-const home = require('@serverRoot/helpers/home');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Listeners para socket.io separados por rota ou funcao (metodo privado)
-const _listeners = {
-	root: io => { // Listeners para Home do servidor
-		const ioChannel = io.of(home.rootIoNameSpace);
-
-		ioChannel.on('connection', socket => {
-			let rootServerTime = null;
-
-			socket.once('serverTimeStart', () => {
-				rootServerTime = setInterval(() => {
-					ioChannel.to(socket.id).emit('serverTimeTick', home.rootFormatDateNow());
-				}, 1000);
-			});
-
-			socket.once('disconnect', () => {
-				clearInterval(rootServerTime);
-			});
-		});
-	}
-};
-
 // Inicia um novo servidor socket.io
 const startIo = () => {
 	const ios = io.listen(__serverConfig.socketIo.serverPort);
+	const listeners = socketIoListeners.listeners;
+
+	let listeningMethods = [];
 
 	// Listeners aqui
-	_listeners.root(ios);
+	if (listeners) {
+		Object.keys(listeners).forEach(
+			l => {
+				listeners[l](ios);
+				listeningMethods.push(l);
+			}
+		);
+	}
 
 	ios.httpServer.once('listening', () => {
-		log.logger('info', `Servidor socket.io está rodando na porta ${ios.httpServer.address().port}...`, 'startUp');
+		const showMessageComplement = lm => {
+			let messageComplement = '';
+
+			if (lm.length) {
+				messageComplement = ' (listeners ativos:';
+
+				lm.forEach(
+					l => {
+						messageComplement += ` ${l}`;
+					}
+				);
+
+				messageComplement += ')';
+			} else {
+				messageComplement = ' (nenhum listener ativo)';
+			}
+
+			return messageComplement;
+		};
+
+		log.logger('info', `Servidor socket.io está rodando na porta ${ios.httpServer.address().port}...${showMessageComplement(listeningMethods)}`, 'startUp');
 	});
 };
 // -------------------------------------------------------------------------

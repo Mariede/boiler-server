@@ -79,7 +79,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Headers (seguranca) -----------------------------------------------------
 			app.disable('x-powered-by'); // desabilita header x-powered-by (hidepoweredby)
 
-			app.use(function (req, res, next) {
+			app.use(function(req, res, next) {
 				res.set('X-Content-Type-Options', 'nosniff'); // browser sniffing mime types (nosniff)
 				res.set('X-XSS-Protection', '1; mode=block'); // Cross Site Scripting (xssfilter)
 				next();
@@ -206,7 +206,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 				wsProxy.web(req, res);
 			});
 
-			_server.on('upgrade', function (req, socket, head) {
+			_server.on('upgrade', function(req, socket, head) {
 				wsProxy.ws(req, socket, head);
 			});
 
