@@ -22,7 +22,7 @@
 				}
 			};
 
-			const socket = io.connect('<%= ioUrl %>', { transports: ['websocket', 'polling'], forceNew: true });
+			const socket = io.connect('<%= ioUrl %>', { path: '<%= ioPath %>', transports: ['websocket', 'polling'], forceNew: true });
 
 			socket.on('serverTimeTick', data => {
 				showData(true, data);

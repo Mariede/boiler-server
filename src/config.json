@@ -1,5 +1,6 @@
 {
 	"server": {
+		"isHttps": false,
 		"host": "localhost",
 		"port": 5000,
 		"backlog": 511,
@@ -61,8 +62,10 @@
 		"_comments2": "except => Except aceita rota parcial ou exata; utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2"
 	},
 	"socketIo": {
-		"serverUrl": "http://localhost",
-		"serverPort": 5001
+		"serverProtocol": "http://",
+		"serverHost": "localhost",
+		"serverPort": 5001,
+		"path": "/socket.io"
 	},
 	"crypto": {
 		"hashAlgorithm": "sha512",

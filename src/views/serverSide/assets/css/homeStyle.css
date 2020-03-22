@@ -43,3 +43,7 @@ hr {
 	padding: 10px;
 	background-color: #fff;
 }
+
+#panel-bottom #panel-bottom-date {
+	white-space: nowrap;
+}

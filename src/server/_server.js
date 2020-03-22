@@ -4,7 +4,8 @@
 // Modulos de inicializacao
 const express = require('express');
 const app = express();
-const protocol = require('http');
+const http = require('http');
+const https = require('https');
 const proxy = require('http-proxy');
 const cors = require('cors');
 const session = require('express-session');
@@ -27,7 +28,13 @@ const log = require('@serverRoot/helpers/log');
 const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 	return new Promise((resolve, reject) => {
 		try {
-			const serverOptions = {};
+			const isHttps = __serverConfig.server.isHttps;
+
+			const pServerCheck = {
+				protocol: (isHttps ? https : http),
+				serverOptions: (isHttps ? {} : {}),
+				sessionCookieSecure: (isHttps ? true : false)
+			};
 
 			const listenOptions = {
 				port: __serverConfig.server.port,
@@ -79,7 +86,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Headers (seguranca) -----------------------------------------------------
 			app.disable('x-powered-by'); // desabilita header x-powered-by (hidepoweredby)
 
-			app.use(function(req, res, next) {
+			app.use((req, res, next) => {
 				res.set('X-Content-Type-Options', 'nosniff'); // browser sniffing mime types (nosniff)
 				res.set('X-XSS-Protection', '1; mode=block'); // Cross Site Scripting (xssfilter)
 				next();
@@ -114,7 +121,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						cookie: {
 							httpOnly: true,
 							sameSite: true, // opcoes: true | false | lax | none | strict
-							secure: false, // true: apenas em https, false: http/https
+							secure: pServerCheck.sessionCookieSecure, // true: apenas em https, false: http/https
 							maxAge: 1000 * 60 * __serverConfig.server.session.timeout // 1000 = 1 segundo (timeout em minutos)
 						}
 					}
@@ -186,7 +193,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			});
 
 			// Cria servidor -----------------------------------------------------------
-			const _server = protocol.createServer(serverOptions, app);
+			const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, app);
 
 			_server.maxConnections = __serverConfig.server.maxConnections;
 			_server.timeout = __serverConfig.server.timeout * 1000;
@@ -197,16 +204,16 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Proxy para o servidor de Websockets (Socket.io) -------------------------
 			// Se mais de uma aplicacao estiver rodando no mesmo servidor, diferenciar pelas portas em config
 			const wsProxy = proxy.createProxyServer({
-				target: `${__serverConfig.socketIo.serverUrl}:${__serverConfig.socketIo.serverPort}`,
+				target: `${__serverConfig.socketIo.serverProtocol}${__serverConfig.socketIo.serverHost}:${__serverConfig.socketIo.serverPort}`,
 				ws: true
 			});
 
 			// Rotas de resposta para socket.io ---------------------------------------
-			app.all('/socket.io/*', function(req, res) {
+			app.all(`${__serverConfig.socketIo.path}/*`, (req, res) => {
 				wsProxy.web(req, res);
 			});
 
-			_server.on('upgrade', function(req, socket, head) {
+			_server.on('upgrade', (req, socket, head) => {
 				wsProxy.ws(req, socket, head);
 			});
 
