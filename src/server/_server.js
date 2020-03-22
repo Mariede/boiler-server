@@ -208,6 +208,12 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 				ws: true
 			});
 
+			// Listener para erros de proxy
+			wsProxy.on('error', (err, req, res) => {
+				log.logger('error', err.stack || err);
+				res.end();
+			});
+
 			// Rotas de resposta para socket.io ---------------------------------------
 			app.all(`${__serverConfig.socketIo.path}/*`, (req, res) => {
 				wsProxy.web(req, res);

@@ -70,7 +70,7 @@ app.all('*', (req, res) => {
 });
 
 // Handler erros -----------------------------------------
-apiProxy.on('error', (err, req, res, next) => {
+apiProxy.on('error', (err, req, res) => {
 	log4js.getLogger('default').error(err.stack || err);
 	res.status(500).send('Erro no servidor de proxy (apiProxy)');
 });
