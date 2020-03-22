@@ -36,14 +36,15 @@ npm run build
   * Tratamento conjunto da pilha de Erros (sync e async)
   * Erros personalizados
 
-## Prefixamento de rotas e Proxy geral de acesso (via porta 80)
+## Prefixamento de rotas e Proxy geral de acesso
+  * Via porta 80 (default), configurável
   * Prefixo configurável, atua em todas as rotas do servidor
   * _tools/proxy/_proxyStart.js
 
 ## Websockets configurado junto ao servidor http
   * Conversação bidirecional cliente <-> servidor
   * Biblioteca Socket.io (websockets / pooling)
-  * Integrado com a aplicação, mas com processo próprio em porta separada
+  * Integrado com a aplicação, mas com servidor próprio em porta separada
   * Proxy automático, direto pela aplicação
   * Funciona normalmente single-thread e multi-thread (cluster)
 
@@ -111,17 +112,21 @@ npm run build
   * Validação de código ESLINT
 
 ## Estrutura das pasta do servidor
-  * actions : métodos com as regras de negócio e codificação dos processos
-    - é local, relacionado a rota em execução
-    - uma action pode chamar uma ou mais actions e/ou um ou mais helpers
+  * actions
+    - métodos com as regras de negócio e codificação dos processos
+      + é local, relacionado a rota em execução
+      + uma action pode chamar uma ou mais actions e/ou um ou mais helpers
     - pode ser quebrado em subpastas, componentizado após os controllers
-  * custom : pasta com APIs de interfaceamento para outros serviços externos
-    - é como um helper interfaceando exclusivamente serviços externos
-  * helpers : métodos com as regras de negócio e codificação dos processos
-    - é global, relacionado ao projeto e pode ser utilizado por qualquer action ou middleware
-    - um helper pode chamar um ou mais helpers
+  * custom
+    - pasta com APIs de interfaceamento para outros serviços externos
+      + é como um helper interfaceando exclusivamente serviços externos
+  * helpers
+    - métodos com as regras de negócio e codificação dos processos
+      + é global, relacionado ao projeto e pode ser utilizado por qualquer action ou middleware
+      + um helper pode chamar um ou mais helpers
   * listeners
-    - Agrupa os listeners e os namespaces (caminhos) do servidor para comunicação via Socket.io (ws)
+    - agrupa os listeners e namespaces (caminhos) do servidor para comunicação via Socket.io
+      + websockets ou pooling
   * logs
     - arquivos de logs do servidor
   * models
@@ -139,6 +144,7 @@ npm run build
     - arquivos contendo as sessões ativas
   * uploads (* opcional, configurável)
     - contém pastas e arquivos de upload dos clientes
-  * views : arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
-    - serverSide : páginas interpretadas diretamente no servidor (.ejs)
-    - clientSide : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)
+  * views
+    - arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
+      + serverSide : páginas interpretadas diretamente no servidor (.ejs)
+      + clientSide : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)
