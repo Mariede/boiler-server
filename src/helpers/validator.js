@@ -6,7 +6,7 @@
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Devolve um dados para analise (metodo privado)
+// Realiza analise de dado falsy (metodo privado)
 const _falsyCheck = param => {
 	try {
 		const falsy = [null, undefined, NaN, false]; // except 0 and ""
@@ -18,15 +18,14 @@ const _falsyCheck = param => {
 };
 
 // Verifica se CNPJ e valido
-const isCnpj = cnpj => {
+const isCnpj = _cnpj => {
 	try {
-		let peso1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
+		let cnpj = (_cnpj || '').toString().replace(/\D/gi, ''),
+			peso1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
 			peso2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
 			resto = -1,
 			soma = 0,
 			vRet = false;
-
-		cnpj = (cnpj || '').toString().replace(/\D/gi, '');
 
 		// completa com zeros a esquerda
 		if (cnpj.length < 14) {
@@ -37,7 +36,7 @@ const isCnpj = cnpj => {
 			}
 		}
 
-		if (!cnpj.match(/^(0{14}|1{14}|2{14}|3{14}|4{14}|5{14}|6{14}|7{14}|8{14}|9{14})$/) && cnpj.length <= 14) {
+		if (!(/^(0{14}|1{14}|2{14}|3{14}|4{14}|5{14}|6{14}|7{14}|8{14}|9{14})$/).test(cnpj) && cnpj.length <= 14) {
 			for (let i = 1; i <= 12; i++) {
 				soma = soma + (parseInt(cnpj.substring(i - 1, i), 10) * peso1[i - 1]);
 			}
@@ -78,13 +77,12 @@ const isCnpj = cnpj => {
 };
 
 // Verifica se CPF e valido
-const isCpf = cpf => {
+const isCpf = _cpf => {
 	try {
-		let resto = -1,
+		let cpf = (_cpf || '').toString().replace(/\D/gi, ''),
+			resto = -1,
 			soma = 0,
 			vRet = false;
-
-		cpf = (cpf || '').toString().replace(/\D/gi, '');
 
 		// completa com zeros a esquerda
 		if (cpf.length < 11) {
@@ -95,7 +93,7 @@ const isCpf = cpf => {
 			}
 		}
 
-		if (!cpf.match(/^(0{11}|1{11}|2{11}|3{11}|4{11}|5{11}|6{11}|7{11}|8{11}|9{11})$/) && cpf.length <= 11) {
+		if (!(/^(0{11}|1{11}|2{11}|3{11}|4{11}|5{11}|6{11}|7{11}|8{11}|9{11})$/).test(cpf) && cpf.length <= 11) {
 			for (let i = 1; i <= 9; i++) {
 				soma = soma + (parseInt(cpf.substring(i - 1, i), 10) * (11 - i));
 			}
@@ -136,14 +134,13 @@ const isCpf = cpf => {
 };
 
 // Verifica se PIS/PASEP e valido
-const isPisPasep = pisPasep => {
+const isPisPasep = _pisPasep => {
 	try {
-		let peso = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
+		let pisPasep = (_pisPasep || '').toString().replace(/\D/gi, ''),
+			peso = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
 			resto = -1,
 			soma = 0,
 			vRet = false;
-
-		pisPasep = (pisPasep || '').toString().replace(/\D/gi, '');
 
 		// completa com zeros a esquerda
 		if (pisPasep.length < 11) {
@@ -154,7 +151,7 @@ const isPisPasep = pisPasep => {
 			}
 		}
 
-		if (!pisPasep.match(/^(0{11})$/)) {
+		if (!(/^(0{11}|1{11}|2{11}|3{11}|4{11}|5{11}|6{11}|7{11}|8{11}|9{11})$/).test(pisPasep) && pisPasep.length <= 11) {
 			for (let i = 1; i < 11; i++) {
 				soma = soma + (parseInt(pisPasep.substring(i - 1, i), 10) * peso[i - 1]);
 			}
@@ -177,12 +174,13 @@ const isPisPasep = pisPasep => {
 };
 
 // Verifica se email e valido
-const isEmail = email => {
+const isEmail = _email => {
 	try {
-		let regExp = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x7f])+)\])$/i,
+		let email = (_email || '').toString(),
+			regExp = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x7f])+)\])$/i,
 			vRet = false;
 
-		if ((email || '').toString().match(regExp)) {
+		if (regExp.test(email)) {
 			vRet = true;
 		}
 
@@ -193,12 +191,13 @@ const isEmail = email => {
 };
 
 // Verifica se CEP e valido
-const isCep = (cep, separator = '-') => {
+const isCep = (_cep, separator = true) => {
 	try {
-		let regExp = (separator ? new RegExp('^([0-9]{5})' + separator + '([0-9]{3})$') : /^([0-9]{8})$/),
+		let cep = (_cep || '').toString(),
+			regExp = (separator ? /^([0-9]{5})-([0-9]{3})$/ : /^([0-9]{8})$/),
 			vRet = false;
 
-		if ((cep || '').toString().match(regExp)) {
+		if (regExp.test(cep)) {
 			vRet = true;
 		}
 
@@ -208,20 +207,24 @@ const isCep = (cep, separator = '-') => {
 	}
 };
 
+/*
 // Verifica se valor e vazio
-const isEmpty = (param, trimmed = true, implicit = true) => {
+	* Se trimmed === true	=> realiza trim automatico no _param de entrada
+	* Se implicit === true	=> valores falsy: null, undefined, NaN, false sao tratados como empty
+*/
+const isEmpty = (_param, trimmed = true, implicit = true) => {
 	try {
-		let paramCheck = _falsyCheck(param),
+		let param = _falsyCheck(_param),
 			vRet = false;
 
-		if (trimmed && paramCheck) {
-			paramCheck = paramCheck.trim();
+		if (trimmed && param) {
+			param = param.trim();
 		}
 
-		if (paramCheck === '') {
+		if (param === '') {
 			vRet = true;
 		} else {
-			if (implicit && !paramCheck) {
+			if (implicit && !param) {
 				vRet = true;
 			}
 		}
@@ -233,13 +236,13 @@ const isEmpty = (param, trimmed = true, implicit = true) => {
 };
 
 // Verifica se valor e alfanumerico
-const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
+const isAlphaNumeric = (_param, spaceAndUnderscore = true) => {
 	try {
-		let paramCheck = _falsyCheck(param),
+		let param = (_param === true ? false : _falsyCheck(_param)),
 			regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i),
 			vRet = false;
 
-		if (paramCheck && paramCheck.match(regExp)) {
+		if (param && regExp.test(param)) {
 			vRet = true;
 		}
 
@@ -249,25 +252,14 @@ const isAlphaNumeric = (param, spaceAndUnderscore = true) => {
 	}
 };
 
-// Verifica se valor e numerico inteiro positivo (aceita espacos ao redor do numero valido)
-const isNumber = num => {
-	try {
-		const falsy = [null, undefined, NaN, false, true];
-
-		return Number.isInteger(falsy.includes(num) ? num : (typeof num === 'string' ? (num.trim() === '' ? num : Number(num)) : Number(num))) && Number(num) >= 0 && !Array.isArray(num);
-	} catch(err) {
-		throw err;
-	}
-};
-
 // Verifica se valor e numerico inteiro
-const isInteger = (num, signed = true) => {
+const isInteger = (_num, signed = true) => {
 	try {
-		let numCheck = _falsyCheck(num),
+		let num = _falsyCheck(_num),
 			regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([0-9]+)$/),
 			vRet = false;
 
-		if (numCheck && numCheck.match(regExp)) {
+		if (num && regExp.test(num)) {
 			vRet = true;
 		}
 
@@ -278,13 +270,13 @@ const isInteger = (num, signed = true) => {
 };
 
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante variavel (sempre . como separador decimal)
-const isIntegerOrFloat = (num, signed = true) => {
+const isIntegerOrFloat = (_num, signed = true) => {
 	try {
-		let numCheck = _falsyCheck(num),
+		let num = _falsyCheck(_num),
 			regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([0-9]+)((\.{1}[0-9]+)|())$/),
 			vRet = false;
 
-		if (numCheck && numCheck.match(regExp)) {
+		if (num && regExp.test(num)) {
 			vRet = true;
 		}
 
@@ -295,13 +287,13 @@ const isIntegerOrFloat = (num, signed = true) => {
 };
 
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante fixa (sempre . como separador decimal)
-const isIntegerOrFixed = (num, fixedDecimal, signed = true) => {
+const isIntegerOrFixed = (_num, fixedDecimal = 0, signed = true) => {
 	try {
-		let numCheck = _falsyCheck(num),
+		let num = _falsyCheck(_num),
 			regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$')),
 			vRet = false;
 
-		if (numCheck && numCheck.match(regExp)) {
+		if (num && regExp.test(num)) {
 			vRet = true;
 		}
 
@@ -312,13 +304,13 @@ const isIntegerOrFixed = (num, fixedDecimal, signed = true) => {
 };
 
 // Verifica se data valida (dd/mm/yyyy ou dd-mm-yyyy ou dd.mm.yyyy)
-const isDate = date => {
+const isDate = _date => {
 	try {
-		let dateCheck = (date || '').toString(),
+		let date = (_date || '').toString(),
 			regExp = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/,
 			vRet = false;
 
-		if (dateCheck.match(regExp) && dateCheck.length === 10) {
+		if (regExp.test(date) && date.length === 10) {
 			vRet = true;
 		}
 
@@ -328,20 +320,15 @@ const isDate = date => {
 	}
 };
 
-// Verifica se param em string contem paramCompare
-const contains = (param, paramCompare, caseInsensitive = true) => {
+// Verifica se string _paramCompare esta contida em _param
+const contains = (_param, _paramCompare, caseInsensitive = true) => {
 	try {
-		let paramCheck = _falsyCheck(param),
-			paramCompareCheck = _falsyCheck(paramCompare),
+		let param = (_param === true ? false : _falsyCheck(_param)),
+			paramCompare = (_paramCompare === true ? false : _falsyCheck(_paramCompare)),
 			vRet = false;
 
-		if (paramCheck && paramCompareCheck) {
-			if (caseInsensitive) {
-				paramCheck = paramCheck.toUpperCase();
-				paramCompareCheck = paramCompareCheck.toUpperCase();
-			}
-
-			if (paramCheck.indexOf(paramCompareCheck) !== -1) {
+		if ((param === '' || param) && (paramCompare === '' || paramCompare)) {
+			if (param.indexOf(paramCompare) !== -1 || (caseInsensitive && param.toUpperCase().indexOf(paramCompare.toUpperCase()) !== -1)) {
 				vRet = true;
 			}
 		}
@@ -352,20 +339,15 @@ const contains = (param, paramCompare, caseInsensitive = true) => {
 	}
 };
 
-// Verifica se param em string e identico a paramCompare
-const equal = (param, paramCompare, caseInsensitive = true) => {
+// Verifica se string _paramCompare e identica a _param
+const equal = (_param, _paramCompare, caseInsensitive = true) => {
 	try {
-		let paramCheck = _falsyCheck(param),
-			paramCompareCheck = _falsyCheck(paramCompare),
+		let param = (_param === true ? false : _falsyCheck(_param)),
+			paramCompare = (_paramCompare === true ? false : _falsyCheck(_paramCompare)),
 			vRet = false;
 
-		if (paramCheck && paramCompareCheck) {
-			if (caseInsensitive) {
-				paramCheck = paramCheck.toUpperCase();
-				paramCompareCheck = paramCompareCheck.toUpperCase();
-			}
-
-			if (paramCheck === paramCompareCheck) {
+		if ((param === '' || param) && (paramCompare === '' || paramCompare)) {
+			if (param === paramCompare || (caseInsensitive && param.toUpperCase() === paramCompare.toUpperCase())) {
 				vRet = true;
 			}
 		}
@@ -376,14 +358,17 @@ const equal = (param, paramCompare, caseInsensitive = true) => {
 	}
 };
 
-// Verifica limites de comprimento minimo e maximo para string param
-const len = (param, lMin = 0, lMax = 0) => {
+/*
+// Verifica limites de comprimento minimo e maximo para string _param
+	* Se lMax nao informado, assume o mesmo valor de lMin
+*/
+const lenRange = (_param, lMin = 0, lMax = lMin) => {
 	try {
-		let paramCheck = _falsyCheck(param),
-			paramCheckLen = (paramCheck ? paramCheck.length : 0),
+		let param = (_param === true ? false : _falsyCheck(_param)),
+			paramLen = (param ? param.length : 0),
 			vRet = false;
 
-		if (paramCheck && ((paramCheckLen >= lMin && lMin !== 0) || lMin === 0) && ((paramCheckLen <= lMax && lMax !== 0) || lMax === 0)) {
+		if ((param === '' || param) && (paramLen >= lMin && paramLen <= lMax)) {
 			vRet = true;
 		}
 
@@ -402,12 +387,11 @@ module.exports = {
 	isCep,
 	isEmpty,
 	isAlphaNumeric,
-	isNumber,
 	isInteger,
 	isIntegerOrFloat,
 	isIntegerOrFixed,
 	isDate,
 	contains,
 	equal,
-	len
+	lenRange
 };
