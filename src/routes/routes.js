@@ -29,7 +29,7 @@ router.use(async (req, res, next) => {
 		if (!isProtected) {
 			releasedReq = true;
 		} else {
-			if (await helpersAuth.isLogged(req, 'a')) {
+			if (await helpersAuth.isLogged(req, 0)) {
 				releasedReq = true;
 			}
 		}

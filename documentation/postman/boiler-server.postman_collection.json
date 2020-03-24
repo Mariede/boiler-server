@@ -211,6 +211,13 @@
 					],
 					"path": [
 						"islogged"
+					],
+					"query": [
+						{
+							"key": "result_type",
+							"value": "1",
+							"disabled": true
+						}
 					]
 				}
 			},
