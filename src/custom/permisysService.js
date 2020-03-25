@@ -41,22 +41,23 @@ const logon = (login, senha, idTipoUsuario = 0) => {
 				dataSend.idTipoUsuario = idTipoUsuario;
 			}
 
-			axios.post(
+			axios
+			.post (
 				address,
 				dataSend,
 				config
 			)
-			.then(
+			.then (
 				result => {
 					resolve(result.data);
 				}
 			)
-			.catch(
+			.catch (
 				err => {
 					reject(errWrapper.returnThis('PERMISYS', 500, err));
 				}
 			);
-		} catch(err) {
+		} catch (err) {
 			reject(errWrapper.returnThis('PERMISYS', 500, err));
 		}
 	});

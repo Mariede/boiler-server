@@ -16,7 +16,7 @@ const _commonGate = async (req, res) => {
 	try {
 		res.locals.routeControllerRoute = 'USER';
 		return;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -31,7 +31,7 @@ const userRoutes = router => {
 		try {
 			await _commonGate(req, res);
 			next();
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	})
@@ -39,7 +39,7 @@ const userRoutes = router => {
 		try {
 			let result = await user.consultarTodos(req, res);
 			res.status(200).send(result);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	});
@@ -51,7 +51,7 @@ const userRoutes = router => {
 		try {
 			await _commonGate(req, res);
 			next();
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	})
@@ -59,7 +59,7 @@ const userRoutes = router => {
 		try {
 			let result = await user.consultar(req, res);
 			res.status(200).send(result);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	})
@@ -67,7 +67,7 @@ const userRoutes = router => {
 		try {
 			let result = await user.inserir(req, res);
 			res.status(200).send(result);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	})
@@ -75,7 +75,7 @@ const userRoutes = router => {
 		try {
 			let result = await user.alterar(req, res);
 			res.status(200).send(result);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	})
@@ -83,7 +83,7 @@ const userRoutes = router => {
 		try {
 			let result = await user.excluir(req, res);
 			res.status(200).send(result);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	});

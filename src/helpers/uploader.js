@@ -58,7 +58,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 					}
 
 					callback(null, filePath);
-				} catch(err) {
+				} catch (err) {
 					callback(err);
 				}
 			},
@@ -72,7 +72,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 						fileName = fileOriginalName.substring(0, (findLastDot !== -1 ? findLastDot : fileOriginalName.length)) + '-' + dateLeft + dateRight + (findLastDot !== -1 ? fileOriginalName.substr(findLastDot) : '');
 
 					callback(null, fileName);
-				} catch(err) {
+				} catch (err) {
 					callback(err);
 				}
 			}
@@ -113,7 +113,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 									} else {
 										callback('Upload de arquivos apenas suporta as seguintes extensões - ' + checkExtensions.join(', ') + ' com seus respectivos MIME Types - ' + checkMimeTypes.join(', ') + '...');
 									}
-								} catch(err) {
+								} catch (err) {
 									callback(err);
 								}
 							},
@@ -146,7 +146,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 							}
 						);
 					}
-				} catch(err) {
+				} catch (err) {
 					reject(err);
 				}
 			});
@@ -160,7 +160,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 		} else {
 			errWrapper.throwThis('UPLOADER', 400, 'Favor utilizar verbo POST para realizar o upload dos arquivos...');
 		}
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };

@@ -22,22 +22,22 @@ const msSqlServer = {
 				if (__serverConfig.db.msSqlServer.conexaoTipo === 2) {
 				// Conexao simples, direta, sem pool
 					sql.connect(__serverConfig.db.msSqlServer.configSql)
-					.then(
+					.then (
 						pool => {
 							return new sql.Transaction(pool);
 						}
 					)
-					.then(
+					.then (
 						transaction => {
 							return transaction.begin();
 						}
 					)
-					.then(
+					.then (
 						transaction => {
 							resolve(transaction);
 						}
 					)
-					.catch(
+					.catch (
 						err => {
 							failReturn(err);
 						}
@@ -45,28 +45,28 @@ const msSqlServer = {
 				} else {
 				// DEFAULT - Conexao com pool
 					new sql.ConnectionPool(__serverConfig.db.msSqlServer.configSql).connect()
-					.then(
+					.then (
 						pool => {
 							return new sql.Transaction(pool);
 						}
 					)
-					.then(
+					.then (
 						transaction => {
 							return transaction.begin();
 						}
 					)
-					.then(
+					.then (
 						transaction => {
 							resolve(transaction);
 						}
 					)
-					.catch(
+					.catch (
 						err => {
 							failReturn(err);
 						}
 					);
 				}
-			} catch(err) {
+			} catch (err) {
 				failReturn(err);
 			}
 		});
@@ -212,17 +212,17 @@ const msSqlServer = {
 				};
 
 				sqlAction(request, params)
-				.then(
+				.then (
 					res => {
 						resolve(res);
 					}
 				)
-				.catch(
+				.catch (
 					err => {
 						failReturn(err);
 					}
 				);
-			} catch(err) {
+			} catch (err) {
 				failReturn(err);
 			}
 		});
@@ -241,7 +241,7 @@ const msSqlServer = {
 				};
 
 				transaction.commit()
-				.then(
+				.then (
 					() => {
 						if (__serverConfig.db.msSqlServer.conexaoTipo === 2 || forceClose) {
 						// Conexao simples, direta, sem pool
@@ -250,12 +250,12 @@ const msSqlServer = {
 						resolve();
 					}
 				)
-				.catch(
+				.catch (
 					err => {
 						failReturn(err);
 					}
 				);
-			} catch(err) {
+			} catch (err) {
 				failReturn(err);
 			}
 		});
@@ -274,7 +274,7 @@ const msSqlServer = {
 				await msSqlServer.sqlCloseCon(transaction, forceClose);
 
 			return result;
-		} catch(err) {
+		} catch (err) {
 			throw err;
 		}
 	}
@@ -293,18 +293,18 @@ const mongoDB = {
 					const uri = __serverConfig.db.mongoose.connectionString;
 
 					mongoose.connect(uri, __serverConfig.db.mongoose.configDb)
-					.then(
+					.then (
 						() => {
 							resolve();
 						}
 					)
-					.catch(
+					.catch (
 						err => {
 							reject(err);
 						}
 					);
 				}
-			} catch(err) {
+			} catch (err) {
 				reject(err);
 			}
 		});
@@ -320,7 +320,7 @@ const mongoDB = {
 				const getCompoundIndexes = s => {
 					try {
 						return (mongooseSchemas.schemasCompoundIndexes[s] || []);
-					} catch(err) {
+					} catch (err) {
 						throw err;
 					}
 				};
@@ -328,7 +328,7 @@ const mongoDB = {
 				const getExtraOptions = s => {
 					try {
 						return (mongooseSchemas.schemasExtraOptions[s] || {});
-					} catch(err) {
+					} catch (err) {
 						throw err;
 					}
 				};
@@ -368,17 +368,17 @@ const mongoDB = {
 						myModel = mongoose.model(schema, mySchema);
 
 						myModel.syncIndexes()
-						.then(
+						.then (
 							() => {
 								myModel.init();
 							}
 						)
-						.then(
+						.then (
 							() => {
 								resolve(myModel);
 							}
 						)
-						.catch(
+						.catch (
 							err => {
 								reject(err);
 							}
@@ -387,7 +387,7 @@ const mongoDB = {
 						reject('Esquema não encontrado...');
 					}
 				}
-			} catch(err) {
+			} catch (err) {
 				reject(err);
 			}
 		});
@@ -396,7 +396,7 @@ const mongoDB = {
 	noSqlCloseCon: () => {
 		try {
 			mongoose.connection.close();
-		} catch(err) {
+		} catch (err) {
 			throw err;
 		}
 	},
@@ -406,23 +406,23 @@ const mongoDB = {
 		return new Promise((resolve, reject) => {
 			try {
 				mongoDB.noSqlOpenCon()
-				.then(
+				.then (
 					() => {
 						return mongoose.startSession();
 					}
 				)
-				.then(
+				.then (
 					session => {
 						session.startTransaction();
 						resolve(session);
 					}
 				)
-				.catch(
+				.catch (
 					err => {
 						reject(err);
 					}
 				);
-			} catch(err) {
+			} catch (err) {
 				reject(err);
 			}
 		});
@@ -433,17 +433,17 @@ const mongoDB = {
 		return new Promise((resolve, reject) => {
 			try {
 				session.commitTransaction()
-				.then(
+				.then (
 					() => {
 						resolve();
 					}
 				)
-				.catch(
+				.catch (
 					err => {
 						reject(err);
 					}
 				);
-			} catch(err) {
+			} catch (err) {
 				reject(err);
 			}
 		});
@@ -470,7 +470,7 @@ const mongoDB = {
 			}
 
 			return resultSearch;
-		} catch(err) {
+		} catch (err) {
 			throw err;
 		}
 	},
@@ -492,7 +492,7 @@ const mongoDB = {
 				}
 
 				resolve(resultSet);
-			} catch(err) {
+			} catch (err) {
 				reject(err);
 			}
 		});
@@ -506,7 +506,7 @@ const mongoDB = {
 		try {
 			await mongoDB.noSqlOpenCon();
 			return await mongoDB.noSqlGetModel(schema);
-		} catch(err) {
+		} catch (err) {
 			throw err;
 		}
 	}

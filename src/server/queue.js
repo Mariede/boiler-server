@@ -71,17 +71,17 @@ const queueStartMailCheck = () => {
 																	} else {
 																		resolve(filePathSending);
 																	}
-																} catch(err) {
+																} catch (err) {
 																	reject(err);
 																}
 															}
 														);
-													} catch(err) {
+													} catch (err) {
 														reject(err);
 													}
 												}
 											);
-										} catch(err) {
+										} catch (err) {
 											reject(err);
 										}
 									});
@@ -98,12 +98,12 @@ const queueStartMailCheck = () => {
 														} else {
 															resolve(JSON.parse(data));
 														}
-													} catch(err) {
+													} catch (err) {
 														reject(err);
 													}
 												}
 											);
-										} catch(err) {
+										} catch (err) {
 											reject(err);
 										}
 									});
@@ -120,12 +120,12 @@ const queueStartMailCheck = () => {
 														} else {
 															resolve();
 														}
-													} catch(err) {
+													} catch (err) {
 														reject(err);
 													}
 												}
 											);
-										} catch(err) {
+										} catch (err) {
 											reject(err);
 										}
 									});
@@ -186,7 +186,7 @@ const queueStartMailCheck = () => {
 
 															return true;
 														}
-													} catch(err) {
+													} catch (err) {
 														log.logger('error', `Disparo de arquivo mal sucedido: ${(err.stack || err)}`, 'mailQueue');
 													}
 												}
@@ -198,7 +198,7 @@ const queueStartMailCheck = () => {
 										log.logger('info', 'Fila de e-mails verificada: nenhum arquivo na fila', saveFullLogs);
 									}
 								}
-							} catch(err) {
+							} catch (err) {
 								log.logger('error', `Leitura do diretório: ${(err.stack || err)}`, 'mailQueue');
 							}
 						}
@@ -207,7 +207,7 @@ const queueStartMailCheck = () => {
 			);
 
 			resolve(watch);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});

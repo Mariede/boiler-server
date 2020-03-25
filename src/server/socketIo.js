@@ -73,7 +73,7 @@ const startIo = () => {
 
 			log.logger('info', `Servidor socket.io está rodando em ${ios.httpServer.address().address}:${ios.httpServer.address().port}...${showMessageComplement(listeningMethods)}\r\n`, 'startUp');
 		});
-	} catch(err) {
+	} catch (err) {
 		log.logger('error', err.stack || err, 'startUp');
 	}
 };

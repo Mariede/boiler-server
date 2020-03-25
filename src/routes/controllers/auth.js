@@ -16,7 +16,7 @@ const _commonGate = async (req, res) => {
 	try {
 		res.locals.routeControllerRoute = 'AUTH';
 		return;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -31,7 +31,7 @@ const authRoutes = router => {
 		try {
 			await _commonGate(req, res);
 			next();
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	})
@@ -39,7 +39,7 @@ const authRoutes = router => {
 		try {
 			let result = await auth.logon(req, res);
 			res.status(200).send(result);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	});
@@ -53,7 +53,7 @@ const authRoutes = router => {
 
 			let result = await auth.logout(req, res);
 			res.status(200).send(result);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	});
@@ -65,7 +65,7 @@ const authRoutes = router => {
 		try {
 			await _commonGate(req, res);
 			next();
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	})
@@ -73,7 +73,7 @@ const authRoutes = router => {
 		try {
 			let result = await auth.isLogged(req, res);
 			res.status(200).send(result);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	});

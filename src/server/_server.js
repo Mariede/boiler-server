@@ -286,13 +286,13 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 					}
 
 					resolve(messages);
-				} catch(err) {
+				} catch (err) {
 					reject(err);
 				}
 			};
 
 			_server.listen(listenOptions, serverStarter());
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});

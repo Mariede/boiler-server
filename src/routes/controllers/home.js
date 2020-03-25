@@ -16,7 +16,7 @@ const _commonGate = async (req, res) => {
 	try {
 		res.locals.routeControllerRoute = 'HOME';
 		return;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -31,7 +31,7 @@ const homeRoutes = router => {
 		try {
 			await _commonGate(req, res);
 			next();
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	})
@@ -39,7 +39,7 @@ const homeRoutes = router => {
 		try {
 			let result = await home.root(req, res);
 			res.status(200).render(result.path + result.file, result.pageData);
-		} catch(err) {
+		} catch (err) {
 			log.controllerError(res, err, 'error');
 		}
 	});

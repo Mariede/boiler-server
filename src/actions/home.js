@@ -12,7 +12,7 @@ const root = async (req, res) => {
 	try {
 		let fRet = { file: 'index.ejs', path: '_home/', pageData: { date: functions.getDateNow(true), ioUrl: socketIoListeners.nameSpaces.ioRootNameSpace, ioPath: __serverConfig.socketIo.path, logoWidth: 574 } };
 		return fRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };

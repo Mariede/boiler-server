@@ -12,7 +12,7 @@ const _falsyCheck = param => {
 		const falsy = [null, undefined, NaN, false]; // Excecao => 0 / ""
 
 		return (falsy.includes(param) ? param : (param === 0 ? param.toString() : (param || '').toString()));
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -71,7 +71,7 @@ const isCnpj = _cnpj => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -128,7 +128,7 @@ const isCpf = _cpf => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -168,7 +168,7 @@ const isPisPasep = _pisPasep => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -185,7 +185,7 @@ const isEmail = _email => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -202,7 +202,7 @@ const isCep = (_cep, separator = true) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -230,7 +230,7 @@ const isEmpty = (_param, trimmed = true, implicit = true) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -247,7 +247,7 @@ const isAlphaNumeric = (_param, spaceAndUnderscore = true) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -264,7 +264,7 @@ const isInteger = (_num, signed = true) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -281,7 +281,7 @@ const isIntegerOrFloat = (_num, signed = true) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -298,7 +298,7 @@ const isIntegerOrFixed = (_num, fixedDecimal = 0, signed = true) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -315,7 +315,7 @@ const isDate = _date => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -334,7 +334,7 @@ const contains = (_param, _paramCompare, caseInsensitive = true) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -353,7 +353,7 @@ const equal = (_param, _paramCompare, caseInsensitive = true) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -373,7 +373,7 @@ const lenRange = (_param, lMin = 0, lMax = lMin) => {
 		}
 
 		return vRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };

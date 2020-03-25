@@ -39,7 +39,7 @@ const consultarTodos = async (req, res) => {
 		resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
 
 		return resultSet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -84,7 +84,7 @@ const consultar = async (req, res) => {
 		resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset);
 
 		return resultSet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -95,7 +95,7 @@ const inserir = async (req, res) => {
 			id = req.params.id;
 
 		return `${fRet} ${id}`;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -106,7 +106,7 @@ const alterar = async (req, res) => {
 			id = req.params.id;
 
 		return `${fRet} ${id}`;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -117,7 +117,7 @@ const excluir = async (req, res) => {
 			id = req.params.id;
 
 		return `${fRet} ${id}`;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };

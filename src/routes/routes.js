@@ -47,7 +47,7 @@ router.use(async (req, res, next) => {
 				message: 'Rota protegida, acesso não autorizado...'
 			});
 		}
-	} catch(err) {
+	} catch (err) {
 		log.controllerError(res, err, 'error');
 	}
 });

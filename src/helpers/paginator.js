@@ -46,7 +46,7 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 			);
 
 			resolve(newData);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -77,7 +77,7 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output =
 				rowsAffected = [recordSet.length];
 
 			resolve({ pageDetails: pageDetails, recordset: recordSet, output: output, rowsAffected: rowsAffected });
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -146,7 +146,7 @@ const keysToCamelCase = jsonData => {
 			}
 
 			resolve(newData);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -184,7 +184,7 @@ const setSort = async (req, jsonData, toCamelCase = false) => {
 		}
 
 		return await _executeSort(jsonData, sortElements, sortOrder, sortCaseInsensitive);
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -220,7 +220,7 @@ const setPage = async (req, jsonData, jsonDataLen, toCamelCase = false) => {
 		} else {
 			return jsonData;
 		}
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };

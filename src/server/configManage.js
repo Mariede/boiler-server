@@ -11,7 +11,7 @@ const log = require('@serverRoot/helpers/log');
 const push = config => {
 	try {
 		return Object.freeze(JSON.parse(fs.readFileSync(config, 'utf8')));
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -28,7 +28,7 @@ const check = config => {
 								try {
 									JSON.parse(json);
 									resolve(true);
-								} catch(err) {
+								} catch (err) {
 									log.logger('warn', `Validação de conteúdo para o arquivo ${fn}: ${(err.message || err.stack || err)}`, 'configFile');
 									resolve(false);
 								}
@@ -46,12 +46,12 @@ const check = config => {
 											reject(err);
 										} else {
 											isValidJson(data)
-											.then(
+											.then (
 												result => {
 													resolve(result ? JSON.parse(data) : {});
 												}
 											)
-											.catch(
+											.catch (
 												err => {
 													reject(err);
 												}
@@ -59,11 +59,11 @@ const check = config => {
 										}
 									}
 								);
-							} catch(err) {
+							} catch (err) {
 								reject(err);
 							}
 						}, wait);
-					} catch(err) {
+					} catch (err) {
 						reject(err);
 					}
 				});
@@ -87,7 +87,7 @@ const check = config => {
 						timeoutMessages = setTimeout(() => {
 							resolve(func());
 						}, wait);
-					} catch(err) {
+					} catch (err) {
 						reject(err);
 					}
 				});
@@ -125,13 +125,13 @@ const check = config => {
 
 						log.logger('info', `Arquivo ${filename} verificado`, 'configFile');
 					}
-				} catch(err) {
+				} catch (err) {
 					throw err;
 				}
 			});
 
 			resolve(watch);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});

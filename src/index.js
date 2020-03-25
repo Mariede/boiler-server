@@ -191,7 +191,7 @@ const startApp = async () => {
 			let messages = await _server.startServer(configPath, configManage, numWorkers);
 			showMessages(messages);
 		}
-	} catch(err) {
+	} catch (err) {
 		log.logger('error', err.stack || err, 'startUp');
 	}
 };

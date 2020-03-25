@@ -25,7 +25,7 @@ const _checkSaltData = async (...saltData) => {
 		}
 
 		return salt;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -45,7 +45,7 @@ const _baseCipherDecipher = async (passData, ...saltData) => {
 							}
 						}
 					);
-				} catch(err) {
+				} catch (err) {
 					reject(err);
 				}
 			});
@@ -64,7 +64,7 @@ const _baseCipherDecipher = async (passData, ...saltData) => {
 			iv: iv
 		};
 
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -82,7 +82,7 @@ const generateSalt = (length, onlyNumbers = true) => {
 			}
 
 			resolve(salt);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -105,7 +105,7 @@ const hash = async (passData, ...saltData) => {
 			salt: salt,
 			passHash: passHash
 		};
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -123,7 +123,7 @@ const cipher = async (passData, ...saltData) => {
 		const cipher = await crypto.createCipheriv(baseCipher.algorithm, baseCipher.key, baseCipher.iv);
 
 		return cipher;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -141,7 +141,7 @@ const decipher = async (passData, ...saltData) => {
 		const decipher = await crypto.createDecipheriv(baseDecipher.algorithm, baseDecipher.key, baseDecipher.iv);
 
 		return decipher;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };

@@ -41,7 +41,7 @@ const isProtected = route => {
 			}
 
 			resolve(fRet);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -66,7 +66,7 @@ const isLogged = (req, resType) => { // Se resType === 1 => retorna object. Defa
 			}
 
 			resolve(fRet);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});

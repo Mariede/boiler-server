@@ -54,12 +54,12 @@ const _executeQueue = (e, counter) => {
 								}
 							}
 						);
-					} catch(err) {
+					} catch (err) {
 						reject(err);
 					}
 				}
 			);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -157,7 +157,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 		}
 
 		return await sendAndReturn(messages, transporter);
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -384,7 +384,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 		} else {
 			errWrapper.throwThis('EMAIL', 400, errorStack);
 		}
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -425,7 +425,7 @@ const getAttachments = (uploaderResults, fileNames) => {
 			}
 
 			resolve(attachmentsResult);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});

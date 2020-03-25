@@ -22,7 +22,7 @@ const showDetails = (req, res) => {
 			);
 
 			resolve({ ip: ip, start: start });
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});

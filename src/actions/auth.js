@@ -79,7 +79,7 @@ const logon = async (req, res) => {
 		}
 
 		return sess[sessWraper];
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
@@ -99,7 +99,7 @@ const logout = (req, res) => {
 			}
 
 			resolve(fRet);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -111,7 +111,7 @@ const isLogged = async (req, res) => {
 		let resultType = req.query.result_type + '',
 			fRet = await auth.isLogged(req, (resultType === '1' ? 1 : 0));
 		return fRet;
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };

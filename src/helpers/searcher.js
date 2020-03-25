@@ -40,7 +40,7 @@ const _camelCaseToSnakeCase = searchFields => {
 			}
 
 			resolve(newSearchFields);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -87,17 +87,17 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 			searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace);
 
 			dbCon.msSqlServer.sqlExecuteAll(searchQuery)
-			.then(
+			.then (
 				result => {
 					resolve(result);
 				}
 			)
-			.catch(
+			.catch (
 				err => {
 					reject(err);
 				}
 			);
-		} catch(err) {
+		} catch (err) {
 			reject(err);
 		}
 	});
@@ -111,7 +111,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 				const falsy = [null, undefined, NaN]; // Excecao => 0 / false / ""
 
 				return (falsy.includes(param) ? '' : ((param === 0 || param === false) ? param.toString() : (param || '').toString()));
-			} catch(err) {
+			} catch (err) {
 				throw err;
 			}
 		};
@@ -139,7 +139,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 		searchFields = await _camelCaseToSnakeCase(searchFields);
 
 		return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);
-	} catch(err) {
+	} catch (err) {
 		throw err;
 	}
 };
