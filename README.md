@@ -111,7 +111,7 @@ npm run build
   * Através do Webpack
   * Validação de código ESLINT
 
-## Estrutura das pasta do servidor
+## Estrutura das pastas do servidor
   * actions
     - métodos com as regras de negócio e codificação dos processos
       + é local, relacionado a rota em execução
@@ -127,12 +127,13 @@ npm run build
   * listeners
     - agrupa os listeners e namespaces (caminhos) do servidor para comunicação via Socket.io
       + websockets ou pooling
-  * logs
+  * logs (* cria automático, se não existir)
     - arquivos de logs do servidor
   * models
     - arquivo contendo os esquemas de acesso ao mongoDB e detalhes relacionados, via mongoose
-  * queue (* opcional, configurável)
-    - arquivos da fila de e-mails (e-mails agendados a serem enviados)
+  * queue (* opcional, configurável, cria automático - se não existir)
+    - arquivos da fila de e-mails
+    - e-mails agendados a serem enviados
   * routes
     - define um ou mais controllers para o projeto
     - define as rotas do servidor
@@ -140,9 +141,9 @@ npm run build
       + todas as requisições/retornos do cliente são realizadas aqui
   * server
     - arquivos de inicialização do servidor e assistência ao seu funcionamento
-  * sessions
+  * sessions (* cria automático, se não existir)
     - arquivos contendo as sessões ativas
-  * uploads (* opcional, configurável)
+  * uploads (* opcional, configurável, cria automático - se não existir)
     - contém pastas e arquivos de upload dos clientes
   * views
     - arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
