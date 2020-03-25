@@ -9,7 +9,7 @@
 // Realiza analise de dado falsy (metodo privado)
 const _falsyCheck = param => {
 	try {
-		const falsy = [null, undefined, NaN, false]; // except 0 and ""
+		const falsy = [null, undefined, NaN, false]; // Excecao => 0 / ""
 
 		return (falsy.includes(param) ? param : (param === 0 ? param.toString() : (param || '').toString()));
 	} catch(err) {
@@ -27,7 +27,7 @@ const isCnpj = _cnpj => {
 			soma = 0,
 			vRet = false;
 
-		// completa com zeros a esquerda
+		// Completa com zeros a esquerda
 		if (cnpj.length < 14) {
 			for (let i = 1; i <= 14; i++) {
 				if (cnpj.length < 14) {
@@ -84,7 +84,7 @@ const isCpf = _cpf => {
 			soma = 0,
 			vRet = false;
 
-		// completa com zeros a esquerda
+		// Completa com zeros a esquerda
 		if (cpf.length < 11) {
 			for (let i = 1; i <= 11; i++) {
 				if (cpf.length < 11) {
@@ -142,7 +142,7 @@ const isPisPasep = _pisPasep => {
 			soma = 0,
 			vRet = false;
 
-		// completa com zeros a esquerda
+		// Completa com zeros a esquerda
 		if (pisPasep.length < 11) {
 			for (let i = 1; i <= 11; i++) {
 				if (pisPasep.length < 11) {
@@ -208,9 +208,9 @@ const isCep = (_cep, separator = true) => {
 };
 
 /*
-// Verifica se valor e vazio
-	* Se trimmed === true	=> realiza trim automatico no _param de entrada
-	* Se implicit === true	=> valores falsy: null, undefined, NaN, false sao tratados como empty
+Verifica se valor e vazio
+	* se trimmed === true	=> realiza trim automatico no _param de entrada
+	* se implicit === true	=> valores falsy: null, undefined, NaN, false sao tratados como empty
 */
 const isEmpty = (_param, trimmed = true, implicit = true) => {
 	try {
@@ -359,8 +359,8 @@ const equal = (_param, _paramCompare, caseInsensitive = true) => {
 };
 
 /*
-// Verifica limites de comprimento minimo e maximo para string _param
-	* Se lMax nao informado, assume o mesmo valor de lMin
+Verifica limites de comprimento minimo e maximo para string _param
+	* se lMax nao informado, assume o mesmo valor de lMin
 */
 const lenRange = (_param, lMin = 0, lMax = lMin) => {
 	try {

@@ -11,7 +11,6 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-
 // Queue: E-mails como arquivos em uma fila para serem enviados posteriormente (metodo privado)
 const _executeQueue = (e, counter) => {
 	return new Promise((resolve, reject) => {
@@ -31,7 +30,7 @@ const _executeQueue = (e, counter) => {
 
 			fs.access(
 				queuePathSend,
-				fs.constants.F_OK, // check if exists
+				fs.constants.F_OK, // Check if exists
 				err => {
 					try {
 						if (err) {
@@ -115,9 +114,9 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 					i++;
 
 					if (!sendQueue) {
-						sentInfos.push(await t.sendMail(e)); // envia chunk de e-mails
+						sentInfos.push(await t.sendMail(e)); // Envia chunk de e-mails
 					} else {
-						sentInfos.push(await _executeQueue(e, i)); // queue chunk de e-mails
+						sentInfos.push(await _executeQueue(e, i)); // Enfileira chunk de e-mails
 					}
 				}
 			);
@@ -163,35 +162,36 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 	}
 };
 
-// Valida os dados e prepara envio
 /*
-from: Array com unico recipiente, ex.: ['mail@sender', 'name sender'] ou ['mail@sender'] ou [['mail@sender', 'name sender']] ou [['mail@sender']]
+Valida os dados e prepara envio
 
-to: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@to1', 'name to1'], ['mail@to2', 'name to2'], ['mail@to3'], ... ]
-	* Usar '' (vazio) para nenhum e-mail
+	-> from: Array com unico recipiente, ex.: ['mail@sender', 'name sender'] ou ['mail@sender'] ou [['mail@sender', 'name sender']] ou [['mail@sender']]
 
-cc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@cc1', 'name cc1'], ['mail@cc2', 'namecc2'], ['mail@cc3'], ... ]
-	* Usar '' (vazio) para nenhum e-mail
+	-> to: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@to1', 'name to1'], ['mail@to2', 'name to2'], ['mail@to3'], ... ]
+		* Usar '' ou [] para nenhum e-mail
 
-bcc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@bcc1', 'name bcc1'], ['mail@bcc2', 'name bcc2'], ['mail@bcc3'], ... ]
-	* Usar '' (vazio) para nenhum e-mail
+	-> cc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@cc1', 'name cc1'], ['mail@cc2', 'namecc2'], ['mail@cc3'], ... ]
+		* Usar '' ou [] para nenhum e-mail
 
-subject: string - opcional
+	-> bcc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@bcc1', 'name bcc1'], ['mail@bcc2', 'name bcc2'], ['mail@bcc3'], ... ]
+		* Usar '' ou [] para nenhum e-mail
 
-text: string: texto em html ou simples
+	-> subject: string - opcional
 
-Attachments: Array [{ filename: , content: }, { filename: , path: }, { path: }, ... ] - opcional
+	-> text: string: texto em html ou simples
 
-sendChunks: Define se os e-mails serao enviados em grupos, objeto vazio para tudo de uma vez. ex.: { to: 5, cc: 5, bcc: 15 }
-	- se "to" definido: Quantidade de e-mails de destino (to) agrupados para cada envio simultaneo separado (apenas to)
-	- se "cc" definido: Quantidade de e-mails de destino (cc) agrupados para cada envio simultaneo separado (apenas cc)
-	- se "bcc" definido: Quantidade de e-mails de destino (bcc) agrupados para cada envio simultaneo separado (apenas bcc)
-	- se "inheritTo" definido: quando true, propriedade "to" de sendChunks deve estar ausente do objeto. Neste caso, a propriedade "to" definida no e-mail será acoplada para cada chunk cc e/ou bcc
-		* Apenas "to" sera repetido em cada envio.
+	-> Attachments: Array [{ filename: , content: }, { filename: , path: }, { path: }, ... ] - opcional
 
-strictCheck: se true realiza uma validacao rigorosa dos e-mails de destino, obrigando todos os e-mails informados a serem validos e unicos => padrao true
+	-> sendChunks: Define se os e-mails serao enviados em grupos, objeto vazio para tudo de uma vez. ex.: { to: 5, cc: 5, bcc: 15 }
+		- se "to" definido: Quantidade de e-mails de destino (to) agrupados para cada envio simultaneo separado (apenas to)
+		- se "cc" definido: Quantidade de e-mails de destino (cc) agrupados para cada envio simultaneo separado (apenas cc)
+		- se "bcc" definido: Quantidade de e-mails de destino (bcc) agrupados para cada envio simultaneo separado (apenas bcc)
+		- se "inheritTo" definido: quando true, propriedade "to" de sendChunks deve estar ausente do objeto. Neste caso, a propriedade "to" definida no e-mail será acoplada para cada chunk cc e/ou bcc
+			* Apenas "to" sera repetido em cada envio.
 
-sendQueue: se true nao envia os e-mails instantaneamente, mas sim os colocam como arquivos em uma pasta para serem enviados posteriormente (queue) => padrao false
+	-> strictCheck: se true realiza uma validacao rigorosa dos e-mails de destino, obrigando todos os e-mails informados a serem validos e unicos (padrao true)
+
+	-> sendQueue: se true nao envia os e-mails instantaneamente, mas sim os colocam como arquivos em uma pasta para serem enfileirados e enviados posteriormente na queue (padrao false)
 */
 const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChunks = {}, strictCheck = true, sendQueue = false) => {
 	try {

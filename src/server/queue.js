@@ -56,7 +56,7 @@ const queueStartMailCheck = () => {
 
 											fs.access(
 												queuePathSending,
-												fs.constants.F_OK, // check if exists
+												fs.constants.F_OK, // Check if exists
 												err => {
 													try {
 														if (err) {
@@ -203,8 +203,8 @@ const queueStartMailCheck = () => {
 							}
 						}
 					);
-				}
-			, intervalQueueCheck);
+				}, intervalQueueCheck
+			);
 
 			resolve(watch);
 		} catch(err) {

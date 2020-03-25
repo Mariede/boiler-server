@@ -15,11 +15,11 @@ const _checkSaltData = async (...saltData) => {
 
 		switch (saltDataLen) {
 			case 1: {
-				salt = saltData[0].toString(); // retorna o salt informado
+				salt = saltData[0].toString(); // Retorna o salt informado
 				break;
 			}
 			case 2: {
-				salt = await generateSalt(saltData[0], saltData[1]); // gera um salt novo e retorna
+				salt = await generateSalt(saltData[0], saltData[1]); // Gera um salt novo e retorna
 				break;
 			}
 		}
@@ -52,7 +52,7 @@ const _baseCipherDecipher = async (passData, ...saltData) => {
 		};
 
 		const algorithm = __serverConfig.crypto.cipherAlgorithm;
-		const algorithmKeyLen = __serverConfig.crypto.cipherKeyLen; //algo 192: 24 bytes; algo 256: 32 bytes
+		const algorithmKeyLen = __serverConfig.crypto.cipherKeyLen; // Detalhes => algo 192: 24 bytes; algo 256: 32 bytes
 		const pass = (passData || '') + '';
 		const salt = await _checkSaltData(...saltData);
 		const key = await scryptAsync(pass, salt, algorithmKeyLen);
@@ -88,8 +88,11 @@ const generateSalt = (length, onlyNumbers = true) => {
 	});
 };
 
-// Gera um hash baseado em algorithm
-// let passHash = await cryptoHash.hash('P@ssword123', 6, false);
+/*
+Gera um hash baseado em algorithm
+
+	let passHash = await cryptoHash.hash('P@ssword123', 6, false);
+*/
 const hash = async (passData, ...saltData) => {
 	try {
 		const algorithm = __serverConfig.crypto.hashAlgorithm;
@@ -107,10 +110,13 @@ const hash = async (passData, ...saltData) => {
 	}
 };
 
-// Exemplo cifragem: (mesma senha e salt)
-// let cipher = await cryptoHash.cipher('aaaHsddsd33##', 'salt%123'),
-// 	cifrado = await cipher.update('Powered By: * Michel Guimarães Ariede *', 'utf8', 'hex');
-// cifrado += cipher.final('hex');
+/*
+Exemplo cifragem: (mesma senha e salt)
+
+	let cipher = await cryptoHash.cipher('aaaHsddsd33##', 'salt%123'),
+		cifrado = await cipher.update('Powered By: * Michel Guimarães Ariede *', 'utf8', 'hex');
+	cifrado += cipher.final('hex');
+*/
 const cipher = async (passData, ...saltData) => {
 	try {
 		const baseCipher = await _baseCipherDecipher(passData, ...saltData);
@@ -122,10 +128,13 @@ const cipher = async (passData, ...saltData) => {
 	}
 };
 
-// Exemplo decifragem: (mesma senha e salt)
-// let decipher = await cryptoHash.decipher('aaaHsddsd33##', 'salt%123'),
-// 	decifrado = await decipher.update(cifrado, 'hex', 'utf8')
-// decifrado += decipher.final('utf8');
+/*
+Exemplo decifragem: (mesma senha e salt)
+
+	let decipher = await cryptoHash.decipher('aaaHsddsd33##', 'salt%123'),
+		decifrado = await decipher.update(cifrado, 'hex', 'utf8')
+	decifrado += decipher.final('utf8');
+*/
 const decipher = async (passData, ...saltData) => {
 	try {
 		const baseDecipher = await _baseCipherDecipher(passData, ...saltData);

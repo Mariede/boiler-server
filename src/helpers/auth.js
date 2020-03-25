@@ -48,7 +48,7 @@ const isProtected = route => {
 };
 
 // Verifica se a sessao esta ativa
-const isLogged = (req, resType) => { // resType === 1 => retorna object. Default: retorna boolean.
+const isLogged = (req, resType) => { // Se resType === 1 => retorna object. Default: retorna boolean.
 	return new Promise((resolve, reject) => {
 		try {
 			let sess = req.session,

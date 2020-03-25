@@ -18,7 +18,7 @@ const logon = (login, senha, idTipoUsuario = 0) => {
 					}
 				},
 				siglaSistema = __serverConfig.server.custom.permisys.siglaSistema,
-				idModulo = __serverConfig.server.custom.permisys.idModulo, // se nao informado checa credenciais mas nao autoriza
+				idModulo = __serverConfig.server.custom.permisys.idModulo, // Se nao informado checa credenciais mas nao autoriza
 				dataSend = {};
 
 			if (siglaSistema) {
@@ -37,7 +37,7 @@ const logon = (login, senha, idTipoUsuario = 0) => {
 				dataSend.senha = senha;
 			}
 
-			if (idTipoUsuario) { // se 0 ou vazio tenta detectar automaticamente
+			if (idTipoUsuario) { // Se 0 ou vazio tenta detectar automaticamente
 				dataSend.idTipoUsuario = idTipoUsuario;
 			}
 

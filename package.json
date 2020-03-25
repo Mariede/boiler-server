@@ -9,7 +9,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "compression": "^1.7.4",
-    "cookie-parser": "^1.4.4",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
@@ -18,10 +18,10 @@
     "http-proxy": "^1.17.0",
     "log4js": "^6.1.2",
     "module-alias": "^2.2.1",
-    "mongoose": "^5.9.4",
+    "mongoose": "^5.9.6",
     "mssql": "^6.2.0",
     "multer": "^1.4.2",
-    "nodemailer": "^6.4.5",
+    "nodemailer": "^6.4.6",
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.2.0",
     "socket.io": "^2.2.0"
@@ -33,7 +33,7 @@
     "eslint-loader": "^3.0.3",
     "generate-package-json-webpack-plugin": "^1.0.1",
     "nodemon": "^2.0.2",
-    "webpack": "^4.42.0",
+    "webpack": "^4.42.1",
     "webpack-cli": "^3.3.7",
     "webpack-node-externals": "^1.7.2"
   },

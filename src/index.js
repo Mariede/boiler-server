@@ -19,7 +19,7 @@ moduleAlias.addAliases({
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const socketIo = require('@serverRoot/server/socketIo'); // socket.io
+const socketIo = require('@serverRoot/server/socketIo'); // Lib socket.io
 const _server = require('@serverRoot/server/_server');
 const configManage = require('@serverRoot/server/configManage');
 const log = require('@serverRoot/helpers/log');

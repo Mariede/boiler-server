@@ -9,18 +9,18 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Realiza o upload de um ou mais arquivos (POST / enctype: "multipart/form-data")
-
 /*
--> Sempre array de objects para fileNames ou vazio para todos (sem checagem de nomes)
-	-> formato para fileNames: [{ name: 'inputFileName1' }, { name: 'inputFileName2' }, { name: 'inputFileName3' }, ...]
+Realiza o upload de um ou mais arquivos (POST / enctype: "multipart/form-data")
 
--> extraPath vazio para upload de arquivos direto na pasta default, ou informa pasta(s) extras (abaixo)
+	-> sempre array de objects para fileNames ou vazio para todos (sem checagem de nomes)
+		-> formato para fileNames: [{ name: 'inputFileName1' }, { name: 'inputFileName2' }, { name: 'inputFileName3' }, ...]
 
--> maxFileUploads indica o numero maximo de arquivo permitidos para upload (default: ilimitado)
+	-> extraPath vazio para upload de arquivos direto na pasta default, ou informa pasta(s) extras (abaixo)
 
--> storageToDisk true para diskStorage | false para memoryStorage (default: true)
-	-> se memoryStorage selecionado, utilizar Buffer.from(req.files[].buffer, 'utf8') para converter valor da memoria
+	-> maxFileUploads indica o numero maximo de arquivo permitidos para upload (default: ilimitado)
+
+	-> storageToDisk true para diskStorage | false para memoryStorage (default: true)
+		-> se memoryStorage selecionado, utilizar Buffer.from(req.files[].buffer, 'utf8') para converter valor da memoria
 */
 const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storageToDisk = true) => {
 	try {
@@ -93,7 +93,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 										item => {
 											return item !== '';
 										}
-									); // new Set para valores unicos e nao vazios, assim podemos repetir extensoes para eventuais novos MIME Types
+									); // O new Set para valores unicos e nao vazios, assim podemos repetir extensoes para eventuais novos MIME Types
 
 									const checkMimeTypes = [ ...new Set((configUpload.allowedExtensions || '').split('|').map(
 										item => {
@@ -103,7 +103,7 @@ const push = async (req, res, fileNames, extraPath, maxFileUploads = '', storage
 										item => {
 											return item !== '';
 										}
-									); // new Set para valores unicos e nao vazios, assim podemos repetir extensoes para eventuais novos MIME Types
+									); // O new Set para valores unicos e nao vazios, assim podemos repetir extensoes para eventuais novos MIME Types
 
 									let extName = new RegExp('^(' + checkExtensions.join('|') + '){1}$', 'i').test(path.extname(file.originalname).toLowerCase()),
 										mimeType = new RegExp('^(' + checkMimeTypes.join('|') + '){1}$', 'i').test(file.mimetype);

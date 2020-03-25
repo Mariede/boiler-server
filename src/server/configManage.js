@@ -20,7 +20,7 @@ const push = config => {
 const check = config => {
 	return new Promise((resolve, reject) => {
 		try {
-			const readConfig = (param, fn,  wait) => {
+			const readConfig = (param, fn, wait) => {
 				return new Promise((resolve, reject) => {
 					try {
 						const isValidJson = json => {
@@ -35,7 +35,7 @@ const check = config => {
 							});
 						};
 
-						// le e valida se json permanece valido, com debounce de wait
+						// Le e valida se json permanece valido, com debounce de wait
 						clearTimeout(timeoutReadFile);
 
 						timeoutReadFile = setTimeout(() => {
@@ -79,7 +79,7 @@ const check = config => {
 				return fRet;
 			};
 
-			// mostra mensagem mantendo um debounce de wait
+			// Mostra mensagem mantendo um debounce de wait
 			const showMessage = (func, wait) => {
 				return new Promise((resolve, reject) => {
 					try {

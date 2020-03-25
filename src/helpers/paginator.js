@@ -6,9 +6,11 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Ordenador (sort): sortElements deve ser uma array e case sensitive para as chaves (metodo privado)
-// sortOrder Array ASC/DESC (default: ASC)
-// sortCaseInsensitive true/false
+/*
+Ordenador (sort): sortElements deve ser uma array e case sensitive para as chaves (metodo privado)
+	-> sortOrder Array ASC/DESC (default: ASC)
+	-> sortCaseInsensitive true/false
+*/
 const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -187,8 +189,10 @@ const setSort = async (req, jsonData, toCamelCase = false) => {
 	}
 };
 
-// Chamada inicial, verifica os dados de entrada do cliente, executa a acao (paginador)
-// page na querystring e obrigatorio para a paginacao
+/*
+Chamada inicial, verifica os dados de entrada do cliente, executa a acao (paginador)
+	-> page na querystring e obrigatorio para a paginacao
+*/
 const setPage = async (req, jsonData, jsonDataLen, toCamelCase = false) => {
 	try {
 		let method = req.method,

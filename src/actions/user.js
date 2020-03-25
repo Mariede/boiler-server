@@ -35,8 +35,8 @@ const consultarTodos = async (req, res) => {
 
 		let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-		resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true); // ordenador
-		resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // paginador
+		resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true); // Ordenador
+		resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
 
 		return resultSet;
 	} catch(err) {

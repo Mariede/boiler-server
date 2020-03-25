@@ -46,8 +46,10 @@ const _camelCaseToSnakeCase = searchFields => {
 	});
 };
 
-// Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final (metodo privado)
-// Se WHERE for definido na query, deve conter uma condição ANTES do replace
+/*
+Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final (metodo privado)
+	-> se WHERE for definido na query, deve conter uma condição ANTES do replace
+*/
 const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -106,7 +108,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 	try {
 		const falsyCheck = param => {
 			try {
-				const falsy = [null, undefined, NaN]; // except 0 and false and ""
+				const falsy = [null, undefined, NaN]; // Excecao => 0 / false / ""
 
 				return (falsy.includes(param) ? '' : ((param === 0 || param === false) ? param.toString() : (param || '').toString()));
 			} catch(err) {

@@ -20,8 +20,8 @@ const path = require('path');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const queue = require('@serverRoot/server/queue'); // queue de e-mails
-const routes = require('@serverRoot/routes/routes'); // gate de roteamento
+const queue = require('@serverRoot/server/queue'); // Queue de e-mails
+const routes = require('@serverRoot/routes/routes'); // Gate de roteamento
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
@@ -84,10 +84,10 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Middleware
 
 			// Headers (seguranca) -----------------------------------------------------
-			app.disable('x-powered-by'); // desabilita header x-powered-by (hidepoweredby)
+			app.disable('x-powered-by'); // Desabilita header x-powered-by (hidepoweredby)
 
 			app.use((req, res, next) => {
-				res.set('X-Content-Type-Options', 'nosniff'); // browser sniffing mime types (nosniff)
+				res.set('X-Content-Type-Options', 'nosniff'); // Browser sniffing mime types (nosniff)
 				res.set('X-XSS-Protection', '1; mode=block'); // Cross Site Scripting (xssfilter)
 				next();
 			});
@@ -120,8 +120,8 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						rolling: true,
 						cookie: {
 							httpOnly: true,
-							sameSite: true, // opcoes: true | false | lax | none | strict
-							secure: pServerCheck.sessionCookieSecure, // true: apenas em https, false: http/https
+							sameSite: true, // Opcoes => true | false | lax | none | strict
+							secure: pServerCheck.sessionCookieSecure, // Opcoes => true: apenas em https, false: http/https
 							maxAge: 1000 * 60 * __serverConfig.server.session.timeout // 1000 = 1 segundo (timeout em minutos)
 						}
 					}
@@ -234,13 +234,13 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			const serverStarter = async () => {
 				try {
 					const eventLoopMonitor = () => {
-					// monitora o loop de eventos no servidor, para analise de performance e testes de desenvolvimento
-					// evitar usar em producao, desabilitando esta opcao em config
+					// Monitora o loop de eventos no servidor, para analise de performance e testes de desenvolvimento
+					// Evitar usar em producao, desabilitando esta opcao em config
 						const start = Date.now();
 
 						setTimeout(() => {
 							const eventLooplag = Date.now() - start;
-							const eventLooplagTrigger = 50; // milisegundos
+							const eventLooplagTrigger = 50; // Em milisegundos
 
 							if (eventLooplag > eventLooplagTrigger) {
 								log.logger('warn', `Loop de eventos deste servidor reportou lag acentuado: ${eventLooplag} ms`, 'consoleOnly');
@@ -254,7 +254,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 
 					messages.push(['info', `Servidor está rodando em ${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
 
-					// inicia gerenciamento do arquivo de configuracao do servidor
+					// Inicia gerenciamento do arquivo de configuracao do servidor
 					let resultConfig = await configManage.check(configPath),
 						fileName = path.basename(configPath);
 
@@ -264,7 +264,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						messages.push(['error', `Arquivo de configuração em ${fileName} falhou ao iniciar procedimento de observação automática por mudanças...`]);
 					}
 
-					// inicia o gerenciamento da pasta de e-mails para envios em fila (queue)
+					// Inicia o gerenciamento da pasta de e-mails para envios em fila (queue)
 					if (__serverConfig.email.queue.on) {
 						let resultQueue = await queue.queueStartMailCheck();
 
@@ -277,7 +277,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 						messages.push(['info', 'Serviço de fila de e-mails não habilitado']);
 					}
 
-					// inicia o monitoramento do loop de eventos no servidor
+					// Inicia o monitoramento do loop de eventos no servidor
 					if (__serverConfig.server.eventLoopMonitor) {
 						eventLoopMonitor();
 						messages.push(['info', 'Monitoramento do loop de eventos no servidor habilitado (testes de performance)']);

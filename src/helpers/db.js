@@ -10,7 +10,6 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 
 // -------------------------------------------------------------------------
 // Conexao e execucao de queries no MS SQL Server
-// atraves do pacote mssql
 const msSqlServer = {
 	sqlOpenCon: () => { // Inicia uma transacao
 		return new Promise((resolve, reject) => {
@@ -263,8 +262,10 @@ const msSqlServer = {
 	},
 
 	/*
-	params => Seguem o formato json: { formato: , dados: { input: , output: , executar: } }
-		* verificar arquivo de ajuda
+	Detalhes:
+		params => Seguem o formato json: { formato: , dados: { input: , output: , executar: } }
+
+		* Verificar arquivo de ajuda
 	*/
 	sqlExecuteAll: async (params, forceClose = false) => { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
 		try {
@@ -310,7 +311,8 @@ const mongoDB = {
 	},
 
 	/*
-	schema				=> Nome do esquema a ser instaciado (definido em /models)
+	Detalhes:
+		schema => Nome do esquema a ser instaciado (definido em /models)
 	*/
 	noSqlGetModel: schema => {
 		return new Promise((resolve, reject) => {
@@ -399,7 +401,7 @@ const mongoDB = {
 		}
 	},
 
-	// inicia uma transacao com o mongoose e retorna o id da sessao
+	// Inicia uma transacao com o mongoose e retorna o id da sessao
 	noSqlTransactionStart: () => {
 		return new Promise((resolve, reject) => {
 			try {
@@ -426,7 +428,7 @@ const mongoDB = {
 		});
 	},
 
-	// finaliza uma transacao com o mongoose
+	// Finaliza uma transacao com o mongoose
 	noSqlTransactionCommit: session => {
 		return new Promise((resolve, reject) => {
 			try {
@@ -448,10 +450,11 @@ const mongoDB = {
 	},
 
 	/*
-	search				=> Objeto que identifica o filtro da consulta ao model relacionado (via esquema)
-	schema				=> Nome do esquema a ser instaciado (definido em /models)
-	returnAlwaysArray	=> Metodo sempre retorna tipo array, independente da quantidade de elementos encontrados
-		- padrao: 1 elemento retorna somento o objeto, > 1 retorna array de objetos, 0 retorna undefined
+	Detalhes:
+		search				=> Objeto que identifica o filtro da consulta ao model relacionado (via esquema)
+		schema				=> Nome do esquema a ser instaciado (definido em /models)
+		returnAlwaysArray	=> Metodo sempre retorna tipo array, independente da quantidade de elementos encontrados
+			- padrao: 1 elemento retorna somento o objeto, > 1 retorna array de objetos, 0 retorna undefined
 	*/
 	noSqlGetIds: async (search, schema, session = undefined, returnAlwaysArray = false) => {
 		try {
@@ -473,9 +476,10 @@ const mongoDB = {
 	},
 
 	/*
-	arrayData			=> Array com dados retornados
+	Detalhes:
+		arrayData => Array com dados retornados
 
-	* Padrao de retorno dos dados (base comparativa resultSet da lib MSSQL)
+		* Padrao de retorno dos dados (base comparativa resultSet da lib MSSQL)
 	*/
 	noSqlFormattedResult: arrayData => {
 		return new Promise((resolve, reject) => {
@@ -495,7 +499,8 @@ const mongoDB = {
 	},
 
 	/*
-	schema				=> Nome do esquema a ser instaciado (definido em /models)
+	Detalhes:
+		schema => Nome do esquema a ser instaciado (definido em /models)
 	*/
 	noSqlExecute: async schema => {
 		try {
