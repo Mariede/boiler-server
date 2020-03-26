@@ -30,7 +30,6 @@ const log = require('@serverRoot/helpers/log');
 
 // Acessando informacoes do arquivo de configuracoes do servidor
 const configPath = __serverRoot + '/config.json';
-global.__serverConfig = configManage.push(configPath);
 
 // Server Worker (cluster) inicialmente sem cluster (trabalhador unico)
 global.__serverWorker = null;
@@ -196,4 +195,15 @@ const startApp = async () => {
 	}
 };
 
-startApp();
+configManage.push(configPath)
+.then (
+	data => {
+		global.__serverConfig = Object.freeze(data);
+		startApp();
+	}
+)
+.catch (
+	err => {
+		throw err;
+	}
+);

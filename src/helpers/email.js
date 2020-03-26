@@ -28,7 +28,7 @@ const _executeQueue = (e, counter) => {
 
 			const fileName = queuePathSend + '\\mail-queue-' + dateLeft + dateRight + counter + '.' + uniqueId + configQueue.fileExtension;
 
-			fs.access(
+			fs.access (
 				queuePathSend,
 				fs.constants.F_OK, // Check if exists
 				err => {
@@ -45,7 +45,10 @@ const _executeQueue = (e, counter) => {
 							);
 						}
 
-						fs.writeFile(fileName, queueFile, 'utf8',
+						fs.writeFile (
+							fileName,
+							queueFile,
+							'utf8',
 							err => {
 								if (err) {
 									reject(err);
@@ -209,7 +212,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 							e => {
 								let email = (e[0] || ''),
 									emailCheckUnique = email.toLowerCase(),
-									name =  (e[1] || '');
+									name = (e[1] || '');
 
 								if (validator.isEmail(email)) {
 									if (!emailListCheckUnique.includes(emailCheckUnique)) {
@@ -260,7 +263,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 				from.forEach(
 					e => {
 						let email = (e[0] || ''),
-							name =  (e[1] || '');
+							name = (e[1] || '');
 
 						if (validator.isEmail(email)) {
 							if (!validator.isEmpty(name)) {

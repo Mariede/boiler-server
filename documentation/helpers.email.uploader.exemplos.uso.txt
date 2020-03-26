@@ -12,9 +12,9 @@ const uploader = require('@serverRoot/helpers/uploader');
 const ejs = require('ejs');
 
 let mailTemplate = __serverRoot + '/views/serverSide/pages/_mailTemplates/exampleTemplate.ejs',
-	dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }), // template dinamico
-	fileName = 'emailAttach', // nome do campo html que informa os arquivos de upload
-	filePath = 'attachments_path', // caminho para os arquivos de upload
+	dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }), // Template dinamico
+	fileName = 'emailAttach', // Nome do campo html que informa os arquivos de upload
+	filePath = 'attachments_path', // Caminho para os arquivos de upload
 	uploaderResults = await uploader.push(req, res, [{ name: fileName }], filePath),
 	attachments = await email.getAttachments(uploaderResults, fileName);
 

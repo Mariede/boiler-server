@@ -9,11 +9,23 @@ const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 // Carrega arquivo de configuracao (sincrono)
 const push = config => {
-	try {
-		return Object.freeze(JSON.parse(fs.readFileSync(config, 'utf8')));
-	} catch (err) {
-		throw err;
-	}
+	return new Promise((resolve, reject) => {
+		try {
+			fs.readFile (
+				config,
+				'utf8',
+				(err, data) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(JSON.parse(data));
+					}
+				}
+			);
+		} catch (err) {
+			reject(err);
+		}
+	});
 };
 
 // Checa arquivo de configuracao por mudancas
@@ -40,7 +52,9 @@ const check = config => {
 
 						timeoutReadFile = setTimeout(() => {
 							try {
-								fs.readFile(param, 'utf8',
+								fs.readFile (
+									param,
+									'utf8',
 									(err, data) => {
 										if (err) {
 											reject(err);
