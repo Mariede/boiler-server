@@ -6,7 +6,7 @@
 {
 	"env": {
 		"commonjs": true,
-		"es6": true,
+		"es2020": true,
 		"node": true
 	},
 	"extends": "eslint:recommended",
@@ -18,7 +18,7 @@
 		"__serverWorker": "writable"
 	},
 	"parserOptions": {
-		"ecmaVersion": 2018
+		"ecmaVersion": 2020
 	},
 	"rules": {
 		"strict": [2, "global"],
