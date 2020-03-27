@@ -55,6 +55,30 @@ const queueStartMailCheck = () => {
 											const prepareThis = f => {
 												return new Promise((resolve, reject) => {
 													try {
+														const moveThis = (fpSend, fpSending) => {
+															return new Promise((resolve, reject) => {
+																try {
+																	fs.rename (
+																		fpSend,
+																		fpSending,
+																		err => {
+																			try {
+																				if (err) {
+																					reject(err);
+																				} else {
+																					resolve(fpSending);
+																				}
+																			} catch (err) {
+																				reject(err);
+																			}
+																		}
+																	);
+																} catch (err) {
+																	reject(err);
+																}
+															});
+														};
+
 														let queuePathSending = queuePathSend + '/sending',
 															filePathSend = queuePathSend + '\\' + f,
 															filePathSending = queuePathSending + '\\' + f;
@@ -65,24 +89,43 @@ const queueStartMailCheck = () => {
 															err => {
 																try {
 																	if (err) {
-																		fs.mkdirSync(queuePathSending);
-																	}
-
-																	fs.rename (
-																		filePathSend,
-																		filePathSending,
-																		err => {
-																			try {
-																				if (err) {
+																		fs.mkdir (
+																			queuePathSending,
+																			err => {
+																				try {
+																					if (err) {
+																						reject(err);
+																					} else {
+																						moveThis(filePathSend, filePathSending)
+																						.then (
+																							result => {
+																								resolve(result);
+																							}
+																						)
+																						.catch (
+																							err => {
+																								reject(err);
+																							}
+																						);
+																					}
+																				} catch (err) {
 																					reject(err);
-																				} else {
-																					resolve(filePathSending);
 																				}
-																			} catch (err) {
+																			}
+																		);
+																	} else {
+																		moveThis(filePathSend, filePathSending)
+																		.then (
+																			result => {
+																				resolve(result);
+																			}
+																		)
+																		.catch (
+																			err => {
 																				reject(err);
 																			}
-																		}
-																	);
+																		);
+																	}
 																} catch (err) {
 																	reject(err);
 																}
