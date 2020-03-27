@@ -9,6 +9,11 @@ const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+// Modulos de apoio
+const functions = require('@serverRoot/helpers/functions');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
 // Inicia a inspecao ciclica da pasta de e-mails para envio
 const queueStartMailCheck = () => {
 	return new Promise((resolve, reject) => {
@@ -184,16 +189,6 @@ const queueStartMailCheck = () => {
 												});
 											};
 
-											const asyncForEach = async (a, callback) => {
-												for (let i = 0; i < a.length; i++) {
-													let result = await callback(a[i], i, a);
-
-													if (result) {
-														break;
-													}
-												}
-											};
-
 											if (err) {
 												log.logger('error', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.message || err.stack || err)}`, 'mailQueue');
 											} else {
@@ -212,7 +207,7 @@ const queueStartMailCheck = () => {
 															}
 														);
 
-														await asyncForEach(
+														await functions.asyncForEach(
 															targetFiles,
 															async file => {
 																try {
@@ -222,7 +217,8 @@ const queueStartMailCheck = () => {
 																		sentAccepted = (Array.isArray(sentInfo.accepted) ? sentInfo.accepted.length : 0),
 																		sentRejected = (Array.isArray(sentInfo.rejected) ? sentInfo.rejected.length : 0),
 																		sentPending = (Array.isArray(sentInfo.pending) ? sentInfo.pending.length : 0),
-																		emailsAffected = sentAccepted + sentRejected + sentPending;
+																		emailsAffected = sentAccepted + sentRejected + sentPending,
+																		fRet = false;
 
 																	sentTotal = sentTotal + emailsAffected;
 
@@ -232,13 +228,13 @@ const queueStartMailCheck = () => {
 
 																	log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}${emailsAffected === 0 ? ' * Favor verificar a pasta sending (arquivo não excluído) *' : ''}`, 'mailQueue');
 
-																	if (sentTotal < emailsPerRound) {
-																		return false;
-																	} else {
-																		log.logger('info', `Fila de e-mails: limite de ${emailsPerRound} ${emailsPerRound === 1 ? 'e-mail atingido' : 'e-mails atingidos'} na rodada (${sentTotal} ${sentTotal === 1 ? 'disparado' : 'disparados'}), saindo do loop`, 'mailQueue');
+																	if (sentTotal >= emailsPerRound) {
+																		fRet = true;
 
-																		return true;
+																		log.logger('info', `Fila de e-mails: limite de ${emailsPerRound} ${emailsPerRound === 1 ? 'e-mail atingido' : 'e-mails atingidos'} na rodada (${sentTotal} ${sentTotal === 1 ? 'disparado' : 'disparados'}), saindo do loop`, 'mailQueue');
 																	}
+
+																	return fRet;
 																} catch (err) {
 																	log.logger('error', `Disparo de arquivo mal sucedido: ${(err.stack || err)}`, 'mailQueue');
 																}

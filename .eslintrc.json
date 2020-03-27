@@ -48,14 +48,18 @@
 		"semi-style": [2, "last"],
 		"space-before-function-paren": [2, {
 			"anonymous": "always",
-			"named": "always"
+			"named": "always",
+			"asyncArrow": "always"
 		}],
 		"space-before-blocks": [2, {
 			"functions": "always",
 			"keywords": "always",
 			"classes": "always"
 		}],
-		"keyword-spacing": 2,
+		"keyword-spacing": [2, {
+			"before": true,
+			"after": true
+		}],
 		"space-infix-ops": 2,
 		"no-multi-spaces": 2,
 		"no-whitespace-before-property": 2,
