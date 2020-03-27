@@ -16,7 +16,7 @@ const _executeQueue = (e, counter) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const configQueue = __serverConfig.email.queue;
-			const configKey = configQueue.path;
+			const configKey = configQueue.path + (__serverWorker ? `\\trabalhador-${__serverWorker}` : '');
 			const queueFile = JSON.stringify(e);
 			const dateNow = (new Date()).toISOString().split('T');
 			const dateLeft = (dateNow[0] || '').replace(/-/g, '');

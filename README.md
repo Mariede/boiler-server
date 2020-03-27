@@ -101,7 +101,10 @@ npm run build
   * Envio de e-mails, com anexos, direto e/ou por chunks asyncs e/ou enfileirados em pasta no servidor
   * NODEMAILER: Configuração abrangente
   * Templates de e-mail dinâmicos
-  * Serviço cíclico assíncrono, gerencia o envio dos e-mails enfileirados
+  * Filas de e-mails agendados
+    - Serviço cíclico e assíncrono
+    - Permite cluster ou thread única
+    - Gerencia o envio dos e-mails enfileirados
 
 ## Engine de templates para expor arquivos html dinâmicos
   * EJS - Embedded Javascript Templates (semelhante ao asp)

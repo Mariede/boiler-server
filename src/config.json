@@ -140,7 +140,12 @@
 			"timeCheck": 30000
 		},
 		"transporter": {
-			"pool": false,
+			"pool": true,
+			"maxConnections": 20,
+			"maxMessages": 600,
+			"rateDelta": 1000,
+			"rateLimit": 10,
+			"socketTimeout": 120000,
 			"host": "smtp.example.com",
 			"port": 587,
 			"secure": false,
