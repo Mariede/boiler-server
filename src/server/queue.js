@@ -21,7 +21,7 @@ const queueStartMailCheck = () => {
 			const transporter = nodemailer.createTransport(__serverConfig.email.transporter);
 			const configQueue = __serverConfig.email.queue;
 			const saveFullLogs = (configQueue.saveFullLogs ? 'mailQueue' : 'consoleOnly');
-			const configKey = configQueue.path + (__serverWorker ? `\\trabalhador-${__serverWorker}` : '');
+			const configKey = configQueue.path + '\\trabalhador-' + (__serverWorker ? __serverWorker : 'unico');
 			const fileExtension = configQueue.fileExtension;
 			const limitPerRound = configQueue.limitPerRound;
 			const timeCheck = configQueue.timeCheck;
