@@ -23,6 +23,12 @@ body {
 	padding-top: 100px;
 }
 
+img {
+	max-width: 100%;
+	max-height: 100%;
+	margin: 0 auto;
+}
+
 h2 {
 	text-shadow: 0 0 3px #8c3, 0 0 5px #fff;
 }

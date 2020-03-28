@@ -258,7 +258,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 					let resultConfig = await configManage.check(configPath),
 						fileName = path.basename(configPath);
 
-					if (typeof resultConfig === 'object') {
+					if (typeof resultConfig === 'object' && resultConfig !== null) {
 						messages.push(['info', `Arquivo de configuração em ${fileName} está sendo observado por mudanças`]);
 					} else {
 						messages.push(['error', `Arquivo de configuração em ${fileName} falhou ao iniciar procedimento de observação automática por mudanças...`]);
@@ -268,7 +268,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 					if (__serverConfig.email.queue.on) {
 						let resultQueue = await queue.queueStartMailCheck();
 
-						if (typeof resultQueue === 'object') {
+						if (typeof resultQueue === 'object' && resultQueue !== null) {
 							messages.push(['info', `Serviço de fila de e-mails iniciado com sucesso${__serverConfig.email.queue.saveFullLogs ? ' (logs completos)' : ''}`]);
 						} else {
 							messages.push(['error', 'Serviço de fila de e-mails falhou ao iniciar...']);

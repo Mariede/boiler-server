@@ -39,37 +39,18 @@
 
 		ioConnection();
 	</script>
+
 	<script type="text/javascript">
-		let resizeDebounce;
-
-		const checkLogoSize = () => {
-			const logo = document.getElementById('logo-img');
-			const logoOriginalWidth = <%= logoWidth %>;
-			const windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - 60; // padding de 60
-
-			if (windowWidth < logoOriginalWidth) {
-				logo.style.width = windowWidth + 'px';
-			} else {
-				logo.style.width = logoOriginalWidth + 'px';
-			}
-		};
-
-		const resized = () => {
-			clearTimeout(resizeDebounce);
-			resizeDebounce = setTimeout(() => {
-				checkLogoSize();
-			}, 50);
-		};
-
-		window.onresize = () => {
-			resized();
+		const preloadImage = url => {
+			let image = new Image();
+			image.src = url;
 		};
 	</script>
 </head>
-<body onload="checkLogoSize();">
+<body onload="preloadImage('img/nodeserver-logo.png');">
 	<div id="wrapper">
 		<div id="content">
-			<img id="logo-img" class="logo" src="img/nodeserver-logo.png" width="<%= logoWidth %>" alt="logo">
+			<img id="logo-img" src="img/nodeserver-logo.png" alt="logo">
 			<h2>Bem vindo, servidor em Express NODE.js</h2>
 		</div>
 		<hr>

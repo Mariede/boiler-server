@@ -136,13 +136,14 @@
 			"saveFullLogs": false,
 			"path": "/queue/mail/send",
 			"fileExtension": ".send",
-			"limitPerRound": 20,
-			"timeCheck": 30000
+			"limitPerRound": 40,
+			"timeCheck": 32000,
+			"timeFirstCheck": 4000
 		},
 		"transporter": {
 			"pool": true,
-			"maxConnections": 20,
-			"maxMessages": 600,
+			"maxConnections": 10,
+			"maxMessages": 40,
 			"rateDelta": 1000,
 			"rateLimit": 10,
 			"socketTimeout": 120000,
@@ -156,6 +157,6 @@
 				"authMethod": "PLAIN"
 			}
 		},
-		"_comments1": "limitPerRound tem um valor default maximo de 100 e-mails por vez, timeCheck tem um valor default minimo de 15 segundos (ou 15000)"
+		"_comments1": "limitPerRound: quantidade de envios por rodada, timeCheck: intervalo entre as rodadas, timeFirstCheck: primeira checagem antes de iniciar o loop de rodadas - serve tambem para evitar que os cluster realizem checagens na queue simultaneamente a cada timeCheck"
 	}
 }

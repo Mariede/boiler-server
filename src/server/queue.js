@@ -25,13 +25,23 @@ const queueStartMailCheck = () => {
 			const fileExtension = configQueue.fileExtension;
 			const limitPerRound = configQueue.limitPerRound;
 			const timeCheck = configQueue.timeCheck;
-			const defaultLimitPerRound = 100;
-			const defaultTimeCheck = 15000;
-			const emailsPerRound = ((Number.isInteger(limitPerRound) && Number(limitPerRound) > 0 && Number(limitPerRound) <= defaultLimitPerRound) ? limitPerRound : defaultLimitPerRound);
-			const intervalQueueCheck = ((Number.isInteger(timeCheck) && Number(timeCheck) >= defaultTimeCheck) ? timeCheck : defaultTimeCheck);
+			const timeFirstCheck = configQueue.timeFirstCheck;
 
 			let initPath = __serverRoot,
 				queuePathSend = initPath + configKey;
+
+			// Validacoes dos parametros essenciais no config
+			if (!Number.isInteger(limitPerRound) || limitPerRound <= 0) {
+				throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro limitPerRound em config é inválido: ${limitPerRound} - precisa ser numérico e maior que zero`);
+			}
+
+			if (!Number.isInteger(timeCheck) || timeCheck <= 5000) {
+				throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeCheck em config é inválido: ${timeCheck} - precisa ser numérico e maior que 5000`);
+			}
+
+			if (!Number.isInteger(timeFirstCheck) || timeFirstCheck <= 900) {
+				throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeFirstCheck em config é inválido: ${timeFirstCheck} - precisa ser numérico e maior que 900`);
+			}
 
 			fs.access (
 				queuePathSend,
@@ -50,8 +60,8 @@ const queueStartMailCheck = () => {
 							);
 						}
 
-						const watch = setInterval(
-							() => {
+						const queueMailCheck = () => {
+							try {
 								fs.readdir (
 									queuePathSend,
 									'utf8',
@@ -228,10 +238,10 @@ const queueStartMailCheck = () => {
 
 																	log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}${emailsAffected === 0 ? ' * Favor verificar a pasta sending (arquivo não excluído) *' : ''}`, 'mailQueue');
 
-																	if (sentTotal >= emailsPerRound) {
+																	if (sentTotal >= limitPerRound) {
 																		fRet = true;
 
-																		log.logger('info', `Fila de e-mails: limite de ${emailsPerRound} ${emailsPerRound === 1 ? 'e-mail atingido' : 'e-mails atingidos'} na rodada (${sentTotal} ${sentTotal === 1 ? 'disparado' : 'disparados'}), saindo do loop`, 'mailQueue');
+																		log.logger('info', `Fila de e-mails: limite de ${limitPerRound} ${limitPerRound === 1 ? 'e-mail atingido' : 'e-mails atingidos'} na rodada (${sentTotal} ${sentTotal === 1 ? 'disparado' : 'disparados'}), saindo do loop`, 'mailQueue');
 																	}
 
 																	return fRet;
@@ -252,8 +262,18 @@ const queueStartMailCheck = () => {
 										}
 									}
 								);
-							}, intervalQueueCheck
-						);
+							} catch (err) {
+								throw err;
+							}
+						};
+
+						const watch = setTimeout(() => {
+							queueMailCheck();
+
+							setInterval(() => {
+								queueMailCheck();
+							}, timeCheck);
+						}, (__serverWorker || 1) * timeFirstCheck);
 
 						resolve(watch);
 					} catch (err) {
