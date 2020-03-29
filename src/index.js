@@ -157,23 +157,27 @@ const startApp = async () => {
 				log.logger('info', `Cluster mestre definindo ${numWorkers} trabalhadores`, 'startUp');
 
 				for (let i = 0; i < numWorkers; i++) {
-					cluster.fork();
+					let env = { workerMyId: i + 1 },
+						newWorker = cluster.fork(env);
+					newWorker.process.myEnv = env;
 				}
 
 				cluster.on (
 					'online',
 					worker => {
-						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.id} - está ativo`, 'startUp');
+						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.process.myEnv.workerMyId} - está ativo`, 'startUp');
 					}
 				);
 
 				cluster.on (
 					'exit',
 					(worker, code, signal) => {
-						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.id} - finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`, 'startUp');
+						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.process.myEnv.workerMyId} - finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`, 'startUp');
 						log.logger('info', 'Iniciando novo trabalhador', 'startUp');
 
-						cluster.fork();
+						let env = worker.process.myEnv,
+							newWorker = cluster.fork(env);
+						newWorker.process.myEnv = env;
 					}
 				);
 			} else {
