@@ -4,10 +4,15 @@
 // Modulos de inicializacao
 const nodemailer = require('nodemailer');
 const htmlToText = require('html-to-text');
-const validator = require('@serverRoot/helpers/validator');
 const fs = require('fs');
 const path = require('path');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Modulos de apoio
 const errWrapper = require('@serverRoot/helpers/errWrapper');
+const validator = require('@serverRoot/helpers/validator');
+const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -34,7 +39,7 @@ const _executeQueue = (e, counter) => {
 				err => {
 					try {
 						if (err) {
-							configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(
+							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach(
 								e => {
 									initPath = path.join(initPath, e);
 

@@ -49,7 +49,7 @@ const queueStartMailCheck = () => {
 				err => {
 					try {
 						if (err) {
-							configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(
+							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach(
 								e => {
 									initPath = path.join(initPath, e);
 

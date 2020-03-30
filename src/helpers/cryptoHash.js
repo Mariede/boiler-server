@@ -53,7 +53,7 @@ const _baseCipherDecipher = async (passData, ...saltData) => {
 
 		const algorithm = __serverConfig.crypto.cipherAlgorithm;
 		const algorithmKeyLen = __serverConfig.crypto.cipherKeyLen; // Detalhes => algo 192: 24 bytes; algo 256: 32 bytes
-		const pass = (passData || '') + '';
+		const pass = String(passData || '');
 		const salt = await _checkSaltData(...saltData);
 		const key = await scryptAsync(pass, salt, algorithmKeyLen);
 		const iv = await Buffer.alloc(16, 0);
@@ -96,7 +96,7 @@ Gera um hash baseado em algorithm
 const hash = async (passData, ...saltData) => {
 	try {
 		const algorithm = __serverConfig.crypto.hashAlgorithm;
-		const pass = (passData || '') + '';
+		const pass = String(passData || '');
 		const salt = await _checkSaltData(...saltData);
 		const passHash = await crypto.createHmac(algorithm, salt).update(pass).digest(__serverConfig.crypto.hashDigestEncoding);
 

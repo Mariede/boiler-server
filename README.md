@@ -87,17 +87,17 @@ npm run build
   * Facilita as consultas em geral com algorítmo unificado de pesquisa em múltiplas colunas
   * Apenas para MS SQL Server
 
-## Lib validator
+## Lib Validator
   * Com os métodos de validação de entradas mais comuns (cpf, alfanumérico, e-mail), personalizável via regex
 
-## Criptografia
+## Lib de Criptografia
   * Hash e Cipher
 
-## Uploader
+## Lib Uploader
   * Upload de grupos de arquivos com filtros por tamanho, quantidade de arquivos, extensão, MIME types, ...
   * MULTER: Upload direto para memória ou pastas específicas no servidor
 
-## Email
+## Lib Email + Queue
   * Envio de e-mails, com anexos, direto e/ou por chunks asyncs e/ou enfileirados em pasta no servidor
   * NODEMAILER: Configuração abrangente
   * Templates de e-mail dinâmicos
@@ -105,6 +105,9 @@ npm run build
     - Serviço cíclico e assíncrono
     - Permite cluster ou thread única
     - Gerencia o envio dos e-mails enfileirados
+
+## Lib Functions
+  * Com métodos genéricos para acesso global (forEach async, regex de alteração, etc)
 
 ## Engine de templates para expor arquivos html dinâmicos
   * EJS - Embedded Javascript Templates (semelhante ao asp)

@@ -5,7 +5,12 @@
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Modulos de apoio
 const errWrapper = require('@serverRoot/helpers/errWrapper');
+const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -37,7 +42,7 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 						err => {
 							try {
 								if (err) {
-									configKey.replace(/[|&;$%@"<>()+,]/g, '').split(/[\\/]/).forEach(
+									functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach(
 										e => {
 											initPath = path.join(initPath, e);
 

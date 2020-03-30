@@ -27,8 +27,8 @@ const _camelCaseToSnakeCase = searchFields => {
 							return changedP;
 						};
 
-						const isUpperCase = s => {
-							s = s + '';
+						const isUpperCase = _s => {
+							let s = String(_s);
 							return (s === s.toUpperCase());
 						};
 

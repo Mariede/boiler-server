@@ -108,7 +108,7 @@ const logout = (req, res) => {
 // Verifica se a sessao esta ativa
 const isLogged = async (req, res) => {
 	try {
-		let resultType = req.query.result_type + '',
+		let resultType = String(req.query.result_type),
 			fRet = await auth.isLogged(req, (resultType === '1' ? 1 : 0));
 		return fRet;
 	} catch (err) {

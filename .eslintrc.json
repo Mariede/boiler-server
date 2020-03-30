@@ -113,8 +113,7 @@
 		"no-implicit-coercion": [2, {
 			"boolean": true,
 			"number": true,
-			"string": true,
-			"allow": ["+"]
+			"string": true
 		}],
 		"no-self-assign": 2,
 		"no-self-compare": 2,
