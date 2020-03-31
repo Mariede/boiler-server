@@ -39,7 +39,7 @@ const _executeQueue = (e, counter) => {
 				err => {
 					try {
 						if (err) {
-							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach(
+							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach (
 								e => {
 									initPath = path.join(initPath, e);
 
@@ -106,17 +106,11 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 			}
 		};
 
-		const asyncForEach = async (a, callback) => {
-			for (let i = 0; i < a.length; i++) {
-				await callback(a[i], i, a);
-			}
-		};
-
 		const sendAndReturn = async (m, t) => {
 			let sentInfos = [],
 				i = 0;
 
-			await asyncForEach(
+			await functions.asyncForEach (
 				m,
 				async e => {
 					i++;
@@ -213,7 +207,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 					if (a.length !== 0) {
 						let emailListCheckUnique = [];
 
-						a.forEach(
+						a.forEach (
 							e => {
 								let email = (e[0] || ''),
 									emailCheckUnique = email.toLowerCase(),
@@ -265,7 +259,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChun
 			}
 
 			if (from.length === 1) {
-				from.forEach(
+				from.forEach (
 					e => {
 						let email = (e[0] || ''),
 							name = (e[1] || '');
@@ -404,7 +398,7 @@ const getAttachments = (uploaderResults, fileNames) => {
 			let attachmentsResult = [];
 
 			if (uploaderResults && uploaderResults.files && uploaderResults.files[fileNames]) {
-				uploaderResults.files[fileNames].forEach(
+				uploaderResults.files[fileNames].forEach (
 					file => {
 						let objFile = {};
 

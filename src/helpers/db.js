@@ -352,7 +352,7 @@ const mongoDB = {
 							verifiedCompoundIndexes.push(compoundIndexes);
 						}
 
-						verifiedCompoundIndexes.forEach(
+						verifiedCompoundIndexes.forEach (
 							cVal => {
 								if (typeof cVal === 'object') {
 									if (Object.prototype.hasOwnProperty.call(cVal, '_unique')) {

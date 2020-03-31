@@ -43,7 +43,7 @@ const startApp = async () => {
 				padStart = ''.padStart(43) + '-> ',
 				i = 0;
 
-			messages.forEach(
+			messages.forEach (
 				message => {
 					if (message[0] === checkType) {
 						messagesCheckType = messagesCheckType + (i !== 0 ? padStart : '') + message[1] + '\r\n';

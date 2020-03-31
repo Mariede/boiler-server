@@ -14,7 +14,7 @@ const _camelCaseToSnakeCase = searchFields => {
 			let newSearchFields = [];
 
 			if (searchFields && Array.isArray(searchFields)) {
-				searchFields.forEach(
+				searchFields.forEach (
 					e => {
 						const transformP = p => {
 							const changedP = p.replace(/([A-Z])/g,
@@ -63,7 +63,7 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 				};
 
 			if (searchFields.length > 0) {
-				searchFields.forEach(
+				searchFields.forEach (
 					(e, i) => {
 						searchQuery.dados.input[i] = [e, '%' + searchValue + '%'];
 
@@ -122,7 +122,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 
 		if (method.toUpperCase() === 'GET') {
 			if (req.query.fullsearch_fields) {
-				req.query.fullsearch_fields.split(/[,|]/).forEach(
+				req.query.fullsearch_fields.split(/[,|]/).forEach (
 					e => {
 						searchFields.push(e.trim());
 					}

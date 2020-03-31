@@ -114,7 +114,7 @@ const keysToCamelCase = jsonData => {
 			};
 
 			const loopKeys = (cDocument, nDocument) => {
-				Object.keys(cDocument).forEach(
+				Object.keys(cDocument).forEach (
 					currentKey => {
 						let currentValue = cDocument[currentKey],
 							newKey = convertKeys(currentKey, currentValue, nDocument);
@@ -162,7 +162,7 @@ const setSort = async (req, jsonData, toCamelCase = false) => {
 
 		if (method.toUpperCase() === 'GET') {
 			if (req.query.sort_fields) {
-				req.query.sort_fields.split(/[,|]/).forEach(
+				req.query.sort_fields.split(/[,|]/).forEach (
 					e => {
 						let sortField = e.split(/[:]/);
 

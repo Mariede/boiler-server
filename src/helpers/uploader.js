@@ -42,7 +42,7 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 						err => {
 							try {
 								if (err) {
-									functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach(
+									functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach (
 										e => {
 											initPath = path.join(initPath, e);
 

@@ -60,7 +60,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 				};
 
 				if (Array.isArray(pathVirtualStaticFiles)) {
-					pathVirtualStaticFiles.forEach(
+					pathVirtualStaticFiles.forEach (
 						path => {
 							setPathStaticFiles(path);
 						}

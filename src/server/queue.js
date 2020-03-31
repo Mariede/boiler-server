@@ -49,7 +49,7 @@ const queueStartMailCheck = () => {
 				err => {
 					try {
 						if (err) {
-							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach(
+							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach (
 								e => {
 									initPath = path.join(initPath, e);
 
@@ -217,7 +217,7 @@ const queueStartMailCheck = () => {
 															}
 														);
 
-														await functions.asyncForEach(
+														await functions.asyncForEach (
 															targetFiles,
 															async file => {
 																try {
