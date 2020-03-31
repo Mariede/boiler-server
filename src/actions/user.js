@@ -48,7 +48,7 @@ const consultar = async (req, res) => {
 	try {
 		const idUsuario = req.params.id;
 
-		let firstResult = {};
+		let checkedResultSet = {};
 
 		if (validator.isInteger(idUsuario, false)) {
 			const query = {
@@ -77,16 +77,16 @@ const consultar = async (req, res) => {
 				}
 			};
 
-			firstResult = await dbCon.msSqlServer.sqlExecuteAll(query);
+			let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+			resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
+
+			checkedResultSet = resultSet;
 		} else {
 			errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
 		}
 
-		let { recordsets: recordSets, ...resultSet } = firstResult;
-
-		resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset);
-
-		return resultSet;
+		return checkedResultSet;
 	} catch (err) {
 		throw err;
 	}
