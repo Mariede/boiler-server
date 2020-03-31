@@ -85,7 +85,7 @@ const msSqlServer = {
 				const sqlAction = async (r, p) => {
 					if (Object.prototype.hasOwnProperty.call(p, 'formato') && Object.prototype.hasOwnProperty.call(p, 'dados')) {
 						if (Object.prototype.hasOwnProperty.call(p.dados, 'executar')) {
-							const dataTypeCheck = param => {
+							const dataTypeCheck = _param => {
 								const dataTypesSupported = [
 									'Bit',
 									'BigInt',
@@ -121,9 +121,8 @@ const msSqlServer = {
 									'Geometry'
 								];
 
-								param = (param || '').toString();
-
-								let checkParamA = param.indexOf('('),
+								let param = String(_param || ''),
+									checkParamA = param.indexOf('('),
 									checkParamB = checkParamA !== -1 ? checkParamA : param.length,
 									checkParamC = param.substr(0, checkParamB).trim(),
 									checkParamD = (dataTypesSupported.find(

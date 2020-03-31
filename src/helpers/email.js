@@ -178,11 +178,11 @@ Valida os dados e prepara envio
 	-> bcc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@bcc1', 'name bcc1'], ['mail@bcc2', 'name bcc2'], ['mail@bcc3'], ... ]
 		* Usar '' ou [] para nenhum e-mail
 
-	-> subject: string - opcional
+	-> subject: string - pode ser vazio
 
 	-> text: string: texto em html ou simples
 
-	-> Attachments: Array [{ filename: , content: }, { filename: , path: }, { path: }, ... ] - opcional
+	-> Attachments: Array [{ filename: , content: }, { filename: , path: }, { path: }, ... ]
 
 	-> sendChunks: Define se os e-mails serao enviados em grupos, objeto vazio para tudo de uma vez. ex.: { to: 5, cc: 5, bcc: 15 }
 		- se "to" definido: Quantidade de e-mails de destino (to) agrupados para cada envio simultaneo separado (apenas to)
@@ -195,7 +195,7 @@ Valida os dados e prepara envio
 
 	-> sendQueue: se true nao envia os e-mails instantaneamente, mas sim os colocam como arquivos em uma pasta para serem enfileirados e enviados posteriormente na queue (padrao false)
 */
-const sendEmail = async (from, to, cc, bcc, subject, text, attachments, sendChunks = {}, strictCheck = true, sendQueue = false) => {
+const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sendChunks = {}, strictCheck = true, sendQueue = false) => {
 	try {
 		const fillDestinations = (a, b, i, e) => {
 			if (!validator.isEmpty(a)) {

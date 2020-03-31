@@ -46,14 +46,17 @@ const consultarTodos = async (req, res) => {
 
 const consultar = async (req, res) => {
 	try {
-		const id = req.params.id;
+		const idUsuario = req.params.id;
 
 		let firstResult = {};
 
-		if (validator.isInteger(id, false)) {
+		if (validator.isInteger(idUsuario, false)) {
 			const query = {
 				formato: 1,
 				dados: {
+					input: [
+						['idUsuario', 'int', idUsuario]
+					],
 					executar: `
 						SELECT
 							A.ID_USUARIO
@@ -69,7 +72,7 @@ const consultar = async (req, res) => {
 							INNER JOIN TIPO B (NOLOCK)
 								ON (A.ID_TIPO = B.ID_TIPO)
 						WHERE
-							A.ID_USUARIO = ${id};
+							A.ID_USUARIO = @idUsuario;
 					`
 				}
 			};

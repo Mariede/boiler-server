@@ -40,14 +40,14 @@ query = {
 	formato: 1, // 1: Query String, 2: Stored Procedure
 	dados: {
 		input: [
-			['ID', 'int', 1],
-			['NOME', 'varchar(200)', '%Nome Exemplo 1%']
+			['id', 'int', 1],
+			['nome', 'varchar(200)', '%Nome Exemplo 1%']
 		],
 		output: [
 			['QTD_RET', 'int']
 		],
 		executar: `
-			SELECT * FROM TABELA T (NOLOCK) WHERE T.ID_TABELA=@ID OR T.NOME LIKE(@NOME);
+			SELECT * FROM TABELA T (NOLOCK) WHERE T.ID_TABELA=@id OR T.NOME LIKE(@nome);
 			SET @QTD_RET = SCOPE_IDENTITY();
 		`
 	}
@@ -57,8 +57,8 @@ query = {
 	formato: 2, // 1: Query String, 2: Stored Procedure
 	dados: {
 		input: [
-			['ID', 'int', 1],
-			['NOME', 'varchar(200)', 'Nome Exemplo 2']
+			['id', 'int', 1],
+			['nome', 'varchar(200)', 'Nome Exemplo 2']
 		],
 		output: [
 			['QTD_RET', 'int']
@@ -78,10 +78,10 @@ let query = {
 		formato: 1,
 		dados: {
 			input: [
-				['NOME', 'varchar(200)', 'Joaquim Santos'],
-				['SENHA', 'varchar(20)', 'SENH@TESTE123'],
-				['ATIVO', 'bit', 1],
-				['NOMECHECK', '%Jo%']
+				['nome', 'varchar(200)', 'Joaquim Santos'],
+				['senha', 'varchar(20)', 'SENH@TESTE123'],
+				['ativo', 'bit', 1],
+				['nomeCheck', '%Jo%']
 			],
 			output: [
 				['INSERTED_ID', 'int']
@@ -97,7 +97,7 @@ let query = {
 						FROM
 							USUARIO U (NOLOCK)
 						WHERE
-							U.NOME LIKE(@NOMECHECK) -- variavel input externa
+							U.NOME LIKE(@nomeCheck) -- variavel input externa
 						ORDER BY
 							ID_USUARIO DESC
 					);
@@ -106,9 +106,9 @@ let query = {
 					,SENHA
 					,ATIVO
 				) VALUES (
-					@NOME + ' ' + CAST(@INCR AS varchar) -- variavel input externa + interna
-					,@SENHA -- variavel input externa
-					,@ATIVO -- variavel input externa
+					@nome + ' ' + CAST(@INCR AS varchar) -- variavel input externa + interna
+					,@senha -- variavel input externa
+					,@ativo -- variavel input externa
 				);
 				SET
 					@INSERTED_ID = SCOPE_IDENTITY(); -- variavel output
@@ -117,7 +117,7 @@ let query = {
 				FROM
 					USUARIO U (NOLOCK)
 				WHERE
-					U.NOME LIKE(@NOMECHECK) -- variavel input externa
+					U.NOME LIKE(@nomeCheck) -- variavel input externa
 				ORDER BY
 					ID_USUARIO DESC;
 				SELECT TOP 3
@@ -125,7 +125,7 @@ let query = {
 				FROM
 					USUARIO U (NOLOCK)
 				WHERE
-					U.NOME LIKE(@NOMECHECK) -- variavel input externa
+					U.NOME LIKE(@nomeCheck) -- variavel input externa
 				ORDER BY
 					ID_USUARIO DESC;
 			`
@@ -135,8 +135,8 @@ let query = {
 		formato: 2,
 		dados: {
 			input: [
-				['ID_USUARIO', 'int', 1],
-				['NOME', 'varchar(200)', 'jo']
+				['idUsuario', 'int', 1],
+				['nome', 'varchar(200)', 'jo']
 			],
 			output: [
 				['QTD_RET', 'int']
@@ -148,9 +148,9 @@ let query = {
 		formato: 1,
 		dados: {
 			input: [
-				['NOME', '%jo%']
+				['nome', '%jo%']
 			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
 		}
 	};
 // ---------------------------------------------------------------------------------------------------------
@@ -166,9 +166,9 @@ try {
 		formato: 1,
 		dados: {
 			input: [
-				['NOME', '%jo%']
+				['nome', '%jo%']
 			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
 		}
 	};
 
@@ -190,9 +190,9 @@ try {
 		formato: 1,
 		dados: {
 			input: [
-				['NOME', '%jo%']
+				['nome', '%jo%']
 			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
 		}
 	};
 
@@ -215,9 +215,9 @@ try {
 		formato: 1,
 		dados: {
 			input: [
-				['NOME', '%jo%']
+				['nome', '%jo%']
 			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
 		}
 	};
 
@@ -243,9 +243,9 @@ try {
 		formato: 1,
 		dados: {
 			input: [
-				['NOME', '%jo%']
+				['nome', '%jo%']
 			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@NOME)'
+			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
 		}
 	};
 
