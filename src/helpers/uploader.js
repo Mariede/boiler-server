@@ -39,15 +39,17 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 					fs.access (
 						filePath,
 						fs.constants.F_OK, // Check if exists
-						err => {
+						async err => {
 							try {
 								if (err) {
-									functions.removeInvalidFileNameChars(configKey).split(/[\\/]/).forEach (
-										e => {
-											initPath = path.join(initPath, e);
-
-											if (!fs.existsSync(initPath)) {
-												fs.mkdirSync(initPath);
+									await functions.asyncForEach (
+										functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
+										async folder => {
+											try {
+												initPath = path.join(initPath, folder);
+												await functions.createNewFolder(fs, initPath);
+											} catch (err) {
+												callback(err);
 											}
 										}
 									);
