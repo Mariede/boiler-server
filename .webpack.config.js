@@ -7,16 +7,11 @@ const path = require('path');
 const packageJsonLocation = './package.json';
 const packageJson = require(packageJsonLocation);
 
-const namePackage = (packageJson.name || '');
 const versionPackage = (packageJson.version || '');
-const descriptionPackage = (packageJson.description || '');
-const mainPackage = (packageJson.main || '');
-const licensePackage = (packageJson.license || '');
 const outputNamePackage = (packageJson.outputName || 'main.js');
-const deployFolder = './build' + (versionPackage ? '/' + versionPackage : '');
 
 const sourcePath = path.resolve(__dirname, './src');
-const destinyPath = path.resolve(__dirname, deployFolder);
+const destinyPath = path.resolve(__dirname, `./build${(versionPackage ? '/' + versionPackage : '')}`);
 
 module.exports = {
 	target: 'node',
@@ -26,7 +21,7 @@ module.exports = {
 		__filename: false
 	},
 	entry: {
-		main: mainPackage
+		main: (packageJson.main || '')
 	},
 	output: {
 		filename: outputNamePackage,
@@ -41,33 +36,36 @@ module.exports = {
 				enforce: 'pre',
 				test: /\.js$/,
 				exclude: /node_modules/,
-				loader: 'eslint-loader'
-				// options: {
-				// }
+				loader: 'eslint-loader',
+				options: {
+					cache: false
+				}
 			}
 		]
 	},
 	plugins: [
-		new GeneratePackageJsonPlugin(
+		new GeneratePackageJsonPlugin (
 			{
-				'name': namePackage,
+				'name': (packageJson.name || ''),
 				'version': versionPackage,
-				'description': descriptionPackage,
+				'description': (packageJson.description || ''),
 				'main': outputNamePackage,
-				'license': licensePackage,
+				'license': (packageJson.license || ''),
 				'private': true
-			}
-			, packageJsonLocation
+			},
+			packageJsonLocation
 		),
 		new CleanWebpackPlugin(),
-		new CopyWebpackPlugin([
-			{
-				from: path.resolve(sourcePath, './config.json'), to: path.resolve(destinyPath, './config.json'), force: true
-			},
-			{
-				from: path.resolve(sourcePath, './views'), to: path.resolve(destinyPath, './views'), force: true
-			}
-		]),
+		new CopyWebpackPlugin (
+			[
+				{
+					from: path.resolve(sourcePath, './config.json'), to: path.resolve(destinyPath, './config.json'), force: true
+				},
+				{
+					from: path.resolve(sourcePath, './views'), to: path.resolve(destinyPath, './views'), force: true
+				}
+			]
+		),
 	],
 	resolve: {
 		alias: {
