@@ -40,6 +40,30 @@ const asyncForEach = async (array, callback) => {
 	}
 };
 
+// Executa uma sequencia ordenada de promessas com uma array de itens como argumento de entrada
+const promiseForEach = (arrayItems, callback) => {
+	try {
+		return arrayItems.reduce (
+			(promise, item) => {
+				return promise
+				.then (
+					() => {
+						return callback(item);
+					}
+				)
+				.catch (
+					err => {
+						throw err;
+					}
+				);
+			},
+			Promise.resolve()
+		);
+	} catch (err) {
+		throw err;
+	}
+};
+
 // Cria uma nova pasta no sistema de arquivos
 const createNewFolder = (fs, newFolder) => {
 	return new Promise((resolve, reject) => {
@@ -55,7 +79,11 @@ const createNewFolder = (fs, newFolder) => {
 								err => {
 									try {
 										if (err) {
-											reject(err);
+											if (err.code !== 'EEXIST') { // Check if exists (again)
+												reject(err);
+											} else {
+												resolve();
+											}
 										} else {
 											resolve();
 										}
@@ -102,6 +130,7 @@ const removeInvalidFileNameChars = (_param, os = 1) => {
 module.exports = {
 	getDateNow,
 	asyncForEach,
+	promiseForEach,
 	createNewFolder,
 	removeInvalidFileNameChars
 };

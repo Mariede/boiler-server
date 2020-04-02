@@ -42,14 +42,14 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 						async err => {
 							try {
 								if (err) {
-									await functions.asyncForEach (
+									await functions.promiseForEach (
 										functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 										async folder => {
 											try {
 												initPath = path.join(initPath, folder);
 												await functions.createNewFolder(fs, initPath);
 											} catch (err) {
-												callback(err);
+												throw err;
 											}
 										}
 									);

@@ -39,14 +39,14 @@ const _executeQueue = (e, counter) => {
 				async err => {
 					try {
 						if (err) {
-							await functions.asyncForEach (
+							await functions.promiseForEach (
 								functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 								async folder => {
 									try {
 										initPath = path.join(initPath, folder);
 										await functions.createNewFolder(fs, initPath);
 									} catch (err) {
-										reject(err);
+										throw err;
 									}
 								}
 							);

@@ -39,8 +39,8 @@ const queueStartMailCheck = () => {
 				throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeCheck em config é inválido: ${timeCheck} - precisa ser numérico e maior que 5000`);
 			}
 
-			if (!Number.isInteger(timeFirstCheck) || timeFirstCheck <= 900) {
-				throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeFirstCheck em config é inválido: ${timeFirstCheck} - precisa ser numérico e maior que 900`);
+			if (!Number.isInteger(timeFirstCheck) || timeFirstCheck <= 1000) {
+				throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeFirstCheck em config é inválido: ${timeFirstCheck} - precisa ser numérico e maior que 1000`);
 			}
 
 			fs.access (
@@ -49,7 +49,7 @@ const queueStartMailCheck = () => {
 				async err => {
 					try {
 						if (err) {
-							await functions.asyncForEach (
+							await functions.promiseForEach (
 								functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 								async folder => {
 									try {
