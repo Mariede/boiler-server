@@ -38,7 +38,8 @@ module.exports = {
 				exclude: /node_modules/,
 				loader: 'eslint-loader',
 				options: {
-					cache: false
+					cache: false,
+					configFile: './.eslintrc.json'
 				}
 			}
 		]
