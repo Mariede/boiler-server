@@ -40,8 +40,8 @@
   "scripts": {
     "start": "cls && nodemon ./src/index.js",
     "inspect": "cls && nodemon --inspect ./src/index.js",
-    "build": "webpack --config .webpack.config.js",
-    "proxy": "cls && nodemon _tools/proxy/_proxyStart.js",
+    "build": "webpack --config ./.webpack.config.js",
+    "proxy": "cls && nodemon ./_tools/proxy/_proxyStart.js",
     "forever-win": "set NODE_ENV=development&& forever start -s -c node ./src/index.js"
   },
   "nodemonConfig": {
