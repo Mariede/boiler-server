@@ -48,14 +48,15 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Definindo pastas de conteudo estatico
 			const checkPathStaticFiles = pathVirtualStaticFiles => {
 				const setPathStaticFiles = p => {
-					app.use(
+					app.use (
 						p.virtualPath,
-						express.static(
+						express.static (
 							__serverRoot + p.physicalPath, {
-							etag: true,
-							lastModified: true,
-							maxAge: 1000 * 60 * p.maxAge // 1000 = 1 segundo (timeout em minutos)
-						})
+								etag: true,
+								lastModified: true,
+								maxAge: 1000 * 60 * p.maxAge // 1000 = 1 segundo (timeout em minutos)
+							}
+						)
 					);
 				};
 
@@ -95,26 +96,31 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			});
 
 			// CORS --------------------------------------------------------------------
-			app.use(
-				cors({
-					'origin': __serverConfig.server.cors.origin,
-					'methods': __serverConfig.server.cors.methods,
-					'preflightContinue': __serverConfig.server.cors.preflightContinue,
-					'optionsSuccessStatus': __serverConfig.server.cors.optionsSuccessStatus,
-					'credentials': __serverConfig.server.cors.credentials
-				})
+			app.use (
+				cors (
+					{
+						'origin': __serverConfig.server.cors.origin,
+						'methods': __serverConfig.server.cors.methods,
+						'preflightContinue': __serverConfig.server.cors.preflightContinue,
+						'optionsSuccessStatus': __serverConfig.server.cors.optionsSuccessStatus,
+						'credentials': __serverConfig.server.cors.credentials
+					}
+				)
 			);
 
 			// Sessions - store no file system -----------------------------------------
-			app.use(
-				session({
+			app.use (
+				session (
+					{
 						name: __serverConfig.server.session.cookieName,
-						store: new sessionFileStore({
-							path: (__serverRoot + '/sessions'),
-							retries: 5,
-							secret: __serverConfig.server.session.secretStore,
-							ttl: 60 * __serverConfig.server.session.timeout // 1 = 1 segundo (timeout em minutos)
-						}),
+						store: new sessionFileStore (
+							{
+								path: (__serverRoot + '/sessions'),
+								retries: 5,
+								secret: __serverConfig.server.session.secretStore,
+								ttl: 60 * __serverConfig.server.session.timeout // 1 = 1 segundo (timeout em minutos)
+							}
+						),
 						secret: __serverConfig.server.session.secret,
 						resave: false,
 						saveUninitialized: false,
@@ -131,24 +137,26 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			);
 
 			// Body parser, application/json -------------------------------------------
-			app.use(
+			app.use (
 				bodyParser.json()
 			);
 
 			// Body parser, application/x-www-form-urlencoded --------------------------
-			app.use(
-				bodyParser.urlencoded({
-					extended: true
-				})
+			app.use (
+				bodyParser.urlencoded (
+					{
+						extended: true
+					}
+				)
 			);
 
 			// Cookie parser (req.cookies) ---------------------------------------------
-			app.use(
+			app.use (
 				cookieParser()
 			);
 
 			// Compressao Gzip ---------------------------------------------------------
-			app.use(
+			app.use (
 				compression()
 			);
 
@@ -156,32 +164,32 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			checkPathStaticFiles(__serverConfig.server.pathVirtualStaticFiles);
 
 			// Favicon -----------------------------------------------------------------
-			app.use(
+			app.use (
 				favicon(__serverRoot + __serverConfig.server.pathFavicon)
 			);
 
 			// Views -------------------------------------------------------------------
 
 			// Caminho padrao
-			app.set(
+			app.set (
 				'views',
 				__serverRoot + '/views/serverSide/pages'
 			);
 
 			// Engine padrao
-			app.set(
+			app.set (
 				'view engine',
 				'ejs'
 			);
 
 			// Extensoes da engine (e webpack)
-			app.engine(
+			app.engine (
 				'ejs',
 				ejs.__express
 			);
 
 			// Rotas -------------------------------------------------------------------
-			app.use(
+			app.use (
 				checkRoutePrefix(),
 				routes
 			);

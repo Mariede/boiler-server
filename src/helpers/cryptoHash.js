@@ -6,6 +6,11 @@ const crypto = require('crypto');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+// Modulos de apoio
+const functions = require('@serverRoot/helpers/functions');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
 // Retorna ou gera salt para tarefas (metodo privado)
 const _checkSaltData = async (...saltData) => {
 	try {
@@ -76,7 +81,7 @@ const generateSalt = (length, onlyNumbers = true) => {
 			let salt;
 
 			if (onlyNumbers) {
-				salt = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10).toString();
+				salt = functions.generateUniqueId(length, false).toString();
 			} else {
 				salt = crypto.randomBytes(length).toString('hex').slice(0, length);
 			}

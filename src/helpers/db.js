@@ -4,6 +4,10 @@
 // Modulos de inicializacao
 const sql = require('mssql');
 const mongoose = require('mongoose');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Modulos de apoio
 const mongooseSchemas = require('@serverRoot/models/mongooseSchemas');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
@@ -270,7 +274,7 @@ const msSqlServer = {
 		try {
 			let transaction = await msSqlServer.sqlOpenCon(),
 				result = await msSqlServer.sqlExecute(transaction, params);
-				await msSqlServer.sqlCloseCon(transaction, forceClose);
+			await msSqlServer.sqlCloseCon(transaction, forceClose);
 
 			return result;
 		} catch (err) {

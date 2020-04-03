@@ -125,6 +125,26 @@ const removeInvalidFileNameChars = (_param, os = 1) => {
 		throw err;
 	}
 };
+
+// Gera um identificador o mais unico possivel, em diferentes formatos
+const generateUniqueId = (_length, dateIncluded = true) => {
+	try {
+		let length = (Number.isInteger(_length) && _length > 0 ? (_length < 15 ? _length : 15) : 1),
+			fRet = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10);
+
+		if (dateIncluded) {
+			const dateNow = (new Date()).toISOString().split('T');
+			const dateLeft = (dateNow[0] || '').replace(/-/g, '');
+			const dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9);
+
+			fRet = dateLeft + dateRight + fRet.toString();
+		}
+
+		return fRet;
+	} catch (err) {
+		throw err;
+	}
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
@@ -132,5 +152,6 @@ module.exports = {
 	asyncForEach,
 	promiseForEach,
 	createNewFolder,
-	removeInvalidFileNameChars
+	removeInvalidFileNameChars,
+	generateUniqueId
 };

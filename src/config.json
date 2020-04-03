@@ -13,11 +13,29 @@
 		"clustered": false,
 		"saveRouteLogs": true,
 		"routePrefix": "/",
-		"pathVirtualStaticFiles": [{ "virtualPath": "/img", "physicalPath": "/views/serverSide/assets/images", "maxAge": 0 },{ "virtualPath": "/css", "physicalPath": "/views/serverSide/assets/css", "maxAge": 0 }],
+		"pathVirtualStaticFiles": [
+			{
+				"virtualPath": "/img",
+				"physicalPath": "/views/serverSide/assets/images",
+				"maxAge": 0
+			},
+			{
+				"virtualPath": "/css",
+				"physicalPath": "/views/serverSide/assets/css",
+				"maxAge": 0
+			}
+		],
 		"pathFavicon": "/views/serverSide/assets/images/favicon.ico",
 		"cors": {
 			"origin": "*",
-			"methods": ["GET","HEAD","PUT","PATCH","POST","DELETE"],
+			"methods": [
+				"GET",
+				"HEAD",
+				"PUT",
+				"PATCH",
+				"POST",
+				"DELETE"
+			],
 			"preflightContinue": false,
 			"optionsSuccessStatus": 204,
 			"credentials": true
@@ -38,7 +56,11 @@
 			"maxFileSize": 5242880
 		},
 		"session": {
-			"secret": ["SegredoIDCookies123", "Reforco1", "Reforco2"],
+			"secret": [
+				"SegredoIDCookies123",
+				"Reforco1",
+				"Reforco2"
+			],
 			"secretStore": "SegredoArquivos123",
 			"cookieName": "cookie-server",
 			"timeout": 20

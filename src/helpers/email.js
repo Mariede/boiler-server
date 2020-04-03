@@ -23,15 +23,12 @@ const _executeQueue = (e, counter) => {
 			const configQueue = __serverConfig.email.queue;
 			const configKey = configQueue.path + '\\trabalhador-' + (__serverWorker ? __serverWorker : 'unico');
 			const queueFile = JSON.stringify(e);
-			const dateNow = (new Date()).toISOString().split('T');
-			const dateLeft = (dateNow[0] || '').replace(/-/g, '');
-			const dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9);
-			const uniqueId = parseInt(((Math.random() * 9) + 1) * Math.pow(10, 5), 10);
+			const uniqueId = functions.generateUniqueId(3);
 
 			let initPath = __serverRoot,
 				queuePathSend = initPath + configKey;
 
-			const fileName = queuePathSend + '\\mail-queue-' + dateLeft + dateRight + counter + '.' + uniqueId + configQueue.fileExtension;
+			const fileName = queuePathSend + '\\mail-queue-' + uniqueId + '.' + counter + configQueue.fileExtension;
 
 			fs.access (
 				queuePathSend,

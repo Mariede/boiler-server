@@ -30,6 +30,12 @@ npm run build
   * config.json
   * Gerenciamento em tempo real do arquivo de configuração
   * Diversos parâmetros reunidos para configuração do servidor
+    - server: configurações gerais do servidor web
+    - auth: configurações gerais das permissões de acesso ao servidor web
+    - socketIo: configurações gerais do servidor de socketIo (websockets)
+    - crypto: configurações gerais de criptografia
+    - db: configurações gerais de acesso ao banco de dados (MSSQL ou MongoDB)
+    - email: configurações gerais de disparo de e-mail, incluindo queue
 
 ## Estrutura de código com pontos definidos de entrada / saída
   * Roteamento em camadas

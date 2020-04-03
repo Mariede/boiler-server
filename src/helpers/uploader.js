@@ -67,12 +67,10 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 			},
 			filename: (req, file, callback) => {
 				try {
-					let fileOriginalName = file.originalname,
-						findLastDot = fileOriginalName.lastIndexOf('.'),
-						dateNow = (new Date()).toISOString().split('T'),
-						dateLeft = (dateNow[0] || '').replace(/-/g, ''),
-						dateRight = (dateNow[1] || '').replace(/[:]/g, '').substr(0, 6),
-						fileName = fileOriginalName.substring(0, (findLastDot !== -1 ? findLastDot : fileOriginalName.length)) + '-' + dateLeft + dateRight + (findLastDot !== -1 ? fileOriginalName.substr(findLastDot) : '');
+					const fileOriginalName = file.originalname;
+					const findLastDot = fileOriginalName.lastIndexOf('.');
+					const uniqueId = functions.generateUniqueId(3);
+					const fileName = fileOriginalName.substring(0, (findLastDot !== -1 ? findLastDot : fileOriginalName.length)) + '-' + uniqueId + (findLastDot !== -1 ? fileOriginalName.substr(findLastDot) : '');
 
 					callback(null, fileName);
 				} catch (err) {
