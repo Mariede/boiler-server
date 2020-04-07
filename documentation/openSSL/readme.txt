@@ -2,8 +2,9 @@
 	-> gerador de certificados digitais selfsigned
 	-> https://slproweb.com/download/Win64OpenSSL-1_1_1f.exe
 
-2) Instalar Win64OpenSSL. Caminho padrão para o executável openssl.exe em:
-	-> C:\Program Files\OpenSSL-Win64\bin
+2) Instalar Win64OpenSSL:
+	-> caminho padrão para o executável openssl.exe: C:\Program Files\OpenSSL-Win64\bin
+	-> copiar OpenSSL DLLs, binários para a pasta \bin
 
 3) Caminho deve ser salvo como variável de ambiente de sistema no windows (Path).
 
