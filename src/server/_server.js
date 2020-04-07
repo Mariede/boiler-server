@@ -25,15 +25,22 @@ const routes = require('@serverRoot/routes/routes'); // Gate de roteamento
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
-const startServer = (configPath, configManage, numWorkers, ...cluster) => {
+const startServer = (cert, configPath, configManage, numWorkers, ...cluster) => {
 	return new Promise((resolve, reject) => {
 		try {
-			const isHttps = __serverConfig.server.isHttps;
+			const isHttps = __serverConfig.server.secure.isHttps;
 
 			const pServerCheck = {
 				protocol: (isHttps ? https : http),
-				serverOptions: (isHttps ? {} : {}),
-				sessionCookieSecure: (isHttps ? true : false)
+				serverOptions: (isHttps ? {
+					key: cert.key,
+					cert: cert.public
+				} : {}),
+				protocolInfo: (isHttps ? 'https://' : 'http://'),
+				sessionCookieSecure: (isHttps ? true : false),
+				socketIo: {
+					serverProtocol: (isHttps ? 'https://' : 'http://')
+				}
 			};
 
 			const listenOptions = {
@@ -214,7 +221,8 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 			// Proxy para o servidor de Websockets (Socket.io) -------------------------
 			// Se mais de uma aplicacao estiver rodando no mesmo servidor, diferenciar pelas portas em config
 			const wsProxy = proxy.createProxyServer({
-				target: `${__serverConfig.socketIo.serverProtocol}${__serverConfig.socketIo.serverHost}:${__serverConfig.socketIo.serverPort}`,
+				secure: false,
+				target: `${pServerCheck.socketIo.serverProtocol}${__serverConfig.socketIo.serverHost}:${__serverConfig.socketIo.serverPort}`,
 				ws: true
 			});
 
@@ -262,7 +270,7 @@ const startServer = (configPath, configManage, numWorkers, ...cluster) => {
 
 					let messages = [];
 
-					messages.push(['info', `Servidor está rodando em ${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
+					messages.push(['info', `Servidor está rodando em ${pServerCheck.protocolInfo}${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
 
 					// Inicia gerenciamento do arquivo de configuracao do servidor
 					let resultConfig = await configManage.check(configPath),

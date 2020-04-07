@@ -6,6 +6,7 @@ const cluster = require('cluster');
 const os = require('os');
 const log4js = require('log4js');
 const moduleAlias = require('module-alias');
+const fs = require('fs');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -35,7 +36,28 @@ const configPath = __serverRoot + '/config.json';
 global.__serverWorker = null;
 // -------------------------------------------------------------------------
 
-const startApp = async () => {
+const appCertPush = async () => {
+	try {
+		const fsPromises = fs.promises;
+
+		let result = {};
+
+		if (__serverConfig.server.secure.isHttps) {
+			const certPath = __serverRoot + __serverConfig.server.secure.certFolder + '\\';
+			const certKey = certPath + __serverConfig.server.secure.certKey;
+			const certPublic = certPath + __serverConfig.server.secure.certPublic;
+
+			result.key = await fsPromises.readFile(certKey, 'utf8');
+			result.public = await fsPromises.readFile(certPublic, 'utf8');
+		}
+
+		return result;
+	} catch (err) {
+		throw err;
+	}
+};
+
+const startApp = async cert => {
 	try {
 		const showMessages = messages => {
 			let checkType = 'info',
@@ -145,7 +167,7 @@ const startApp = async () => {
 		// -------------------------------------------------------------------------
 
 		if (!numWorkers || (numWorkers && cluster.isMaster)) {
-			socketIo.startIo();
+			socketIo.startIo(cert);
 		}
 
 		if (numWorkers) {
@@ -182,7 +204,7 @@ const startApp = async () => {
 				);
 			} else {
 				if (cluster.isWorker) {
-					let messages = await _server.startServer(configPath, configManage, numWorkers, cluster);
+					let messages = await _server.startServer(cert, configPath, configManage, numWorkers, cluster);
 					showMessages(messages);
 				}
 			}
@@ -191,7 +213,7 @@ const startApp = async () => {
 			log.logger('info', '|| Processo de inicialização do servidor - clusterizado: NÃO ||', 'startUpAll');
 			log.logger('info', '|| ********************************************************* ||', 'startUpAll');
 
-			let messages = await _server.startServer(configPath, configManage, numWorkers);
+			let messages = await _server.startServer(cert, configPath, configManage, numWorkers);
 			showMessages(messages);
 		}
 	} catch (err) {
@@ -201,9 +223,16 @@ const startApp = async () => {
 
 configManage.push(configPath)
 .then (
-	data => {
-		global.__serverConfig = Object.freeze(data);
-		startApp();
+	async data => {
+		try {
+			global.__serverConfig = Object.freeze(data);
+
+			const myCert = await appCertPush();
+
+			startApp(myCert);
+		} catch (err) {
+			throw err;
+		}
 	}
 )
 .catch (

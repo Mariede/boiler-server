@@ -1,0 +1,30 @@
+[req]
+distinguished_name = req_distinguished_name
+attributes = req_attributes
+x509_extensions = v3_req
+utf8 = yes
+prompt = no
+
+[req_distinguished_name]
+C = BR
+ST = São Paulo
+L = Sorocaba
+O = Boiler-server | Personal Tests
+OU = Boiler-server | github/Mariede
+CN = www.localhost.com
+emailAddress = miriede@gmail.com
+
+[req_attributes]
+challengePassword = A12345678a
+challengePassword_min = 4
+challengePassword_max = 20
+
+[v3_req]
+keyUsage = critical, digitalSignature, keyAgreement
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = www.localhost.com
+DNS.2 = localhost.com
+DNS.3 = localhost

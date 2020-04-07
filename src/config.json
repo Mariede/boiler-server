@@ -1,6 +1,5 @@
 {
 	"server": {
-		"isHttps": false,
 		"host": "localhost",
 		"port": 5000,
 		"backlog": 511,
@@ -13,6 +12,12 @@
 		"clustered": false,
 		"saveRouteLogs": true,
 		"routePrefix": "/",
+		"secure": {
+			"isHttps": false,
+			"certFolder": "/cert",
+			"certKey": "cert.key",
+			"certPublic": "cert.pem"
+		},
 		"pathVirtualStaticFiles": [
 			{
 				"virtualPath": "/img",
@@ -84,7 +89,6 @@
 		"_comments2": "except => Except aceita rota parcial ou exata; utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2"
 	},
 	"socketIo": {
-		"serverProtocol": "http://",
 		"serverHost": "localhost",
 		"serverPort": 5001,
 		"path": "/socket.io"

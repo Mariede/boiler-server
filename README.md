@@ -13,7 +13,7 @@ npm start
 npm run build
 ```
 
-## Servidor http
+## Servidor http ou https
   * Clusterização opcional
   * CORS
   * favicon
@@ -53,6 +53,7 @@ npm run build
   * Integrado com a aplicação, mas com servidor próprio em porta separada
   * Proxy automático, direto pela aplicação
   * Funciona normalmente single-thread e multi-thread (cluster)
+  * Trabalha http ou https (ws ou wss), baseado na requisição web
 
 ## Possibilidade de utilizar a aplicação como serviço do Windows ou via "Forever"
   * Pacote node-windows
