@@ -46,6 +46,7 @@
   },
   "nodemonConfig": {
     "ignore": [
+      "src/cert/*",
       "src/logs/*",
       "src/queue/*",
       "src/sessions/*",
@@ -61,6 +62,8 @@
     "node",
     "express",
     "aplicacao",
+    "javascript",
+    "js",
     "servidor",
     "back-end"
   ],

@@ -130,6 +130,9 @@ npm run build
       + é local, relacionado a rota em execução
       + uma action pode chamar uma ou mais actions e/ou um ou mais helpers
     - pode ser quebrado em subpastas, componentizado após os controllers
+  * cert (* opcional, configurável)
+    - contém os arquivos do certificado digital para chamadas https
+    - se o modo https estiver desligado, o servidor desconsidera esta pasta
   * custom
     - pasta com APIs de interfaceamento para outros serviços externos
       + é como um helper interfaceando exclusivamente serviços externos
