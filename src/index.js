@@ -237,6 +237,6 @@ configManage.push(configPath)
 )
 .catch (
 	err => {
-		throw err;
+		console.error(err);
 	}
 );
