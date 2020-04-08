@@ -22,10 +22,11 @@ const path = require('path');
 // Modulos de apoio
 const queue = require('@serverRoot/server/queue'); // Queue de e-mails
 const routes = require('@serverRoot/routes/routes'); // Gate de roteamento
+const configManage = require('@serverRoot/server/configManage');
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
-const startServer = (cert, configPath, configManage, numWorkers, ...cluster) => {
+const startServer = (cert, configPath, numWorkers, ...cluster) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const isHttps = __serverConfig.server.secure.isHttps;

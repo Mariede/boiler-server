@@ -22,42 +22,10 @@ moduleAlias.addAliases({
 // Modulos de apoio
 const socketIo = require('@serverRoot/server/socketIo'); // Lib socket.io
 const _server = require('@serverRoot/server/_server');
-const configManage = require('@serverRoot/server/configManage');
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
-// -------------------------------------------------------------------------
-// Procedimentos prioritarios
-
-// Acessando informacoes do arquivo de configuracoes do servidor
-const configPath = __serverRoot + '/config.json';
-
-// Server Worker (cluster) inicialmente sem cluster (trabalhador unico)
-global.__serverWorker = null;
-// -------------------------------------------------------------------------
-
-const appCertPush = async () => {
-	try {
-		const fsPromises = fs.promises;
-
-		let result = {};
-
-		if (__serverConfig.server.secure.isHttps) {
-			const certPath = __serverRoot + __serverConfig.server.secure.certFolder + '\\';
-			const certKey = certPath + __serverConfig.server.secure.certKey;
-			const certPublic = certPath + __serverConfig.server.secure.certPublic;
-
-			result.key = await fsPromises.readFile(certKey, 'utf8');
-			result.public = await fsPromises.readFile(certPublic, 'utf8');
-		}
-
-		return result;
-	} catch (err) {
-		throw err;
-	}
-};
-
-const startApp = async cert => {
+const startApp = async (cert, configPath) => {
 	try {
 		const showMessages = messages => {
 			let checkType = 'info',
@@ -204,7 +172,7 @@ const startApp = async cert => {
 				);
 			} else {
 				if (cluster.isWorker) {
-					let messages = await _server.startServer(cert, configPath, configManage, numWorkers, cluster);
+					let messages = await _server.startServer(cert, configPath, numWorkers, cluster);
 					showMessages(messages);
 				}
 			}
@@ -213,7 +181,7 @@ const startApp = async cert => {
 			log.logger('info', '|| Processo de inicialização do servidor - clusterizado: NÃO ||', 'startUpAll');
 			log.logger('info', '|| ********************************************************* ||', 'startUpAll');
 
-			let messages = await _server.startServer(cert, configPath, configManage, numWorkers);
+			let messages = await _server.startServer(cert, configPath, numWorkers);
 			showMessages(messages);
 		}
 	} catch (err) {
@@ -221,22 +189,44 @@ const startApp = async cert => {
 	}
 };
 
-configManage.push(configPath)
-.then (
-	async data => {
-		try {
-			global.__serverConfig = Object.freeze(data);
+const preStartApp = async () => {
+	try {
+		const getAppConfigData = async path => {
+			const fsPromises = fs.promises;
+			return JSON.parse(await fsPromises.readFile(path, 'utf8'));
+		};
 
-			const myCert = await appCertPush();
+		const getAppCert = async () => {
+			const fsPromises = fs.promises;
 
-			startApp(myCert);
-		} catch (err) {
-			throw err;
-		}
-	}
-)
-.catch (
-	err => {
+			let result = {};
+
+			if (__serverConfig.server.secure.isHttps) {
+				const certPath = __serverRoot + __serverConfig.server.secure.certFolder + '\\';
+				const certKey = certPath + __serverConfig.server.secure.certKey;
+				const certPublic = certPath + __serverConfig.server.secure.certPublic;
+
+				result.key = await fsPromises.readFile(certKey, 'utf8');
+				result.public = await fsPromises.readFile(certPublic, 'utf8');
+			}
+
+			return result;
+		};
+
+		// Caminho para o arquivo de configuracoes do servidor
+		const configPath = __serverRoot + '/config.json';
+
+		// Variaveis globais
+		global.__serverConfig = Object.freeze(await getAppConfigData(configPath)); // Configuracoes do servidor
+		global.__serverWorker = null; // Server Worker inicialmente sem cluster (trabalhador unico)
+
+		// Certificado digital (apenas se ativo)
+		const myCert = await getAppCert();
+
+		startApp(myCert, configPath);
+	} catch (err) {
 		console.error(err);
 	}
-);
+};
+
+preStartApp();

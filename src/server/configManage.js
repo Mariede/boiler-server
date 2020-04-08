@@ -3,31 +3,14 @@
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const fs = require('fs');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Modulos de apoio
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Carrega arquivo de configuracao (sincrono)
-const push = config => {
-	return new Promise((resolve, reject) => {
-		try {
-			fs.readFile (
-				config,
-				'utf8',
-				(err, data) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve(JSON.parse(data));
-					}
-				}
-			);
-		} catch (err) {
-			reject(err);
-		}
-	});
-};
-
 // Checa arquivo de configuracao por mudancas
 const check = config => {
 	return new Promise((resolve, reject) => {
@@ -153,6 +136,5 @@ const check = config => {
 // -------------------------------------------------------------------------
 
 module.exports = {
-	push,
 	check
 };
