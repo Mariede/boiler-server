@@ -41,7 +41,7 @@ router.use(async (req, res, next) => {
 		if (releasedReq) {
 			next();
 		} else {
-			res.status(401).send({
+			res.status(401).send ({
 				name: 'ROUTER',
 				code: 401,
 				message: 'Rota protegida, acesso não autorizado...'

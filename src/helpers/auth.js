@@ -13,7 +13,7 @@ const isProtected = route => {
 			const exceptInspect = (paramTable, paramRoute) => {
 				const routePrefix = (__serverConfig.server.routePrefix || '').replace(/\/+$/, '') + '/';
 
-				return paramTable.some(
+				return paramTable.some (
 					element => {
 						let elementPick = element.trim().toUpperCase().replace(/^\/+|\/+$/, ''),
 							elementCheck = routePrefix + (elementPick !== '' ? elementPick + '/' : ''),

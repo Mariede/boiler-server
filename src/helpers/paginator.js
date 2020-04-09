@@ -43,7 +43,7 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 			let newData = Array.from(jsonData),
 				sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
 
-			newData.sort(
+			newData.sort (
 				(a, b) => {
 					return sortThis(a, b, 0, sortElementsLen);
 				}
@@ -73,7 +73,7 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output =
 				},
 				indexSearchStart = backPage * itemsPerPage,
 				indexSearchStop = indexSearchStart + itemsPerPage,
-				recordSet = jsonData.filter(
+				recordSet = jsonData.filter (
 					(e, i) => {
 						return (i >= indexSearchStart && i < indexSearchStop);
 					}

@@ -29,7 +29,7 @@ Realiza o upload de um ou mais arquivos (POST / enctype: "multipart/form-data")
 */
 const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, storageToDisk = true) => {
 	try {
-		const diskStorage = multer.diskStorage({
+		const diskStorage = multer.diskStorage ({
 			destination: (req, file, callback) => {
 				try {
 					let initPath = __serverRoot,
@@ -82,29 +82,29 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 		const uploadFiles = fileNames => {
 			return new Promise((resolve, reject) => {
 				try {
-					const upload = multer(
+					const upload = multer (
 						{
 							fileFilter: (req, file, callback) => {
 								try {
-									const checkExtensions = [...new Set((configUpload.allowedExtensions || '').split('|').map(
+									const checkExtensions = [...new Set((configUpload.allowedExtensions || '').split('|').map (
 										item => {
 											return item.substr(0, (item.indexOf(':') !== -1 ? item.indexOf(':') : item.length)).trim();
 										}
-									))].filter(
+									))].filter (
 										item => {
 											return item !== '';
 										}
-									); // O new Set para valores unicos e nao vazios, assim podemos repetir extensoes para eventuais novos MIME Types
+									); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
 
-									const checkMimeTypes = [...new Set((configUpload.allowedExtensions || '').split('|').map(
+									const checkMimeTypes = [...new Set((configUpload.allowedExtensions || '').split('|').map (
 										item => {
 											return item.substr((item.indexOf(':') !== -1 ? item.indexOf(':') + 1 : '')).trim();
 										}
-									))].filter(
+									))].filter (
 										item => {
 											return item !== '';
 										}
-									); // O new Set para valores unicos e nao vazios, assim podemos repetir extensoes para eventuais novos MIME Types
+									); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
 
 									let extName = new RegExp('^(' + checkExtensions.join('|') + '){1}$', 'i').test(path.extname(file.originalname).toLowerCase()),
 										mimeType = new RegExp('^(' + checkMimeTypes.join('|') + '){1}$', 'i').test(file.mimetype);

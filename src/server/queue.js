@@ -205,7 +205,7 @@ const queueStartMailCheck = () => {
 												log.logger('error', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.message || err.stack || err)}`, 'mailQueue');
 											} else {
 												if (files && files.length) {
-													let targetFiles = files.filter(
+													let targetFiles = files.filter (
 															file => {
 																return path.extname(file).toLowerCase() === fileExtension;
 															}
@@ -213,7 +213,7 @@ const queueStartMailCheck = () => {
 														sentTotal = 0;
 
 													if (targetFiles.length) {
-														targetFiles.sort(
+														targetFiles.sort (
 															(a, b) => {
 																return (a > b ? 1 : (a < b ? -1 : 0));
 															}

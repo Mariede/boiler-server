@@ -13,7 +13,7 @@ const fs = require('fs');
 // Definindo caminhos globais de acesso para elementos do servidor
 global.__serverRoot = __dirname;
 
-moduleAlias.addAliases({
+moduleAlias.addAliases ({
 	'@serverRoot': __serverRoot
 });
 // -------------------------------------------------------------------------
@@ -80,7 +80,7 @@ const startApp = async (cert, configPath) => {
 		// Middleware
 
 		// logs --------------------------------------------------------------------
-		log4js.configure({
+		log4js.configure ({
 			appenders: {
 				consoleAppender: {
 					type: 'console'

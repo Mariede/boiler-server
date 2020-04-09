@@ -203,7 +203,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			);
 
 			app.all('*', (req, res) => {
-				res.status(404).send({
+				res.status(404).send ({
 					name: 'ROUTER',
 					code: 404,
 					message: 'Essa rota não existe...'
@@ -221,7 +221,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 			// Proxy para o servidor de Websockets (Socket.io) -------------------------
 			// Se mais de uma aplicacao estiver rodando no mesmo servidor, diferenciar pelas portas em config
-			const wsProxy = proxy.createProxyServer({
+			const wsProxy = proxy.createProxyServer ({
 				secure: false,
 				target: `${pServerCheck.socketIo.serverProtocol}${__serverConfig.socketIo.serverHost}:${__serverConfig.socketIo.serverPort}`,
 				ws: true

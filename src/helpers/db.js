@@ -129,12 +129,12 @@ const msSqlServer = {
 									checkParamA = param.indexOf('('),
 									checkParamB = checkParamA !== -1 ? checkParamA : param.length,
 									checkParamC = param.substr(0, checkParamB).trim(),
-									checkParamD = (dataTypesSupported.find(
+									checkParamD = (dataTypesSupported.find (
 										element => {
 											return element.toUpperCase() === checkParamC.toUpperCase();
 										}
 									) || ''),
-									checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : '').split(',').map(
+									checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : '').split(',').map (
 										i => {
 											let iNum = parseFloat(i);
 											return ((isNaN(i) || isNaN(iNum)) ? i : iNum);
@@ -321,19 +321,11 @@ const mongoDB = {
 		return new Promise((resolve, reject) => {
 			try {
 				const getCompoundIndexes = s => {
-					try {
-						return (mongooseSchemas.schemasCompoundIndexes[s] || []);
-					} catch (err) {
-						throw err;
-					}
+					return (mongooseSchemas.schemasCompoundIndexes[s] || []);
 				};
 
 				const getExtraOptions = s => {
-					try {
-						return (mongooseSchemas.schemasExtraOptions[s] || {});
-					} catch (err) {
-						throw err;
-					}
+					return (mongooseSchemas.schemasExtraOptions[s] || {});
 				};
 
 				let myModel = mongoose.models[schema];
