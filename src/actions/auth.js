@@ -110,6 +110,7 @@ const logout = async (req, res) => {
 const isLogged = async (req, res) => {
 	let resultType = String(req.query.result_type),
 		fRet = await auth.isLogged(req, (resultType === '1' ? 1 : 0));
+
 	return fRet;
 };
 // -------------------------------------------------------------------------

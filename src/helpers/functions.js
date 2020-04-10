@@ -8,60 +8,48 @@
 // -------------------------------------------------------------------------
 // Verifica a data atual do servidor (formatado ou sem formatacao)
 const getDateNow = formatted => {
-	try {
-		const formatLeftZeros = num => {
-			return ('0' + num).slice(-2);
-		};
+	const formatLeftZeros = num => {
+		return ('0' + num).slice(-2);
+	};
 
-		let agora = new Date();
+	let agora = new Date();
 
-		if (formatted) {
-			agora = `${formatLeftZeros(agora.getDate())}/${formatLeftZeros(agora.getMonth() + 1)}/${agora.getFullYear()} ${formatLeftZeros(agora.getHours())}:${formatLeftZeros(agora.getMinutes())}:${formatLeftZeros(agora.getSeconds())}`;
-		}
-
-		return agora;
-	} catch (err) {
-		throw err;
+	if (formatted) {
+		agora = `${formatLeftZeros(agora.getDate())}/${formatLeftZeros(agora.getMonth() + 1)}/${agora.getFullYear()} ${formatLeftZeros(agora.getHours())}:${formatLeftZeros(agora.getMinutes())}:${formatLeftZeros(agora.getSeconds())}`;
 	}
+
+	return agora;
 };
 
 // Loop forEach assincrono
 const asyncForEach = async (array, callback) => {
-	try {
-		for (let i = 0; i < array.length; i++) {
-			let endThisLoopNow = await callback(array[i], i, array);
+	for (let i = 0; i < array.length; i++) {
+		let endThisLoopNow = await callback(array[i], i, array);
 
-			if (endThisLoopNow) {
-				break;
-			}
+		if (endThisLoopNow) {
+			break;
 		}
-	} catch (err) {
-		throw err;
 	}
 };
 
 // Executa uma sequencia ordenada de promessas com uma array de itens como argumento de entrada
 const promiseForEach = (arrayItems, callback) => {
-	try {
-		return arrayItems.reduce (
-			(promise, item) => {
-				return promise
-				.then (
-					() => {
-						return callback(item);
-					}
-				)
-				.catch (
-					err => {
-						throw err;
-					}
-				);
-			},
-			Promise.resolve()
-		);
-	} catch (err) {
-		throw err;
-	}
+	return arrayItems.reduce (
+		(promise, item) => {
+			return promise
+			.then (
+				() => {
+					return callback(item);
+				}
+			)
+			.catch (
+				err => {
+					throw err;
+				}
+			);
+		},
+		Promise.resolve()
+	);
 };
 
 // Cria uma nova pasta no sistema de arquivos
@@ -109,41 +97,33 @@ const createNewFolder = (fs, newFolder) => {
 // Verifica caracteres invalidos na criacao de pastas windows
 //    os => sistema operacional: 1: windows
 const removeInvalidFileNameChars = (_param, os = 1) => {
-	try {
-		let param = _param;
+	let param = _param;
 
-		switch (os) {
-			case 1: {
-				// Windows
-				param = String(_param).replace(/[|&;$%@"<>()+,]/g, '');
-				break;
-			}
+	switch (os) {
+		case 1: {
+			// Windows
+			param = String(_param).replace(/[|&;$%@"<>()+,]/g, '');
+			break;
 		}
-
-		return param;
-	} catch (err) {
-		throw err;
 	}
+
+	return param;
 };
 
 // Gera um identificador o mais unico possivel, em diferentes formatos
 const generateUniqueId = (_length, dateIncluded = true) => {
-	try {
-		let length = (Number.isInteger(_length) && _length > 0 ? (_length < 15 ? _length : 15) : 1),
-			fRet = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10);
+	let length = (Number.isInteger(_length) && _length > 0 ? (_length < 15 ? _length : 15) : 1),
+		fRet = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10);
 
-		if (dateIncluded) {
-			const dateNow = (new Date()).toISOString().split('T');
-			const dateLeft = (dateNow[0] || '').replace(/-/g, '');
-			const dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9);
+	if (dateIncluded) {
+		const dateNow = (new Date()).toISOString().split('T');
+		const dateLeft = (dateNow[0] || '').replace(/-/g, '');
+		const dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9);
 
-			fRet = dateLeft + dateRight + fRet.toString();
-		}
-
-		return fRet;
-	} catch (err) {
-		throw err;
+		fRet = dateLeft + dateRight + fRet.toString();
 	}
+
+	return fRet;
 };
 // -------------------------------------------------------------------------
 

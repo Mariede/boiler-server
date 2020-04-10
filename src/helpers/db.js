@@ -271,15 +271,11 @@ const msSqlServer = {
 		* Verificar arquivo de ajuda
 	*/
 	sqlExecuteAll: async (params, forceClose = false) => { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
-		try {
-			let transaction = await msSqlServer.sqlOpenCon(),
-				result = await msSqlServer.sqlExecute(transaction, params);
-			await msSqlServer.sqlCloseCon(transaction, forceClose);
+		let transaction = await msSqlServer.sqlOpenCon(),
+			result = await msSqlServer.sqlExecute(transaction, params);
+		await msSqlServer.sqlCloseCon(transaction, forceClose);
 
-			return result;
-		} catch (err) {
-			throw err;
-		}
+		return result;
 	}
 };
 
@@ -389,11 +385,7 @@ const mongoDB = {
 	},
 
 	noSqlCloseCon: () => {
-		try {
-			mongoose.connection.close();
-		} catch (err) {
-			throw err;
-		}
+		mongoose.connection.close();
 	},
 
 	// Inicia uma transacao com o mongoose e retorna o id da sessao
@@ -452,22 +444,18 @@ const mongoDB = {
 			- padrao: 1 elemento retorna somento o objeto, > 1 retorna array de objetos, 0 retorna undefined
 	*/
 	noSqlGetIds: async (search, schema, session = undefined, returnAlwaysArray = false) => {
-		try {
-			let myModel = await mongoDB.noSqlExecute(schema),
-				resultSearch = (session ? await myModel.find(search).select('_id').session(session) : await myModel.find(search).select('_id'));
+		let myModel = await mongoDB.noSqlExecute(schema),
+			resultSearch = (session ? await myModel.find(search).select('_id').session(session) : await myModel.find(search).select('_id'));
 
-			if (resultSearch.length === 0) {
-				resultSearch = undefined;
-			} else {
-				if (!returnAlwaysArray && resultSearch.length === 1) {
-					resultSearch = resultSearch[0];
-				}
+		if (resultSearch.length === 0) {
+			resultSearch = undefined;
+		} else {
+			if (!returnAlwaysArray && resultSearch.length === 1) {
+				resultSearch = resultSearch[0];
 			}
-
-			return resultSearch;
-		} catch (err) {
-			throw err;
 		}
+
+		return resultSearch;
 	},
 
 	/*
@@ -498,12 +486,8 @@ const mongoDB = {
 		schema => Nome do esquema a ser instaciado (definido em /models)
 	*/
 	noSqlExecute: async schema => {
-		try {
-			await mongoDB.noSqlOpenCon();
-			return await mongoDB.noSqlGetModel(schema);
-		} catch (err) {
-			throw err;
-		}
+		await mongoDB.noSqlOpenCon();
+		return await mongoDB.noSqlGetModel(schema);
 	}
 };
 // -------------------------------------------------------------------------

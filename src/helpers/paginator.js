@@ -158,39 +158,35 @@ const keysToCamelCase = jsonData => {
 
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordenador)
 const setSort = async (req, jsonData, toCamelCase = false) => {
-	try {
-		let method = req.method,
-			sortElements = [],
-			sortOrder = [],
-			sortCaseInsensitive = false;
+	let method = req.method,
+		sortElements = [],
+		sortOrder = [],
+		sortCaseInsensitive = false;
 
-		if (method.toUpperCase() === 'GET') {
-			if (req.query.sort_fields) {
-				req.query.sort_fields.split(/[,|]/).forEach (
-					e => {
-						let sortField = e.split(/[:]/);
+	if (method.toUpperCase() === 'GET') {
+		if (req.query.sort_fields) {
+			req.query.sort_fields.split(/[,|]/).forEach (
+				e => {
+					let sortField = e.split(/[:]/);
 
-						if (sortField[0]) {
-							sortElements.push(sortField[0]);
-							sortOrder.push((sortField[1] || ''));
-						}
+					if (sortField[0]) {
+						sortElements.push(sortField[0]);
+						sortOrder.push((sortField[1] || ''));
 					}
-				);
+				}
+			);
 
-				sortCaseInsensitive = /^(true|yes|y|sim|s){0,1}$/i.test(req.query.sort_case_insensitive);
-			}
-		} else {
-			errWrapper.throwThis('ORDENAÇÃO (SORTER)', 400, 'Favor utilizar verbo GET para realizar a ordenação...');
+			sortCaseInsensitive = /^(true|yes|y|sim|s){0,1}$/i.test(req.query.sort_case_insensitive);
 		}
-
-		if (toCamelCase) {
-			jsonData = await keysToCamelCase(jsonData);
-		}
-
-		return await _executeSort(jsonData, sortElements, sortOrder, sortCaseInsensitive);
-	} catch (err) {
-		throw err;
+	} else {
+		errWrapper.throwThis('ORDENAÇÃO (SORTER)', 400, 'Favor utilizar verbo GET para realizar a ordenação...');
 	}
+
+	if (toCamelCase) {
+		jsonData = await keysToCamelCase(jsonData);
+	}
+
+	return await _executeSort(jsonData, sortElements, sortOrder, sortCaseInsensitive);
 };
 
 /*
@@ -198,34 +194,30 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao (pagina
 	-> page na querystring e obrigatorio para a paginacao
 */
 const setPage = async (req, jsonData, jsonDataLen, toCamelCase = false) => {
-	try {
-		let method = req.method,
-			currentPage = 0,
-			itemsPerPage = 10;
+	let method = req.method,
+		currentPage = 0,
+		itemsPerPage = 10;
 
-		if (method.toUpperCase() === 'GET') {
-			if (/^(\d)+$/.test(req.query.page)) {
-				currentPage = parseInt(req.query.page, 10);
-			}
-
-			if (/^(\d)+$/.test(req.query.items_per_page)) {
-				itemsPerPage = parseInt(req.query.items_per_page, 10);
-			}
-		} else {
-			errWrapper.throwThis('PAGINAÇÃO (PAGINATOR)', 400, 'Favor utilizar verbo GET para realizar a consulta...');
+	if (method.toUpperCase() === 'GET') {
+		if (/^(\d)+$/.test(req.query.page)) {
+			currentPage = parseInt(req.query.page, 10);
 		}
 
-		if (toCamelCase && jsonData.recordset) {
-			jsonData.recordset = await keysToCamelCase(jsonData.recordset);
+		if (/^(\d)+$/.test(req.query.items_per_page)) {
+			itemsPerPage = parseInt(req.query.items_per_page, 10);
 		}
+	} else {
+		errWrapper.throwThis('PAGINAÇÃO (PAGINATOR)', 400, 'Favor utilizar verbo GET para realizar a consulta...');
+	}
 
-		if (currentPage && jsonData.recordset) {
-			return await _executePage(jsonData.recordset, jsonDataLen, currentPage, itemsPerPage, jsonData.output);
-		} else {
-			return jsonData;
-		}
-	} catch (err) {
-		throw err;
+	if (toCamelCase && jsonData.recordset) {
+		jsonData.recordset = await keysToCamelCase(jsonData.recordset);
+	}
+
+	if (currentPage && jsonData.recordset) {
+		return await _executePage(jsonData.recordset, jsonDataLen, currentPage, itemsPerPage, jsonData.output);
+	} else {
+		return jsonData;
 	}
 };
 // -------------------------------------------------------------------------

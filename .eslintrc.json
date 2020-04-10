@@ -128,7 +128,6 @@
 		"no-async-promise-executor": 2,
 		"array-callback-return": 2,
 		"no-useless-return": 2,
-		"no-useless-catch": 0,
 		"no-useless-concat": 2,
 		"no-useless-computed-key": 2,
 		"no-useless-rename": ["error", {
