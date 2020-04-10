@@ -96,8 +96,10 @@
 	"crypto": {
 		"hashAlgorithm": "sha512",
 		"hashDigestEncoding": "hex",
-		"cipherAlgorithm": "aes-192-cbc",
-		"cipherKeyLen": 24
+		"encryptInputEncoding": "utf8",
+		"encryptOutputEncoding": "hex",
+		"encryptAlgorithm": "aes-192-cbc",
+		"encryptKeyLen": 24
 	},
 	"db": {
 		"msSqlServer": {

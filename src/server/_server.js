@@ -125,6 +125,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 							{
 								path: (__serverRoot + '/sessions'),
 								encoding: 'utf8',
+								encryptEncoding: 'hex',
 								retries: 5,
 								secret: __serverConfig.server.session.secretStore,
 								ttl: 60 * __serverConfig.server.session.timeout // 1 = 1 segundo (timeout em minutos)
