@@ -109,43 +109,34 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao
 const setSearch = async (req, baseQuery, targetReplace) => {
-	try {
-		const falsyCheck = param => {
-			try {
-				const falsy = [null, undefined, NaN]; // Excecao => 0 / false / ""
+	const falsyCheck = param => {
+		const falsy = [null, undefined, NaN]; // Excecao => 0 / false / ""
+		return (falsy.includes(param) ? '' : ((param === 0 || param === false) ? param.toString() : (param || '').toString()));
+	};
 
-				return (falsy.includes(param) ? '' : ((param === 0 || param === false) ? param.toString() : (param || '').toString()));
-			} catch (err) {
-				throw err;
-			}
-		};
+	let method = req.method,
+		searchFields = [],
+		searchValue = '';
 
-		let method = req.method,
-			searchFields = [],
-			searchValue = '';
-
-		if (method.toUpperCase() === 'GET') {
-			if (req.query.fullsearch_fields) {
-				req.query.fullsearch_fields.split(/[,|]/).forEach (
-					e => {
-						searchFields.push(e.trim());
-					}
-				);
-			}
-
-			if (Array.isArray(searchFields) && searchFields.length > 0) {
-				searchValue += falsyCheck(req.query.fullsearch_value);
-			}
-		} else {
-			errWrapper.throwThis('SEARCHER', 400, 'Favor utilizar verbo GET para realizar a consulta...');
+	if (method.toUpperCase() === 'GET') {
+		if (req.query.fullsearch_fields) {
+			req.query.fullsearch_fields.split(/[,|]/).forEach (
+				e => {
+					searchFields.push(e.trim());
+				}
+			);
 		}
 
-		searchFields = await _camelCaseToSnakeCase(searchFields);
-
-		return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);
-	} catch (err) {
-		throw err;
+		if (Array.isArray(searchFields) && searchFields.length > 0) {
+			searchValue += falsyCheck(req.query.fullsearch_value);
+		}
+	} else {
+		errWrapper.throwThis('SEARCHER', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 	}
+
+	searchFields = await _camelCaseToSnakeCase(searchFields);
+
+	return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);
 };
 // -------------------------------------------------------------------------
 

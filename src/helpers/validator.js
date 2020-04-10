@@ -9,7 +9,6 @@
 // Realiza analise de dado falsy (metodo privado)
 const _falsyCheck = param => {
 	const falsy = [null, undefined, NaN, false]; // Excecao => 0 / ""
-
 	return (falsy.includes(param) ? param : (param === 0 ? param.toString() : (param || '').toString()));
 };
 
