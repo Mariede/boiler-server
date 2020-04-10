@@ -32,7 +32,7 @@
     "eslint": "^6.8.0",
     "eslint-loader": "^4.0.0",
     "generate-package-json-webpack-plugin": "^1.0.1",
-    "nodemon": "^2.0.2",
+    "nodemon": "^2.0.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.7",
     "webpack-node-externals": "^1.7.2"
