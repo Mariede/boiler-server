@@ -7,7 +7,7 @@
   "private": true,
   "dependencies": {
     "express": "^4.17.1",
-    "http-proxy": "^1.17.0",
+    "http-proxy": "^1.18.0",
     "log4js": "^6.1.2"
   },
   "author": "Michel Guimarães Ariede"
