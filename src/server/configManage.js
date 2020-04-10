@@ -123,7 +123,7 @@ const check = config => {
 						log.logger('info', `Arquivo ${filename} verificado`, 'configFile');
 					}
 				} catch (err) {
-					throw err;
+					log.logger('error', `Falha ao observar o arquivo ${filename}: ${(err.stack || err)}`, 'configFile');
 				}
 			});
 

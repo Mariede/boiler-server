@@ -202,7 +202,7 @@ const queueStartMailCheck = () => {
 											};
 
 											if (err) {
-												log.logger('error', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.message || err.stack || err)}`, 'mailQueue');
+												log.logger('error', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.stack || err)}`, 'mailQueue');
 											} else {
 												if (files && files.length) {
 													let targetFiles = files.filter (
@@ -265,7 +265,7 @@ const queueStartMailCheck = () => {
 									}
 								);
 							} catch (err) {
-								throw err;
+								log.logger('error', `Loop de leitura do diretório: ${(err.stack || err)}`, 'mailQueue');
 							}
 						};
 

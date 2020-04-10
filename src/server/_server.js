@@ -229,7 +229,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 			// Listener para erros de proxy
 			wsProxy.on('error', (err, req, res) => {
-				log.logger('error', err.stack || err);
+				log.logger('error', `wsProxy: ${(err.stack || err)}`);
 				res.end();
 			});
 
@@ -310,7 +310,9 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 				}
 			};
 
-			_server.listen(listenOptions, serverStarter());
+			_server.listen(listenOptions, serverStarter()).on('error', err => {
+				reject(err);
+			});
 		} catch (err) {
 			reject(err);
 		}

@@ -56,7 +56,7 @@ const isLogged = (req, resType) => { // Se resType === 1 => retorna object. Defa
 				fRet = false;
 
 			if (sess) {
-				if (typeof sess[sessWraper] === 'object') {
+				if (typeof sess[sessWraper] === 'object' && sess[sessWraper] !== null) {
 					if (resType === 1) {
 						fRet = sess[sessWraper];
 					} else {

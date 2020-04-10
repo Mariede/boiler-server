@@ -13,12 +13,7 @@ const auth = require('@serverRoot/actions/auth');
 // -------------------------------------------------------------------------
 // Middleware
 const _commonGate = async (req, res) => {
-	try {
-		res.locals.routeControllerRoute = 'AUTH';
-		return;
-	} catch (err) {
-		throw err;
-	}
+	res.locals.routeControllerRoute = 'AUTH';
 };
 // -------------------------------------------------------------------------
 

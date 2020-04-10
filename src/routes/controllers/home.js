@@ -13,12 +13,7 @@ const home = require('@serverRoot/actions/home');
 // -------------------------------------------------------------------------
 // Middleware
 const _commonGate = async (req, res) => {
-	try {
-		res.locals.routeControllerRoute = 'HOME';
-		return;
-	} catch (err) {
-		throw err;
-	}
+	res.locals.routeControllerRoute = 'HOME';
 };
 // -------------------------------------------------------------------------
 

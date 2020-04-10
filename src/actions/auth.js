@@ -14,91 +14,92 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 
 // Permite acesso as rotas protegidas, analise das permissoes em um segundo momento
 const logon = async (req, res) => {
-	try {
-		let sess = req.session,
-			sessWraper = __serverConfig.auth.sessWrapper;
+	let sess = req.session,
+		sessWraper = __serverConfig.auth.sessWrapper;
 
-		if (typeof sess[sessWraper] === 'object') {
-			errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
-		} else {
-			let login = req.body.login,
-				pass = req.body.pass;
+	if (typeof sess[sessWraper] === 'object' && sess[sessWraper] !== null) {
+		errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
+	} else {
+		let login = req.body.login,
+			pass = req.body.pass;
 
-			if (!validator.isEmpty(login)) {
-				if (!validator.isEmpty(pass)) { // Inicia a sessao
-					const query = {
-						formato: 1,
-						dados: {
-							executar: `
-								SELECT
-									A.ID_USUARIO
-									,A.ID_TIPO
-									,A.NOME
-									,A.EMAIL
-									,A.SENHA
-									,A.SALT
-									,A.ATIVO
-									,B.TIPO
-								FROM
-									USUARIO A (NOLOCK)
-									INNER JOIN TIPO B (NOLOCK)
-										ON (A.ID_TIPO = B.ID_TIPO)
-								WHERE
-									A.EMAIL = '${login}';
-							`
-						}
-					};
+		if (!validator.isEmpty(login)) {
+			if (!validator.isEmpty(pass)) { // Inicia a sessao
+				const query = {
+					formato: 1,
+					dados: {
+						executar: `
+							SELECT
+								A.ID_USUARIO
+								,A.ID_TIPO
+								,A.NOME
+								,A.EMAIL
+								,A.SENHA
+								,A.SALT
+								,A.ATIVO
+								,B.TIPO
+							FROM
+								USUARIO A (NOLOCK)
+								INNER JOIN TIPO B (NOLOCK)
+									ON (A.ID_TIPO = B.ID_TIPO)
+							WHERE
+								A.EMAIL = '${login}';
+						`
+					}
+				};
 
-					let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query),
-						dataUser = resultSet && resultSet.recordset.length === 1 && resultSet.recordset[0],
-						passInfo = (dataUser ? await cryptoHash.hash(pass, dataUser.SALT) : undefined);
+				let resultSet = await dbCon.msSqlServer.sqlExecuteAll(query),
+					dataUser = resultSet && resultSet.recordset.length === 1 && resultSet.recordset[0],
+					passInfo = (dataUser ? await cryptoHash.hash(pass, dataUser.SALT) : undefined);
 
-					if (passInfo && (passInfo.passHash === dataUser.SENHA)) {
-						if (dataUser.ATIVO) {
-							sess[sessWraper] = {};
+				if (passInfo && (passInfo.passHash === dataUser.SENHA)) {
+					if (dataUser.ATIVO) {
+						sess[sessWraper] = {};
 
-							/* Session data */
-							sess[sessWraper].id = dataUser.ID_USUARIO;
-							sess[sessWraper].idTipo = dataUser.ID_TIPO;
-							sess[sessWraper].nome = dataUser.NOME;
-							sess[sessWraper].email = dataUser.EMAIL;
-							sess[sessWraper].tipo = dataUser.TIPO;
-							/* Session data */
-						} else {
-							errWrapper.throwThis('AUTH', 400, 'Usuário inativo...');
-						}
+						/* Session data */
+						sess[sessWraper].id = dataUser.ID_USUARIO;
+						sess[sessWraper].idTipo = dataUser.ID_TIPO;
+						sess[sessWraper].nome = dataUser.NOME;
+						sess[sessWraper].email = dataUser.EMAIL;
+						sess[sessWraper].tipo = dataUser.TIPO;
+						/* Session data */
 					} else {
-						errWrapper.throwThis('AUTH', 400, 'Usuário e/ou senha inválidos...');
+						errWrapper.throwThis('AUTH', 400, 'Usuário inativo...');
 					}
 				} else {
-					errWrapper.throwThis('AUTH', 400, 'Favor preencher a senha...');
+					errWrapper.throwThis('AUTH', 400, 'Usuário e/ou senha inválidos...');
 				}
 			} else {
-				errWrapper.throwThis('AUTH', 400, 'Favor preencher o usuário...');
+				errWrapper.throwThis('AUTH', 400, 'Favor preencher a senha...');
 			}
+		} else {
+			errWrapper.throwThis('AUTH', 400, 'Favor preencher o usuário...');
 		}
-
-		return sess[sessWraper];
-	} catch (err) {
-		throw err;
 	}
+
+	return sess[sessWraper];
 };
 
 // Finaliza a sessao no servidor, rotas protegidas ficam inascessiveis
-const logout = (req, res) => {
+const logout = async (req, res) => {
 	return new Promise((resolve, reject) => {
 		try {
-			let sess = req.session,
-				fRet = false;
+			let sess = req.session;
 
 			if (sess) {
-				sess.destroy();
-				res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date() });
-
-				fRet = true;
+				sess.destroy (
+					err => {
+						if (err) {
+							reject(err);
+						} else {
+							res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date() });
+							resolve();
+						}
+					}
+				);
+			} else {
+				resolve();
 			}
-
-			resolve(fRet);
 		} catch (err) {
 			reject(err);
 		}
@@ -107,13 +108,9 @@ const logout = (req, res) => {
 
 // Verifica se a sessao esta ativa
 const isLogged = async (req, res) => {
-	try {
-		let resultType = String(req.query.result_type),
-			fRet = await auth.isLogged(req, (resultType === '1' ? 1 : 0));
-		return fRet;
-	} catch (err) {
-		throw err;
-	}
+	let resultType = String(req.query.result_type),
+		fRet = await auth.isLogged(req, (resultType === '1' ? 1 : 0));
+	return fRet;
 };
 // -------------------------------------------------------------------------
 

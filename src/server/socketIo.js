@@ -50,7 +50,9 @@ const startIo = cert => {
 
 		let listeningMethods = [];
 
-		_server.listen(__serverConfig.socketIo.serverPort, __serverConfig.socketIo.serverHost);
+		_server.listen(__serverConfig.socketIo.serverPort, __serverConfig.socketIo.serverHost).on('error', err => {
+			log.logger('error', `Servidor socket.io: ${(err.stack || err)}`, 'startUp');
+		});
 
 		// Listeners aqui
 		if (listeners) {
@@ -86,7 +88,7 @@ const startIo = cert => {
 			log.logger('info', `Servidor socket.io está rodando em ${pServerCheck.protocolInfo}${ios.httpServer.address().address}:${ios.httpServer.address().port}...${showMessageComplement(listeningMethods)}\r\n`, 'startUp');
 		});
 	} catch (err) {
-		log.logger('error', err.stack || err, 'startUp');
+		log.logger('error', `Servidor socket.io: ${(err.stack || err)}`, 'startUp');
 	}
 };
 // -------------------------------------------------------------------------
