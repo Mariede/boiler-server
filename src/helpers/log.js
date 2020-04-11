@@ -56,8 +56,8 @@ const logger = (escopo, mensagem, incorporador = '') => {
 	}
 };
 
-// Retorna erro ao usuario via controller
-const controllerError = (res, err, escopo, incorporador = '') => {
+// Retorna erros oriundos dos controllers ao usuario
+const errorsController = (res, err, escopo, incorporador = '') => {
 	let httpStatusCode = 500,
 		error = new Error(),
 		genericErrorName = 'Error';
@@ -115,5 +115,5 @@ const controllerError = (res, err, escopo, incorporador = '') => {
 
 module.exports = {
 	logger,
-	controllerError
+	errorsController
 };

@@ -1,7 +1,9 @@
+
+// async/ await
 const myFunc = () => {
 	return new Promise((resolve, reject) => {
 		 setTimeout (
-			() => {
+			function() {
 				reject('Meu erro fabricado aqui!!!');
 			},
 			2000
@@ -9,3 +11,22 @@ const myFunc = () => {
 	});
 };
 await myFunc();
+
+
+// promise
+const myFunc = () => {
+	return new Promise((resolve, reject) => {
+		 setTimeout (
+			function() {
+				reject('Meu erro fabricado aqui!!!');
+			},
+			2000
+		);
+	});
+};
+myFunc()
+.catch (
+	err => {
+		reject(err);
+	}
+);

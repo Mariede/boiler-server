@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const log = require('@serverRoot/helpers/log');
+const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -22,66 +22,66 @@ const _commonGate = async (req, res) => {
 const userRoutes = router => {
 	// Colecao usuarios ----------------------------------------------------
 	router.route('/usuario')
-	.all(async (req, res, next) => {
-		try {
-			await _commonGate(req, res);
-			next();
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	})
-	.get(async (req, res) => {
-		try {
-			let result = await user.consultarTodos(req, res);
-			res.status(200).send(result);
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	});
+	.all (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				await _commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.get (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				let result = await user.consultarTodos(req, res);
+				res.status(200).send(result);
+			}
+		)
+	);
 	// ---------------------------------------------------------------------
 
 	// Model usuario -------------------------------------------------------
 	router.route('/usuario/:id')
-	.all(async (req, res, next) => {
-		try {
-			await _commonGate(req, res);
-			next();
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	})
-	.get(async (req, res) => {
-		try {
-			let result = await user.consultar(req, res);
-			res.status(200).send(result);
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	})
-	.post(async (req, res) => {
-		try {
-			let result = await user.inserir(req, res);
-			res.status(200).send(result);
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	})
-	.put(async (req, res) => {
-		try {
-			let result = await user.alterar(req, res);
-			res.status(200).send(result);
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	})
-	.delete(async (req, res) => {
-		try {
-			let result = await user.excluir(req, res);
-			res.status(200).send(result);
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	});
+	.all (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				await _commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.get (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				let result = await user.consultar(req, res);
+				res.status(200).send(result);
+			}
+		)
+	)
+	.post (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				let result = await user.inserir(req, res);
+				res.status(200).send(result);
+			}
+		)
+	)
+	.put (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				let result = await user.alterar(req, res);
+				res.status(200).send(result);
+			}
+		)
+	)
+	.delete (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				let result = await user.excluir(req, res);
+				res.status(200).send(result);
+			}
+		)
+	);
 	// -------------------------------------------------------------------------
 };
 // -------------------------------------------------------------------------

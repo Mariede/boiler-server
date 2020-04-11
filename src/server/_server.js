@@ -97,11 +97,13 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			// Headers (seguranca) -----------------------------------------------------
 			app.disable('x-powered-by'); // Desabilita header x-powered-by (hidepoweredby)
 
-			app.use((req, res, next) => {
-				res.set('X-Content-Type-Options', 'nosniff'); // Browser sniffing mime types (nosniff)
-				res.set('X-XSS-Protection', '1; mode=block'); // Cross Site Scripting (xssfilter)
-				next();
-			});
+			app.use (
+				(req, res, next) => {
+					res.set('X-Content-Type-Options', 'nosniff'); // Browser sniffing mime types (nosniff)
+					res.set('X-XSS-Protection', '1; mode=block'); // Cross Site Scripting (xssfilter)
+					next();
+				}
+			);
 
 			// CORS --------------------------------------------------------------------
 			app.use (
@@ -128,7 +130,6 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 								},
 								path: (__serverRoot + '/sessions'),
 								encoding: 'utf8',
-								encryptEncoding: 'hex',
 								retries: 5,
 								secret: __serverConfig.server.session.secretStore,
 								ttl: 60 * __serverConfig.server.session.timeout // 1 = 1 segundo (timeout em minutos)
@@ -207,13 +208,18 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 				routes
 			);
 
-			app.all('*', (req, res) => {
-				res.status(404).send ({
-					name: 'ROUTER',
-					code: 404,
-					message: 'Essa rota não existe...'
-				});
-			});
+			app.all (
+				'*',
+				(req, res) => {
+					res.status(404).send (
+						{
+							name: 'ROUTER',
+							code: 404,
+							message: 'Essa rota não existe...'
+						}
+					);
+				}
+			);
 
 			// Cria servidor -----------------------------------------------------------
 			const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, app);
@@ -226,31 +232,44 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 			// Proxy para o servidor de Websockets (Socket.io) -------------------------
 			// Se mais de uma aplicacao estiver rodando no mesmo servidor, diferenciar pelas portas em config
-			const wsProxy = proxy.createProxyServer ({
-				secure: false,
-				target: `${pServerCheck.socketIo.serverProtocol}${__serverConfig.socketIo.serverHost}:${__serverConfig.socketIo.serverPort}`,
-				ws: true
-			});
+			const wsProxy = proxy.createProxyServer (
+				{
+					secure: false,
+					target: `${pServerCheck.socketIo.serverProtocol}${__serverConfig.socketIo.serverHost}:${__serverConfig.socketIo.serverPort}`,
+					ws: true
+				}
+			);
 
 			// Listener para erros de proxy
-			wsProxy.on('error', (err, req, res) => {
-				log.logger('error', `[http-proxy] ${(err.stack || err)}`);
-				res.end();
-			});
+			wsProxy.on (
+				'error',
+				(err, req, res) => {
+					log.logger('error', `[http-proxy] ${(err.stack || err)}`);
+					res.end();
+				}
+			);
 
-			// Rotas de resposta para socket.io ---------------------------------------
-			app.all(`${__serverConfig.socketIo.path}/*`, (req, res) => {
-				wsProxy.web(req, res);
-			});
+			// Rotas de resposta para socket.io ----------------------------------------
+			app.all (
+				`${__serverConfig.socketIo.path}/*`,
+				(req, res) => {
+					wsProxy.web(req, res);
+				}
+			);
 
-			_server.on('upgrade', (req, socket, head) => {
-				wsProxy.ws(req, socket, head);
-			});
+			_server.on (
+				'upgrade',
+				(req, socket, head) => {
+					wsProxy.ws(req, socket, head);
+				}
+			);
 
-			// Handler erros sincronos -------------------------------------------------
-			app.use((err, req, res, next) => {
-				reject(err);
-			});
+			// Handler erros oriundos dos controllers ----------------------------------
+			app.use (
+				(err, req, res, next) => {
+					log.errorsController(res, err, 'error');
+				}
+			);
 			// -------------------------------------------------------------------------
 
 			// -------------------------------------------------------------------------
@@ -267,7 +286,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 							const eventLooplagTrigger = 50; // Em milisegundos
 
 							if (eventLooplag > eventLooplagTrigger) {
-								log.logger('warn', `Loop de eventos deste servidor reportou lag acentuado: ${eventLooplag} ms`, 'consoleOnly');
+								log.logger('warn', `Loop de eventos deste servidor reportou lag acentuado: ${eventLooplag} ms`, 'startUp');
 							}
 
 							eventLoopMonitor();

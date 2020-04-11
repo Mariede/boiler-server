@@ -5,7 +5,6 @@
 const express = require('express');
 const router = express.Router();
 const routeProfiler = require('@serverRoot/server/routeProfiler');
-const log = require('@serverRoot/helpers/log');
 const helpersAuth = require('@serverRoot/helpers/auth');
 // -------------------------------------------------------------------------
 
@@ -20,6 +19,17 @@ const user = require('@serverRoot/routes/controllers/user');
 // Middleware (rotas existentes e nao existentes)
 router.use(async (req, res, next) => {
 	try {
+		const controllersRoutes = () => {
+			// -------------------------------------------------------------------------
+			// Rotas (controllers) - chamadas
+			auth.authRoutes(router);
+			home.homeRoutes(router);
+			user.userRoutes(router);
+			// -------------------------------------------------------------------------
+
+			next();
+		};
+
 		await routeProfiler.showDetails(req, res);
 
 		let route = req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '') + '/',
@@ -39,7 +49,7 @@ router.use(async (req, res, next) => {
 		res.locals.routeControllerRoute = 'HUB';
 
 		if (releasedReq) {
-			next();
+			controllersRoutes();
 		} else {
 			res.status(401).send ({
 				name: 'ROUTER',
@@ -48,16 +58,9 @@ router.use(async (req, res, next) => {
 			});
 		}
 	} catch (err) {
-		log.controllerError(res, err, 'error');
+		next(err);
 	}
 });
 // -------------------------------------------------------------------------
-
-// -------------------------------------------------------------------------
-// Rotas (controllers) - chamadas
-auth.authRoutes(router);
-home.homeRoutes(router);
-user.userRoutes(router);
-// ---------------------------------------------------------------------------------------------------------------
 
 module.exports = router;

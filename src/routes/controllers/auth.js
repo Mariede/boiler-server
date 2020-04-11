@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const log = require('@serverRoot/helpers/log');
+const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -22,56 +22,55 @@ const _commonGate = async (req, res) => {
 const authRoutes = router => {
 	// Rota: logon ---------------------------------------------------------
 	router.route('/logon')
-	.all(async (req, res, next) => {
-		try {
-			await _commonGate(req, res);
-			next();
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	})
-	.post(async (req, res) => {
-		try {
-			let result = await auth.logon(req, res);
-			res.status(200).send(result);
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	});
+	.all (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				await _commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.post (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				let result = await auth.logon(req, res);
+				res.status(200).send(result);
+			}
+		)
+	);
 	// ---------------------------------------------------------------------
 
 	// Rota: logout --------------------------------------------------------
 	router.route('/logout')
-	.all(async (req, res, next) => {
-		try {
-			await _commonGate(req, res);
-
-			let result = await auth.logout(req, res);
-			res.status(200).send(result);
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	});
+	.all (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				await _commonGate(req, res);
+				let result = await auth.logout(req, res);
+				res.status(200).send(result);
+			}
+		)
+	);
 	// ---------------------------------------------------------------------
 
 	// Rota: isLogged ------------------------------------------------------
 	router.route('/isLogged')
-	.all(async (req, res, next) => {
-		try {
-			await _commonGate(req, res);
-			next();
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	})
-	.get(async (req, res) => {
-		try {
-			let result = await auth.isLogged(req, res);
-			res.status(200).send(result);
-		} catch (err) {
-			log.controllerError(res, err, 'error');
-		}
-	});
+	.all (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				await _commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.get (
+		functions.handleErrorsController (
+			async (req, res, next) => {
+				let result = await auth.isLogged(req, res);
+				res.status(200).send(result);
+			}
+		)
+	);
 	// ---------------------------------------------------------------------
 };
 // -------------------------------------------------------------------------

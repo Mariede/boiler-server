@@ -6,6 +6,19 @@
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+// Funcao de middleware para capturar erros assincronamente (controllers)
+const handleErrorsController = fn => {
+	return (
+		async (req, res, next) => {
+			try {
+				await fn(req, res, next);
+			} catch (err) {
+				next(err); // Sobe erro para topo do middleware
+			}
+		}
+	);
+};
+
 // Verifica a data atual do servidor (formatado ou sem formatacao)
 const getDateNow = formatted => {
 	const formatLeftZeros = num => {
@@ -128,6 +141,7 @@ const generateUniqueId = (_length, dateIncluded = true) => {
 // -------------------------------------------------------------------------
 
 module.exports = {
+	handleErrorsController,
 	getDateNow,
 	asyncForEach,
 	promiseForEach,

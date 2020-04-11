@@ -85,9 +85,9 @@ const startApp = async (cert, configPath) => {
 				consoleAppender: {
 					type: 'console'
 				},
-				controllerErrorsAppender: {
+				errorsControllerAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/controllerErrors/logs-controllerErrors.log'),
+					filename: (__serverRoot + '/logs/errorsController/logs-errorsController.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
@@ -122,13 +122,13 @@ const startApp = async (cert, configPath) => {
 				}
 			},
 			categories: {
-				default: { appenders: ['consoleAppender', 'controllerErrorsAppender'], level: 'warn' },
+				default: { appenders: ['consoleAppender', 'errorsControllerAppender'], level: 'warn' },
 				consoleOnly: { appenders: ['consoleAppender'], level: 'all' },
 				startUp: { appenders: ['consoleAppender', 'startUpAppender'], level: 'all' },
 				configFile: { appenders: ['consoleAppender', 'configFileAppender'], level: 'all' },
 				routes: { appenders: ['consoleAppender', 'routesAppender'], level: 'all' },
 				mailQueue: { appenders: ['consoleAppender', 'mailQueueAppender'], level: 'all' },
-				startUpAll: { appenders: ['consoleAppender', 'controllerErrorsAppender', 'startUpAppender', 'configFileAppender', 'routesAppender', 'mailQueueAppender'], level: 'all' }
+				startUpAll: { appenders: ['consoleAppender', 'errorsControllerAppender', 'startUpAppender', 'configFileAppender', 'routesAppender', 'mailQueueAppender'], level: 'all' }
 
 			}
 		});
