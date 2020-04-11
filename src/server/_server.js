@@ -124,7 +124,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 						store: new sessionFileStore (
 							{
 								logFn: err => {
-									log.logger('error', `session-file-store: ${(err.stack || err)}`);
+									log.logger('error', (err.stack || err));
 								},
 								path: (__serverRoot + '/sessions'),
 								encoding: 'utf8',
@@ -234,7 +234,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 			// Listener para erros de proxy
 			wsProxy.on('error', (err, req, res) => {
-				log.logger('error', `http-proxy: ${(err.stack || err)}`);
+				log.logger('error', `[http-proxy] ${(err.stack || err)}`);
 				res.end();
 			});
 

@@ -58,11 +58,15 @@ const logon = (login, senha, idTipoUsuario = 0) => {
 			)
 			.catch (
 				err => {
-					reject(errWrapper.returnThis('PERMISYS', 500, err));
+					reject (
+						errWrapper.returnThis('PERMISYS', 500, err)
+					);
 				}
 			);
 		} catch (err) {
-			reject(errWrapper.returnThis('PERMISYS', 500, err));
+			reject (
+				errWrapper.returnThis('PERMISYS', 500, err)
+			);
 		}
 	});
 };

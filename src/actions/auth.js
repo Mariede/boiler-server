@@ -98,7 +98,9 @@ const logout = async (req, res) => {
 					}
 				);
 			} else {
-				resolve();
+				reject (
+					errWrapper.throwThis('AUTH', 400, 'Sessão inexistente')
+				);
 			}
 		} catch (err) {
 			reject(err);
