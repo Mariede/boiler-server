@@ -34,7 +34,7 @@
 			"ignoreConsecutiveComments": true
 		}],
 		"no-unused-vars": [2, {
-			"argsIgnorePattern": "next|req|res",
+			"argsIgnorePattern": "req|res",
 			"ignoreRestSiblings": true
 		}],
 		"no-var": 2,

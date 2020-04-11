@@ -32,7 +32,7 @@ const authRoutes = router => {
 	)
 	.post (
 		functions.handleErrorsController (
-			async (req, res, next) => {
+			async (req, res) => {
 				let result = await auth.logon(req, res);
 				res.status(200).send(result);
 			}
@@ -44,7 +44,7 @@ const authRoutes = router => {
 	router.route('/logout')
 	.all (
 		functions.handleErrorsController (
-			async (req, res, next) => {
+			async (req, res) => {
 				await _commonGate(req, res);
 				let result = await auth.logout(req, res);
 				res.status(200).send(result);
@@ -65,7 +65,7 @@ const authRoutes = router => {
 	)
 	.get (
 		functions.handleErrorsController (
-			async (req, res, next) => {
+			async (req, res) => {
 				let result = await auth.isLogged(req, res);
 				res.status(200).send(result);
 			}

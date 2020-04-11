@@ -266,7 +266,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 			// Handler erros oriundos dos controllers ----------------------------------
 			app.use (
-				(err, req, res, next) => {
+				(err, req, res, next) => { // eslint-disable-line no-unused-vars
 					log.errorsController(res, err, 'error');
 				}
 			);

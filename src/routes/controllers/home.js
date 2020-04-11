@@ -32,7 +32,7 @@ const homeRoutes = router => {
 	)
 	.get (
 		functions.handleErrorsController (
-			async (req, res, next) => {
+			async (req, res) => {
 				let result = await home.root(req, res);
 				res.status(200).render(result.path + result.file, result.pageData);
 			}
