@@ -12,6 +12,7 @@
 		"clustered": false,
 		"saveRouteLogs": true,
 		"routePrefix": "/",
+		"showFrontEndStackTraceErr": false,
 		"secure": {
 			"isHttps": false,
 			"certFolder": "/cert",

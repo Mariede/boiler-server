@@ -94,7 +94,7 @@ const errorsController = (res, err, escopo, incorporador = '') => {
 				error.message = err.message;
 			}
 
-			if (err.stack) {
+			if (err.stack && __serverConfig.server.showFrontEndStackTraceErr) {
 				error.stackTrace = err.stack;
 			}
 
@@ -104,7 +104,10 @@ const errorsController = (res, err, escopo, incorporador = '') => {
 			error.name = genericErrorName;
 			error.code = httpStatusCode;
 			error.message = err;
-			error.stackTrace = error.stack;
+
+			if (__serverConfig.server.showFrontEndStackTraceErr) {
+				error.stackTrace = error.stack;
+			}
 		}
 	}
 

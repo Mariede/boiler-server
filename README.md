@@ -41,6 +41,7 @@ npm run build
   * Roteamento em camadas
   * Tratamento conjunto da pilha de Erros (sync e async)
   * Erros personalizados
+  * Opção de enviar o stackTrace de erros para o cliente (default falso)
 
 ## Prefixamento de rotas e Proxy geral de acesso
   * Via porta 80 (default), configurável
