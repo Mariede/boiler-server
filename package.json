@@ -2,7 +2,7 @@
   "name": "boiler-server",
   "version": "0.9.0",
   "description": "Boilerplate em express NODE.js",
-  "main": "./src/index.js",
+  "main": "./src/main.js",
   "license": "MIT",
   "private": true,
   "outputName": "main.js",
@@ -38,11 +38,11 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "start": "cls && nodemon ./src/index.js",
-    "inspect": "cls && nodemon --inspect ./src/index.js",
+    "start": "cls && nodemon ./src/main.js",
+    "inspect": "cls && nodemon --inspect ./src/main.js",
     "build": "webpack --config ./.webpack.config.js",
     "proxy": "cls && nodemon ./_tools/proxy/_proxyStart.js",
-    "forever-win": "set NODE_ENV=development&& forever start -s -c node ./src/index.js"
+    "forever-win": "set NODE_ENV=development&& forever start -s -c node ./src/main.js"
   },
   "nodemonConfig": {
     "ignore": [
