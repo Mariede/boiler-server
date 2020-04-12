@@ -20,9 +20,9 @@ const path = require('path');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const routeGate = require('@serverRoot/server/routeGate'); // Gate de roteamento
 const queue = require('@serverRoot/server/queue'); // Queue de e-mails
-const routes = require('@serverRoot/routes/routes'); // Gate de roteamento
-const configManage = require('@serverRoot/server/configManage');
+const configManage = require('@serverRoot/server/configManage'); // Verifica config.json
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
@@ -205,7 +205,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			// Rotas -------------------------------------------------------------------
 			app.use (
 				checkRoutePrefix(),
-				routes
+				routeGate
 			);
 
 			app.all (

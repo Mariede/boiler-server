@@ -10,9 +10,7 @@ const helpersAuth = require('@serverRoot/helpers/auth');
 
 // -------------------------------------------------------------------------
 // Rotas (controllers)
-const auth = require('@serverRoot/routes/controllers/auth');
-const home = require('@serverRoot/routes/controllers/home');
-const user = require('@serverRoot/routes/controllers/user');
+const myRoutes = require('@serverRoot/routes/myRoutes');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -20,13 +18,7 @@ const user = require('@serverRoot/routes/controllers/user');
 router.use(async (req, res, next) => {
 	try {
 		const controllersRoutes = () => {
-			// -------------------------------------------------------------------------
-			// Rotas (controllers) - chamadas
-			auth.authRoutes(router);
-			home.homeRoutes(router);
-			user.userRoutes(router);
-			// -------------------------------------------------------------------------
-
+			myRoutes.startRoutes(router);
 			next();
 		};
 

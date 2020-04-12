@@ -158,6 +158,7 @@ npm run build
       + todas as requisições/retornos do cliente são realizadas aqui
   * server
     - arquivos de inicialização do servidor e assistência ao seu funcionamento
+    - core da aplicação, transparente para os projetos
   * sessions (* cria automático, se não existir)
     - arquivos contendo as sessões ativas
   * uploads (* opcional, configurável, cria automático - se não existir)
