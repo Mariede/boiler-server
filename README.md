@@ -155,7 +155,7 @@ npm run build
     - define um ou mais controllers para o projeto
     - define as rotas do servidor
     - ponto centralizador do contato client/server
-      + todas as requisições/retornos do cliente são realizadas aqui
+      + todas as requisições/retornos do cliente são projetadas e passam por aqui
   * server
     - arquivos de inicialização do servidor e assistência ao seu funcionamento
     - core da aplicação, transparente para os projetos
