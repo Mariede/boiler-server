@@ -4,13 +4,22 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
+/* path to source code */
+const shortSourcePath = './src';
+
+/* config.json */
+const configJson =  require(`${shortSourcePath}/config.json`);
+const configJsonCertFolder = `.${configJson.server.secure.certFolder}`;
+
+/* package.json */
 const packageJsonLocation = './package.json';
 const packageJson = require(packageJsonLocation);
 
 const versionPackage = (packageJson.version || '');
 const outputNamePackage = (packageJson.outputName || 'main.js');
 
-const sourcePath = path.resolve(__dirname, './src');
+/* paths */
+const sourcePath = path.resolve(__dirname, shortSourcePath);
 const destinyPath = path.resolve(__dirname, `./build${(versionPackage ? '/' + versionPackage : '')}`);
 
 module.exports = {
@@ -64,6 +73,9 @@ module.exports = {
 				},
 				{
 					from: path.resolve(sourcePath, './views'), to: path.resolve(destinyPath, './views'), force: true
+				},
+				{
+					from: path.resolve(sourcePath, configJsonCertFolder), to: path.resolve(destinyPath, configJsonCertFolder), force: true
 				}
 			]
 		),
