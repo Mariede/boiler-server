@@ -3,7 +3,7 @@
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const dbCon = require('@serverRoot/helpers/db');
-const auth = require('@serverRoot/helpers/auth');
+const helpersAuth = require('@serverRoot/helpers/auth');
 const cryptoHash = require('@serverRoot/helpers/cryptoHash');
 const validator = require('@serverRoot/helpers/validator');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
@@ -111,7 +111,7 @@ const logout = async (req, res) => {
 // Verifica se a sessao esta ativa
 const isLogged = async (req, res) => {
 	let resultType = String(req.query.result_type),
-		fRet = await auth.isLogged(req, (resultType === '1' ? 1 : 0));
+		fRet = await helpersAuth.isLogged(req, (resultType === '1' ? 1 : 0));
 
 	return fRet;
 };

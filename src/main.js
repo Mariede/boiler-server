@@ -114,7 +114,7 @@ const startMain = async () => {
 
 		_app.startApp(myCert, configPath);
 	} catch (err) {
-		console.error(err);
+		console.error(err); // eslint-disable-line no-console
 	}
 };
 

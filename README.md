@@ -26,7 +26,7 @@ npm run build
   * Monitoramento do loop de eventos para análises de performance e testes
     - Opcional
 
-## Arquivo de configuração unificado do servidor
+## Arquivo de configuração unificado
   * config.json
   * Gerenciamento em tempo real do arquivo de configuração
   * Diversos parâmetros reunidos para configuração do servidor
@@ -45,14 +45,14 @@ npm run build
 
 ## Prefixamento de rotas e Proxy geral de acesso
   * Via porta 80 (default), configurável
-  * Prefixo configurável, atua em todas as rotas do servidor
+  * Prefixo configurável, atua em todas as rotas da aplicação
   * _tools/proxy/_proxyStart.js
 
 ## Websockets configurado junto ao servidor http
   * Conversação bidirecional cliente <-> servidor
   * Biblioteca Socket.io (websockets / pooling)
   * Integrado com a aplicação, mas com servidor próprio em porta separada
-  * Proxy automático, direto pela aplicação
+  * Proxy automático, direto pelo servidor web
   * Funciona normalmente single-thread e multi-thread (cluster)
   * Trabalha http ou https (ws ou wss), baseado na requisição web
 
@@ -130,24 +130,26 @@ npm run build
     - métodos com as regras de negócio e codificação dos processos
       + é local, relacionado a rota em execução
       + uma action pode chamar uma ou mais actions e/ou um ou mais helpers
-    - pode ser quebrado em subpastas, componentizado após os controllers
+    - as actions podem ser quebradas em subpastas, componentizadas após os controllers
   * cert (* opcional, configurável)
     - contém os arquivos do certificado digital para chamadas https
-    - se o modo https estiver desligado, o servidor desconsidera esta pasta
+    - se o modo https estiver desligado, a aplicação desconsidera esta pasta
   * custom
     - pasta com APIs de interfaceamento para outros serviços externos
-      + é como um helper interfaceando exclusivamente serviços externos
+      + tem a função de um helper, exclusivamente para interfacear serviços externos
   * helpers
     - métodos com as regras de negócio e codificação dos processos
-      + é global, relacionado ao projeto e pode ser utilizado por qualquer action ou middleware
+      + é global, relacionado ao projeto e pode ser utilizado por qualquer action ou middleware (núcleo do servidor)
       + um helper pode chamar um ou mais helpers
-  * listeners
-    - agrupa os listeners e namespaces (caminhos) do servidor para comunicação via Socket.io
-      + websockets ou pooling
+  * libCom
+    - pasta com conteúdo complementar programável das libs, desacoplado do núcleo das mesmas
+      + mongooseSchemas.js
+        * arquivo contendo os esquemas de acesso ao mongoDB e detalhes relacionados, via mongoose
+      + socketIoListeners.js
+        * agrupa os listeners e namespaces (caminhos) do servidor para comunicação via Socket.io
+        * websockets ou pooling
   * logs (* cria automático, se não existir)
     - arquivos de logs do servidor
-  * models
-    - arquivo contendo os esquemas de acesso ao mongoDB e detalhes relacionados, via mongoose
   * queue (* opcional, configurável, cria automático - se não existir)
     - arquivos da fila de e-mails
     - e-mails agendados a serem enviados
@@ -156,9 +158,10 @@ npm run build
     - define as rotas do servidor
     - ponto centralizador do contato client/server
       + todas as requisições/retornos do cliente são projetadas e passam por aqui
+    - os controllers podem ser quebrados em subpastas, componentizados após routes
   * server
     - arquivos de inicialização do servidor e assistência ao seu funcionamento
-    - core da aplicação, transparente para os projetos
+    - núcleo do servidor, transparente para os projetos
   * sessions (* cria automático, se não existir)
     - arquivos contendo as sessões ativas
   * uploads (* opcional, configurável, cria automático - se não existir)

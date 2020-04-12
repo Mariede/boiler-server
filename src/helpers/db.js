@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const mongooseSchemas = require('@serverRoot/models/mongooseSchemas');
+const mongooseSchemas = require('@serverRoot/libCom/mongooseSchemas');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
@@ -311,7 +311,7 @@ const mongoDB = {
 
 	/*
 	Detalhes:
-		schema => Nome do esquema a ser instaciado (definido em /models)
+		schema => Nome do esquema a ser instaciado (definido em /libCom/mongooseSchemas)
 	*/
 	noSqlGetModel: schema => {
 		return new Promise((resolve, reject) => {
@@ -439,7 +439,7 @@ const mongoDB = {
 	/*
 	Detalhes:
 		search				=> Objeto que identifica o filtro da consulta ao model relacionado (via esquema)
-		schema				=> Nome do esquema a ser instaciado (definido em /models)
+		schema				=> Nome do esquema a ser instaciado (definido em /libCom/mongooseSchemas)
 		returnAlwaysArray	=> Metodo sempre retorna tipo array, independente da quantidade de elementos encontrados
 			- padrao: 1 elemento retorna somento o objeto, > 1 retorna array de objetos, 0 retorna undefined
 	*/
@@ -483,7 +483,7 @@ const mongoDB = {
 
 	/*
 	Detalhes:
-		schema => Nome do esquema a ser instaciado (definido em /models)
+		schema => Nome do esquema a ser instaciado (definido em /libCom/mongooseSchemas)
 	*/
 	noSqlExecute: async schema => {
 		await mongoDB.noSqlOpenCon();

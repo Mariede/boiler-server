@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const socketIoListeners = require('@serverRoot/listeners/socketIoListeners');
+const socketIoListeners = require('@serverRoot/libCom/socketIoListeners');
 const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
