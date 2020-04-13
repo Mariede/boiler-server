@@ -1,7 +1,7 @@
 'use strict';
 
 // -------------------------------------------------------------------------
-// Modulos de inicializacao
+// Modulos de apoio
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 

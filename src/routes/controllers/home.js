@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const functions = require('@serverRoot/helpers/functions');
+
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -19,11 +19,11 @@ const _commonGate = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Rotas
-const homeRoutes = router => {
+const homeRoutes = (router, handleErrorsController) => {
 	// Rota: root ----------------------------------------------------------
 	router.route('/')
 	.all (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res, next) => {
 				await _commonGate(req, res);
 				next();
@@ -31,7 +31,7 @@ const homeRoutes = router => {
 		)
 	)
 	.get (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				let result = await home.root(req, res);
 				res.status(200).render(result.path + result.file, result.pageData);

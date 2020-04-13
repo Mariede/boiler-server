@@ -5,12 +5,12 @@
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
-const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const functions = require('@serverRoot/helpers/functions');
+const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

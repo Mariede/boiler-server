@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const functions = require('@serverRoot/helpers/functions');
+
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -19,11 +19,11 @@ const _commonGate = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Rotas
-const userRoutes = router => {
+const userRoutes = (router, handleErrorsController) => {
 	// Colecao usuarios ----------------------------------------------------
 	router.route('/usuario')
 	.all (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res, next) => {
 				await _commonGate(req, res);
 				next();
@@ -31,7 +31,7 @@ const userRoutes = router => {
 		)
 	)
 	.get (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				let result = await user.consultarTodos(req, res);
 				res.status(200).send(result);
@@ -43,7 +43,7 @@ const userRoutes = router => {
 	// Model usuario -------------------------------------------------------
 	router.route('/usuario/:id')
 	.all (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res, next) => {
 				await _commonGate(req, res);
 				next();
@@ -51,7 +51,7 @@ const userRoutes = router => {
 		)
 	)
 	.get (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				let result = await user.consultar(req, res);
 				res.status(200).send(result);
@@ -59,7 +59,7 @@ const userRoutes = router => {
 		)
 	)
 	.post (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				let result = await user.inserir(req, res);
 				res.status(200).send(result);
@@ -67,7 +67,7 @@ const userRoutes = router => {
 		)
 	)
 	.put (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				let result = await user.alterar(req, res);
 				res.status(200).send(result);
@@ -75,7 +75,7 @@ const userRoutes = router => {
 		)
 	)
 	.delete (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				let result = await user.excluir(req, res);
 				res.status(200).send(result);

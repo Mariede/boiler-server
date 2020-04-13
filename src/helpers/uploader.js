@@ -9,8 +9,8 @@ const path = require('path');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const errWrapper = require('@serverRoot/helpers/errWrapper');
 const functions = require('@serverRoot/helpers/functions');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

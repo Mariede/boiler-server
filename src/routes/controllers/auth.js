@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const functions = require('@serverRoot/helpers/functions');
+
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -19,11 +19,11 @@ const _commonGate = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Rotas
-const authRoutes = router => {
+const authRoutes = (router, handleErrorsController) => {
 	// Rota: logon ---------------------------------------------------------
 	router.route('/logon')
 	.all (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res, next) => {
 				await _commonGate(req, res);
 				next();
@@ -31,7 +31,7 @@ const authRoutes = router => {
 		)
 	)
 	.post (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				let result = await auth.logon(req, res);
 				res.status(200).send(result);
@@ -43,7 +43,7 @@ const authRoutes = router => {
 	// Rota: logout --------------------------------------------------------
 	router.route('/logout')
 	.all (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				await _commonGate(req, res);
 				let result = await auth.logout(req, res);
@@ -56,7 +56,7 @@ const authRoutes = router => {
 	// Rota: isLogged ------------------------------------------------------
 	router.route('/isLogged')
 	.all (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res, next) => {
 				await _commonGate(req, res);
 				next();
@@ -64,7 +64,7 @@ const authRoutes = router => {
 		)
 	)
 	.get (
-		functions.handleErrorsController (
+		handleErrorsController (
 			async (req, res) => {
 				let result = await auth.isLogged(req, res);
 				res.status(200).send(result);
