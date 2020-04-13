@@ -65,7 +65,7 @@ const startApp = async (cert, configPath) => {
 		// -------------------------------------------------------------------------
 
 		if (!numWorkers || (numWorkers && cluster.isMaster)) {
-			socketIo.startIo(cert);
+			await socketIo.startIo(cert);
 		}
 
 		if (numWorkers) {

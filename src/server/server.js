@@ -335,7 +335,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			};
 
 			_server.listen(listenOptions, serverStarter()).on('error', err => {
-				reject(err);
+				log.logger('error', `[web-servidor] ${(err.stack || err)}`);
 			});
 		} catch (err) {
 			reject(err);

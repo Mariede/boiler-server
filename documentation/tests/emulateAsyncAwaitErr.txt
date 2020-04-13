@@ -25,6 +25,15 @@ const myFunc = () => {
 	});
 };
 myFunc()
+.then (
+	() => {
+
+
+... codigo
+
+
+	}
+)
 .catch (
 	err => {
 		reject(err);
