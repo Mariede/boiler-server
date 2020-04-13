@@ -9,7 +9,7 @@ const os = require('os');
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const socketIo = require('@serverRoot/server/socketIo'); // Lib socket.io
-const _server = require('@serverRoot/server/_server');
+const server = require('@serverRoot/server/server');
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ const startApp = async (cert, configPath) => {
 				);
 			} else {
 				if (cluster.isWorker) {
-					let messages = await _server.startServer(cert, configPath, numWorkers, cluster);
+					let messages = await server.startServer(cert, configPath, numWorkers, cluster);
 					showMessages(messages);
 				}
 			}
@@ -111,7 +111,7 @@ const startApp = async (cert, configPath) => {
 			log.logger('info', '|| Processo de inicialização do servidor - clusterizado: NÃO ||', 'startUpAll');
 			log.logger('info', '|| ********************************************************* ||', 'startUpAll');
 
-			let messages = await _server.startServer(cert, configPath, numWorkers);
+			let messages = await server.startServer(cert, configPath, numWorkers);
 			showMessages(messages);
 		}
 	} catch (err) {

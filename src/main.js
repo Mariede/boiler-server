@@ -18,7 +18,7 @@ moduleAlias.addAliases ({
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const _app = require('@serverRoot/server/_app');
+const app = require('@serverRoot/server/app');
 // -------------------------------------------------------------------------
 
 const startMain = async () => {
@@ -112,7 +112,7 @@ const startMain = async () => {
 		const myCert = await getAppCert();
 		// -------------------------------------------------------------------------
 
-		_app.startApp(myCert, configPath);
+		app.startApp(myCert, configPath);
 	} catch (err) {
 		console.error(err); // eslint-disable-line no-console
 	}

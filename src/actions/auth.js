@@ -31,13 +31,11 @@ const logon = async (req, res) => {
 						executar: `
 							SELECT
 								A.ID_USUARIO
-								,A.ID_TIPO
 								,A.NOME
 								,A.EMAIL
 								,A.SENHA
 								,A.SALT
 								,A.ATIVO
-								,B.TIPO
 							FROM
 								USUARIO A (NOLOCK)
 								INNER JOIN TIPO B (NOLOCK)
@@ -50,24 +48,26 @@ const logon = async (req, res) => {
 
 				let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query),
 					dataUser = resultSet && resultSet.rowsAffected[0] === 1 && resultSet.recordset[0],
-					passInfo = (dataUser ? cryptoHash.hash(pass, dataUser.SALT) : undefined);
+					passCheck = (dataUser ? cryptoHash.hash(pass, dataUser.SALT) : undefined);
 
-				if (passInfo && (passInfo.passHash === dataUser.SENHA)) {
+				if (passCheck && (passCheck.passHash === dataUser.SENHA)) {
 					if (dataUser.ATIVO) {
-						sess[sessWraper] = {};
+						let id = dataUser.ID_USUARIO,
+							nome = dataUser.NOME,
+							email = dataUser.EMAIL;
 
 						/* Session data */
-						sess[sessWraper].id = dataUser.ID_USUARIO;
-						sess[sessWraper].idTipo = dataUser.ID_TIPO;
-						sess[sessWraper].nome = dataUser.NOME;
-						sess[sessWraper].email = dataUser.EMAIL;
-						sess[sessWraper].tipo = dataUser.TIPO;
+						sess[sessWraper] = {
+							id: id,
+							nome: nome,
+							email: email
+						};
 						/* Session data */
 					} else {
 						errWrapper.throwThis('AUTH', 400, 'Usuário inativo...');
 					}
 				} else {
-					errWrapper.throwThis('AUTH', 400, 'Usuário e/ou senha inválidos...');
+					errWrapper.throwThis('AUTH', 400, 'Usuário ou senha inválidos...');
 				}
 			} else {
 				errWrapper.throwThis('AUTH', 400, 'Favor preencher a senha...');
