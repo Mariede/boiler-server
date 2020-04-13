@@ -9,7 +9,7 @@ const shortSourcePath = './src';
 
 /* config.json */
 const configJson =  require(`${shortSourcePath}/config.json`);
-const configJsonCertFolder = `.${configJson.server.secure.certFolder}`;
+const configJsonCertFolder = `.${((configJson.server && configJson.server.secure && configJson.server.secure.certFolder) || '/cert')}`;
 
 /* package.json */
 const packageJsonLocation = './package.json';
