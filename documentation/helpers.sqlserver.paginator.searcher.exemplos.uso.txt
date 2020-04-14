@@ -32,6 +32,7 @@ Paginado (default):
 		0
 	]
 }
+// ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
 // Estrutura básica queries (parâmetros de entrada)
@@ -161,48 +162,42 @@ let query = {
 // Execute (async await)
 const dbCon = require('@serverRoot/helpers/db');
 
-try {
-	const query = {
-		formato: 1,
-		dados: {
-			input: [
-				['nome', '%jo%']
-			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
-		}
-	};
+const query = {
+	formato: 1,
+	dados: {
+		input: [
+			['nome', '%jo%']
+		],
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+	}
+};
 
-	let transaction = await dbCon.msSqlServer.sqlOpenCon(),
-		{ recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
+let transaction = await dbCon.msSqlServer.sqlOpenCon(),
+	{ recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
 
-	await dbCon.msSqlServer.sqlCloseCon(transaction);
+await dbCon.msSqlServer.sqlCloseCon(transaction);
 
-	return resultSet;
-} catch(err) {
-	throw Error(err);
-}
+return resultSet;
+// ---------------------------------------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------------------------------------
 // ou com o método agrupador ExecuteAll (async await)
 const dbCon = require('@serverRoot/helpers/db');
 
-try {
-	const query = {
-		formato: 1,
-		dados: {
-			input: [
-				['nome', '%jo%']
-			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
-		}
-	};
+const query = {
+	formato: 1,
+	dados: {
+		input: [
+			['nome', '%jo%']
+		],
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+	}
+};
 
-	// Executa query ou queries
-	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+// Executa query ou queries
+let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	return resultSet;
-} catch(err) {
-	throw Error(err);
-}
+return resultSet;
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -210,27 +205,23 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
-try {
-	const query = {
-		formato: 1,
-		dados: {
-			input: [
-				['nome', '%jo%']
-			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
-		}
-	};
+const query = {
+	formato: 1,
+	dados: {
+		input: [
+			['nome', '%jo%']
+		],
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+	}
+};
 
-	// Executa query ou queries
-	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+// Executa query ou queries
+let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	// Paginador (page)
-	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0], true);
+// Paginador (page)
+resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0], true);
 
-	return resultSet;
-} catch(err) {
-	throw Error(err);
-}
+return resultSet;
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -238,35 +229,36 @@ try {
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
-try {
-	const query = {
-		formato: 1,
-		dados: {
-			input: [
-				['nome', '%jo%']
-			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
-		}
-	};
+const query = {
+	formato: 1,
+	dados: {
+		input: [
+			['nome', '%jo%']
+		],
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+	}
+};
 
-	// Executa query ou queries
-	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+// Executa query ou queries
+let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	// Ordenador (sort)
-	resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true);
-	// Paginador (page)
-	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
+// Ordenador (sort)
+resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true);
+// Paginador (page)
+resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
 
-	return resultSet;
-} catch(err) {
-	throw Error(err);
-}
-
-/* * Apenas UM toCamelCase é necessário em todas as chamadas * */
+return resultSet;
 
 /*
-   * se toCamelCase = true no setSort, utilizar camelCase exato (case sensitive) para identificar as chaves de sort no Json *
-   * se toCamelCase = false no setSort, utilizar nome da coluna exato no banco de dados (case sensitive) para identificar as chaves de sort no Json *
+	* Apenas UM toCamelCase é necessário em todas as chamadas
+		=> parâmetro toCamelCase existe em ambos os métodos setSort e em setPage da lib paginator
+
+	* se toCamelCase = true no setSort:
+		=> utilizar camelCase exato (case sensitive) para identificar as chaves de sort no Json
+		=> é o caso do exemplo
+
+	* se toCamelCase = false no setSort:
+		=> utilizar nome da coluna exato no banco de dados (case sensitive) para identificar as chaves de sort no Json
 */
 
 // ---------------------------------------------------------------------------------------------------------
@@ -275,74 +267,76 @@ try {
 // Chamada com SEARCHER
 const searcher = require('@serverRoot/helpers/searcher');
 
-try {
-	const replaceQuery = '{{REPLACE}}';
-	const baseQuery = `
-		select top 10
-			*
-		from
-			usuario a (nolock)
-			inner join tipo b (nolock)
-				on (a.id_tipo = b.id_tipo)
-		where
-			a.nome like('%jo%')
-			${replaceQuery}
-	`;
+const replaceQuery = '{{REPLACE}}';
+const baseQuery = `
+	select top 10
+		*
+	from
+		usuario a (nolock)
+		inner join tipo b (nolock)
+			on (a.id_tipo = b.id_tipo)
+	where
+		a.nome like('%jo%')
+		${replaceQuery}
+`;
 
-	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-	let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
-		req,
-		baseQuery,
-		replaceQuery
-	);
+// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
+let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+	req,
+	baseQuery,
+	replaceQuery
+);
 
-	return resultSet;
-} catch(err) {
-	throw Error(err);
-}
+return resultSet;
+
 
 /* * const replaceQuery = '{{REPLACE}}' não precisa ser alterada, serve apena como identificador * */
 
-/* * REPLACE (via http GET) é case insensitive e pode ser enviado em SNAKE_CASE (padrão do banco deve ser SNAKE_CASE) ou camelCase * */
+/*
+	* REPLACE (via http GET) é case insensitive e pode ser enviado em:
+		=> SNAKE_CASE (padrão do banco deve ser SNAKE_CASE)
+		=> camelCase
+*/
 
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com SEARCHER (apenas para CamelCase)
+// Chamada com SEARCHER (json de retorno em camelCase)
 const searcher = require('@serverRoot/helpers/searcher');
 const paginator = require('@serverRoot/helpers/paginator');
 
-try {
-	const replaceQuery = '{{REPLACE}}';
-	const baseQuery = `
-		select top 10
-			*
-		from
-			usuario a (nolock)
-			inner join tipo b (nolock)
-				on (a.id_tipo = b.id_tipo)
-		where
-			a.nome like('%jo%')
-			${replaceQuery}
-	`;
+const replaceQuery = '{{REPLACE}}';
+const baseQuery = `
+	select top 10
+		*
+	from
+		usuario a (nolock)
+		inner join tipo b (nolock)
+			on (a.id_tipo = b.id_tipo)
+	where
+		a.nome like('%jo%')
+		${replaceQuery}
+`;
 
-	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-	let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
-		req,
-		baseQuery,
-		replaceQuery
-	);
+// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
+let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+	req,
+	baseQuery,
+	replaceQuery
+);
 
-	resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset);
+resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset);
 
-	return resultSet;
-} catch(err) {
-	throw Error(err);
-}
+return resultSet;
+
 
 /* * const replaceQuery = '{{REPLACE}}' não precisa ser alterada, serve apena como identificador * */
 
-/* * REPLACE (via http GET) é case insensitive e pode ser enviado em SNAKE_CASE (padrão do banco deve ser SNAKE_CASE) ou camelCase * */
+/*
+	* REPLACE (via http GET) é case insensitive e pode ser enviado em:
+		=> SNAKE_CASE (padrão do banco deve ser SNAKE_CASE)
+		=> camelCase
+*/
 
 // ---------------------------------------------------------------------------------------------------------
 
@@ -351,44 +345,140 @@ try {
 const searcher = require('@serverRoot/helpers/searcher');
 const paginator = require('@serverRoot/helpers/paginator');
 
-try {
-	const replaceQuery = '{{REPLACE}}';
-	const baseQuery = `
-		select top 10
-			*
-		from
-			usuario a (nolock)
-			inner join tipo b (nolock)
-				on (a.id_tipo = b.id_tipo)
-		${replaceQuery}
-	`;
+const replaceQuery = '{{REPLACE}}';
+const baseQuery = `
+	select top 10
+		*
+	from
+		usuario a (nolock)
+		inner join tipo b (nolock)
+			on (a.id_tipo = b.id_tipo)
+	${replaceQuery}
+`;
 
-	// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-	let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
-		req,
-		baseQuery,
-		replaceQuery
-	);
+// Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
+let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+	req,
+	baseQuery,
+	replaceQuery
+);
 
-	// Ordenador (sort)
-	resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true);
-	// Paginador (page)
-	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
+// Ordenador (sort)
+resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true);
+// Paginador (page)
+resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
 
-	return resultSet;
-} catch(err) {
-	throw Error(err);
-}
+return resultSet;
+
 
 /* * const replaceQuery = '{{REPLACE}}' não precisa ser alterada, serve apena como identificador * */
 
-/* * REPLACE (via http GET) é case insensitive e pode ser enviado em SNAKE_CASE (padrão do banco deve ser SNAKE_CASE) ou camelCase * */
-
-/* * Apenas UM toCamelCase é necessário em todas as chamadas * */
-
 /*
-   * se toCamelCase = true no setSort, utilizar camelCase exato (case sensitive) para identificar as chaves de sort no Json *
-   * se toCamelCase = false no setSort, utilizar nome da coluna exato no banco de dados (case sensitive) para identificar as chaves de sort no Json *
+	* REPLACE (via http GET) é case insensitive e pode ser enviado em:
+		=> SNAKE_CASE (padrão do banco deve ser SNAKE_CASE)
+		=> camelCase
 */
 
+/*
+	* Apenas UM toCamelCase é necessário em todas as chamadas
+		=> parâmetro toCamelCase existe em ambos os métodos setSort e em setPage da lib paginator
+
+	* se toCamelCase = true no setSort:
+		=> utilizar camelCase exato (case sensitive) para identificar as chaves de sort no Json
+		=> é o caso do exemplo
+
+	* se toCamelCase = false no setSort:
+		=> utilizar nome da coluna exato no banco de dados (case sensitive) para identificar as chaves de sort no Json
+*/
+
+// ---------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------------------------------------
+// usuario.consultarTodos (Exemplo de codificação no boiler)
+
+const dbCon = require('@serverRoot/helpers/db');
+const paginator = require('@serverRoot/helpers/paginator');
+
+const consultarTodos = async (req, res) => {
+	const query = {
+		formato: 1,
+		dados: {
+			executar: `
+				SELECT
+					A.ID_USUARIO
+					,A.ID_TIPO
+					,A.NOME
+					,A.EMAIL
+					,A.SENHA
+					,A.SALT
+					,A.ATIVO
+					,B.TIPO
+				FROM
+					USUARIO A (NOLOCK)
+					INNER JOIN TIPO B (NOLOCK)
+						ON (A.ID_TIPO = B.ID_TIPO);
+			`
+		}
+	};
+
+	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true); // Ordenador
+	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
+
+	return resultSet;
+};
+// ---------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------------------------------------
+// usuario.consultar (Exemplo de codificação no boiler)
+
+const dbCon = require('@serverRoot/helpers/db');
+const paginator = require('@serverRoot/helpers/paginator');
+const validator = require('@serverRoot/helpers/validator');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
+
+const consultar = async (req, res) => {
+	const idUsuario = req.params.id;
+
+	let checkedResultSet = {};
+
+	if (validator.isInteger(idUsuario, false)) {
+		const query = {
+			formato: 1,
+			dados: {
+				input: [
+					['idUsuario', 'int', idUsuario]
+				],
+				executar: `
+					SELECT
+						A.ID_USUARIO
+						,A.ID_TIPO
+						,A.NOME
+						,A.EMAIL
+						,A.SENHA
+						,A.SALT
+						,A.ATIVO
+						,B.TIPO
+					FROM
+						USUARIO A (NOLOCK)
+						INNER JOIN TIPO B (NOLOCK)
+							ON (A.ID_TIPO = B.ID_TIPO)
+					WHERE
+						A.ID_USUARIO = @idUsuario;
+				`
+			}
+		};
+
+		let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+		resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
+
+		checkedResultSet = resultSet;
+	} else {
+		errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
+	}
+
+	return checkedResultSet;
+};
 // ---------------------------------------------------------------------------------------------------------
