@@ -375,7 +375,9 @@ const mongoDB = {
 							}
 						);
 					} else {
-						reject('Esquema não encontrado...');
+						reject (
+							errWrapper.throwThis('DB', 400, 'Esquema não encontrado...')
+						);
 					}
 				}
 			} catch (err) {
