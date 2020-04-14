@@ -12,7 +12,7 @@ const auth = require('@serverRoot/actions/auth');
 
 // -------------------------------------------------------------------------
 // Middleware
-const _commonGate = async (req, res) => {
+const _commonGate = (req, res) => {
 	res.locals.routeControllerRoute = 'AUTH';
 };
 // -------------------------------------------------------------------------
@@ -24,8 +24,8 @@ const authRoutes = (router, handleErrorsController) => {
 	router.route('/logon')
 	.all (
 		handleErrorsController (
-			async (req, res, next) => {
-				await _commonGate(req, res);
+			(req, res, next) => {
+				_commonGate(req, res);
 				next();
 			}
 		)
@@ -44,8 +44,15 @@ const authRoutes = (router, handleErrorsController) => {
 	router.route('/logout')
 	.all (
 		handleErrorsController (
+			(req, res, next) => {
+				_commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.post (
+		handleErrorsController (
 			async (req, res) => {
-				await _commonGate(req, res);
 				let result = await auth.logout(req, res);
 				res.status(200).send(result);
 			}
@@ -57,8 +64,8 @@ const authRoutes = (router, handleErrorsController) => {
 	router.route('/isLogged')
 	.all (
 		handleErrorsController (
-			async (req, res, next) => {
-				await _commonGate(req, res);
+			(req, res, next) => {
+				_commonGate(req, res);
 				next();
 			}
 		)

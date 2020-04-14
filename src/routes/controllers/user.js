@@ -12,7 +12,7 @@ const user = require('@serverRoot/actions/user');
 
 // -------------------------------------------------------------------------
 // Middleware
-const _commonGate = async (req, res) => {
+const _commonGate = (req, res) => {
 	res.locals.routeControllerRoute = 'USER';
 };
 // -------------------------------------------------------------------------
@@ -24,8 +24,8 @@ const userRoutes = (router, handleErrorsController) => {
 	router.route('/usuario')
 	.all (
 		handleErrorsController (
-			async (req, res, next) => {
-				await _commonGate(req, res);
+			(req, res, next) => {
+				_commonGate(req, res);
 				next();
 			}
 		)
@@ -44,8 +44,8 @@ const userRoutes = (router, handleErrorsController) => {
 	router.route('/usuario/:id')
 	.all (
 		handleErrorsController (
-			async (req, res, next) => {
-				await _commonGate(req, res);
+			(req, res, next) => {
+				_commonGate(req, res);
 				next();
 			}
 		)

@@ -156,6 +156,7 @@ npm run build
   * routes
     - define um ou mais controllers para o projeto
     - define as rotas do servidor
+    - interface com uma estrutura padrão para as regras de negócio do projeto (actions)
     - ponto centralizador do contato client/server
       + todas as requisições/retornos do cliente são projetadas e passam por aqui
     - os controllers podem ser quebrados em subpastas, componentizados após routes

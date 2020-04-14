@@ -133,6 +133,7 @@
 			"ignoreImport": false,
 			"ignoreExport": false
 		}],
+		"require-await": 2,
 		"prefer-promise-reject-errors": 2,
 		"no-throw-literal": 2,
 		"radix": [2, "always"],

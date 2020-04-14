@@ -84,21 +84,21 @@ const consultar = async (req, res) => {
 	return checkedResultSet;
 };
 
-const inserir = async (req, res) => {
+const inserir = (req, res) => {
 	let fRet = 'insere usuario',
 		id = req.params.id;
 
 	return `${fRet} ${id}`;
 };
 
-const alterar = async (req, res) => {
+const alterar = (req, res) => {
 	let fRet = 'altera usuario',
 		id = req.params.id;
 
 	return `${fRet} ${id}`;
 };
 
-const excluir = async (req, res) => {
+const excluir = (req, res) => {
 	let fRet = 'exclui usuario',
 		id = req.params.id;
 

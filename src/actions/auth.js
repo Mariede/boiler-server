@@ -81,7 +81,7 @@ const logon = async (req, res) => {
 };
 
 // Finaliza a sessao no servidor, rotas protegidas ficam inascessiveis
-const logout = async (req, res) => {
+const logout = (req, res) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let sess = req.session;
