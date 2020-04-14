@@ -4,7 +4,7 @@ const myFunc = () => {
 	return new Promise((resolve, reject) => {
 		 setTimeout (
 			function() {
-				reject('Meu erro fabricado aqui!!!');
+				throw new Error('Meu erro fabricado aqui!!!');
 			},
 			2000
 		);
@@ -18,7 +18,7 @@ const myFunc = () => {
 	return new Promise((resolve, reject) => {
 		 setTimeout (
 			function() {
-				reject('Meu erro fabricado aqui!!!');
+				throw new Error('Meu erro fabricado aqui!!!');
 			},
 			2000
 		);
