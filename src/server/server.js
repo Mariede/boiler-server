@@ -298,7 +298,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 					messages.push(['info', `Servidor está rodando em ${pServerCheck.protocolInfo}${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
 
 					// Inicia gerenciamento do arquivo de configuracao do servidor
-					let resultConfig = await configManage.check(configPath),
+					let resultConfig = configManage.check(configPath),
 						fileName = path.basename(configPath);
 
 					if (typeof resultConfig === 'object' && resultConfig !== null) {

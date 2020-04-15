@@ -18,43 +18,37 @@ const routes = require('@serverRoot/routes/routes');
 router.use(async (req, res, next) => {
 	try {
 		const checkIsProtected = route => { // Verifica se a rota e protegida com base nas informacoes de config
-			return new Promise((resolve, reject) => {
-				try {
-					const exceptInspect = (paramTable, paramRoute) => {
-						const routePrefix = (__serverConfig.server.routePrefix || '').replace(/\/+$/, '') + '/';
+			const exceptInspect = (paramTable, paramRoute) => {
+				const routePrefix = (__serverConfig.server.routePrefix || '').replace(/\/+$/, '') + '/';
 
-						return paramTable.some (
-							element => {
-								let elementPick = element.trim().toUpperCase().replace(/^\/+|\/+$/, ''),
-									elementCheck = routePrefix + (elementPick !== '' ? elementPick + '/' : ''),
-									regExCheck = new RegExp(elementCheck);
+				return paramTable.some (
+					element => {
+						let elementPick = element.trim().toUpperCase().replace(/^\/+|\/+$/, ''),
+							elementCheck = routePrefix + (elementPick !== '' ? elementPick + '/' : ''),
+							regExCheck = new RegExp(elementCheck);
 
-								return (elementCheck === routePrefix ? (elementCheck === paramRoute) : regExCheck.test(paramRoute));
-							}
-						);
-					};
-
-					let routeCheck = route.toUpperCase(),
-						authTipo = __serverConfig.auth.authTipo,
-						exceptTable = __serverConfig.auth.except,
-						exceptReturn = exceptInspect(exceptTable, routeCheck),
-						fRet = true; // Rota protegida inicialmente
-
-					if (authTipo === 2) {
-						if (!exceptReturn) {
-							fRet = false;
-						}
-					} else {
-						if (exceptReturn) {
-							fRet = false;
-						}
+						return (elementCheck === routePrefix ? (elementCheck === paramRoute) : regExCheck.test(paramRoute));
 					}
+				);
+			};
 
-					resolve(fRet);
-				} catch (err) {
-					reject(err);
+			let routeCheck = route.toUpperCase(),
+				authTipo = __serverConfig.auth.authTipo,
+				exceptTable = __serverConfig.auth.except,
+				exceptReturn = exceptInspect(exceptTable, routeCheck),
+				fRet = true; // Rota protegida inicialmente
+
+			if (authTipo === 2) {
+				if (!exceptReturn) {
+					fRet = false;
 				}
-			});
+			} else {
+				if (exceptReturn) {
+					fRet = false;
+				}
+			}
+
+			return fRet;
 		};
 
 		const controllersRoutes = () => {
@@ -62,10 +56,10 @@ router.use(async (req, res, next) => {
 			next();
 		};
 
-		await routeProfiler.showDetails(req, res);
+		routeProfiler.showDetails(req, res);
 
 		let route = req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '') + '/',
-			isProtected = await checkIsProtected(route),
+			isProtected = checkIsProtected(route),
 			releasedReq = false;
 
 		if (!isProtected) {

@@ -1,10 +1,16 @@
 
-// async/ await
+
+// sync
+throw new Error('Meu erro sync fabricado aqui!!!');
+
+// async / await
 const myFunc = () => {
 	return new Promise((resolve, reject) => {
 		 setTimeout (
 			function() {
-				throw new Error('Meu erro fabricado aqui!!!');
+				reject (
+					new Error('Meu erro async fabricado aqui!!!')
+				)
 			},
 			2000
 		);
@@ -18,22 +24,15 @@ const myFunc = () => {
 	return new Promise((resolve, reject) => {
 		 setTimeout (
 			function() {
-				throw new Error('Meu erro fabricado aqui!!!');
+				reject (
+					new Error('Meu erro async fabricado aqui!!!')
+				)
 			},
 			2000
 		);
 	});
 };
 myFunc()
-.then (
-	() => {
-
-
-... codigo
-
-
-	}
-)
 .catch (
 	err => {
 		reject(err);
