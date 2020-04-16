@@ -28,6 +28,11 @@ const startIo = cert => {
 			protocolInfo: (isHttps ? 'https://' : 'http://')
 		};
 
+		const listenOptions = {
+			port: __serverConfig.socketIo.serverPort,
+			host: __serverConfig.socketIo.serverHost
+		};
+
 		const ioOptions = {
 			path: __serverConfig.socketIo.path
 		};
@@ -50,7 +55,7 @@ const startIo = cert => {
 
 		let listeningMethods = [];
 
-		_server.listen(__serverConfig.socketIo.serverPort, __serverConfig.socketIo.serverHost).on('error', err => {
+		_server.listen(listenOptions).on('error', err => {
 			log.logger('error', `[socket.io-servidor] ${(err.stack || err)}`);
 		});
 

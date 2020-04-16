@@ -16,42 +16,39 @@ const check = config => {
 	const readConfig = (param, fn, wait) => {
 		return new Promise((resolve, reject) => {
 			const isValidJson = json => {
-				return new Promise(resolve => {
-					try {
-						JSON.parse(json);
-						resolve(true);
-					} catch (err) {
-						log.logger('warn', `Validação de conteúdo para o arquivo ${fn}: ${(err.message || err.stack || err)}`, 'configFile');
-						resolve(false);
-					}
-				});
+				try {
+					JSON.parse(json);
+					return true;
+				} catch (err) {
+					log.logger('warn', `Validação de conteúdo para o arquivo ${fn}: ${(err.message || err.stack || err)}`, 'configFile');
+					return false;
+				}
 			};
 
 			// Le e valida se json permanece valido, com debounce de wait
 			clearTimeout(timeoutReadFile);
 
 			timeoutReadFile = setTimeout(() => {
-				fs.readFile (
-					param,
-					'utf8',
-					(err, data) => {
-						if (err) {
-							reject(err);
-						} else {
-							isValidJson(data)
-							.then (
-								result => {
-									resolve(result ? JSON.parse(data) : {});
-								}
-							)
-							.catch (
-								err => {
+				try {
+					fs.readFile (
+						param,
+						'utf8',
+						(err, data) => {
+							try {
+								if (err) {
 									reject(err);
+								} else {
+									const result = (isValidJson(data) ? JSON.parse(data) : {});
+									resolve(result);
 								}
-							);
+							} catch (err) {
+								reject(err);
+							}
 						}
-					}
-				);
+					);
+				} catch (err) {
+					reject(err);
+				}
 			}, wait);
 		});
 	};
@@ -67,11 +64,15 @@ const check = config => {
 	};
 
 	// Mostra mensagem mantendo um debounce de wait
-	const showMessage = (func, wait) => {
-		return new Promise(resolve => {
+	const showMessage = (fn, wait) => {
+		return new Promise((resolve, reject) => {
 			clearTimeout(timeoutMessages);
 			timeoutMessages = setTimeout(() => {
-				resolve(func());
+				try {
+					resolve(fn());
+				} catch (err) {
+					reject(err);
+				}
 			}, wait);
 		});
 	};
