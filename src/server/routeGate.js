@@ -52,7 +52,19 @@ router.use(async (req, res, next) => {
 		};
 
 		const controllersRoutes = () => {
-			routes.startRoutes(router);
+			const handleErrorsController = fn => { // Wrapper para handler de erros dos controllers
+				return (
+					async (req, res, next) => {
+						try {
+							await fn(req, res, next);
+						} catch (err) {
+							next(err); // Sobe erro para topo do middleware
+						}
+					}
+				);
+			};
+
+			routes.startRoutes(router, handleErrorsController);
 			next();
 		};
 

@@ -126,7 +126,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 						store: new sessionFileStore (
 							{
 								logFn: err => {
-									log.logger('error', (err.stack || err));
+									log.logger('warn', (err.stack || err));
 								},
 								path: (__serverRoot + '/sessions'),
 								encoding: 'utf8',
