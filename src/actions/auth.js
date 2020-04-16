@@ -14,10 +14,11 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 
 // Permite acesso as rotas protegidas, analise das permissoes em um segundo momento
 const logon = async (req, res) => {
-	let sess = req.session,
-		sessWraper = __serverConfig.auth.sessWrapper;
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	const dataSession = sess[sessWraper];
 
-	if (typeof sess[sessWraper] === 'object' && sess[sessWraper] !== null) {
+	if (typeof dataSession === 'object' && dataSession !== null) {
 		errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
 	} else {
 		let login = req.body.login,
@@ -83,28 +84,22 @@ const logon = async (req, res) => {
 // Finaliza a sessao no servidor, rotas protegidas ficam inascessiveis
 const logout = (req, res) => {
 	return new Promise((resolve, reject) => {
-		try {
-			let sess = req.session;
+		const sess = req.session;
 
-			if (sess) {
-				sess.destroy (
-					err => {
-						if (err) {
-							reject(err);
-						} else {
-							res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date() });
-							resolve();
-						}
+		sess.destroy (
+			err => {
+				try {
+					if (err) {
+						reject(err);
+					} else {
+						res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date() });
+						resolve();
 					}
-				);
-			} else {
-				reject (
-					errWrapper.throwThis('AUTH', 400, 'Sessão inexistente')
-				);
+				} catch (err) {
+					reject(err);
+				}
 			}
-		} catch (err) {
-			reject(err);
-		}
+		);
 	});
 };
 

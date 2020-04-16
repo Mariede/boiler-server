@@ -253,19 +253,11 @@ const queueStartMailCheck = () => {
 					};
 
 					const watch = setTimeout(() => {
-						try {
-							queueMailCheck();
+						queueMailCheck();
 
-							setInterval(() => {
-								try {
-									queueMailCheck();
-								} catch (err) {
-									log.logger('error', `setInterval inicial: ${(err.stack || err)}`, 'mailQueue');
-								}
-							}, timeCheck);
-						} catch (err) {
-							log.logger('error', `setTimeout inicial: ${(err.stack || err)}`, 'mailQueue');
-						}
+						setInterval(() => {
+							queueMailCheck();
+						}, timeCheck);
 					}, (__serverWorker || 1) * timeFirstCheck);
 
 					resolve(watch);
