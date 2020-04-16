@@ -282,14 +282,18 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 						const start = Date.now();
 
 						setTimeout(() => {
-							const eventLooplag = Date.now() - start;
-							const eventLooplagTrigger = 50; // Em milisegundos
+							try {
+								const eventLooplag = Date.now() - start;
+								const eventLooplagTrigger = 50; // Em milisegundos
 
-							if (eventLooplag > eventLooplagTrigger) {
-								log.logger('warn', `Loop de eventos deste servidor reportou lag acentuado: ${eventLooplag} ms`, 'startUp');
+								if (eventLooplag > eventLooplagTrigger) {
+									log.logger('warn', `Loop de eventos deste servidor reportou lag acentuado: ${eventLooplag} ms`, 'startUp');
+								}
+
+								eventLoopMonitor();
+							} catch (err) {
+								log.logger('error', `[web-servidor] ${(err.stack || err)}`);
 							}
-
-							eventLoopMonitor();
 						}, 0);
 					};
 

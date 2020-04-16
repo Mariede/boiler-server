@@ -7,6 +7,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const log = require('@serverRoot/helpers/log');
 const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
@@ -20,7 +21,12 @@ const listeners = {
 
 			socket.once('serverTimeStart', () => {
 				rootServerTime = setInterval(() => {
-					ioChannel.to(socket.id).emit('serverTimeTick', functions.getDateNow(true));
+					try {
+						ioChannel.to(socket.id).emit('serverTimeTick', functions.getDateNow(true));
+					} catch (err) {
+						log.logger('error', `[socket.io-servidor] ${(err.stack || err)}`);
+						clearInterval(rootServerTime);
+					}
 				}, 1000);
 			});
 
