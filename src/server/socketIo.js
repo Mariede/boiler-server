@@ -16,7 +16,7 @@ const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 // Inicia um novo servidor socket.io
 const startIo = cert => {
-	return new Promise(resolve => {
+	return new Promise((resolve, reject) => {
 		const isHttps = __serverConfig.server.secure.isHttps;
 
 		const pServerCheck = {
@@ -70,30 +70,34 @@ const startIo = cert => {
 		}
 
 		ios.httpServer.once('listening', () => {
-			const showMessageComplement = lm => {
-				let messageComplement = '';
+			try {
+				const showMessageComplement = lm => {
+					let messageComplement = '';
 
-				if (lm.length) {
-					messageComplement = ' (listeners ativos:';
+					if (lm.length) {
+						messageComplement = ' (listeners ativos:';
 
-					lm.forEach (
-						l => {
-							messageComplement += ` ${l}`;
-						}
-					);
+						lm.forEach (
+							l => {
+								messageComplement += ` ${l}`;
+							}
+						);
 
-					messageComplement += ')';
-				} else {
-					messageComplement = ' (nenhum listener ativo)';
-				}
+						messageComplement += ')';
+					} else {
+						messageComplement = ' (nenhum listener ativo)';
+					}
 
-				return messageComplement;
-			};
+					return messageComplement;
+				};
 
-			log.logger('info', `Servidor socket.io está rodando em ${pServerCheck.protocolInfo}${ios.httpServer.address().address}:${ios.httpServer.address().port}...${showMessageComplement(listeningMethods)}\r\n`, 'startUp');
+				log.logger('info', `Servidor socket.io está rodando em ${pServerCheck.protocolInfo}${ios.httpServer.address().address}:${ios.httpServer.address().port}...${showMessageComplement(listeningMethods)}\r\n`, 'startUp');
+
+				resolve();
+			} catch (err) {
+				reject(err);
+			}
 		});
-
-		resolve();
 	});
 };
 // -------------------------------------------------------------------------

@@ -64,15 +64,13 @@ const startApp = async (cert, configPath) => {
 		}
 		// -------------------------------------------------------------------------
 
-		if (!numWorkers || (numWorkers && cluster.isMaster)) {
-			await socketIo.startIo(cert);
-		}
-
 		if (numWorkers) {
 			if (cluster.isMaster) {
 				log.logger('info', '|| ********************************************************* ||', 'startUpAll');
 				log.logger('info', '|| Processo de inicialização do servidor - clusterizado: SIM ||', 'startUpAll');
 				log.logger('info', '|| ********************************************************* ||', 'startUpAll');
+
+				await socketIo.startIo(cert);
 
 				log.logger('info', `Cluster mestre definindo ${numWorkers} trabalhadores`, 'startUp');
 
@@ -110,6 +108,8 @@ const startApp = async (cert, configPath) => {
 			log.logger('info', '|| ********************************************************* ||', 'startUpAll');
 			log.logger('info', '|| Processo de inicialização do servidor - clusterizado: NÃO ||', 'startUpAll');
 			log.logger('info', '|| ********************************************************* ||', 'startUpAll');
+
+			await socketIo.startIo(cert);
 
 			let messages = await server.startServer(cert, configPath, numWorkers);
 			showMessages(messages);

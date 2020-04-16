@@ -3,6 +3,7 @@
 // sync
 throw new Error('Meu erro sync fabricado aqui!!!');
 
+
 // async / await
 const myFunc = () => {
 	return new Promise((resolve, reject) => {
