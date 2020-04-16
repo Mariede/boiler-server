@@ -77,8 +77,8 @@ const check = config => {
 		});
 	};
 
-	const message = fn => {
-		log.logger('info', `Arquivo ${fn} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'configFile');
+	const message = filename => {
+		log.logger('info', `Arquivo ${filename} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'configFile');
 	};
 
 	let timeoutMessages = null,
