@@ -35,22 +35,18 @@ const _checkSaltData = (...saltData) => {
 const _baseCipherDecipher = async (passData, ...saltData) => {
 	const scryptAsync = (_pass, _salt, _algorithmKeyLen) => {
 		return new Promise((resolve, reject) => {
-			try {
-				crypto.scrypt (
-					_pass,
-					_salt,
-					_algorithmKeyLen,
-					(err, derivedKey) => {
-						if (err) {
-							reject(err);
-						} else {
-							resolve(derivedKey);
-						}
+			crypto.scrypt (
+				_pass,
+				_salt,
+				_algorithmKeyLen,
+				(err, derivedKey) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(derivedKey);
 					}
-				);
-			} catch (err) {
-				reject(err);
-			}
+				}
+			);
 		});
 	};
 
@@ -84,7 +80,7 @@ const generateSalt = (length, onlyNumbers = true) => {
 /*
 Gera um hash baseado em algorithm
 
-	let passHash = cryptoHash.hash('P@ssword123', 6, false);
+	const passHash = cryptoHash.hash('P@ssword123', 6, false);
 
 	* passData e saltData opcionais
 */
@@ -104,7 +100,7 @@ const hash = (passData, ...saltData) => {
 /*
 Exemplo cifragem: (mesma senha e salt)
 
-	let encrypted = await cryptoHash.cipher('Powered By: -> * Michel Guimarães Ariede * <-', 'aaaHsddsd33##', 'salt%123');
+	const encrypted = await cryptoHash.cipher('Powered By: -> * Michel Guimarães Ariede * <-', 'aaaHsddsd33##', 'salt%123');
 
 	* passData e saltData opcionais
 */
@@ -123,7 +119,7 @@ const cipher = async (textToCipher, passData, ...saltData) => {
 /*
 Exemplo decifragem: (mesma senha e salt)
 
-	let decrypted = await cryptoHash.decipher(encrypted, 'aaaHsddsd33##', 'salt%123');
+	const decrypted = await cryptoHash.decipher(encrypted, 'aaaHsddsd33##', 'salt%123');
 
 	* passData e saltData opcionais
 */

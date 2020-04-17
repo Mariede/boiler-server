@@ -125,21 +125,21 @@ const msSqlServer = {
 									'Geometry'
 								];
 
-								let param = String(_param || ''),
-									checkParamA = param.indexOf('('),
-									checkParamB = checkParamA !== -1 ? checkParamA : param.length,
-									checkParamC = param.substr(0, checkParamB).trim(),
-									checkParamD = (dataTypesSupported.find (
-										element => {
-											return element.toUpperCase() === checkParamC.toUpperCase();
-										}
-									) || ''),
-									checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : '').split(',').map (
-										i => {
-											let iNum = parseFloat(i);
-											return ((isNaN(i) || isNaN(iNum)) ? i : iNum);
-										}
-									);
+								const param = String(_param || '');
+								const checkParamA = param.indexOf('(');
+								const checkParamB = checkParamA !== -1 ? checkParamA : param.length;
+								const checkParamC = param.substr(0, checkParamB).trim();
+								const checkParamD = (dataTypesSupported.find (
+									element => {
+										return element.toUpperCase() === checkParamC.toUpperCase();
+									}
+								) || '');
+								const checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : '').split(',').map (
+									i => {
+										const iNum = parseFloat(i);
+										return ((isNaN(i) || isNaN(iNum)) ? i : iNum);
+									}
+								);
 
 								return { base: checkParamD, ext: checkParamE };
 							};
@@ -148,7 +148,8 @@ const msSqlServer = {
 								if (Object.prototype.hasOwnProperty.call(p.dados, 'input')) {
 									p.dados.input.forEach(key => {
 										if (key.length === 3) {
-											let dataType = dataTypeCheck(key[1]);
+											const dataType = dataTypeCheck(key[1]);
+
 											if (dataType.base !== '') {
 												if (dataType.ext !== '') {
 													r.input(key[0], sql[dataType.base](...dataType.ext), key[2]);
@@ -173,7 +174,8 @@ const msSqlServer = {
 								if (Object.prototype.hasOwnProperty.call(p.dados, 'output')) {
 									p.dados.output.forEach(key => {
 										if (key.length === 2) {
-											let dataType = dataTypeCheck(key[1]);
+											const dataType = dataTypeCheck(key[1]);
+
 											if (dataType.base !== '') {
 												if (dataType.ext !== '') {
 													r.output(key[0], sql[dataType.base](...dataType.ext));
@@ -271,8 +273,8 @@ const msSqlServer = {
 		* Verificar arquivo de ajuda
 	*/
 	sqlExecuteAll: async (params, forceClose = false) => { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
-		let transaction = await msSqlServer.sqlOpenCon(),
-			result = await msSqlServer.sqlExecute(transaction, params);
+		const transaction = await msSqlServer.sqlOpenCon();
+		const result = await msSqlServer.sqlExecute(transaction, params);
 		await msSqlServer.sqlCloseCon(transaction, forceClose);
 
 		return result;
@@ -282,29 +284,25 @@ const msSqlServer = {
 const mongoDB = {
 	noSqlOpenCon: () => { // Inicia uma conexao
 		return new Promise((resolve, reject) => {
-			try {
-				// 0: disconnected, 1: connected, 2: connecting, 3: disconnecting, 4: invalid credentials
-				const checkConnection = mongoose.connection.readyState;
+			// 0: disconnected, 1: connected, 2: connecting, 3: disconnecting, 4: invalid credentials
+			const checkConnection = mongoose.connection.readyState;
 
-				if (checkConnection === 1) {
-					resolve();
-				} else {
-					const uri = __serverConfig.db.mongoose.connectionString;
+			if (checkConnection === 1) {
+				resolve();
+			} else {
+				const uri = __serverConfig.db.mongoose.connectionString;
 
-					mongoose.connect(uri, __serverConfig.db.mongoose.configDb)
-					.then (
-						() => {
-							resolve();
-						}
-					)
-					.catch (
-						err => {
-							reject(err);
-						}
-					);
-				}
-			} catch (err) {
-				reject(err);
+				mongoose.connect(uri, __serverConfig.db.mongoose.configDb)
+				.then (
+					() => {
+						resolve();
+					}
+				)
+				.catch (
+					err => {
+						reject(err);
+					}
+				);
 			}
 		});
 	},
@@ -315,73 +313,70 @@ const mongoDB = {
 	*/
 	noSqlGetModel: schema => {
 		return new Promise((resolve, reject) => {
-			try {
-				const getCompoundIndexes = s => {
-					return (mongooseSchemas.schemasCompoundIndexes[s] || []);
-				};
+			const getCompoundIndexes = s => {
+				return (mongooseSchemas.schemasCompoundIndexes[s] || []);
+			};
 
-				const getExtraOptions = s => {
-					return (mongooseSchemas.schemasExtraOptions[s] || {});
-				};
+			const getExtraOptions = s => {
+				return (mongooseSchemas.schemasExtraOptions[s] || {});
+			};
 
-				let myModel = mongoose.models[schema];
+			let myModel = mongoose.models[schema];
 
-				if (myModel) {
-					resolve(myModel);
-				} else {
-					let checkedSchema = mongooseSchemas.schemas[schema];
+			if (myModel) {
+				resolve(myModel);
+			} else {
+				const checkedSchema = mongooseSchemas.schemas[schema];
 
-					if (checkedSchema) {
-						let options = Object.assign(__serverConfig.db.mongoose.configSchema, getExtraOptions(schema)),
-							mySchema = new mongoose.Schema(checkedSchema, options),
-							compoundIndexes = getCompoundIndexes(schema),
-							verifiedCompoundIndexes = [];
+				if (checkedSchema) {
+					const options = Object.assign(__serverConfig.db.mongoose.configSchema, getExtraOptions(schema));
+					const mySchema = new mongoose.Schema(checkedSchema, options);
+					const compoundIndexes = getCompoundIndexes(schema);
 
-						if (Array.isArray(compoundIndexes)) {
-							verifiedCompoundIndexes = [...compoundIndexes];
-						} else {
-							verifiedCompoundIndexes.push(compoundIndexes);
-						}
+					let verifiedCompoundIndexes = [];
 
-						verifiedCompoundIndexes.forEach (
-							cVal => {
-								if (typeof cVal === 'object') {
-									if (Object.prototype.hasOwnProperty.call(cVal, '_unique')) {
-										delete cVal._unique;
-										mySchema.index(cVal, { unique: true });
-									} else {
-										mySchema.index(cVal);
-									}
+					if (Array.isArray(compoundIndexes)) {
+						verifiedCompoundIndexes = [...compoundIndexes];
+					} else {
+						verifiedCompoundIndexes.push(compoundIndexes);
+					}
+
+					verifiedCompoundIndexes.forEach (
+						cVal => {
+							if (typeof cVal === 'object') {
+								if (Object.prototype.hasOwnProperty.call(cVal, '_unique')) {
+									delete cVal._unique;
+									mySchema.index(cVal, { unique: true });
+								} else {
+									mySchema.index(cVal);
 								}
 							}
-						);
+						}
+					);
 
-						myModel = mongoose.model(schema, mySchema);
+					myModel = mongoose.model(schema, mySchema);
 
-						myModel.syncIndexes()
-						.then (
-							() => {
-								myModel.init();
-							}
-						)
-						.then (
-							() => {
-								resolve(myModel);
-							}
-						)
-						.catch (
-							err => {
-								reject(err);
-							}
-						);
-					} else {
-						reject (
-							errWrapper.throwThis('DB', 400, 'Esquema não encontrado...')
-						);
-					}
+					myModel.syncIndexes()
+					.then (
+						() => {
+							myModel.init();
+						}
+					)
+					.then (
+						() => {
+							resolve(myModel);
+						}
+					)
+					.catch (
+						err => {
+							reject(err);
+						}
+					);
+				} else {
+					reject (
+						errWrapper.throwThis('DB', 400, 'Esquema não encontrado...')
+					);
 				}
-			} catch (err) {
-				reject(err);
 			}
 		});
 	},
@@ -393,48 +388,40 @@ const mongoDB = {
 	// Inicia uma transacao com o mongoose e retorna o id da sessao
 	noSqlTransactionStart: () => {
 		return new Promise((resolve, reject) => {
-			try {
-				mongoDB.noSqlOpenCon()
-				.then (
-					() => {
-						return mongoose.startSession();
-					}
-				)
-				.then (
-					session => {
-						session.startTransaction();
-						resolve(session);
-					}
-				)
-				.catch (
-					err => {
-						reject(err);
-					}
-				);
-			} catch (err) {
-				reject(err);
-			}
+			mongoDB.noSqlOpenCon()
+			.then (
+				() => {
+					return mongoose.startSession();
+				}
+			)
+			.then (
+				session => {
+					session.startTransaction();
+					resolve(session);
+				}
+			)
+			.catch (
+				err => {
+					reject(err);
+				}
+			);
 		});
 	},
 
 	// Finaliza uma transacao com o mongoose
 	noSqlTransactionCommit: session => {
 		return new Promise((resolve, reject) => {
-			try {
-				session.commitTransaction()
-				.then (
-					() => {
-						resolve();
-					}
-				)
-				.catch (
-					err => {
-						reject(err);
-					}
-				);
-			} catch (err) {
-				reject(err);
-			}
+			session.commitTransaction()
+			.then (
+				() => {
+					resolve();
+				}
+			)
+			.catch (
+				err => {
+					reject(err);
+				}
+			);
 		});
 	},
 
@@ -446,8 +433,9 @@ const mongoDB = {
 			- padrao: 1 elemento retorna somento o objeto, > 1 retorna array de objetos, 0 retorna undefined
 	*/
 	noSqlGetIds: async (search, schema, session = undefined, returnAlwaysArray = false) => {
-		let myModel = await mongoDB.noSqlExecute(schema),
-			resultSearch = (session ? await myModel.find(search).select('_id').session(session) : await myModel.find(search).select('_id'));
+		const myModel = await mongoDB.noSqlExecute(schema);
+
+		let resultSearch = (session ? await myModel.find(search).select('_id').session(session) : await myModel.find(search).select('_id'));
 
 		if (resultSearch.length === 0) {
 			resultSearch = undefined;
@@ -467,20 +455,14 @@ const mongoDB = {
 		* Padrao de retorno dos dados (base comparativa resultSet da lib MSSQL)
 	*/
 	noSqlFormattedResult: arrayData => {
-		return new Promise((resolve, reject) => {
-			try {
-				let resultSet = {};
+		let resultSet = {};
 
-				if (Array.isArray(arrayData)) {
-					resultSet.recordset = arrayData;
-					resultSet.rowsAffected = [arrayData.length];
-				}
+		if (Array.isArray(arrayData)) {
+			resultSet.recordset = arrayData;
+			resultSet.rowsAffected = [arrayData.length];
+		}
 
-				resolve(resultSet);
-			} catch (err) {
-				reject(err);
-			}
-		});
+		return resultSet;
 	},
 
 	/*

@@ -58,9 +58,10 @@ const logger = (escopo, mensagem, incorporador = '') => {
 
 // Retorna erros oriundos dos controllers ao usuario
 const errorsController = (res, err, escopo, incorporador = '') => {
-	let httpStatusCode = 500,
-		error = new Error(),
-		genericErrorName = 'Error';
+	const error = new Error();
+	const genericErrorName = 'Error';
+
+	let httpStatusCode = 500;
 
 	switch (typeof err) {
 		case 'object': {

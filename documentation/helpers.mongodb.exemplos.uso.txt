@@ -36,7 +36,7 @@ await typesModel.create (
 	]
 );
 
-return await dbCon.mongoDB.noSqlFormattedResult(await typesModel.find());
+return dbCon.mongoDB.noSqlFormattedResult(await typesModel.find());
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ await usersModel.create (
 	]
 );
 
-return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
+return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ await usersModel.findOneAndUpdate (
 	}
 );
 
-return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
+return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ await usersModel.findOneAndUpdate (
 	}
 );
 
-return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
+return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ await usersModel.deleteMany ({
 	name: /^[ ]*joaquim/i
 });
 
-return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
+return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ await usersModel.findOneAndUpdate (
 
 await dbCon.mongoDB.noSqlTransactionCommit(session);
 
-return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
+return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -238,5 +238,5 @@ await usersModel.findOneAndUpdate (
 	}
 );
 
-return await dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
+return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
 // ---------------------------------------------------------------------------------------------------------
