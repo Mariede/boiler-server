@@ -33,7 +33,7 @@ const userRoutes = (router, handleErrorsController) => {
 	.get (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await user.consultarTodos(req, res);
+				const result = await user.consultarTodos(req, res);
 				res.status(200).send(result);
 			}
 		)
@@ -53,7 +53,7 @@ const userRoutes = (router, handleErrorsController) => {
 	.get (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await user.consultar(req, res);
+				const result = await user.consultar(req, res);
 				res.status(200).send(result);
 			}
 		)
@@ -61,7 +61,7 @@ const userRoutes = (router, handleErrorsController) => {
 	.post (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await user.inserir(req, res);
+				const result = await user.inserir(req, res);
 				res.status(200).send(result);
 			}
 		)
@@ -69,7 +69,7 @@ const userRoutes = (router, handleErrorsController) => {
 	.put (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await user.alterar(req, res);
+				const result = await user.alterar(req, res);
 				res.status(200).send(result);
 			}
 		)
@@ -77,7 +77,7 @@ const userRoutes = (router, handleErrorsController) => {
 	.delete (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await user.excluir(req, res);
+				const result = await user.excluir(req, res);
 				res.status(200).send(result);
 			}
 		)

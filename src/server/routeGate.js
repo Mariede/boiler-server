@@ -23,20 +23,21 @@ router.use(async (req, res, next) => {
 
 				return paramTable.some (
 					element => {
-						let elementPick = element.trim().toUpperCase().replace(/^\/+|\/+$/, ''),
-							elementCheck = routePrefix + (elementPick !== '' ? elementPick + '/' : ''),
-							regExCheck = new RegExp(elementCheck);
+						const elementPick = element.trim().toUpperCase().replace(/^\/+|\/+$/, '');
+						const elementCheck = routePrefix + (elementPick !== '' ? elementPick + '/' : '');
+						const regExCheck = new RegExp(elementCheck);
 
 						return (elementCheck === routePrefix ? (elementCheck === paramRoute) : regExCheck.test(paramRoute));
 					}
 				);
 			};
 
-			let routeCheck = route.toUpperCase(),
-				authTipo = __serverConfig.auth.authTipo,
-				exceptTable = __serverConfig.auth.except,
-				exceptReturn = exceptInspect(exceptTable, routeCheck),
-				fRet = true; // Rota protegida inicialmente
+			const routeCheck = route.toUpperCase();
+			const authTipo = __serverConfig.auth.authTipo;
+			const exceptTable = __serverConfig.auth.except;
+			const exceptReturn = exceptInspect(exceptTable, routeCheck);
+
+			let fRet = true; // Rota protegida inicialmente
 
 			if (authTipo === 2) {
 				if (!exceptReturn) {
@@ -70,9 +71,10 @@ router.use(async (req, res, next) => {
 
 		routeProfiler.showDetails(req, res);
 
-		let route = req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '') + '/',
-			isProtected = checkIsProtected(route),
-			releasedReq = false;
+		const route = req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '') + '/';
+		const isProtected = checkIsProtected(route);
+
+		let releasedReq = false;
 
 		if (!isProtected) {
 			releasedReq = true;

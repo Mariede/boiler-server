@@ -90,9 +90,9 @@ const queueStartMailCheck = () => {
 													});
 												};
 
-												let queuePathSending = queuePathSend + '/sending',
-													filePathSend = queuePathSend + '\\' + f,
-													filePathSending = queuePathSending + '\\' + f;
+												const queuePathSending = queuePathSend + '/sending';
+												const filePathSend = queuePathSend + '\\' + f;
+												const filePathSending = queuePathSending + '\\' + f;
 
 												fs.access (
 													queuePathSending,
@@ -188,12 +188,13 @@ const queueStartMailCheck = () => {
 											log.logger('error', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.stack || err)}`, 'mailQueue');
 										} else {
 											if (files && files.length) {
-												let targetFiles = files.filter (
-														file => {
-															return path.extname(file).toLowerCase() === fileExtension;
-														}
-													),
-													sentTotal = 0;
+												const targetFiles = files.filter (
+													file => {
+														return path.extname(file).toLowerCase() === fileExtension;
+													}
+												);
+
+												let sentTotal = 0;
 
 												if (targetFiles.length) {
 													targetFiles.sort (
@@ -206,14 +207,15 @@ const queueStartMailCheck = () => {
 														targetFiles,
 														async file => {
 															try {
-																let filePathSending = await prepareThis(file),
-																	fileContent = await readThis(filePathSending),
-																	sentInfo = await transporter.sendMail(fileContent),
-																	sentAccepted = (Array.isArray(sentInfo.accepted) ? sentInfo.accepted.length : 0),
-																	sentRejected = (Array.isArray(sentInfo.rejected) ? sentInfo.rejected.length : 0),
-																	sentPending = (Array.isArray(sentInfo.pending) ? sentInfo.pending.length : 0),
-																	emailsAffected = sentAccepted + sentRejected + sentPending,
-																	fRet = false;
+																const filePathSending = await prepareThis(file);
+																const fileContent = await readThis(filePathSending);
+																const sentInfo = await transporter.sendMail(fileContent);
+																const sentAccepted = (Array.isArray(sentInfo.accepted) ? sentInfo.accepted.length : 0);
+																const sentRejected = (Array.isArray(sentInfo.rejected) ? sentInfo.rejected.length : 0);
+																const sentPending = (Array.isArray(sentInfo.pending) ? sentInfo.pending.length : 0);
+																const emailsAffected = sentAccepted + sentRejected + sentPending;
+
+																let fRet = false;
 
 																sentTotal = sentTotal + emailsAffected;
 

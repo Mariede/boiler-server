@@ -9,7 +9,7 @@ const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 // Acoes
 const root = (req, res) => {
-	let fRet = { file: 'index.ejs', path: '_home/', pageData: { date: functions.getDateNow(true), ioUrl: socketIoListeners.nameSpaces.ioRootNameSpace, ioPath: __serverConfig.socketIo.path } };
+	const fRet = { file: 'index.ejs', path: '_home/', pageData: { date: functions.getDateNow(true), ioUrl: socketIoListeners.nameSpaces.ioRootNameSpace, ioPath: __serverConfig.socketIo.path } };
 
 	return fRet;
 };

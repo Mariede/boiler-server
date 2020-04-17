@@ -33,7 +33,7 @@ const homeRoutes = (router, handleErrorsController) => {
 	.get (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await home.root(req, res);
+				const result = await home.root(req, res);
 				res.status(200).render(result.path + result.file, result.pageData);
 			}
 		)

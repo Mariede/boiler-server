@@ -33,7 +33,7 @@ const authRoutes = (router, handleErrorsController) => {
 	.post (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await auth.logon(req, res);
+				const result = await auth.logon(req, res);
 				res.status(200).send(result);
 			}
 		)
@@ -53,7 +53,7 @@ const authRoutes = (router, handleErrorsController) => {
 	.post (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await auth.logout(req, res);
+				const result = await auth.logout(req, res);
 				res.status(200).send(result);
 			}
 		)
@@ -73,7 +73,7 @@ const authRoutes = (router, handleErrorsController) => {
 	.get (
 		handleErrorsController (
 			async (req, res) => {
-				let result = await auth.isLogged(req, res);
+				const result = await auth.isLogged(req, res);
 				res.status(200).send(result);
 			}
 		)

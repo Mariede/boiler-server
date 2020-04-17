@@ -14,15 +14,17 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // Logon via permisys
 const logon = (login, senha, idTipoUsuario = 0) => {
 	return new Promise((resolve, reject) => {
-		let address = __serverConfig.server.custom.permisys.address + '/verificarLogon',
-			config = {
-				headers: {
-					'Authorization': __serverConfig.server.custom.permisys.headers.authorization
-				}
-			},
-			siglaSistema = __serverConfig.server.custom.permisys.siglaSistema,
-			idModulo = __serverConfig.server.custom.permisys.idModulo, // Se nao informado checa credenciais mas nao autoriza
-			dataSend = {};
+		const address = __serverConfig.server.custom.permisys.address + '/verificarLogon';
+		const siglaSistema = __serverConfig.server.custom.permisys.siglaSistema;
+		const idModulo = __serverConfig.server.custom.permisys.idModulo; // Se nao informado checa credenciais mas nao autoriza
+
+		const config = {
+			headers: {
+				'Authorization': __serverConfig.server.custom.permisys.headers.authorization
+			}
+		};
+
+		let dataSend = {};
 
 		if (siglaSistema) {
 			dataSend.siglaSistema = siglaSistema;

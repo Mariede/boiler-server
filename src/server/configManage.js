@@ -81,10 +81,11 @@ const check = config => {
 		log.logger('info', `Arquivo ${filename} foi modificado... Favor corrigir ou reiniciar o servidor!!`, 'configFile');
 	};
 
+	const waitMessages = 5000;
+	const waitReadFile = 500;
+
 	let timeoutMessages = null,
-		waitMessages = 5000,
 		timeoutReadFile = null,
-		waitReadFile = 500,
 		objCheckIsEqual = false;
 
 	const watch = fs.watch(config, async (event, filename) => {

@@ -21,8 +21,8 @@ const logon = async (req, res) => {
 	if (typeof dataSession === 'object' && dataSession !== null) {
 		errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
 	} else {
-		let login = req.body.login,
-			pass = req.body.pass;
+		const login = req.body.login;
+		const pass = req.body.pass;
 
 		if (!validator.isEmpty(login)) {
 			if (!validator.isEmpty(pass)) { // Inicia a sessao
@@ -47,15 +47,16 @@ const logon = async (req, res) => {
 					}
 				};
 
-				let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query),
-					dataUser = resultSet && resultSet.rowsAffected[0] === 1 && resultSet.recordset[0],
-					passCheck = (dataUser ? cryptoHash.hash(pass, dataUser.SALT) : undefined);
+				let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+				const dataUser = resultSet && resultSet.rowsAffected[0] === 1 && resultSet.recordset[0];
+				const passCheck = (dataUser ? cryptoHash.hash(pass, dataUser.SALT) : undefined);
 
 				if (passCheck && (passCheck.passHash === dataUser.SENHA)) {
 					if (dataUser.ATIVO) {
-						let id = dataUser.ID_USUARIO,
-							nome = dataUser.NOME,
-							email = dataUser.EMAIL;
+						const id = dataUser.ID_USUARIO;
+						const nome = dataUser.NOME;
+						const email = dataUser.EMAIL;
 
 						/* Session data */
 						sess[sessWraper] = {
@@ -105,8 +106,8 @@ const logout = (req, res) => {
 
 // Verifica se a sessao esta ativa
 const isLogged = async (req, res) => {
-	let resultType = String(req.query.result_type),
-		fRet = await helpersAuth.isLogged(req, (resultType === '1' ? 1 : 0));
+	const resultType = String(req.query.result_type);
+	const fRet = await helpersAuth.isLogged(req, (resultType === '1' ? 1 : 0));
 
 	return fRet;
 };

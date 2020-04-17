@@ -85,22 +85,22 @@ const consultar = async (req, res) => {
 };
 
 const inserir = (req, res) => {
-	let fRet = 'insere usuario',
-		id = req.params.id;
+	const fRet = 'insere usuario';
+	const id = req.params.id;
 
 	return `${fRet} ${id}`;
 };
 
 const alterar = (req, res) => {
-	let fRet = 'altera usuario',
-		id = req.params.id;
+	const fRet = 'altera usuario';
+	const id = req.params.id;
 
 	return `${fRet} ${id}`;
 };
 
 const excluir = (req, res) => {
-	let fRet = 'exclui usuario',
-		id = req.params.id;
+	const fRet = 'exclui usuario';
+	const id = req.params.id;
 
 	return `${fRet} ${id}`;
 };

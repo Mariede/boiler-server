@@ -301,8 +301,8 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 				messages.push(['info', `Servidor está rodando em ${pServerCheck.protocolInfo}${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
 
 				// Inicia gerenciamento do arquivo de configuracao do servidor
-				let resultConfig = configManage.check(configPath),
-					fileName = path.basename(configPath);
+				const resultConfig = configManage.check(configPath);
+				const fileName = path.basename(configPath);
 
 				if (typeof resultConfig === 'object' && resultConfig !== null) {
 					messages.push(['info', `Arquivo de configuração em ${fileName} está sendo observado por mudanças`]);
@@ -312,7 +312,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 				// Inicia o gerenciamento da pasta de e-mails para envios em fila (queue)
 				if (__serverConfig.email.queue.on) {
-					let resultQueue = await queue.queueStartMailCheck();
+					const resultQueue = await queue.queueStartMailCheck();
 
 					if (typeof resultQueue === 'object' && resultQueue !== null) {
 						messages.push(['info', `Serviço de fila de e-mails iniciado com sucesso${__serverConfig.email.queue.saveFullLogs ? ' (logs completos)' : ''}`]);

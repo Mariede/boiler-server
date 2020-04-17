@@ -16,9 +16,10 @@ const log = require('@serverRoot/helpers/log');
 const startApp = async (cert, configPath) => {
 	try {
 		const showMessages = messages => {
-			let checkType = 'info',
-				messagesCheckType = '',
-				padStart = ''.padStart(43) + '-> ',
+			const checkType = 'info';
+			const padStart = ''.padStart(43) + '-> ';
+
+			let messagesCheckType = '',
 				i = 0;
 
 			messages.forEach (
@@ -75,8 +76,9 @@ const startApp = async (cert, configPath) => {
 				log.logger('info', `Cluster mestre definindo ${numWorkers} trabalhadores`, 'startUp');
 
 				for (let i = 0; i < numWorkers; i++) {
-					let env = { workerMyId: i + 1 },
-						newWorker = cluster.fork(env);
+					const env = { workerMyId: i + 1 };
+					const newWorker = cluster.fork(env);
+
 					newWorker.process.myEnv = env;
 				}
 
@@ -93,14 +95,15 @@ const startApp = async (cert, configPath) => {
 						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.process.myEnv.workerMyId} - finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`, 'startUp');
 						log.logger('info', 'Iniciando novo trabalhador', 'startUp');
 
-						let env = worker.process.myEnv,
-							newWorker = cluster.fork(env);
+						const env = worker.process.myEnv;
+						const newWorker = cluster.fork(env);
+
 						newWorker.process.myEnv = env;
 					}
 				);
 			} else {
 				if (cluster.isWorker) {
-					let messages = await server.startServer(cert, configPath, numWorkers, cluster);
+					const messages = await server.startServer(cert, configPath, numWorkers, cluster);
 					showMessages(messages);
 				}
 			}
@@ -111,7 +114,7 @@ const startApp = async (cert, configPath) => {
 
 			await socketIo.startIo(cert);
 
-			let messages = await server.startServer(cert, configPath, numWorkers);
+			const messages = await server.startServer(cert, configPath, numWorkers);
 			showMessages(messages);
 		}
 	} catch (err) {
