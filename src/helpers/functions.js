@@ -24,7 +24,7 @@ const getDateNow = formatted => {
 // Loop forEach assincrono
 const asyncForEach = async (array, callback) => {
 	for (let i = 0; i < array.length; i++) {
-		let endThisLoopNow = await callback(array[i], i, array);
+		const endThisLoopNow = await callback(array[i], i, array);
 
 		if (endThisLoopNow) {
 			break;
@@ -55,42 +55,38 @@ const promiseForEach = (arrayItems, callback) => {
 // Cria uma nova pasta no sistema de arquivos
 const createNewFolder = (fs, newFolder) => {
 	return new Promise((resolve, reject) => {
-		try {
-			fs.access (
-				newFolder,
-				fs.constants.F_OK, // Check if exists
-				err => {
-					try {
-						if (err) {
-							fs.mkdir (
-								newFolder,
-								err => {
-									try {
-										if (err) {
-											if (err.code !== 'EEXIST') { // Check if exists (again)
-												reject(err);
-											} else {
-												resolve();
-											}
+		fs.access (
+			newFolder,
+			fs.constants.F_OK, // Check if exists
+			err => {
+				try {
+					if (err) {
+						fs.mkdir (
+							newFolder,
+							err => {
+								try {
+									if (err) {
+										if (err.code !== 'EEXIST') { // Check if exists (again)
+											reject(err);
 										} else {
 											resolve();
 										}
-									} catch (err) {
-										reject(err);
+									} else {
+										resolve();
 									}
+								} catch (err) {
+									reject(err);
 								}
-							);
-						} else {
-							resolve();
-						}
-					} catch (err) {
-						reject(err);
+							}
+						);
+					} else {
+						resolve();
 					}
+				} catch (err) {
+					reject(err);
 				}
-			);
-		} catch (err) {
-			reject(err);
-		}
+			}
+		);
 	});
 };
 
@@ -112,8 +108,9 @@ const removeInvalidFileNameChars = (_param, os = 1) => {
 
 // Gera um identificador o mais unico possivel, em diferentes formatos
 const generateUniqueId = (_length, dateIncluded = true) => {
-	let length = (Number.isInteger(_length) && _length > 0 ? (_length < 15 ? _length : 15) : 1),
-		fRet = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10);
+	const length = (Number.isInteger(_length) && _length > 0 ? (_length < 15 ? _length : 15) : 1);
+
+	let fRet = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10);
 
 	if (dateIncluded) {
 		const dateNow = (new Date()).toISOString().split('T');

@@ -21,14 +21,14 @@ const _executeQueue = (e, counter) => {
 	return new Promise((resolve, reject) => {
 		try {
 			const configQueue = __serverConfig.email.queue;
-			const configKey = configQueue.path + '\\trabalhador-' + (__serverWorker ? __serverWorker : 'unico');
+			const configKey = configQueue.path + '/trabalhador-' + (__serverWorker ? __serverWorker : 'unico');
 			const queueFile = JSON.stringify(e);
 			const uniqueId = functions.generateUniqueId(3);
 
 			let initPath = __serverRoot,
 				queuePathSend = initPath + configKey;
 
-			const fileName = queuePathSend + '\\mail-queue-' + uniqueId + '.' + counter + configQueue.fileExtension;
+			const fileName = queuePathSend + '/mail-queue-' + uniqueId + '.' + counter + configQueue.fileExtension;
 
 			fs.access (
 				queuePathSend,

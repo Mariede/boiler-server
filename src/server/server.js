@@ -15,7 +15,6 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const favicon = require('serve-favicon');
 const ejs = require('ejs');
-const path = require('path');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -302,7 +301,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 				// Inicia gerenciamento do arquivo de configuracao do servidor
 				const resultConfig = configManage.check(configPath);
-				const fileName = path.basename(configPath);
+				const fileName = configPath.split(/[\\/]/).pop();
 
 				if (typeof resultConfig === 'object' && resultConfig !== null) {
 					messages.push(['info', `Arquivo de configuração em ${fileName} está sendo observado por mudanças`]);
@@ -312,12 +311,16 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 				// Inicia o gerenciamento da pasta de e-mails para envios em fila (queue)
 				if (__serverConfig.email.queue.on) {
-					const resultQueue = await queue.queueStartMailCheck();
+					try {
+						const resultQueue = await queue.queueStartMailCheck();
 
-					if (typeof resultQueue === 'object' && resultQueue !== null) {
-						messages.push(['info', `Serviço de fila de e-mails iniciado com sucesso${__serverConfig.email.queue.saveFullLogs ? ' (logs completos)' : ''}`]);
-					} else {
-						messages.push(['error', 'Serviço de fila de e-mails falhou ao iniciar...']);
+						if (typeof resultQueue === 'object' && resultQueue !== null) {
+							messages.push(['info', `Serviço de fila de e-mails iniciado com sucesso${__serverConfig.email.queue.saveFullLogs ? ' (logs completos)' : ''}`]);
+						} else {
+							messages.push(['error', 'Serviço de fila de e-mails falhou ao iniciar...']);
+						}
+					} catch (err) {
+						messages.push(['error', `Serviço de fila de e-mails falhou ao iniciar: ${(err.stack || err)}`]);
 					}
 				} else {
 					messages.push(['info', 'Serviço de fila de e-mails não habilitado']);
@@ -325,8 +328,12 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 				// Inicia o monitoramento do loop de eventos no servidor
 				if (__serverConfig.server.eventLoopMonitor) {
-					eventLoopMonitor();
-					messages.push(['info', 'Monitoramento do loop de eventos no servidor habilitado (testes de performance)']);
+					try {
+						eventLoopMonitor();
+						messages.push(['info', 'Monitoramento do loop de eventos no servidor habilitado (testes de performance)']);
+					} catch (err) {
+						messages.push(['error', `Monitoramento do loop de eventos no servidor falhou ao iniciar: ${(err.stack || err)}`]);
+					}
 				} else {
 					messages.push(['info', 'Monitoramento do loop de eventos no servidor não habilitado (padrão)']);
 				}

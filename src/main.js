@@ -90,7 +90,7 @@ const startMain = async () => {
 			let result = {};
 
 			if (__serverConfig.server.secure.isHttps) {
-				const certPath = __serverRoot + __serverConfig.server.secure.certFolder + '\\';
+				const certPath = __serverRoot + __serverConfig.server.secure.certFolder + '/';
 				const certKey = certPath + __serverConfig.server.secure.certKey;
 				const certPublic = certPath + __serverConfig.server.secure.certPublic;
 

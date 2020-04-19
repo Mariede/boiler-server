@@ -32,7 +32,7 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 		destination: (req, file, callback) => {
 			try {
 				let initPath = __serverRoot,
-					configKey = configUpload.path + (extraPath ? `\\${extraPath}` : ''),
+					configKey = configUpload.path + (extraPath ? `/${extraPath}` : ''),
 					filePath = initPath + configKey;
 
 				fs.access (
