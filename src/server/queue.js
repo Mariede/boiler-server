@@ -272,11 +272,9 @@ const queueStartMailCheck = () => {
 								}
 							}
 						);
-
-						startWatch();
-					} else {
-						startWatch();
 					}
+
+					startWatch();
 				} catch (err) {
 					reject(err);
 				}
