@@ -75,85 +75,85 @@ query = {
 // ---------------------------------------------------------------------------------------------------------
 // Parâmetros de entrada (exemplos)
 
-let query = {
-		formato: 1,
-		dados: {
-			input: [
-				['nome', 'varchar(200)', 'Joaquim Santos'],
-				['senha', 'varchar(20)', 'SENH@TESTE123'],
-				['ativo', 'bit', 1],
-				['nomeCheck', '%Jo%']
-			],
-			output: [
-				['INSERTED_ID', 'int']
-			],
-			executar: `
-				SET NOCOUNT OFF;
-				DECLARE
-					@INCR int; -- variavel interna
-				SET
-					@INCR = (
-						SELECT TOP 1
-							ID_USUARIO
-						FROM
-							USUARIO U (NOLOCK)
-						WHERE
-							U.NOME LIKE(@nomeCheck) -- variavel input externa
-						ORDER BY
-							ID_USUARIO DESC
-					);
-				INSERT INTO USUARIO (
-					NOME
-					,SENHA
-					,ATIVO
-				) VALUES (
-					@nome + ' ' + CAST(@INCR AS varchar) -- variavel input externa + interna
-					,@senha -- variavel input externa
-					,@ativo -- variavel input externa
+const query = {
+	formato: 1,
+	dados: {
+		input: [
+			['nome', 'varchar(200)', 'Joaquim Santos'],
+			['senha', 'varchar(20)', 'SENH@TESTE123'],
+			['ativo', 'bit', 1],
+			['nomeCheck', '%Jo%']
+		],
+		output: [
+			['INSERTED_ID', 'int']
+		],
+		executar: `
+			SET NOCOUNT OFF;
+			DECLARE
+				@INCR int; -- variavel interna
+			SET
+				@INCR = (
+					SELECT TOP 1
+						ID_USUARIO
+					FROM
+						USUARIO U (NOLOCK)
+					WHERE
+						U.NOME LIKE(@nomeCheck) -- variavel input externa
+					ORDER BY
+						ID_USUARIO DESC
 				);
-				SET
-					@INSERTED_ID = SCOPE_IDENTITY(); -- variavel output
-				SELECT TOP 2
-					NOME
-				FROM
-					USUARIO U (NOLOCK)
-				WHERE
-					U.NOME LIKE(@nomeCheck) -- variavel input externa
-				ORDER BY
-					ID_USUARIO DESC;
-				SELECT TOP 3
-					*
-				FROM
-					USUARIO U (NOLOCK)
-				WHERE
-					U.NOME LIKE(@nomeCheck) -- variavel input externa
-				ORDER BY
-					ID_USUARIO DESC;
-			`
-		}
-	},
-	otherQuery = {
-		formato: 2,
-		dados: {
-			input: [
-				['idUsuario', 'int', 1],
-				['nome', 'varchar(200)', 'jo']
-			],
-			output: [
-				['QTD_RET', 'int']
-			],
-			executar: 'USUARIO_CONSULTAR'
-		}
-	},
-	anotherQuery = {
-		formato: 1,
-		dados: {
-			input: [
-				['nome', '%jo%']
-			],
-			executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
-		}
-	};
+			INSERT INTO USUARIO (
+				NOME
+				,SENHA
+				,ATIVO
+			) VALUES (
+				@nome + ' ' + CAST(@INCR AS varchar) -- variavel input externa + interna
+				,@senha -- variavel input externa
+				,@ativo -- variavel input externa
+			);
+			SET
+				@INSERTED_ID = SCOPE_IDENTITY(); -- variavel output
+			SELECT TOP 2
+				NOME
+			FROM
+				USUARIO U (NOLOCK)
+			WHERE
+				U.NOME LIKE(@nomeCheck) -- variavel input externa
+			ORDER BY
+				ID_USUARIO DESC;
+			SELECT TOP 3
+				*
+			FROM
+				USUARIO U (NOLOCK)
+			WHERE
+				U.NOME LIKE(@nomeCheck) -- variavel input externa
+			ORDER BY
+				ID_USUARIO DESC;
+		`
+	}
+};
+const otherQuery = {
+	formato: 2,
+	dados: {
+		input: [
+			['idUsuario', 'int', 1],
+			['nome', 'varchar(200)', 'jo']
+		],
+		output: [
+			['QTD_RET', 'int']
+		],
+		executar: 'USUARIO_CONSULTAR'
+	}
+};
+const anotherQuery = {
+	formato: 1,
+	dados: {
+		input: [
+			['nome', '%jo%']
+		],
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+	}
+};
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -172,8 +172,9 @@ const query = {
 	}
 };
 
-let transaction = await dbCon.msSqlServer.sqlOpenCon(),
-	{ recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
+const transaction = await dbCon.msSqlServer.sqlOpenCon();
+
+const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
 
 await dbCon.msSqlServer.sqlCloseCon(transaction);
 
@@ -195,7 +196,7 @@ const query = {
 };
 
 // Executa query ou queries
-let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 return resultSet;
 // ---------------------------------------------------------------------------------------------------------
@@ -216,12 +217,12 @@ const query = {
 };
 
 // Executa query ou queries
-let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 // Paginador (page)
-resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0], true);
+const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0], true);
 
-return resultSet;
+return pagedResultSet;
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -240,14 +241,15 @@ const query = {
 };
 
 // Executa query ou queries
-let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 // Ordenador (sort)
-resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true);
-// Paginador (page)
-resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
+resultSet.recordset = paginator.setSort(req, resultSet.recordset, true);
 
-return resultSet;
+// Paginador (page)
+const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
+
+return pagedResultSet;
 
 /*
 	* Apenas UM toCamelCase é necessário em todas as chamadas
@@ -281,7 +283,7 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+const { recordsets: recordSets, ...resultSet } = await searcher.setSearch (
 	req,
 	baseQuery,
 	replaceQuery
@@ -319,13 +321,13 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+const { recordsets: recordSets, ...resultSet } = await searcher.setSearch (
 	req,
 	baseQuery,
 	replaceQuery
 );
 
-resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset);
+resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset);
 
 return resultSet;
 
@@ -357,18 +359,19 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-let { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+const { recordsets: recordSets, ...resultSet } = await searcher.setSearch (
 	req,
 	baseQuery,
 	replaceQuery
 );
 
 // Ordenador (sort)
-resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true);
-// Paginador (page)
-resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
+resultSet.recordset = paginator.setSort(req, resultSet.recordset, true);
 
-return resultSet;
+// Paginador (page)
+const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
+
+return pagedResultSet;
 
 
 /* * const replaceQuery = '{{REPLACE}}' não precisa ser alterada, serve apena como identificador * */
@@ -421,12 +424,13 @@ const consultarTodos = async (req, res) => {
 		}
 	};
 
-	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+	const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true); // Ordenador
-	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
+	resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
 
-	return resultSet;
+	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
+
+	return pagedResultSet;
 };
 // ---------------------------------------------------------------------------------------------------------
 
@@ -470,9 +474,9 @@ const consultar = async (req, res) => {
 			}
 		};
 
-		let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+		const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-		resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
+		resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
 
 		checkedResultSet = resultSet;
 	} else {

@@ -32,12 +32,13 @@ const consultarTodos = async (req, res) => {
 		}
 	};
 
-	let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+	const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	resultSet.recordset = await paginator.setSort(req, resultSet.recordset, true); // Ordenador
-	resultSet = await paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
+	resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
 
-	return resultSet;
+	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
+
+	return pagedResultSet;
 };
 
 const consultar = async (req, res) => {
@@ -72,9 +73,9 @@ const consultar = async (req, res) => {
 			}
 		};
 
-		let { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+		const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-		resultSet.recordset = await paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
+		resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
 
 		checkedResultSet = resultSet;
 	} else {

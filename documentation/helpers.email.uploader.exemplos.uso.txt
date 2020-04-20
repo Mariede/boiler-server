@@ -11,12 +11,12 @@ const email = require('@serverRoot/helpers/email');
 const uploader = require('@serverRoot/helpers/uploader');
 const ejs = require('ejs');
 
-let mailTemplate = __serverRoot + '/views/serverSide/pages/_mailTemplates/exampleTemplate.ejs',
-	dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }), // Template dinamico
-	fileName = 'emailAttach', // Nome do campo html que informa os arquivos de upload
-	filePath = 'attachments_path', // Caminho para os arquivos de upload
-	uploaderResults = await uploader.push(req, res, [{ name: fileName }], filePath),
-	attachments = email.getAttachments(uploaderResults, fileName);
+const mailTemplate = __serverRoot + '/views/serverSide/pages/_mailTemplates/exampleTemplate.ejs';
+const dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }); // Template dinamico
+const fileName = 'emailAttach'; // Nome do campo html que informa os arquivos de upload
+const filePath = 'attachments_path'; // Caminho para os arquivos de upload
+const uploaderResults = await uploader.push(req, res, [{ name: fileName }], filePath);
+const attachments = email.getAttachments(uploaderResults, fileName);
 
 return await email.sendEmail (
 	['testefrom@server.com', 'From Name'],

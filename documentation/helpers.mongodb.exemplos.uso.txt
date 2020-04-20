@@ -22,11 +22,11 @@ Conexão e execução de comandos noSql em mongoDB
 // Insert / Select
 const dbCon = require('@serverRoot/helpers/db');
 
-let typesModel = await dbCon.mongoDB.noSqlExecute('types');
+const typesModel = await dbCon.mongoDB.noSqlExecute('types');
 
-// await typesModel.deleteMany ({
-// 	type: /^[ ]*Alpha/i
-// });
+await typesModel.deleteMany ({
+	type: /^[ ]*Alpha/i
+});
 
 await typesModel.create (
 	[
@@ -37,6 +37,7 @@ await typesModel.create (
 );
 
 return dbCon.mongoDB.noSqlFormattedResult(await typesModel.find());
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -44,12 +45,12 @@ return dbCon.mongoDB.noSqlFormattedResult(await typesModel.find());
 // Retorno com populate
 const dbCon = require('@serverRoot/helpers/db');
 
-let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
-	usersModel = await dbCon.mongoDB.noSqlExecute('users');
+const typesModel = await dbCon.mongoDB.noSqlExecute('types');
+const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-// await usersModel.deleteMany ({
-// 	name: /^[ ]*joaquim/i
-// });
+await usersModel.deleteMany ({
+	name: /^[ ]*joaquim/i
+});
 
 await usersModel.create (
 	[
@@ -66,6 +67,7 @@ await usersModel.create (
 );
 
 return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -73,7 +75,7 @@ return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ pat
 // Retorno sem populate
 const dbCon = require('@serverRoot/helpers/db');
 
-let usersModel = await dbCon.mongoDB.noSqlExecute('users');
+const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
 await usersModel.findOneAndUpdate (
 	{
@@ -85,6 +87,7 @@ await usersModel.findOneAndUpdate (
 );
 
 return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -92,8 +95,8 @@ return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
 // Retorno com populate
 const dbCon = require('@serverRoot/helpers/db');
 
-let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
-	usersModel = await dbCon.mongoDB.noSqlExecute('users');
+const typesModel = await dbCon.mongoDB.noSqlExecute('types');
+const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
 await usersModel.findOneAndUpdate (
 	{
@@ -105,6 +108,7 @@ await usersModel.findOneAndUpdate (
 );
 
 return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -112,8 +116,8 @@ return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ pat
 // Retorno sem populate
 const dbCon = require('@serverRoot/helpers/db');
 
-let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
-	usersModel = await dbCon.mongoDB.noSqlExecute('users');
+const typesModel = await dbCon.mongoDB.noSqlExecute('types');
+const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
 await typesModel.deleteMany ({
 	type: /^[ ]*Alpha/i
@@ -124,6 +128,7 @@ await usersModel.deleteMany ({
 });
 
 return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
@@ -138,9 +143,9 @@ return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
 */
 const dbCon = require('@serverRoot/helpers/db');
 
-let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
-	usersModel = await dbCon.mongoDB.noSqlExecute('users'),
-	session = await dbCon.mongoDB.noSqlTransactionStart();
+const typesModel = await dbCon.mongoDB.noSqlExecute('types');
+const usersModel = await dbCon.mongoDB.noSqlExecute('users');
+const session = await dbCon.mongoDB.noSqlTransactionStart();
 
 await typesModel.deleteMany ({
 	type: /^[ ]*Alpha/i
@@ -190,14 +195,15 @@ await usersModel.findOneAndUpdate (
 await dbCon.mongoDB.noSqlTransactionCommit(session);
 
 return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
+
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
 // Análogo ao de cima, sem transações
 const dbCon = require('@serverRoot/helpers/db');
 
-let typesModel = await dbCon.mongoDB.noSqlExecute('types'),
-	usersModel = await dbCon.mongoDB.noSqlExecute('users');
+const typesModel = await dbCon.mongoDB.noSqlExecute('types');
+const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
 await typesModel.deleteMany ({
 	type: /^[ ]*Alpha/i
@@ -239,4 +245,5 @@ await usersModel.findOneAndUpdate (
 );
 
 return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find().populate({ path: 'type', model: typesModel }));
+
 // ---------------------------------------------------------------------------------------------------------
