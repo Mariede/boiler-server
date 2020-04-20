@@ -19,52 +19,48 @@ const errWrapper = require('@serverRoot/helpers/errWrapper');
 // Queue: E-mails como arquivos em uma fila para serem enviados posteriormente (metodo privado)
 const _executeQueue = (e, counter) => {
 	return new Promise((resolve, reject) => {
-		try {
-			const configQueue = __serverConfig.email.queue;
-			const configKey = configQueue.path + '/trabalhador-' + (__serverWorker ? __serverWorker : 'unico');
-			const queueFile = JSON.stringify(e);
-			const uniqueId = functions.generateUniqueId(3);
+		const configQueue = __serverConfig.email.queue;
+		const configKey = configQueue.path + '/trabalhador-' + (__serverWorker ? __serverWorker : 'unico');
+		const queueFile = JSON.stringify(e);
+		const uniqueId = functions.generateUniqueId(3);
 
-			let initPath = __serverRoot,
-				queuePathSend = initPath + configKey;
+		let initPath = __serverRoot;
 
-			const fileName = queuePathSend + '/mail-queue-' + uniqueId + '.' + counter + configQueue.fileExtension;
+		const queuePathSend = initPath + configKey;
+		const fileName = queuePathSend + '/mail-queue-' + uniqueId + '.' + counter + configQueue.fileExtension;
 
-			fs.access (
-				queuePathSend,
-				fs.constants.F_OK, // Check if exists
-				async err => {
-					try {
-						if (err) {
-							await functions.promiseForEach (
-								functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
-								async folder => {
-									initPath = path.join(initPath, folder);
-									await functions.createNewFolder(fs, initPath);
-								}
-							);
-						}
-
-						fs.writeFile (
-							fileName,
-							queueFile,
-							'utf8',
-							err => {
-								if (err) {
-									reject(err);
-								} else {
-									resolve(queueFile);
-								}
+		fs.access (
+			queuePathSend,
+			fs.constants.F_OK, // Check if exists
+			async err => {
+				try {
+					if (err) {
+						await functions.promiseForEach (
+							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
+							async folder => {
+								initPath = path.join(initPath, folder);
+								await functions.createNewFolder(fs, initPath);
 							}
 						);
-					} catch (err) {
-						reject(err);
 					}
+
+					fs.writeFile (
+						fileName,
+						queueFile,
+						'utf8',
+						err => {
+							if (err) {
+								reject(err);
+							} else {
+								resolve(queueFile);
+							}
+						}
+					);
+				} catch (err) {
+					reject(err);
 				}
-			);
-		} catch (err) {
-			reject(err);
-		}
+			}
+		);
 	});
 };
 
@@ -72,7 +68,8 @@ const _executeQueue = (e, counter) => {
 const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendChunks, sendQueue) => {
 	const setChunks = (key, d, lastCall) => {
 		const setMessages = value => {
-			let msg = JSON.parse(JSON.stringify(message));
+			const msg = JSON.parse(JSON.stringify(message));
+
 			msg[key] = value;
 			messages.push(msg);
 		};
@@ -101,8 +98,9 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 	};
 
 	const sendAndReturn = async (m, t) => {
-		let sentInfos = [],
-			i = 0;
+		const sentInfos = [];
+
+		let i = 0;
 
 		await functions.asyncForEach (
 			m,
@@ -122,11 +120,12 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 
 	const transporter = nodemailer.createTransport(__serverConfig.email.transporter);
 
-	let message = {
-			'from': from,
-			'subject': subject
-		},
-		messages = [];
+	const message = {
+		'from': from,
+		'subject': subject
+	};
+
+	const messages = [];
 
 	// Testa se algum possivel elemento html no corpo
 	if (/<[a-z][\s\S]*>/i.test(text)) {
@@ -195,13 +194,13 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 				}
 
 				if (a.length !== 0) {
-					let emailListCheckUnique = [];
+					const emailListCheckUnique = [];
 
 					a.forEach (
 						e => {
-							let email = (e[0] || ''),
-								emailCheckUnique = email.toLowerCase(),
-								name = (e[1] || '');
+							const email = (e[0] || '');
+							const emailCheckUnique = email.toLowerCase();
+							const name = (e[1] || '');
 
 							if (validator.isEmail(email)) {
 								if (!emailListCheckUnique.includes(emailCheckUnique)) {
@@ -229,15 +228,16 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 		return i;
 	};
 
-	let fromChecked = [],
-		toChecked = [],
-		ccChecked = [],
-		bccChecked = [],
-		toCount = 0,
+	const fromChecked = [];
+	const toChecked = [];
+	const ccChecked = [];
+	const bccChecked = [];
+	const attachmentsChecked = [];
+	const errorStack = [];
+
+	let toCount = 0,
 		ccCount = 0,
-		bccCount = 0,
-		attachmentsChecked = [],
-		errorStack = [];
+		bccCount = 0;
 
 	if (Array.isArray(from)) {
 		if (from.length !== 0) {
@@ -251,8 +251,8 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 		if (from.length === 1) {
 			from.forEach (
 				e => {
-					let email = (e[0] || ''),
-						name = (e[1] || '');
+					const email = (e[0] || '');
+					const name = (e[1] || '');
 
 					if (validator.isEmail(email)) {
 						if (!validator.isEmpty(name)) {
@@ -303,8 +303,8 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 	if (Array.isArray(attachments) && attachments.length > 0) {
 		for (let i = 0; i < attachments.length; i++) {
 			if (typeof attachments[i] === 'object' && attachments[i] !== null) {
-				let oLen = Object.entries(attachments[i]),
-					oStringify = JSON.stringify(attachments[i]);
+				const oLen = Object.entries(attachments[i]);
+				const oStringify = JSON.stringify(attachments[i]);
 
 				if ((oLen.length === 3 || oLen.length === 4) && Object.prototype.hasOwnProperty.call(attachments[i], 'filename') && Object.prototype.hasOwnProperty.call(attachments[i], 'content') && Object.prototype.hasOwnProperty.call(attachments[i], 'encoding')) {
 					if (oLen.length === 4 && !Object.prototype.hasOwnProperty.call(attachments[i], 'contentType')) {
@@ -380,44 +380,38 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 
 // Com base no componente de upload (uploader): retorna uma array com os arquivos anexados
 const getAttachments = (uploaderResults, fileNames) => {
-	return new Promise((resolve, reject) => {
-		try {
-			let attachmentsResult = [];
+	const attachmentsResult = [];
 
-			if (uploaderResults && uploaderResults.files && uploaderResults.files[fileNames]) {
-				uploaderResults.files[fileNames].forEach (
-					file => {
-						let objFile = {};
+	if (uploaderResults && uploaderResults.files && uploaderResults.files[fileNames]) {
+		uploaderResults.files[fileNames].forEach (
+			file => {
+				const objFile = {};
 
-						if (file.originalname) {
-							objFile.filename = file.originalname;
+				if (file.originalname) {
+					objFile.filename = file.originalname;
+				}
+
+				if (file.path) {
+					objFile.path = file.path;
+				} else {
+					if (file.buffer) {
+						if (Buffer.isBuffer(file.buffer)) {
+							objFile.content = Buffer.from(file.buffer).toString('base64');
+							objFile.encoding = 'base64';
 						}
-
-						if (file.path) {
-							objFile.path = file.path;
-						} else {
-							if (file.buffer) {
-								if (Buffer.isBuffer(file.buffer)) {
-									objFile.content = Buffer.from(file.buffer).toString('base64');
-									objFile.encoding = 'base64';
-								}
-							}
-						}
-
-						if (file.mimetype) {
-							objFile.contentType = file.mimetype;
-						}
-
-						attachmentsResult.push(objFile);
 					}
-				);
-			}
+				}
 
-			resolve(attachmentsResult);
-		} catch (err) {
-			reject(err);
-		}
-	});
+				if (file.mimetype) {
+					objFile.contentType = file.mimetype;
+				}
+
+				attachmentsResult.push(objFile);
+			}
+		);
+	}
+
+	return attachmentsResult;
 };
 // -------------------------------------------------------------------------
 

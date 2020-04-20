@@ -14,9 +14,10 @@ const _falsyCheck = param => {
 
 // Verifica se CNPJ e valido
 const isCnpj = _cnpj => {
+	const peso1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+	const peso2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
 	let cnpj = (_cnpj || '').toString().replace(/\D/gi, ''),
-		peso1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
-		peso2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
 		resto = -1,
 		soma = 0,
 		vRet = false;
@@ -122,8 +123,9 @@ const isCpf = _cpf => {
 
 // Verifica se PIS/PASEP e valido
 const isPisPasep = _pisPasep => {
+	const peso = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
 	let pisPasep = (_pisPasep || '').toString().replace(/\D/gi, ''),
-		peso = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
 		resto = -1,
 		soma = 0,
 		vRet = false;
@@ -158,9 +160,10 @@ const isPisPasep = _pisPasep => {
 
 // Verifica se email e valido
 const isEmail = _email => {
-	let email = (_email || '').toString(),
-		regExp = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x7f])+)\])$/i,
-		vRet = false;
+	const email = (_email || '').toString();
+	const regExp = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x7f])+)\])$/i;
+
+	let vRet = false;
 
 	if (regExp.test(email)) {
 		vRet = true;
@@ -171,9 +174,10 @@ const isEmail = _email => {
 
 // Verifica se CEP e valido
 const isCep = (_cep, separator = true) => {
-	let cep = (_cep || '').toString(),
-		regExp = (separator ? /^([0-9]{5})-([0-9]{3})$/ : /^([0-9]{8})$/),
-		vRet = false;
+	const cep = (_cep || '').toString();
+	const regExp = (separator ? /^([0-9]{5})-([0-9]{3})$/ : /^([0-9]{8})$/);
+
+	let vRet = false;
 
 	if (regExp.test(cep)) {
 		vRet = true;
@@ -208,9 +212,10 @@ const isEmpty = (_param, trimmed = true, implicit = true) => {
 
 // Verifica se valor e alfanumerico
 const isAlphaNumeric = (_param, spaceAndUnderscore = true) => {
-	let param = (_param === true ? false : _falsyCheck(_param)),
-		regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i),
-		vRet = false;
+	const param = (_param === true ? false : _falsyCheck(_param));
+	const regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i);
+
+	let vRet = false;
 
 	if (param && regExp.test(param)) {
 		vRet = true;
@@ -221,9 +226,10 @@ const isAlphaNumeric = (_param, spaceAndUnderscore = true) => {
 
 // Verifica se valor e numerico inteiro
 const isInteger = (_num, signed = true) => {
-	let num = _falsyCheck(_num),
-		regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([0-9]+)$/),
-		vRet = false;
+	const num = _falsyCheck(_num);
+	const regExp = (signed ? /^([-+]?[0-9]+)$/ : /^([0-9]+)$/);
+
+	let vRet = false;
 
 	if (num && regExp.test(num)) {
 		vRet = true;
@@ -234,9 +240,10 @@ const isInteger = (_num, signed = true) => {
 
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante variavel (sempre . como separador decimal)
 const isIntegerOrFloat = (_num, signed = true) => {
-	let num = _falsyCheck(_num),
-		regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([0-9]+)((\.{1}[0-9]+)|())$/),
-		vRet = false;
+	const num = _falsyCheck(_num);
+	const regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([0-9]+)((\.{1}[0-9]+)|())$/);
+
+	let vRet = false;
 
 	if (num && regExp.test(num)) {
 		vRet = true;
@@ -247,9 +254,10 @@ const isIntegerOrFloat = (_num, signed = true) => {
 
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante fixa (sempre . como separador decimal)
 const isIntegerOrFixed = (_num, fixedDecimal = 0, signed = true) => {
-	let num = _falsyCheck(_num),
-		regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$')),
-		vRet = false;
+	const num = _falsyCheck(_num);
+	const regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$'));
+
+	let vRet = false;
 
 	if (num && regExp.test(num)) {
 		vRet = true;
@@ -260,9 +268,10 @@ const isIntegerOrFixed = (_num, fixedDecimal = 0, signed = true) => {
 
 // Verifica se data valida (dd/mm/yyyy ou dd-mm-yyyy ou dd.mm.yyyy)
 const isDate = _date => {
-	let date = (_date || '').toString(),
-		regExp = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/,
-		vRet = false;
+	const date = (_date || '').toString();
+	const regExp = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/;
+
+	let vRet = false;
 
 	if (regExp.test(date) && date.length === 10) {
 		vRet = true;
@@ -273,9 +282,10 @@ const isDate = _date => {
 
 // Verifica se string _paramCompare esta contida em _param
 const contains = (_param, _paramCompare, caseInsensitive = true) => {
-	let param = (_param === true ? false : _falsyCheck(_param)),
-		paramCompare = (_paramCompare === true ? false : _falsyCheck(_paramCompare)),
-		vRet = false;
+	const param = (_param === true ? false : _falsyCheck(_param));
+	const paramCompare = (_paramCompare === true ? false : _falsyCheck(_paramCompare));
+
+	let vRet = false;
 
 	if ((param === '' || param) && (paramCompare === '' || paramCompare)) {
 		if (param.indexOf(paramCompare) !== -1 || (caseInsensitive && param.toUpperCase().indexOf(paramCompare.toUpperCase()) !== -1)) {
@@ -288,9 +298,10 @@ const contains = (_param, _paramCompare, caseInsensitive = true) => {
 
 // Verifica se string _paramCompare e identica a _param
 const equal = (_param, _paramCompare, caseInsensitive = true) => {
-	let param = (_param === true ? false : _falsyCheck(_param)),
-		paramCompare = (_paramCompare === true ? false : _falsyCheck(_paramCompare)),
-		vRet = false;
+	const param = (_param === true ? false : _falsyCheck(_param));
+	const paramCompare = (_paramCompare === true ? false : _falsyCheck(_paramCompare));
+
+	let vRet = false;
 
 	if ((param === '' || param) && (paramCompare === '' || paramCompare)) {
 		if (param === paramCompare || (caseInsensitive && param.toUpperCase() === paramCompare.toUpperCase())) {
@@ -306,9 +317,10 @@ Verifica limites de comprimento minimo e maximo para string _param
 	* se lMax nao informado, assume o mesmo valor de lMin
 */
 const lenRange = (_param, lMin = 0, lMax = lMin) => {
-	let param = (_param === true ? false : _falsyCheck(_param)),
-		paramLen = (param ? param.length : 0),
-		vRet = false;
+	const param = (_param === true ? false : _falsyCheck(_param));
+	const paramLen = (param ? param.length : 0);
+
+	let vRet = false;
 
 	if ((param === '' || param) && (paramLen >= lMin && paramLen <= lMax)) {
 		vRet = true;

@@ -275,6 +275,7 @@ const msSqlServer = {
 	sqlExecuteAll: async (params, forceClose = false) => { // Inicia uma transacao, executa e commita em uma unica chamada de metodo
 		const transaction = await msSqlServer.sqlOpenCon();
 		const result = await msSqlServer.sqlExecute(transaction, params);
+
 		await msSqlServer.sqlCloseCon(transaction, forceClose);
 
 		return result;
@@ -332,11 +333,10 @@ const mongoDB = {
 					const options = Object.assign(__serverConfig.db.mongoose.configSchema, getExtraOptions(schema));
 					const mySchema = new mongoose.Schema(checkedSchema, options);
 					const compoundIndexes = getCompoundIndexes(schema);
-
-					let verifiedCompoundIndexes = [];
+					const verifiedCompoundIndexes = [];
 
 					if (Array.isArray(compoundIndexes)) {
-						verifiedCompoundIndexes = [...compoundIndexes];
+						verifiedCompoundIndexes.push(...compoundIndexes);
 					} else {
 						verifiedCompoundIndexes.push(compoundIndexes);
 					}
@@ -455,7 +455,7 @@ const mongoDB = {
 		* Padrao de retorno dos dados (base comparativa resultSet da lib MSSQL)
 	*/
 	noSqlFormattedResult: arrayData => {
-		let resultSet = {};
+		const resultSet = {};
 
 		if (Array.isArray(arrayData)) {
 			resultSet.recordset = arrayData;

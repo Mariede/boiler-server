@@ -53,7 +53,7 @@ const startIo = cert => {
 		const ios = io(ioOptions).attach(_server);
 		const listeners = socketIoListeners.listeners;
 
-		let listeningMethods = [];
+		const listeningMethods = [];
 
 		_server.listen(listenOptions).on('error', err => {
 			log.logger('error', `[socket.io-servidor] ${(err.stack || err)}`);

@@ -87,7 +87,7 @@ const startMain = async () => {
 		const getAppCert = async () => {
 			const fsPromises = fs.promises;
 
-			let result = {};
+			const result = {};
 
 			if (__serverConfig.server.secure.isHttps) {
 				const certPath = __serverRoot + __serverConfig.server.secure.certFolder + '/';

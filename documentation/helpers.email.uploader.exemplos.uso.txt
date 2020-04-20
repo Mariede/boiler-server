@@ -16,7 +16,7 @@ let mailTemplate = __serverRoot + '/views/serverSide/pages/_mailTemplates/exampl
 	fileName = 'emailAttach', // Nome do campo html que informa os arquivos de upload
 	filePath = 'attachments_path', // Caminho para os arquivos de upload
 	uploaderResults = await uploader.push(req, res, [{ name: fileName }], filePath),
-	attachments = await email.getAttachments(uploaderResults, fileName);
+	attachments = email.getAttachments(uploaderResults, fileName);
 
 return await email.sendEmail (
 	['testefrom@server.com', 'From Name'],

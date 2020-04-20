@@ -26,8 +26,9 @@ const queueStartMailCheck = () => {
 		const timeCheck = configQueue.timeCheck;
 		const timeFirstCheck = configQueue.timeFirstCheck;
 
-		let initPath = __serverRoot,
-			queuePathSend = initPath + configKey;
+		let initPath = __serverRoot;
+
+		const queuePathSend = initPath + configKey;
 
 		// Validacoes dos parametros essenciais no config
 		if (!Number.isInteger(limitPerRound) || limitPerRound <= 0) {

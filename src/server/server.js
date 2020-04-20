@@ -295,7 +295,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 					}, 0);
 				};
 
-				let messages = [];
+				const messages = [];
 
 				messages.push(['info', `Servidor está rodando em ${pServerCheck.protocolInfo}${listenOptions.host}:${listenOptions.port} | Prefixo nas rotas: "${checkRoutePrefix()}" | Ambiente: ${process.env.NODE_ENV}...`]);
 

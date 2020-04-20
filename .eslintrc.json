@@ -100,6 +100,7 @@
 			"MemberExpression": 0,
 			"SwitchCase": 1
 		}],
+		// "prefer-const": 2,
 		"eqeqeq": 2,
 		"no-console": 2,
 		"no-loop-func": 2,

@@ -31,9 +31,11 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 	const diskStorage = multer.diskStorage ({
 		destination: (req, file, callback) => {
 			try {
-				let initPath = __serverRoot,
-					configKey = configUpload.path + (extraPath ? `/${extraPath}` : ''),
-					filePath = initPath + configKey;
+				const configKey = configUpload.path + (extraPath ? `/${extraPath}` : '');
+
+				let initPath = __serverRoot;
+
+				const filePath = initPath + configKey;
 
 				fs.access (
 					filePath,
@@ -76,80 +78,76 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 
 	const uploadFiles = fileNames => {
 		return new Promise((resolve, reject) => {
-			try {
-				const upload = multer (
-					{
-						fileFilter: (req, file, callback) => {
-							try {
-								const checkExtensions = [...new Set((configUpload.allowedExtensions || '').split('|').map (
-									item => {
-										return item.substr(0, (item.indexOf(':') !== -1 ? item.indexOf(':') : item.length)).trim();
-									}
-								))].filter (
-									item => {
-										return item !== '';
-									}
-								); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
-
-								const checkMimeTypes = [...new Set((configUpload.allowedExtensions || '').split('|').map (
-									item => {
-										return item.substr((item.indexOf(':') !== -1 ? item.indexOf(':') + 1 : '')).trim();
-									}
-								))].filter (
-									item => {
-										return item !== '';
-									}
-								); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
-
-								let extName = new RegExp('^(' + checkExtensions.join('|') + '){1}$', 'i').test(path.extname(file.originalname).toLowerCase()),
-									mimeType = new RegExp('^(' + checkMimeTypes.join('|') + '){1}$', 'i').test(file.mimetype);
-
-								if (extName && mimeType) {
-									return callback(null, true);
-								} else {
-									callback('Upload de arquivos apenas suporta as seguintes extensões - ' + checkExtensions.join(', ') + ' com seus respectivos MIME Types - ' + checkMimeTypes.join(', ') + '...');
+			const upload = multer (
+				{
+					fileFilter: (req, file, callback) => {
+						try {
+							const checkExtensions = [...new Set((configUpload.allowedExtensions || '').split('|').map (
+								item => {
+									return item.substr(0, (item.indexOf(':') !== -1 ? item.indexOf(':') : item.length)).trim();
 								}
-							} catch (err) {
-								callback(err);
+							))].filter (
+								item => {
+									return item !== '';
+								}
+							); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
+
+							const checkMimeTypes = [...new Set((configUpload.allowedExtensions || '').split('|').map (
+								item => {
+									return item.substr((item.indexOf(':') !== -1 ? item.indexOf(':') + 1 : '')).trim();
+								}
+							))].filter (
+								item => {
+									return item !== '';
+								}
+							); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
+
+							const extName = new RegExp('^(' + checkExtensions.join('|') + '){1}$', 'i').test(path.extname(file.originalname).toLowerCase());
+							const mimeType = new RegExp('^(' + checkMimeTypes.join('|') + '){1}$', 'i').test(file.mimetype);
+
+							if (extName && mimeType) {
+								return callback(null, true);
+							} else {
+								callback('Upload de arquivos apenas suporta as seguintes extensões - ' + checkExtensions.join(', ') + ' com seus respectivos MIME Types - ' + checkMimeTypes.join(', ') + '...');
 							}
-						},
-						storage: (storageToDisk ? diskStorage : multer.memoryStorage()),
-						limits: {
-							fileSize: (configUpload.maxFileSize || Infinity),
-							files: (maxFileUploads || Infinity)
+						} catch (err) {
+							callback(err);
 						}
+					},
+					storage: (storageToDisk ? diskStorage : multer.memoryStorage()),
+					limits: {
+						fileSize: (configUpload.maxFileSize || Infinity),
+						files: (maxFileUploads || Infinity)
+					}
+				}
+			);
+
+			const result = err => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve({ body: { ...req.body }, files: { ...req.files } });
+				}
+			};
+
+			if (fileNames) {
+				upload.fields(fileNames)(req, res,
+					err => {
+						result(err);
 					}
 				);
-
-				const result = err => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve({ body: { ...req.body }, files: { ...req.files } });
+			} else {
+				upload.any()(req, res,
+					err => {
+						result(err);
 					}
-				};
-
-				if (fileNames) {
-					upload.fields(fileNames)(req, res,
-						err => {
-							result(err);
-						}
-					);
-				} else {
-					upload.any()(req, res,
-						err => {
-							result(err);
-						}
-					);
-				}
-			} catch (err) {
-				reject(err);
+				);
 			}
 		});
 	};
 
-	let configUpload = __serverConfig.server.fileUpload,
-		method = req.method;
+	const configUpload = __serverConfig.server.fileUpload;
+	const method = req.method;
 
 	if (method.toUpperCase() === 'POST') {
 		return await uploadFiles(fileNames);
