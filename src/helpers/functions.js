@@ -107,17 +107,18 @@ const removeInvalidFileNameChars = (_param, os = 1) => {
 };
 
 // Gera um identificador o mais unico possivel, em diferentes formatos
-const generateUniqueId = (_length, dateIncluded = true) => {
+//    fullUnique => adiciona data completa e id do cluster (se existir)
+const generateUniqueId = (_length, fullUnique = true) => {
 	const length = (Number.isInteger(_length) && _length > 0 ? (_length < 15 ? _length : 15) : 1);
 
 	let fRet = parseInt(((Math.random() * 9) + 1) * Math.pow(10, length - 1), 10);
 
-	if (dateIncluded) {
+	if (fullUnique) {
 		const dateNow = (new Date()).toISOString().split('T');
 		const dateLeft = (dateNow[0] || '').replace(/-/g, '');
 		const dateRight = (dateNow[1] || '').replace(/[:.]/g, '').substr(0, 9);
 
-		fRet = dateLeft + dateRight + fRet.toString();
+		fRet = dateLeft + dateRight + (__serverWorker ? __serverWorker : '') + fRet.toString();
 	}
 
 	return fRet;

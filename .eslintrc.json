@@ -66,6 +66,8 @@
 		"no-multi-spaces": 2,
 		"no-whitespace-before-property": 2,
 		"block-spacing": [2, "always"],
+		"rest-spread-spacing": 2,
+		"prefer-spread": 2,
 		"no-lone-blocks": 2,
 		"brace-style": [2, "1tbs"],
 		"arrow-spacing": [2, {
@@ -73,6 +75,7 @@
 			"after": true
 		}],
 		"arrow-body-style": [2, "always"],
+		"prefer-arrow-callback": 2,
 		"object-shorthand": [2, "consistent"],
 		"curly": 2,
 		"object-curly-spacing": [2, "always", {

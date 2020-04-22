@@ -19,7 +19,7 @@ const listeners = {
 		ioChannel.on('connection', socket => {
 			let rootServerTime = null;
 
-			socket.once('serverTimeStart', () => {
+			socket.on('serverTimeStart', () => {
 				rootServerTime = setInterval(() => {
 					try {
 						ioChannel.to(socket.id).emit('serverTimeTick', functions.getDateNow(true));
@@ -30,7 +30,7 @@ const listeners = {
 				}, 1000);
 			});
 
-			socket.once('disconnect', () => {
+			socket.on('disconnect', () => {
 				clearInterval(rootServerTime);
 			});
 		});

@@ -106,7 +106,7 @@ const startMain = async () => {
 
 		// Variaveis globais
 		global.__serverConfig = Object.freeze(await getAppConfigData(configPath)); // Configuracoes do servidor
-		global.__serverWorker = null; // Server Worker inicialmente sem cluster (trabalhador unico)
+		global.__serverWorker = undefined; // Server Worker inicialmente sem cluster (trabalhador unico)
 
 		// Certificado digital (apenas se ativo)
 		const myCert = await getAppCert();
