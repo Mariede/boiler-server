@@ -7,8 +7,8 @@
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const log = require('@serverRoot/helpers/log');
 const functions = require('@serverRoot/helpers/functions');
+const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

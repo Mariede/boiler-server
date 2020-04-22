@@ -2,9 +2,9 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
+const fs = require('fs');
 const log4js = require('log4js');
 const moduleAlias = require('module-alias');
-const fs = require('fs');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -21,6 +21,8 @@ moduleAlias.addAliases ({
 const app = require('@serverRoot/server/app');
 // -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
+// Primeiro passo para a inicializacao do servidor: logs / config / certificado
 const startMain = async () => {
 	try {
 		// Logs do servidor ------------------------------------------------
@@ -78,13 +80,13 @@ const startMain = async () => {
 		});
 		// -------------------------------------------------------------------------
 
-		// Dados fundamentais do servidor ------------------------------------------
-		const getAppConfigData = async path => {
+		// Dados prioritarios do servidor ------------------------------------------
+		const getAppConfigData = async path => { // Configuracoes do servidor
 			const fsPromises = fs.promises;
 			return JSON.parse(await fsPromises.readFile(path, 'utf8'));
 		};
 
-		const getAppCert = async () => {
+		const getAppCert = async () => { // Certificado digital (apenas se ativo)
 			const fsPromises = fs.promises;
 
 			const result = {};
@@ -105,10 +107,9 @@ const startMain = async () => {
 		const configPath = __serverRoot + '/config.json';
 
 		// Variaveis globais
-		global.__serverConfig = Object.freeze(await getAppConfigData(configPath)); // Configuracoes do servidor
+		global.__serverConfig = Object.freeze(await getAppConfigData(configPath));
 		global.__serverWorker = undefined; // Server Worker inicialmente sem cluster (trabalhador unico)
 
-		// Certificado digital (apenas se ativo)
 		const myCert = await getAppCert();
 		// -------------------------------------------------------------------------
 
@@ -117,5 +118,6 @@ const startMain = async () => {
 		console.error(err); // eslint-disable-line no-console
 	}
 };
+// -------------------------------------------------------------------------
 
 startMain();

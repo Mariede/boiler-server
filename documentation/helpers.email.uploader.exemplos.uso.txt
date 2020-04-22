@@ -7,9 +7,9 @@ Envio de e-mails com anexos, e-mails com templates dinâmicos
 // ---------------------------------------------------------------------------------------------------------
 // Exemplo de uso
 
+const ejs = require('ejs');
 const email = require('@serverRoot/helpers/email');
 const uploader = require('@serverRoot/helpers/uploader');
-const ejs = require('ejs');
 
 const mailTemplate = __serverRoot + '/views/serverSide/pages/_mailTemplates/exampleTemplate.ejs';
 const dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }); // Template dinamico

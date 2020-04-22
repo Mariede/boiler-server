@@ -2,15 +2,15 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const multer = require('multer');
 const fs = require('fs');
+const multer = require('multer');
 const path = require('path');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const functions = require('@serverRoot/helpers/functions');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
+const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

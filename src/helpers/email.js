@@ -2,17 +2,17 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const nodemailer = require('nodemailer');
-const htmlToText = require('html-to-text');
 const fs = require('fs');
+const htmlToText = require('html-to-text');
+const nodemailer = require('nodemailer');
 const path = require('path');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const validator = require('@serverRoot/helpers/validator');
-const functions = require('@serverRoot/helpers/functions');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
+const functions = require('@serverRoot/helpers/functions');
+const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

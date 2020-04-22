@@ -2,14 +2,14 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const sql = require('mssql');
 const mongoose = require('mongoose');
+const sql = require('mssql');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const mongooseSchemas = require('@serverRoot/libCom/mongooseSchemas');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
+const mongooseSchemas = require('@serverRoot/libCom/mongooseSchemas');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

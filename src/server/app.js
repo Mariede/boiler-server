@@ -8,11 +8,13 @@ const os = require('os');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const socketIo = require('@serverRoot/server/socketIo'); // Lib socket.io
-const server = require('@serverRoot/server/server');
 const log = require('@serverRoot/helpers/log');
+const server = require('@serverRoot/server/server');
+const socketIo = require('@serverRoot/server/socketIo'); // Lib socket.io
 // -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
+// Inicia uma aplicacao com um ou mais servidores web (cluster) e o servidor de socket.io
 const startApp = async (cert, configPath) => {
 	try {
 		const showMessages = messages => {
@@ -121,6 +123,7 @@ const startApp = async (cert, configPath) => {
 		log.logger('error', err.stack || err, 'startUp');
 	}
 };
+// -------------------------------------------------------------------------
 
 module.exports = {
 	startApp

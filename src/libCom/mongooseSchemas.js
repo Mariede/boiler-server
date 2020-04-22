@@ -1,8 +1,19 @@
 'use strict';
 
+// -------------------------------------------------------------------------
+// Modulos de inicializacao
 const mongoose = require('mongoose');
+// -------------------------------------------------------------------------
 
-// Esquemas
+// -------------------------------------------------------------------------
+// Modulos de apoio
+
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+/*
+Esquemas mongoose para MongoDB
+*/
 const schemas = {
 	users: {
 		name: {
@@ -50,7 +61,7 @@ const schemas = {
 };
 
 /*
-Indices compostos associados a criacao dos esquemas
+Indices compostos associados na criacao dos esquemas
 	-> ex: [{ key1: 1, key2: -1 }, { ke5: 1, key6: 1, _unique: true }]
 		 1: Ascendente
 		-1: Descendente
@@ -61,7 +72,9 @@ const schemasCompoundIndexes = {
 	users: [{ name: 1, age: -1, _unique: true }, { name: 1, type: -1 }]
 };
 
-// Opcoes extras associadas a criacao dos esquema e acopladas as opcoes gerais (em config)
+/*
+Opcoes extras associadas na criacao dos esquemas e acopladas as opcoes gerais (em config)
+*/
 const schemasExtraOptions = {};
 
 module.exports = {

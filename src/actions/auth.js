@@ -2,11 +2,16 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const dbCon = require('@serverRoot/helpers/db');
-const helpersAuth = require('@serverRoot/helpers/auth');
+
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Modulos de apoio
 const cryptoHash = require('@serverRoot/helpers/cryptoHash');
-const validator = require('@serverRoot/helpers/validator');
+const dbCon = require('@serverRoot/helpers/db');
 const errWrapper = require('@serverRoot/helpers/errWrapper');
+const helpersAuth = require('@serverRoot/helpers/auth');
+const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

@@ -2,10 +2,15 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
+
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Modulos de apoio
 const dbCon = require('@serverRoot/helpers/db');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 const paginator = require('@serverRoot/helpers/paginator');
 const validator = require('@serverRoot/helpers/validator');
-const errWrapper = require('@serverRoot/helpers/errWrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

@@ -304,8 +304,8 @@ return resultSet;
 
 // ---------------------------------------------------------------------------------------------------------
 // Chamada com SEARCHER (json de retorno em camelCase)
-const searcher = require('@serverRoot/helpers/searcher');
 const paginator = require('@serverRoot/helpers/paginator');
+const searcher = require('@serverRoot/helpers/searcher');
 
 const replaceQuery = '{{REPLACE}}';
 const baseQuery = `
@@ -344,8 +344,8 @@ return resultSet;
 
 // ---------------------------------------------------------------------------------------------------------
 // Chamada com SEARCHER, PAGINACAO e ORDENAÇÃO
-const searcher = require('@serverRoot/helpers/searcher');
 const paginator = require('@serverRoot/helpers/paginator');
+const searcher = require('@serverRoot/helpers/searcher');
 
 const replaceQuery = '{{REPLACE}}';
 const baseQuery = `
@@ -438,9 +438,9 @@ const consultarTodos = async (req, res) => {
 // usuario.consultar (Exemplo de codificação no boiler)
 
 const dbCon = require('@serverRoot/helpers/db');
+const errWrapper = require('@serverRoot/helpers/errWrapper');
 const paginator = require('@serverRoot/helpers/paginator');
 const validator = require('@serverRoot/helpers/validator');
-const errWrapper = require('@serverRoot/helpers/errWrapper');
 
 const consultar = async (req, res) => {
 	const idUsuario = req.params.id;

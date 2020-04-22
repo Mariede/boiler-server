@@ -7,9 +7,9 @@ const router = express.Router();
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Rotas (controllers)
-const routeProfiler = require('@serverRoot/server/routeProfiler');
+// Modulos de apoio
 const helpersAuth = require('@serverRoot/helpers/auth');
+const routeProfiler = require('@serverRoot/server/routeProfiler');
 const routes = require('@serverRoot/routes/routes');
 // -------------------------------------------------------------------------
 

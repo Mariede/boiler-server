@@ -4,27 +4,29 @@
 // Modulos de inicializacao
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+const compression = require('compression');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const ejs = require('ejs');
+const favicon = require('serve-favicon');
 const http = require('http');
 const https = require('https');
 const proxy = require('http-proxy');
-const cors = require('cors');
 const session = require('express-session');
 const sessionFileStore = require('session-file-store')(session);
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const compression = require('compression');
-const favicon = require('serve-favicon');
-const ejs = require('ejs');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const routeGate = require('@serverRoot/server/routeGate'); // Gate de roteamento
-const queue = require('@serverRoot/server/queue'); // Queue de e-mails
 const configManage = require('@serverRoot/server/configManage'); // Verifica config.json
 const log = require('@serverRoot/helpers/log');
+const queue = require('@serverRoot/server/queue'); // Queue de e-mails
+const routeGate = require('@serverRoot/server/routeGate'); // Gate de roteamento
 // -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
+// Inicia um novo servidor web
 const startServer = (cert, configPath, numWorkers, ...cluster) => {
 	return new Promise((resolve, reject) => {
 		const isHttps = __serverConfig.server.secure.isHttps;
