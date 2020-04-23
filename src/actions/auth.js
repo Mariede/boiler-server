@@ -21,16 +21,15 @@ const validator = require('@serverRoot/helpers/validator');
 const logon = async (req, res) => {
 	const sess = req.session;
 	const sessWraper = __serverConfig.auth.sessWrapper;
-	const dataSession = sess[sessWraper];
 
-	if (typeof dataSession === 'object' && dataSession !== null) {
+	if (Object.prototype.hasOwnProperty.call(sess, sessWraper)) {
 		errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
 	} else {
 		const login = req.body.login;
 		const pass = req.body.pass;
 
 		if (!validator.isEmpty(login)) {
-			if (!validator.isEmpty(pass)) { // Inicia a sessao
+			if (!validator.isEmpty(pass)) {
 				const query = {
 					formato: 1,
 					dados: {
@@ -53,21 +52,16 @@ const logon = async (req, res) => {
 				};
 
 				const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
-
 				const dataUser = resultSet && resultSet.rowsAffected[0] === 1 && resultSet.recordset[0];
 				const passCheck = (dataUser ? cryptoHash.hash(pass, dataUser.SALT) : null);
 
 				if (passCheck && (passCheck.passHash === dataUser.SENHA)) {
 					if (dataUser.ATIVO) {
-						const id = dataUser.ID_USUARIO;
-						const nome = dataUser.NOME;
-						const email = dataUser.EMAIL;
-
 						/* Session data */
 						sess[sessWraper] = {
-							id: id,
-							nome: nome,
-							email: email
+							id: dataUser.ID_USUARIO,
+							nome: dataUser.NOME,
+							email: dataUser.EMAIL
 						};
 						/* Session data */
 					} else {
