@@ -15,7 +15,7 @@ const routes = require('@serverRoot/routes/routes');
 
 // -------------------------------------------------------------------------
 // Middleware (rotas existentes e nao existentes)
-router.use(async (req, res, next) => {
+router.use((req, res, next) => {
 	try {
 		const checkIsProtected = route => { // Verifica se a rota e protegida com base nas informacoes de config
 			const exceptInspect = (paramTable, paramRoute) => {
@@ -79,7 +79,7 @@ router.use(async (req, res, next) => {
 		if (!isProtected) {
 			releasedReq = true;
 		} else {
-			if (await helpersAuth.isLogged(req, 0)) {
+			if (helpersAuth.isLogged(req, 0)) {
 				releasedReq = true;
 			}
 		}

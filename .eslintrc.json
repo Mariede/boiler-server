@@ -30,6 +30,7 @@
 		"no-path-concat": 2,
 		"no-process-exit": 2,
 		"no-sync": 2,
+		"require-atomic-updates": 2,
 		"capitalized-comments": [2, "always", {
 			"ignoreConsecutiveComments": true
 		}],

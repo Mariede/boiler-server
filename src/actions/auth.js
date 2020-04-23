@@ -110,9 +110,9 @@ const logout = (req, res) => {
 };
 
 // Verifica se a sessao esta ativa
-const isLogged = async (req, res) => {
+const isLogged = (req, res) => {
 	const resultType = String(req.query.result_type);
-	const fRet = await helpersAuth.isLogged(req, (resultType === '1' ? 1 : 0));
+	const fRet = helpersAuth.isLogged(req, (resultType === '1' ? 1 : 0));
 
 	return fRet;
 };
