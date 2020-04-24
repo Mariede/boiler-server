@@ -33,21 +33,21 @@ const startMain = async () => {
 				},
 				errorsControllerAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/errorsController/logs-errorsController.log'),
+					filename: (__serverRoot + '/logs/errors-controller/logs-errors-controller.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
 				},
 				startUpAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/startUp/logs-startUp.log'),
+					filename: (__serverRoot + '/logs/start-up/logs-start-up.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
 				},
 				configFileAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/configFile/logs-configFile.log'),
+					filename: (__serverRoot + '/logs/config-file/logs-config-file.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
@@ -61,7 +61,7 @@ const startMain = async () => {
 				},
 				mailQueueAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/mailQueue/logs-mailQueue.log'),
+					filename: (__serverRoot + '/logs/mail-queue/logs-mail-queue.log'),
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false

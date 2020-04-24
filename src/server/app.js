@@ -10,7 +10,7 @@ const os = require('os');
 // Modulos de apoio
 const log = require('@serverRoot/helpers/log');
 const server = require('@serverRoot/server/server');
-const socketIo = require('@serverRoot/server/socketIo'); // Lib socket.io
+const socketIo = require('@serverRoot/server/socket-io'); // Lib socket.io
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

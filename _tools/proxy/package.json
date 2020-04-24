@@ -2,7 +2,7 @@
   "name": "proxy",
   "version": "1.0.0",
   "description": "Pacote realiza proxy de uma ou varias aplicacões",
-  "main": "_proxyStart.js",
+  "main": "_proxy-start.js",
   "license": "MIT",
   "private": true,
   "dependencies": {

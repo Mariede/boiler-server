@@ -3,7 +3,7 @@ LIB db.js (MongoDB)
 
 Conexão e execução de comandos noSql em mongoDB
 
-* É preciso configurar previamente os detalhes dos esquemas mongoose em /src/models/mongooseSchemas.js *
+* É preciso configurar previamente os detalhes dos esquemas mongoose em /src/lib-com/mongoose-schemas.js *
 
 
 // ---------------------------------------------------------------------------------------------------------

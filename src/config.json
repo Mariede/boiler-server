@@ -22,16 +22,16 @@
 		"pathVirtualStaticFiles": [
 			{
 				"virtualPath": "/img",
-				"physicalPath": "/views/serverSide/assets/images",
+				"physicalPath": "/views/server-side/assets/images",
 				"maxAge": 0
 			},
 			{
 				"virtualPath": "/css",
-				"physicalPath": "/views/serverSide/assets/css",
+				"physicalPath": "/views/server-side/assets/css",
 				"maxAge": 0
 			}
 		],
-		"pathFavicon": "/views/serverSide/assets/images/favicon.ico",
+		"pathFavicon": "/views/server-side/assets/images/favicon.ico",
 		"cors": {
 			"origin": "*",
 			"methods": [

@@ -2,16 +2,17 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
+const config = require('./config');
 const parseArgs = require('minimist');
 const service = require('node-windows').Service;
-const config = require('./config');
 
+// Constantes globais
 const sOn = 'on';
 const sOff = 'off';
 // -------------------------------------------------------------------------
 
 const _servicoOnOff = param => {
-	let dataService = {};
+	const dataService = {};
 
 	if (config.name) {
 		dataService.name = config.name;
@@ -80,9 +81,9 @@ const _servicoOnOff = param => {
 };
 
 const executeAction = () => {
-	let args = parseArgs(process.argv),
-		lenArgs = (typeof args === 'object' ? Object.keys(args).length : 0),
-		errMsg = 'Utilize um dos argumentos:\n   --on  : para criar um serviço Windows associado ao projeto Node (base no arquivo config)\n   --off : para destruir um serviço Windows associado ao projeto Node (base no arquivo config)\n\nExemplo: node _nodeAsAService --on\n';
+	const args = parseArgs(process.argv);
+	const lenArgs = (typeof args === 'object' ? Object.keys(args).length : 0);
+	const errMsg = 'Utilize um dos argumentos:\n   --on  : para criar um serviço Windows associado ao projeto Node (base no arquivo config)\n   --off : para destruir um serviço Windows associado ao projeto Node (base no arquivo config)\n\nExemplo: node _node-as-a-service --on\n';
 
 	if (lenArgs === 2) {
 		if (args.on || args.off) {

@@ -7,9 +7,9 @@
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const cryptoHash = require('@serverRoot/helpers/cryptoHash');
+const cryptoHash = require('@serverRoot/helpers/crypto-hash');
 const dbCon = require('@serverRoot/helpers/db');
-const errWrapper = require('@serverRoot/helpers/errWrapper');
+const errWrapper = require('@serverRoot/helpers/err-wrapper');
 const helpersAuth = require('@serverRoot/helpers/auth');
 const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------

@@ -7,7 +7,7 @@ const axios = require('axios');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const errWrapper = require('@serverRoot/helpers/errWrapper');
+const errWrapper = require('@serverRoot/helpers/err-wrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -24,7 +24,7 @@ const logon = (login, senha, idTipoUsuario = 0) => {
 			}
 		};
 
-		let dataSend = {};
+		const dataSend = {};
 
 		if (siglaSistema) {
 			dataSend.siglaSistema = siglaSistema;

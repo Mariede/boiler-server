@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const functions = require('@serverRoot/helpers/functions');
-const socketIoListeners = require('@serverRoot/libCom/socketIoListeners');
+const socketIoListeners = require('@serverRoot/lib-com/socket-io-listeners');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

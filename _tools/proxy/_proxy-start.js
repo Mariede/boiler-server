@@ -6,14 +6,7 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const httpProxy = require('http-proxy');
-const apiProxy = httpProxy.createProxyServer();
 const log4js = require('log4js');
-// -------------------------------------------------------------------------
-
-// -------------------------------------------------------------------------
-// Modulos/Variaveis de apoio
-const serversToProxy = [['/APP1/*', 'http://localhost:5000'], ['/APP2/*', 'http://localhost:6000']];
-const serverPort = 80;
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -31,8 +24,14 @@ log4js.configure({
 	}
 });
 
+// Porta -------------------------------------------------
+const serverPort = 80;
+
 // proxy -------------------------------------------------
-serversToProxy.forEach(
+const apiProxy = httpProxy.createProxyServer();
+const serversToProxy = [['/APP1/*', 'http://localhost:5000'], ['/APP2/*', 'http://localhost:6000']];
+
+serversToProxy.forEach (
 	server => {
 		let path = server[0],
 			origin = server[1];
@@ -83,7 +82,7 @@ app.use((err, req, res, next) => {
 
 // -------------------------------------------------------------------------
 // Inicia servidor de proxy ouvindo na porta serverPort
-http.createServer(app).listen(serverPort, function() {
+http.createServer(app).listen(serverPort, () => {
 	log4js.getLogger('default').info(`Servidor de proxy está rodando na porta ${serverPort} ...`);
 });
 // -------------------------------------------------------------------------

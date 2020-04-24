@@ -1,7 +1,7 @@
-const nodeExternals = require('webpack-node-externals');
-const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
+const NodeExternals = require('webpack-node-externals');
 const path = require('path');
 
 /* path to source code */
@@ -37,7 +37,7 @@ module.exports = {
 		path: destinyPath
 	},
 	externals: [
-		nodeExternals()
+		NodeExternals()
 	],
 	module: {
 		rules: [

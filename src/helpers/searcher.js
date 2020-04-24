@@ -8,7 +8,7 @@
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const dbCon = require('@serverRoot/helpers/db');
-const errWrapper = require('@serverRoot/helpers/errWrapper');
+const errWrapper = require('@serverRoot/helpers/err-wrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

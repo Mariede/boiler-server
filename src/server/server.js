@@ -19,10 +19,10 @@ const sessionFileStore = require('session-file-store')(session);
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const configManage = require('@serverRoot/server/configManage'); // Verifica config.json
+const configManage = require('@serverRoot/server/config-manage'); // Verifica config.json
 const log = require('@serverRoot/helpers/log');
 const queue = require('@serverRoot/server/queue'); // Queue de e-mails
-const routeGate = require('@serverRoot/server/routeGate'); // Gate de roteamento
+const routeGate = require('@serverRoot/server/route-gate'); // Gate de roteamento
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -187,7 +187,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		// Caminho padrao
 		app.set (
 			'views',
-			__serverRoot + '/views/serverSide/pages'
+			__serverRoot + '/views/server-side/pages'
 		);
 
 		// Engine padrao

@@ -32,7 +32,7 @@ npm run build
   * Diversos parâmetros reunidos para configuração do servidor
     - server: configurações gerais do servidor web
     - auth: configurações gerais das permissões de acesso ao servidor web
-    - socketIo: configurações gerais do servidor de socketIo (websockets)
+    - socketIo: configurações gerais do servidor de socket.io (websockets)
     - crypto: configurações gerais de criptografia
     - db: configurações gerais de acesso ao banco de dados (MSSQL ou MongoDB)
     - email: configurações gerais de disparo de e-mail, incluindo queue
@@ -46,11 +46,11 @@ npm run build
 ## Prefixamento de rotas e Proxy geral de acesso
   * Via porta 80 (default), configurável
   * Prefixo configurável, atua em todas as rotas da aplicação
-  * _tools/proxy/_proxyStart.js
+  * _tools/proxy/_proxy-start.js
 
 ## Websockets configurado junto ao servidor http
   * Conversação bidirecional cliente <-> servidor
-  * Biblioteca Socket.io (websockets / pooling)
+  * Biblioteca socket.io (websockets / pooling)
   * Integrado com a aplicação, mas com servidor próprio em porta separada
   * Proxy automático, direto pelo servidor web
   * Funciona normalmente single-thread e multi-thread (cluster)
@@ -60,7 +60,7 @@ npm run build
   * Pacote node-windows
     - Inicia junto com a máquina
     - Serviço reinicia automaticamente, se houver problemas
-    - _tools/node_as_a_service/_nodeAsAService.js
+    - _tools/node-as-a-service/_node-as-a-service.js
   * Pacote Forever (instalar global)
     - Funciona em Windows ou Linux
 
@@ -79,7 +79,7 @@ npm run build
   * Lib de autenticação
     - Rotas protegidas (configurável)
     - isLogged
-    - Login / Logout
+    - logon / logout
 
 ## Lib de acesso a bancos de dados
   * Parametrizável para MS SQL Server
@@ -99,7 +99,7 @@ npm run build
   * Com os métodos de validação de entradas mais comuns (cpf, alfanumérico, e-mail), personalizável via regex
 
 ## Lib de Criptografia
-  * Hash e Cipher
+  * Salt, Hash e Cipher (Encrypt / Decrypt)
 
 ## Lib Uploader
   * Upload de grupos de arquivos com filtros por tamanho, quantidade de arquivos, extensão, MIME types, ...
@@ -115,7 +115,7 @@ npm run build
     - Gerencia o envio dos e-mails enfileirados
 
 ## Lib Functions
-  * Com métodos genéricos para acesso global (forEach async, regex de alteração, etc)
+  * Com métodos genéricos para acesso global (forEach async, promises ordenadas, generateUniqueId, etc)
 
 ## Engine de templates para expor arquivos html dinâmicos
   * EJS - Embedded Javascript Templates (semelhante ao asp)
@@ -141,11 +141,11 @@ npm run build
     - métodos com as regras de negócio e codificação dos processos
       + é global, relacionado ao projeto e pode ser utilizado por qualquer action ou middleware (núcleo do servidor)
       + um helper pode chamar um ou mais helpers
-  * libCom
+  * lib-com
     - pasta com conteúdo complementar programável das libs, desacoplado do núcleo das mesmas
-      + mongooseSchemas.js
+      + mongoose-schemas.js
         * arquivo contendo os esquemas de acesso ao mongoDB e detalhes relacionados, via mongoose
-      + socketIoListeners.js
+      + socket-io-listeners.js
         * agrupa os listeners e namespaces (caminhos) do servidor para comunicação via Socket.io
         * websockets ou pooling
   * logs (* cria automático, se não existir)
@@ -169,5 +169,5 @@ npm run build
     - contém pastas e arquivos de upload dos clientes
   * views
     - arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
-      + serverSide : páginas interpretadas diretamente no servidor (.ejs)
-      + clientSide : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)
+      + server-side : páginas interpretadas diretamente no servidor (.ejs)
+      + client-side : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)

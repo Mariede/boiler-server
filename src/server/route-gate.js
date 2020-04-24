@@ -9,7 +9,7 @@ const router = express.Router();
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const helpersAuth = require('@serverRoot/helpers/auth');
-const routeProfiler = require('@serverRoot/server/routeProfiler');
+const routeProfiler = require('@serverRoot/server/route-profiler');
 const routes = require('@serverRoot/routes/routes');
 // -------------------------------------------------------------------------
 

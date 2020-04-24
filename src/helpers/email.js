@@ -10,7 +10,7 @@ const path = require('path');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const errWrapper = require('@serverRoot/helpers/errWrapper');
+const errWrapper = require('@serverRoot/helpers/err-wrapper');
 const functions = require('@serverRoot/helpers/functions');
 const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------

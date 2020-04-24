@@ -8,8 +8,8 @@ const sql = require('mssql');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const errWrapper = require('@serverRoot/helpers/errWrapper');
-const mongooseSchemas = require('@serverRoot/libCom/mongooseSchemas');
+const errWrapper = require('@serverRoot/helpers/err-wrapper');
+const mongooseSchemas = require('@serverRoot/lib-com/mongoose-schemas');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -310,7 +310,7 @@ const mongoDB = {
 
 	/*
 	Detalhes:
-		schema => Nome do esquema a ser instaciado (definido em /libCom/mongooseSchemas)
+		schema => Nome do esquema a ser instaciado (definido em /lib-com/mongoose-schemas)
 	*/
 	noSqlGetModel: schema => {
 		return new Promise((resolve, reject) => {
@@ -428,7 +428,7 @@ const mongoDB = {
 	/*
 	Detalhes:
 		search				=> Objeto que identifica o filtro da consulta ao model relacionado (via esquema)
-		schema				=> Nome do esquema a ser instaciado (definido em /libCom/mongooseSchemas)
+		schema				=> Nome do esquema a ser instaciado (definido em /lib-com/mongoose-schemas)
 		returnAlwaysArray	=> Metodo sempre retorna tipo array, independente da quantidade de elementos encontrados
 			- padrao: 1 elemento retorna somento o objeto, > 1 retorna array de objetos, 0 retorna undefined
 	*/
@@ -467,7 +467,7 @@ const mongoDB = {
 
 	/*
 	Detalhes:
-		schema => Nome do esquema a ser instaciado (definido em /libCom/mongooseSchemas)
+		schema => Nome do esquema a ser instaciado (definido em /lib-com/mongoose-schemas)
 	*/
 	noSqlExecute: async schema => {
 		await mongoDB.noSqlOpenCon();

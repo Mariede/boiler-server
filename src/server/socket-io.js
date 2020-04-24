@@ -10,7 +10,7 @@ const io = require('socket.io');
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const log = require('@serverRoot/helpers/log');
-const socketIoListeners = require('@serverRoot/libCom/socketIoListeners');
+const socketIoListeners = require('@serverRoot/lib-com/socket-io-listeners');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

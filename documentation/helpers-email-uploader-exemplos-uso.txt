@@ -11,7 +11,7 @@ const ejs = require('ejs');
 const email = require('@serverRoot/helpers/email');
 const uploader = require('@serverRoot/helpers/uploader');
 
-const mailTemplate = __serverRoot + '/views/serverSide/pages/_mailTemplates/exampleTemplate.ejs';
+const mailTemplate = __serverRoot + '/views/server-side/pages/_mail-templates/template-1.ejs';
 const dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }); // Template dinamico
 const fileName = 'emailAttach'; // Nome do campo html que informa os arquivos de upload
 const filePath = 'attachments_path'; // Caminho para os arquivos de upload
