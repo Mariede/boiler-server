@@ -74,7 +74,7 @@
 		"_comments1": "backlog (default 511), maxConnections (default depende), timeout em segundos (default 120s), keepAliveTimeout em segundos (default 5s), maxHeadersCount (default 2000), headersTimeout em segundos (default 40s)",
 		"_comments2": "eventLoopMonitor: ativa monitoramento do loop de eventos. Apenas para fins de analise de performance e testes (default: false)",
 		"_comments3": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
-		"_comments4": "se o servidor estiver ativo via proxy, valor de routePrefix deve se anexado tambem no inicio de virtualPath (pathVirtualStaticFiles)",
+		"_comments4": "se o servidor estiver ativo via PROXY, valor definido em routePrefix deve ser anexado no inicio de virtualPath (pathVirtualStaticFiles) e tambem em path (socketIo) - para o ultimo caso como garantia se a lib socket.io utilizar o protocolo pooling ao inves de websockets",
 		"_comments5": "maxAge em pathVirtualStaticFiles em minutos",
 		"_comments6": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada, fileUpload: maxFileSize em bytes, session: timeout em minutos"
 	},
@@ -83,11 +83,13 @@
 		"authTipo": 1,
 		"except": [
 			"/",
+			"/socket.io",
 			"/logon",
 			"/islogged"
 		],
 		"_comments1": "authTipo => 2: toda rota livre, exceto except / Default: toda rota protegida, exceto except",
-		"_comments2": "except => Except aceita rota parcial ou exata; utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2"
+		"_comments2": "except => Except aceita rota parcial ou exata; utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2",
+		"_comments3": "chave path de socketIo (sem routePrefix) fica livre em auth para o caso da lib socket.io utilizar protocolo pooling ao inves de websockets"
 	},
 	"socketIo": {
 		"serverHost": "localhost",

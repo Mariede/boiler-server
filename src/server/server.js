@@ -208,19 +208,6 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			routeGate
 		);
 
-		app.all (
-			'*',
-			(req, res) => {
-				res.status(404).send (
-					{
-						name: 'ROUTER',
-						code: 404,
-						message: 'Essa rota não existe...'
-					}
-				);
-			}
-		);
-
 		// Cria servidor -----------------------------------------------------------
 		const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, app);
 
@@ -250,17 +237,31 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// Rotas de resposta para socket.io ----------------------------------------
-		app.all (
+		app.all ( // Pooling
 			`${__serverConfig.socketIo.path}/*`,
 			(req, res) => {
 				wsProxy.web(req, res);
 			}
 		);
 
-		_server.on (
+		_server.on ( // Websockets
 			'upgrade',
 			(req, socket, head) => {
 				wsProxy.ws(req, socket, head);
+			}
+		);
+
+		// Rotas nao encontradas ---------------------------------------------------
+		app.all (
+			'*',
+			(req, res) => {
+				res.status(404).send (
+					{
+						name: 'ROUTER',
+						code: 404,
+						message: 'Essa rota não existe...'
+					}
+				);
 			}
 		);
 
