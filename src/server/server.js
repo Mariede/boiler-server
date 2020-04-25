@@ -240,14 +240,24 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		app.all ( // Pooling
 			`${__serverConfig.socketIo.path}/*`,
 			(req, res) => {
-				wsProxy.web(req, res);
+				wsProxy.web(req, res,
+					{
+						cookiePathRewrite: false,
+						changeOrigin: __serverConfig.socketIo.changeOrigin
+					}
+				);
 			}
 		);
 
 		_server.on ( // Websockets
 			'upgrade',
 			(req, socket, head) => {
-				wsProxy.ws(req, socket, head);
+				wsProxy.ws(req, socket, head,
+					{
+						cookiePathRewrite: false,
+						changeOrigin: __serverConfig.socketIo.changeOrigin
+					}
+				);
 			}
 		);
 

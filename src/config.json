@@ -94,7 +94,8 @@
 	"socketIo": {
 		"serverHost": "localhost",
 		"serverPort": 5001,
-		"path": "/socket.io"
+		"path": "/socket.io",
+		"changeOrigin": true
 	},
 	"crypto": {
 		"hashAlgorithm": "sha512",

@@ -68,7 +68,16 @@ const startProxy = () => {
 		// Proxy -------------------------------------------------
 		const wsProxy = httpProxy.createProxyServer (
 			{
-				secure: false
+				secure: false,
+				ws: true
+			}
+		);
+
+		// Listener para erros de proxy
+		wsProxy.on (
+			'error',
+			(err, req, res) => {
+				log4js.getLogger('default').error(err.stack || err);
 			}
 		);
 
@@ -137,11 +146,6 @@ const startProxy = () => {
 				res.status(404).send('Essa rota não existe no servidor de proxy');
 			}
 		);
-
-		// Handler erros proxy -----------------------------------
-		wsProxy.on('error', (err, req, res) => {
-			log4js.getLogger('default').error(err.stack || err);
-		});
 		// -------------------------------------------------------
 
 		// Inicia servidor de proxy ------------------------------

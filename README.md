@@ -32,7 +32,7 @@ npm run build
   * Diversos parâmetros reunidos para configuração do servidor
     - server: configurações gerais do servidor web
     - auth: configurações gerais das permissões de acesso ao servidor web
-    - socketIo: configurações gerais do servidor de socket.io (websockets)
+    - socketIo: configurações gerais do servidor de socket.io (websockets / pooling)
     - crypto: configurações gerais de criptografia
     - db: configurações gerais de acesso ao banco de dados (MSSQL ou MongoDB)
     - email: configurações gerais de disparo de e-mail, incluindo queue
@@ -46,9 +46,10 @@ npm run build
 ## Prefixamento de rotas e Proxy geral de acesso
   * Via porta 80 (default), configurável
   * Prefixo configurável, atua em todas as rotas da aplicação
+  * Funciona também em requisições socket.io (websockets / pooling)
   * _tools/proxy/_proxy-start.js
 
-## Websockets configurado junto ao servidor http
+## Socket.io configurado junto ao servidor http / https
   * Conversação bidirecional cliente <-> servidor
   * Biblioteca socket.io (websockets / pooling)
   * Integrado com a aplicação, mas com servidor próprio em porta separada
