@@ -52,8 +52,9 @@ const _servicoOnOff = param => {
 	svc.on(
 		'start',
 		() => {
-		console.log(`${svc.name} started!`);
-	});
+			console.log(`${svc.name} started!`);
+		}
+	);
 
 	svc.on(
 		'uninstall',
@@ -65,7 +66,7 @@ const _servicoOnOff = param => {
 
 	switch (param) {
 		case sOn: {
-			// instalando o servico
+			// Instalando o servico
 			svc.install();
 			break;
 		}

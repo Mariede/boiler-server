@@ -21,6 +21,7 @@
 		"ecmaVersion": 2020
 	},
 	"rules": {
+		"linebreak-style": [0, "windows"],
 		"strict": [2, "global"],
 		"global-require": 2,
 		"handle-callback-err": 2,
@@ -98,7 +99,6 @@
 		"dot-location": [2, "property"],
 		"dot-notation": 2,
 		"func-style": [2, "expression"],
-		"linebreak-style": [2, "windows"],
 		"quotes": [2, "single"],
 		"indent": [2, "tab", {
 			"MemberExpression": 0,

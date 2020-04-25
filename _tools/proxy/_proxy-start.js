@@ -9,31 +9,33 @@ const http = require('http');
 const https = require('https');
 const httpProxy = require('http-proxy');
 const log4js = require('log4js');
+const path = require('path');
 // -------------------------------------------------------------------------
 
 const startProxy = () => {
 	return new Promise((resolve, reject) => {
-		// logs --------------------------------------------------
+		// Logs --------------------------------------------------
 		log4js.configure (
 			{
 				appenders: {
 					consoleAppender: {
 						type: 'console'
 					}
-			},
+				},
 				categories: {
 					default: {
 						appenders: ['consoleAppender'], level: 'all'
 					}
+				}
 			}
-		});
+		);
 
-		// servidor  web -----------------------------------------
+		// Servidor  web -----------------------------------------
 		const getAppCert = () => { // Certificado digital (apenas se ativo)
 			const result = {};
 
 			if (isHttps) {
-				const certPath = __dirname +  '/cert/';
+				const certPath = path.resolve(__dirname, '/cert/');
 				const certKey = certPath + 'cert.key';
 				const certPublic = certPath + 'cert.pem';
 
@@ -63,14 +65,14 @@ const startProxy = () => {
 
 		const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, app);
 
-		// proxy -------------------------------------------------
+		// Proxy -------------------------------------------------
 		const wsProxy = httpProxy.createProxyServer (
 			{
 				secure: false
 			}
 		);
 
-		const serversToProxy = [['/APP1', 'http://localhost:5000', true],['/APP2', 'http://localhost:5001', false]];
+		const serversToProxy = [['/APP1', 'http://localhost:5000', true], ['/APP2', 'http://localhost:5001', false]];
 
 		serversToProxy.forEach (
 			serverData => {
@@ -85,7 +87,7 @@ const startProxy = () => {
 
 						wsProxy.web(req, res,
 							{
-								/* para https ------- */
+								/* Para https ------- */
 								// target: {
 								// 	protocol: 'https:',
 								// 	host: 'my-domain-name',
