@@ -21,9 +21,9 @@
 		"ecmaVersion": 2020
 	},
 	"rules": {
+		"arrow-body-style": [2, "always"],
 		"array-bracket-spacing": [2, "never"],
 		"array-callback-return": 2,
-		"arrow-body-style": [2, "always"],
 		"arrow-spacing": [2, {
 			"before": true,
 			"after": true
@@ -115,8 +115,8 @@
 		}],
 		"object-shorthand": [2, "consistent"],
 		"prefer-arrow-callback": 2,
-		"prefer-promise-reject-errors": 2,
 		"prefer-const": 2,
+		"prefer-promise-reject-errors": 2,
 		"prefer-spread": 2,
 		"quotes": [2, "single"],
 		"radix": [2, "always"],
