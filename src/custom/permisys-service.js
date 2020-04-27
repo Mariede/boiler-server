@@ -20,7 +20,7 @@ const logon = (login, senha, idTipoUsuario = 0) => {
 
 		const config = {
 			headers: {
-				'Authorization': __serverConfig.server.custom.permisys.headers.authorization
+				Authorization: __serverConfig.server.custom.permisys.headers.authorization
 			}
 		};
 

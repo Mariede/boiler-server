@@ -125,8 +125,8 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 	const transporter = nodemailer.createTransport(__serverConfig.email.transporter);
 
 	const message = {
-		'from': from,
-		'subject': subject
+		from: from,
+		subject: subject
 	};
 
 	const messages = [];
@@ -161,15 +161,15 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 /*
 Valida os dados e prepara envio
 
-	-> from: Array com unico recipiente, ex.: ['mail@sender', 'name sender'] ou ['mail@sender'] ou [['mail@sender', 'name sender']] ou [['mail@sender']]
+	-> from: Array simples com unico recipiente, ex.: ['mail@sender', 'name sender'] ou ['mail@sender']
 
-	-> to: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@to1', 'name to1'], ['mail@to2', 'name to2'], ['mail@to3'], ... ]
+	-> to: Array bidimensional ex.: [['mail@to1', 'name to1']] ou [['mail@to1', 'name to1'], ['mail@to2', 'name to2'], ['mail@to3'], ... ]
 		* Usar '' ou [] para nenhum e-mail
 
-	-> cc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@cc1', 'name cc1'], ['mail@cc2', 'namecc2'], ['mail@cc3'], ... ]
+	-> cc: Array bidimensional ex.: [['mail@cc1', 'name cc1']] ou [['mail@cc1', 'name cc1'], ['mail@cc2', 'namecc2'], ['mail@cc3'], ... ]
 		* Usar '' ou [] para nenhum e-mail
 
-	-> bcc: Array com unico recipiente ou Multi-Array (mais de um recipiente) ex.: [['mail@bcc1', 'name bcc1'], ['mail@bcc2', 'name bcc2'], ['mail@bcc3'], ... ]
+	-> bcc: Array bidimensional ex.: [['mail@bcc1', 'name bcc1']] ou [['mail@bcc1', 'name bcc1'], ['mail@bcc2', 'name bcc2'], ['mail@bcc3'], ... ]
 		* Usar '' ou [] para nenhum e-mail
 
 	-> subject: string - pode ser vazio
@@ -190,39 +190,47 @@ Valida os dados e prepara envio
 	-> sendQueue: se true nao envia os e-mails instantaneamente, mas sim os colocam como arquivos em uma pasta para serem enfileirados e enviados posteriormente na queue (padrao false)
 */
 const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sendChunks = {}, strictCheck = true, sendQueue = false) => {
-	const fillDestinations = (a, b, i, e) => {
+	const fillDestinations = (a, b, e) => {
+		let i = 0;
+
 		if (!validator.isEmpty(a)) {
 			if (Array.isArray(a)) {
-				if (a[0].constructor !== Array) {
-					a = [a];
-				}
-
-				if (a.length !== 0) {
+				if (a[0].constructor === Array) {
 					const emailListCheckUnique = [];
 
 					a.forEach (
-						e => {
-							const email = (e[0] || '');
-							const emailCheckUnique = email.toLowerCase();
-							const name = (e[1] || '');
+						recip => {
+							if (Array.isArray(recip)) {
+								const recipLen = recip.length;
 
-							if (validator.isEmail(email)) {
-								if (!emailListCheckUnique.includes(emailCheckUnique)) {
-									emailListCheckUnique.push(emailCheckUnique);
+								if ((recipLen === 1 || recipLen === 2) && recip[0].constructor !== Array) {
+									const email = (recip[0] || '');
+									const name = (recip[1] || '');
+									const emailCheckUnique = email.toLowerCase();
 
-									if (!validator.isEmpty(name)) {
-										b.push(`${name} <${email}>`);
-									} else {
-										b.push(email);
+									if (validator.isEmail(email)) {
+										if (!emailListCheckUnique.includes(emailCheckUnique)) {
+											emailListCheckUnique.push(emailCheckUnique);
+
+											if (!validator.isEmpty(name)) {
+												b.push(`${name} <${email}>`);
+											} else {
+												b.push(email);
+											}
+
+											i++;
+										}
 									}
-
-									i++;
+								} else {
+									e.push(`E-mail de destino ( ${recip} ) precisa ser uma array simples no formato ['destino@email', 'destinonome'] ou ['destino@email']...`);
 								}
+							} else {
+								e.push(`E-mail de destino ( ${recip} ): entrada não está no formato de Array...`);
 							}
 						}
 					);
 				} else {
-					e.push(`Array de entrada para e-mail(s) de destino ( ${a} ) não possui conteúdo...`);
+					e.push(`Array de entrada para e-mail(s) de destino ( ${a} ) é inválida. Utilize array bidimensional, com uma array específica para cada e-mail de destino...`);
 				}
 			} else {
 				e.push(`E-mail(s) de destino ( ${a} ): entrada não está no formato de Array...`);
@@ -239,44 +247,30 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 	const attachmentsChecked = [];
 	const errorStack = [];
 
-	let toCount = 0,
-		ccCount = 0,
-		bccCount = 0;
-
 	if (Array.isArray(from)) {
-		if (from.length !== 0) {
-			if (from[0].constructor !== Array) {
-				from = [from];
+		const fromLen = from.length;
+
+		if ((fromLen === 1 || fromLen === 2) && from[0].constructor !== Array) {
+			const email = (from[0] || '');
+			const name = (from[1] || '');
+
+			if (validator.isEmail(email)) {
+				if (!validator.isEmpty(name)) {
+					fromChecked.push(`${name} <${email}>`);
+				} else {
+					fromChecked.push(email);
+				}
 			}
 		} else {
-			from = [''];
-		}
-
-		if (from.length === 1) {
-			from.forEach (
-				e => {
-					const email = (e[0] || '');
-					const name = (e[1] || '');
-
-					if (validator.isEmail(email)) {
-						if (!validator.isEmpty(name)) {
-							fromChecked.push(`${name} <${email}>`);
-						} else {
-							fromChecked.push(email);
-						}
-					}
-				}
-			);
-		} else {
-			errorStack.push(`Array de entrada para e-mail de origem ( ${from} ) contém estrutura inválida ou possui mais de um recipiente informado...`);
+			errorStack.push(`E-mail de origem ( ${from} ) precisa ser uma array simples no formato ['origem@email', 'origemnome'] ou ['origem@email']...`);
 		}
 	} else {
 		errorStack.push(`E-mail de origem ( ${from} ): entrada não está no formato de Array...`);
 	}
 
-	toCount = fillDestinations(to, toChecked, toCount, errorStack);
-	ccCount = fillDestinations(cc, ccChecked, ccCount, errorStack);
-	bccCount = fillDestinations(bcc, bccChecked, bccCount, errorStack);
+	const toCount = fillDestinations(to, toChecked, errorStack);
+	const ccCount = fillDestinations(cc, ccChecked, errorStack);
+	const bccCount = fillDestinations(bcc, bccChecked, errorStack);
 
 	if (fromChecked.length === 0) {
 		errorStack.push('Nenhum e-mail de origem válido. Verifique os dados informados...');
@@ -375,11 +369,11 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 		errorStack.push('Fila de e-mails não está habilitada no servidor. Verifique o arquivo de configuração...');
 	}
 
-	if (errorStack.length === 0) {
-		return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChunks, sendQueue);
-	} else {
+	if (errorStack.length !== 0) {
 		errWrapper.throwThis('EMAIL', 400, errorStack);
 	}
+
+	return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChunks, sendQueue);
 };
 
 // Com base no componente de upload (uploader): retorna uma array com os arquivos anexados

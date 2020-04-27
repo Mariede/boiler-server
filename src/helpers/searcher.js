@@ -20,7 +20,8 @@ const _camelCaseToSnakeCase = searchFields => {
 		searchFields.forEach (
 			e => {
 				const transformP = p => {
-					const changedP = p.replace(/([A-Z])/g,
+					const changedP = p.replace (
+						/([A-Z])/g,
 						g => {
 							return '_' + g[0];
 						}

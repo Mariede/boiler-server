@@ -94,7 +94,9 @@ const startProxy = () => {
 					(req, res) => {
 						log4js.getLogger('default').info(`Redirecionando para ${path} (${origin})`);
 
-						wsProxy.web(req, res,
+						wsProxy.web (
+							req,
+							res,
 							{
 								/* Para https ------- */
 								// target: {
@@ -119,7 +121,10 @@ const startProxy = () => {
 						(req, socket, head) => {
 							log4js.getLogger('default').info(`Redirecionando (ws) para ${path} (${origin})`);
 
-							wsProxy.ws(req, socket, head,
+							wsProxy.ws (
+								req,
+								socket,
+								head,
 								{
 									target: origin,
 									cookiePathRewrite: false,

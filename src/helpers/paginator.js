@@ -34,10 +34,10 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 				}
 			}
 
-			return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortThis(a, b, ++i, iLen)));
-		} else {
-			return 0;
+			return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortThis(a, b, i + 1, iLen)));
 		}
+
+		return 0;
 	};
 
 	const newData = Array.from(jsonData);
@@ -83,7 +83,8 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output =
 const keysToCamelCase = jsonData => {
 	const convertKeys = (cKey, cValue, nDocument) => {
 		const transformP = p => {
-			const changedP = p.toLowerCase().replace(/[_]([a-z])/g,
+			const changedP = p.toLowerCase().replace (
+				/[_]([a-z])/g,
 				g => {
 					return g[1].toUpperCase();
 				}
@@ -169,11 +170,7 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 		errWrapper.throwThis('ORDENAÇÃO (SORTER)', 400, 'Favor utilizar verbo GET para realizar a ordenação...');
 	}
 
-	if (toCamelCase) {
-		jsonData = keysToCamelCase(jsonData);
-	}
-
-	return _executeSort(jsonData, sortElements, sortOrder, sortCaseInsensitive);
+	return _executeSort((toCamelCase ? keysToCamelCase(jsonData) : jsonData), sortElements, sortOrder, sortCaseInsensitive);
 };
 
 /*
@@ -204,9 +201,9 @@ const setPage = (req, jsonData, jsonDataLen, toCamelCase = false) => {
 
 	if (currentPage && jsonData.recordset) {
 		return _executePage(jsonData.recordset, jsonDataLen, currentPage, itemsPerPage, jsonData.output);
-	} else {
-		return jsonData;
 	}
+
+	return jsonData;
 };
 // -------------------------------------------------------------------------
 

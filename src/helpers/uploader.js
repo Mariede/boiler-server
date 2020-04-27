@@ -110,7 +110,7 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 							const mimeType = new RegExp('^(' + checkMimeTypes.join('|') + '){1}$', 'i').test(file.mimetype);
 
 							if (extName && mimeType) {
-								return callback(null, true);
+								callback(null, true);
 							} else {
 								callback('Upload de arquivos apenas suporta as seguintes extensões - ' + checkExtensions.join(', ') + ' com seus respectivos MIME Types - ' + checkMimeTypes.join(', ') + '...');
 							}
@@ -135,13 +135,17 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 			};
 
 			if (fileNames) {
-				upload.fields(fileNames)(req, res,
+				upload.fields(fileNames) (
+					req,
+					res,
 					err => {
 						result(err);
 					}
 				);
 			} else {
-				upload.any()(req, res,
+				upload.any() (
+					req,
+					res,
 					err => {
 						result(err);
 					}
@@ -153,11 +157,11 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 	const configUpload = __serverConfig.server.fileUpload;
 	const method = req.method;
 
-	if (method.toUpperCase() === 'POST') {
-		return await uploadFiles(fileNames);
-	} else {
+	if (method.toUpperCase() !== 'POST') {
 		errWrapper.throwThis('UPLOADER', 400, 'Favor utilizar verbo POST para realizar o upload dos arquivos...');
 	}
+
+	return await uploadFiles(fileNames);
 };
 // -------------------------------------------------------------------------
 

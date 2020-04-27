@@ -38,7 +38,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 				cert: cert.public
 			} : {}),
 			protocolInfo: (isHttps ? 'https://' : 'http://'),
-			sessionCookieSecure: (isHttps ? true : false),
+			sessionCookieSecure: isHttps,
 			socketIo: {
 				serverProtocol: (isHttps ? 'https://' : 'http://')
 			}
@@ -109,11 +109,11 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		app.use (
 			cors (
 				{
-					'origin': __serverConfig.server.cors.origin,
-					'methods': __serverConfig.server.cors.methods,
-					'preflightContinue': __serverConfig.server.cors.preflightContinue,
-					'optionsSuccessStatus': __serverConfig.server.cors.optionsSuccessStatus,
-					'credentials': __serverConfig.server.cors.credentials
+					origin: __serverConfig.server.cors.origin,
+					methods: __serverConfig.server.cors.methods,
+					preflightContinue: __serverConfig.server.cors.preflightContinue,
+					optionsSuccessStatus: __serverConfig.server.cors.optionsSuccessStatus,
+					credentials: __serverConfig.server.cors.credentials
 				}
 			)
 		);
@@ -240,7 +240,9 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		app.all ( // Pooling
 			`${__serverConfig.socketIo.path}/*`,
 			(req, res) => {
-				wsProxy.web(req, res,
+				wsProxy.web (
+					req,
+					res,
 					{
 						cookiePathRewrite: false,
 						changeOrigin: __serverConfig.socketIo.changeOrigin
@@ -252,7 +254,10 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		_server.on ( // Websockets
 			'upgrade',
 			(req, socket, head) => {
-				wsProxy.ws(req, socket, head,
+				wsProxy.ws (
+					req,
+					socket,
+					head,
 					{
 						cookiePathRewrite: false,
 						changeOrigin: __serverConfig.socketIo.changeOrigin
