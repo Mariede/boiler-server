@@ -195,7 +195,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 
 		if (!validator.isEmpty(a)) {
 			if (Array.isArray(a)) {
-				if (a[0].constructor === Array) {
+				if (Array.isArray(a[0])) {
 					const emailListCheckUnique = [];
 
 					a.forEach (
@@ -203,9 +203,9 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 							if (Array.isArray(recip)) {
 								const recipLen = recip.length;
 
-								if ((recipLen === 1 || recipLen === 2) && recip[0].constructor !== Array) {
-									const email = (recip[0] || '');
-									const name = (recip[1] || '');
+								if ((recipLen === 1 || recipLen === 2) && recip[0].constructor === String) {
+									const email = recip[0];
+									const name = (recipLen === 2 && recip[1].constructor === String ? recip[1] : '');
 									const emailCheckUnique = email.toLowerCase();
 
 									if (validator.isEmail(email)) {
@@ -250,9 +250,9 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 	if (Array.isArray(from)) {
 		const fromLen = from.length;
 
-		if ((fromLen === 1 || fromLen === 2) && from[0].constructor !== Array) {
-			const email = (from[0] || '');
-			const name = (from[1] || '');
+		if ((fromLen === 1 || fromLen === 2) && from[0].constructor === String) {
+			const email = from[0];
+			const name = (fromLen === 2 && from[1].constructor === String ? from[1] : '');
 
 			if (validator.isEmail(email)) {
 				if (!validator.isEmpty(name)) {
