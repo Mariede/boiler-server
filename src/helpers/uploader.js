@@ -71,7 +71,7 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 				const fileOriginalName = file.originalname;
 				const findLastDot = fileOriginalName.lastIndexOf('.');
 				const uniqueId = functions.generateUniqueId(3);
-				const fileName = fileOriginalName.substring(0, (findLastDot !== -1 ? findLastDot : fileOriginalName.length)) + '-' + uniqueId + (findLastDot !== -1 ? fileOriginalName.substr(findLastDot) : '');
+				const fileName = `${fileOriginalName.substring(0, (findLastDot !== -1 ? findLastDot : fileOriginalName.length))}-${uniqueId + (findLastDot !== -1 ? fileOriginalName.substr(findLastDot) : '')}`;
 
 				callback(null, fileName);
 			} catch (err) {
@@ -106,13 +106,13 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 								}
 							); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
 
-							const extName = new RegExp('^(' + checkExtensions.join('|') + '){1}$', 'i').test(path.extname(file.originalname).toLowerCase());
-							const mimeType = new RegExp('^(' + checkMimeTypes.join('|') + '){1}$', 'i').test(file.mimetype);
+							const extName = new RegExp(`^(${checkExtensions.join('|')}){1}$`, 'i').test(path.extname(file.originalname).toLowerCase());
+							const mimeType = new RegExp(`^(${checkMimeTypes.join('|')}){1}$`, 'i').test(file.mimetype);
 
 							if (extName && mimeType) {
 								callback(null, true);
 							} else {
-								callback('Upload de arquivos apenas suporta as seguintes extensões - ' + checkExtensions.join(', ') + ' com seus respectivos MIME Types - ' + checkMimeTypes.join(', ') + '...');
+								callback(`Upload de arquivos apenas suporta as seguintes extensões - ${checkExtensions.join(', ')} com seus respectivos MIME Types - ${checkMimeTypes.join(', ')}...`);
 							}
 						} catch (err) {
 							callback(err);

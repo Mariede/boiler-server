@@ -128,7 +128,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 							logFn: err => {
 								log.logger('warn', (err.stack || err));
 							},
-							path: (__serverRoot + '/sessions'),
+							path: `${__serverRoot}/sessions`,
 							encoding: 'utf8',
 							retries: 5,
 							secret: __serverConfig.server.session.secretStore,
@@ -187,7 +187,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		// Caminho padrao
 		app.set (
 			'views',
-			__serverRoot + '/views/server-side/pages'
+			`${__serverRoot}/views/server-side/pages`
 		);
 
 		// Engine padrao

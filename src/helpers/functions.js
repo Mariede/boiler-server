@@ -9,7 +9,7 @@
 // Verifica a data atual do servidor (formatado ou sem formatacao)
 const getDateNow = formatted => {
 	const formatLeftZeros = num => {
-		return ('0' + num).slice(-2);
+		return (`0${num}`).slice(-2);
 	};
 
 	let agora = new Date();

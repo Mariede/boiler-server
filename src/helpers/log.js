@@ -14,7 +14,7 @@ const log4js = require('log4js');
 // Logs no servidor usando log4js
 const logger = (escopo, _mensagem, incorporador = '') => {
 	const myLogger = (incorporador ? log4js.getLogger(incorporador) : log4js.getLogger('default'));
-	const mensagem = (__serverWorker ? 'Trabalhador ' + __serverWorker + ' => ' : '') + _mensagem;
+	const mensagem = (__serverWorker ? `Trabalhador ${__serverWorker} => ` : '') + _mensagem;
 
 	switch (escopo) {
 		case 'fatal': {

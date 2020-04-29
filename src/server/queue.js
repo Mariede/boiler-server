@@ -20,7 +20,7 @@ const queueStartMailCheck = () => {
 		const transporter = nodemailer.createTransport(__serverConfig.email.transporter);
 		const configQueue = __serverConfig.email.queue;
 		const saveFullLogs = (configQueue.saveFullLogs ? 'mailQueue' : 'consoleOnly');
-		const configKey = configQueue.path + '/trabalhador-' + (__serverWorker ? __serverWorker : 'unico');
+		const configKey = `${configQueue.path}/trabalhador-${(__serverWorker ? __serverWorker : 'unico')}`;
 		const fileExtension = configQueue.fileExtension;
 		const limitPerRound = configQueue.limitPerRound;
 		const timeCheck = configQueue.timeCheck;
@@ -72,9 +72,9 @@ const queueStartMailCheck = () => {
 										});
 									};
 
-									const queuePathSending = queuePathSend + '/sending';
-									const filePathSend = queuePathSend + '/' + f;
-									const filePathSending = queuePathSending + '/' + f;
+									const queuePathSending = `${queuePathSend}/sending`;
+									const filePathSend = `${queuePathSend}/${f}`;
+									const filePathSending = `${queuePathSending}/${f}`;
 
 									fs.access (
 										queuePathSending,

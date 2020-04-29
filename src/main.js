@@ -33,35 +33,35 @@ const startMain = async () => {
 				},
 				errorsControllerAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/errors-controller/logs-errors-controller.log'),
+					filename: `${__serverRoot}/logs/errors-controller/logs-errors-controller.log`,
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
 				},
 				startUpAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/start-up/logs-start-up.log'),
+					filename: `${__serverRoot}/logs/start-up/logs-start-up.log`,
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
 				},
 				configFileAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/config-file/logs-config-file.log'),
+					filename: `${__serverRoot}/logs/config-file/logs-config-file.log`,
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
 				},
 				routesAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/routes/logs-routes.log'),
+					filename: `${__serverRoot}/logs/routes/logs-routes.log`,
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 30,
 					compress: false
 				},
 				mailQueueAppender: {
 					type: 'dateFile',
-					filename: (__serverRoot + '/logs/mail-queue/logs-mail-queue.log'),
+					filename: `${__serverRoot}/logs/mail-queue/logs-mail-queue.log`,
 					pattern: '.yyyy-MM-dd',
 					daysToKeep: 15,
 					compress: false
@@ -92,7 +92,7 @@ const startMain = async () => {
 			const result = {};
 
 			if (__serverConfig.server.secure.isHttps) {
-				const certPath = __serverRoot + __serverConfig.server.secure.certFolder + '/';
+				const certPath = `${__serverRoot + __serverConfig.server.secure.certFolder}/`;
 				const certKey = certPath + __serverConfig.server.secure.certKey;
 				const certPublic = certPath + __serverConfig.server.secure.certPublic;
 
@@ -104,7 +104,7 @@ const startMain = async () => {
 		};
 
 		// Caminho para o arquivo de configuracoes
-		const configPath = __serverRoot + '/config.json';
+		const configPath = `${__serverRoot}/config.json`;
 
 		// Variaveis globais
 		global.__serverConfig = Object.freeze(await getAppConfigData(configPath));

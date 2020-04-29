@@ -23,7 +23,7 @@ const _camelCaseToSnakeCase = searchFields => {
 					const changedP = p.replace (
 						/([A-Z])/g,
 						g => {
-							return '_' + g[0];
+							return `_${g[0]}`;
 						}
 					)
 					.toUpperCase();
@@ -66,7 +66,7 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 		if (searchFields.length > 0) {
 			searchFields.forEach (
 				(e, i) => {
-					searchQuery.dados.input[i] = [e, '%' + searchValue + '%'];
+					searchQuery.dados.input[i] = [e, `%${searchValue}%`];
 
 					if (queryWhere !== -1 || i !== 0) {
 						if (i !== 0) {

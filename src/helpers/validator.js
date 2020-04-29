@@ -31,7 +31,7 @@ const isCnpj = _cnpj => {
 	if (cnpj.length < 14) {
 		for (let i = 1; i <= 14; i++) {
 			if (cnpj.length < 14) {
-				cnpj = '0' + cnpj;
+				cnpj = `0${cnpj}`;
 			}
 		}
 	}
@@ -84,7 +84,7 @@ const isCpf = _cpf => {
 	if (cpf.length < 11) {
 		for (let i = 1; i <= 11; i++) {
 			if (cpf.length < 11) {
-				cpf = '0' + cpf;
+				cpf = `0${cpf}`;
 			}
 		}
 	}
@@ -139,7 +139,7 @@ const isPisPasep = _pisPasep => {
 	if (pisPasep.length < 11) {
 		for (let i = 1; i <= 11; i++) {
 			if (pisPasep.length < 11) {
-				pisPasep = '0' + pisPasep;
+				pisPasep = `0${pisPasep}`;
 			}
 		}
 	}
@@ -260,7 +260,7 @@ const isIntegerOrFloat = (_num, signed = true) => {
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante fixa (sempre . como separador decimal)
 const isIntegerOrFixed = (_num, fixedDecimal = 0, signed = true) => {
 	const num = _falsyCheck(_num);
-	const regExp = (signed ? new RegExp('^([-+]?[0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$') : new RegExp('^([0-9]+)((\\.{1}[0-9]{' + fixedDecimal + '})|())$'));
+	const regExp = (signed ? new RegExp(`^([-+]?[0-9]+)((\\.{1}[0-9]{${fixedDecimal}})|())$`) : new RegExp(`^([0-9]+)((\\.{1}[0-9]{${fixedDecimal}})|())$`));
 
 	let vRet = false;
 

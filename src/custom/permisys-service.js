@@ -14,7 +14,7 @@ const errWrapper = require('@serverRoot/helpers/err-wrapper');
 // Logon via permisys
 const logon = (login, senha, idTipoUsuario = 0) => {
 	return new Promise((resolve, reject) => {
-		const address = __serverConfig.server.custom.permisys.address + '/verificarLogon';
+		const address = `${__serverConfig.server.custom.permisys.address}/verificarLogon`;
 		const siglaSistema = __serverConfig.server.custom.permisys.siglaSistema;
 		const idModulo = __serverConfig.server.custom.permisys.idModulo; // Se nao informado checa credenciais mas nao autoriza
 

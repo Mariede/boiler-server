@@ -19,12 +19,12 @@ router.use((req, res, next) => {
 	try {
 		const checkIsProtected = route => { // Verifica se a rota e protegida com base nas informacoes de config
 			const exceptInspect = (paramTable, paramRoute) => {
-				const routePrefix = (__serverConfig.server.routePrefix || '').replace(/\/+$/, '') + '/';
+				const routePrefix = `${(__serverConfig.server.routePrefix || '').replace(/\/+$/, '')}/`;
 
 				return paramTable.some (
 					element => {
 						const elementPick = element.trim().toUpperCase().replace(/^\/+|\/+$/, '');
-						const elementCheck = routePrefix + (elementPick !== '' ? elementPick + '/' : '');
+						const elementCheck = routePrefix + (elementPick !== '' ? `${elementPick}/` : '');
 						const regExCheck = new RegExp(elementCheck);
 
 						return (elementCheck === routePrefix ? (elementCheck === paramRoute) : regExCheck.test(paramRoute));
@@ -71,7 +71,7 @@ router.use((req, res, next) => {
 
 		routeProfiler.showDetails(req, res);
 
-		const route = req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '') + '/';
+		const route = `${req.originalUrl.match('^[^?]*')[0].replace(/\/+$/, '')}/`;
 		const isProtected = checkIsProtected(route);
 
 		let releasedReq = false;

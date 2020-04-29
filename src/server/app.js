@@ -19,7 +19,7 @@ const startApp = async (cert, configPath) => {
 	try {
 		const showMessages = messages => {
 			const checkType = 'info';
-			const padStart = ''.padStart(43) + '-> ';
+			const padStart = '-> '.padStart(43);
 
 			let messagesCheckType = '',
 				i = 0;
@@ -27,7 +27,7 @@ const startApp = async (cert, configPath) => {
 			messages.forEach (
 				message => {
 					if (message[0] === checkType) {
-						messagesCheckType = messagesCheckType + (i !== 0 ? padStart : '') + message[1] + '\r\n';
+						messagesCheckType = `${messagesCheckType + (i !== 0 ? padStart : '') + message[1]}\r\n`;
 					} else {
 						log.logger(message[0], message[1], 'startUp');
 					}
@@ -94,7 +94,7 @@ const startApp = async (cert, configPath) => {
 				cluster.on (
 					'exit',
 					(worker, code, signal) => {
-						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.process.myEnv.workerMyId} - finalizou os serviços${(signal ? ' pelo sinal ' + signal : ' com o código ' + code)}`, 'startUp');
+						log.logger('info', `Cluster ${worker.process.pid}, trabalhador ${worker.process.myEnv.workerMyId} - finalizou os serviços${(signal ? ` pelo sinal ${signal}` : ` com o código ${code}`)}`, 'startUp');
 						log.logger('info', 'Iniciando novo trabalhador', 'startUp');
 
 						const env = worker.process.myEnv;

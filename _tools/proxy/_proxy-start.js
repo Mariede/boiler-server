@@ -35,9 +35,9 @@ const startProxy = () => {
 			const result = {};
 
 			if (isHttps) {
-				const certPath = path.resolve(__dirname, '/cert/');
-				const certKey = certPath + 'cert.key';
-				const certPublic = certPath + 'cert.pem';
+				const certPath = path.resolve(__dirname, '/cert');
+				const certKey = `${certPath}/cert.key`;
+				const certPublic = `${certPath}/cert.pem`;
 
 				result.key = fs.readFileSync(certKey, 'utf8');
 				result.public = fs.readFileSync(certPublic, 'utf8');
