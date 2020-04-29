@@ -90,6 +90,7 @@ npm run build
 
 ## Lib Paginator com paginador e ordenador
   * Configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
+  * "Sort" inteligente, levando em conta a "collation" nas ordenações
   * Conversão configurável para "lowerCamelCase" do json (recordset de retorno)
 
 ## Lib Searcher
