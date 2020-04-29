@@ -20,21 +20,11 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 	const sortThis = (a, b, i, iLen) => {
 		if (i < iLen) {
 			const order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
+			const aCheck = (a[sortElements[i]] || '');
+			const bCheck = (b[sortElements[i]] || '');
+			const checkData = collator.compare(aCheck, bCheck);
 
-			let aCheck = (a[sortElements[i]] || ''),
-				bCheck = (b[sortElements[i]] || '');
-
-			if (sortCaseInsensitive) {
-				if (typeof aCheck === 'string') {
-					aCheck = aCheck.toLowerCase();
-				}
-
-				if (typeof bCheck === 'string') {
-					bCheck = bCheck.toLowerCase();
-				}
-			}
-
-			return ((aCheck < bCheck) ? order.d1 : ((aCheck > bCheck) ? order.a1 : sortThis(a, b, i + 1, iLen)));
+			return ((checkData < 0) ? order.d1 : ((checkData > 0) ? order.a1 : sortThis(a, b, i + 1, iLen)));
 		}
 
 		return 0;
@@ -42,6 +32,16 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 
 	const newData = Array.from(jsonData);
 	const sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
+	const collator = new Intl.Collator (
+		undefined, // Default locale
+		{
+			ignorePunctuation: false,
+			localeMatcher: 'best fit',
+			numeric: true,
+			sensitivity: (sortCaseInsensitive ? 'base' : 'case'),
+			usage: 'sort'
+		}
+	);
 
 	newData.sort (
 		(a, b) => {

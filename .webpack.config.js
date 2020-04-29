@@ -2,7 +2,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
 const NodeExternals = require('webpack-node-externals');
-const path = require('path');
+const Path = require('path');
+const WebpackMessages = require('webpack-messages');
 
 /* path to source code */
 const shortSourcePath = './src';
@@ -19,8 +20,8 @@ const versionPackage = (packageJson.version || '');
 const outputNamePackage = (packageJson.outputName || 'main.js');
 
 /* paths */
-const sourcePath = path.resolve(__dirname, shortSourcePath);
-const destinyPath = path.resolve(__dirname, `./build${(versionPackage ? '/' + versionPackage : '')}`);
+const sourcePath = Path.resolve(__dirname, shortSourcePath);
+const destinyPath = Path.resolve(__dirname, `./build${(versionPackage ? '/' + versionPackage : '')}`);
 
 module.exports = {
 	target: 'node',
@@ -54,6 +55,20 @@ module.exports = {
 		]
 	},
 	plugins: [
+		new CleanWebpackPlugin(),
+		new CopyWebpackPlugin (
+			[
+				{
+					from: Path.resolve(sourcePath, './config.json'), to: Path.resolve(destinyPath, './config.json'), force: true
+				},
+				{
+					from: Path.resolve(sourcePath, './views'), to: Path.resolve(destinyPath, './views'), force: true
+				},
+				{
+					from: Path.resolve(sourcePath, configJsonCertFolder), to: Path.resolve(destinyPath, configJsonCertFolder), force: true
+				}
+			]
+		),
 		new GeneratePackageJsonPlugin (
 			{
 				'name': (packageJson.name || ''),
@@ -65,20 +80,14 @@ module.exports = {
 			},
 			packageJsonLocation
 		),
-		new CleanWebpackPlugin(),
-		new CopyWebpackPlugin (
-			[
-				{
-					from: path.resolve(sourcePath, './config.json'), to: path.resolve(destinyPath, './config.json'), force: true
-				},
-				{
-					from: path.resolve(sourcePath, './views'), to: path.resolve(destinyPath, './views'), force: true
-				},
-				{
-					from: path.resolve(sourcePath, configJsonCertFolder), to: path.resolve(destinyPath, configJsonCertFolder), force: true
+		new WebpackMessages (
+			{
+				name: (packageJson.name || ''),
+				logger: str => {
+					console.log(`>> ${str}`);
 				}
-			]
-		),
+			}
+		)
 	],
 	resolve: {
 		alias: {
