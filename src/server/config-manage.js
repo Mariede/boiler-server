@@ -31,14 +31,16 @@ const check = config => {
 
 			timeoutReadFile = setTimeout(() => {
 				try {
-					resolve (
-						functions.readFile (
-							fs,
-							param,
-							data => {
-								return (isValidJson(data) ? JSON.parse(data) : {});
+					functions.readFile (
+						fs,
+						param,
+						data => {
+							try {
+								resolve(isValidJson(data) ? JSON.parse(data) : {});
+							} catch (err) {
+								reject(err);
 							}
-						)
+						}
 					);
 				} catch (err) {
 					reject(err);
