@@ -19,6 +19,7 @@ moduleAlias.addAliases ({
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const app = require('@serverRoot/server/app');
+const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -82,13 +83,10 @@ const startMain = async () => {
 
 		// Dados prioritarios do servidor ------------------------------------------
 		const getAppConfigData = async path => { // Configuracoes do servidor
-			const fsPromises = fs.promises;
-			return JSON.parse(await fsPromises.readFile(path, 'utf8'));
+			return JSON.parse(await functions.readFile(fs, path));
 		};
 
 		const getAppCert = async () => { // Certificado digital (apenas se ativo)
-			const fsPromises = fs.promises;
-
 			const result = {};
 
 			if (__serverConfig.server.secure.isHttps) {
@@ -96,8 +94,8 @@ const startMain = async () => {
 				const certKey = certPath + __serverConfig.server.secure.certKey;
 				const certPublic = certPath + __serverConfig.server.secure.certPublic;
 
-				result.key = await fsPromises.readFile(certKey, 'utf8');
-				result.public = await fsPromises.readFile(certPublic, 'utf8');
+				result.key = await functions.readFile(fs, certKey);
+				result.public = await functions.readFile(fs, certPublic);
 			}
 
 			return result;
