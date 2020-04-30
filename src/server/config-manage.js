@@ -7,6 +7,7 @@ const fs = require('fs');
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const functions = require('@serverRoot/helpers/functions');
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
@@ -30,21 +31,14 @@ const check = config => {
 
 			timeoutReadFile = setTimeout(() => {
 				try {
-					fs.readFile (
-						param,
-						'utf8',
-						(err, data) => {
-							try {
-								if (err) {
-									reject(err);
-								} else {
-									const result = (isValidJson(data) ? JSON.parse(data) : {});
-									resolve(result);
-								}
-							} catch (err) {
-								reject(err);
+					resolve (
+						functions.readFile (
+							fs,
+							param,
+							data => {
+								return (isValidJson(data) ? JSON.parse(data) : {});
 							}
-						}
+						)
 					);
 				} catch (err) {
 					reject(err);

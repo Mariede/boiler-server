@@ -52,9 +52,17 @@ const promiseForEach = (arrayItems, callback) => {
 	);
 };
 
-// Cria uma nova pasta no sistema de arquivos
-const createNewFolder = (fs, newFolder) => {
+// Cria uma nova pasta no sistema de arquivos e executa o callback se existir
+const createNewFolder = (fs, newFolder, callback) => {
 	return new Promise((resolve, reject) => {
+		const resolveThis = () => {
+			if (callback) {
+				resolve(callback());
+			} else {
+				resolve();
+			}
+		};
+
 		fs.access (
 			newFolder,
 			fs.constants.F_OK, // Check if exists
@@ -69,10 +77,10 @@ const createNewFolder = (fs, newFolder) => {
 										if (err.code !== 'EEXIST') { // Check if exists (again)
 											reject(err);
 										} else {
-											resolve();
+											resolveThis();
 										}
 									} else {
-										resolve();
+										resolveThis();
 									}
 								} catch (err) {
 									reject(err);
@@ -80,7 +88,32 @@ const createNewFolder = (fs, newFolder) => {
 							}
 						);
 					} else {
-						resolve();
+						resolveThis();
+					}
+				} catch (err) {
+					reject(err);
+				}
+			}
+		);
+	});
+};
+
+// Le um arquivo e executa o callback se existir
+const readFile = (fs, file, callback) => {
+	return new Promise((resolve, reject) => {
+		fs.readFile (
+			file,
+			'utf8',
+			(err, data) => {
+				try {
+					if (err) {
+						reject(err);
+					} else {
+						if (callback) {
+							resolve(callback(data));
+						} else {
+							resolve(data);
+						}
 					}
 				} catch (err) {
 					reject(err);
@@ -130,6 +163,7 @@ module.exports = {
 	asyncForEach,
 	promiseForEach,
 	createNewFolder,
+	readFile,
 	removeInvalidFileNameChars,
 	generateUniqueId
 };

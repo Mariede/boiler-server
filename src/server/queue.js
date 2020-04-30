@@ -127,24 +127,14 @@ const queueStartMailCheck = () => {
 								});
 							};
 
-							const readThis = f => {
-								return new Promise((resolve, reject) => {
-									fs.readFile (
-										f,
-										'utf8',
-										(err, data) => {
-											try {
-												if (err) {
-													reject(err);
-												} else {
-													resolve(JSON.parse(data));
-												}
-											} catch (err) {
-												reject(err);
-											}
-										}
-									);
-								});
+							const readThis = async param => {
+								return await functions.readFile (
+									fs,
+									param,
+									data => {
+										return JSON.parse(data);
+									}
+								);
 							};
 
 							const deleteThis = f => {
