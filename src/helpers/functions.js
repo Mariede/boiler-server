@@ -123,6 +123,32 @@ const readFile = (fs, file, callback) => {
 	});
 };
 
+// Escreve um arquivo e executa o callback se existir
+const writeFile = (fs, file, content, callback) => {
+	return new Promise((resolve, reject) => {
+		fs.writeFile (
+			file,
+			content,
+			'utf8',
+			err => {
+				try {
+					if (err) {
+						reject(err);
+					} else {
+						if (callback) {
+							resolve(callback());
+						} else {
+							resolve();
+						}
+					}
+				} catch (err) {
+					reject(err);
+				}
+			}
+		);
+	});
+};
+
 // Verifica caracteres invalidos na criacao de pastas windows
 //    os => sistema operacional: 1: windows
 const removeInvalidFileNameChars = (_param, os = 1) => {
@@ -164,6 +190,7 @@ module.exports = {
 	promiseForEach,
 	createNewFolder,
 	readFile,
+	writeFile,
 	removeInvalidFileNameChars,
 	generateUniqueId
 };

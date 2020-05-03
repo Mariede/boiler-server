@@ -48,16 +48,19 @@ const _executeQueue = (e, counter) => {
 						);
 					}
 
-					fs.writeFile (
+					functions.writeFile (
+						fs,
 						fileName,
-						queueFile,
-						'utf8',
+						queueFile
+					)
+					.then (
+						() => {
+							resolve(queueFile);
+						}
+					)
+					.catch (
 						err => {
-							if (err) {
-								reject(err);
-							} else {
-								resolve(queueFile);
-							}
+							reject(err);
 						}
 					);
 				} catch (err) {
@@ -111,10 +114,51 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 			async e => {
 				i++;
 
+				const envelope = {
+					from: (Array.isArray(e.from) ? e.from[0] : e.from),
+					to: (Array.isArray(e.to) ? [...e.to] : []),
+					cc: (Array.isArray(e.cc) ? [...e.cc] : []),
+					bcc: (Array.isArray(e.bcc) ? [...e.bcc] : [])
+				};
+
 				if (!sendQueue) {
-					sentInfos.push(await t.sendMail(e)); // Envia chunk de e-mails
+					try {
+						const sentInfo = await t.sendMail(e); // Envia chunk de e-mails
+						sentInfos.push (
+							{
+								toQueue: false,
+								envelope: envelope,
+								data: sentInfo
+							}
+						);
+					} catch (err) {
+						sentInfos.push (
+							{
+								toQueue: false,
+								envelope: envelope,
+								error: err
+							}
+						);
+					}
 				} else {
-					sentInfos.push(await _executeQueue(e, i)); // Enfileira chunk de e-mails
+					try {
+						const sentInfo = await _executeQueue(e, i); // Enfileira chunk de e-mails
+						sentInfos.push (
+							{
+								toQueue: true,
+								envelope: envelope,
+								data: sentInfo
+							}
+						);
+					} catch (err) {
+						sentInfos.push (
+							{
+								toQueue: true,
+								envelope: envelope,
+								error: err
+							}
+						);
+					}
 				}
 			}
 		);
@@ -376,12 +420,13 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 	return await _executeSend(fromChecked, toChecked, ccChecked, bccChecked, subject, text, attachmentsChecked, sendChunks, sendQueue);
 };
 
-// Com base no componente de upload (uploader): retorna uma array com os arquivos anexados
-const getAttachments = (uploaderResults, fileNames) => {
+// Prepara a array de arquivos a serem anexados
+//		attachments => arquivos a serem anexados (base de comparacao do codigo: lib uploader)
+const getAttachments = attachments => {
 	const attachmentsResult = [];
 
-	if (uploaderResults && uploaderResults.files && uploaderResults.files[fileNames]) {
-		uploaderResults.files[fileNames].forEach (
+	if (Array.isArray(attachments)) {
+		attachments.forEach (
 			file => {
 				const objFile = {};
 

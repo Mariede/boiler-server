@@ -32,15 +32,21 @@ const queueStartMailCheck = () => {
 
 		// Validacoes dos parametros essenciais no config
 		if (!Number.isInteger(limitPerRound) || limitPerRound <= 0) {
-			throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro limitPerRound em config é inválido: ${limitPerRound} - precisa ser numérico e maior que zero`);
+			return reject (
+				new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro limitPerRound em config é inválido: ${limitPerRound} - precisa ser numérico e maior que zero`)
+			);
 		}
 
 		if (!Number.isInteger(timeCheck) || timeCheck <= 5000) {
-			throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeCheck em config é inválido: ${timeCheck} - precisa ser numérico e maior que 5000`);
+			return reject (
+				new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeCheck em config é inválido: ${timeCheck} - precisa ser numérico e maior que 5000`)
+			);
 		}
 
 		if (!Number.isInteger(timeFirstCheck) || timeFirstCheck <= 1000) {
-			throw new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeFirstCheck em config é inválido: ${timeFirstCheck} - precisa ser numérico e maior que 1000`);
+			return reject (
+				new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeFirstCheck em config é inválido: ${timeFirstCheck} - precisa ser numérico e maior que 1000`)
+			);
 		}
 
 		const queueMailCheck = () => {
@@ -251,6 +257,8 @@ const queueStartMailCheck = () => {
 			fs.constants.F_OK, // Check if exists
 			async err => {
 				try {
+					let goWatch = true;
+
 					if (err) {
 						await functions.promiseForEach (
 							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
@@ -260,12 +268,15 @@ const queueStartMailCheck = () => {
 									await functions.createNewFolder(fs, initPath);
 								} catch (err) {
 									reject(err);
+									goWatch = false;
 								}
 							}
 						);
 					}
 
-					startWatch();
+					if (goWatch) {
+						startWatch();
+					}
 				} catch (err) {
 					reject(err);
 				}

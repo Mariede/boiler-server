@@ -40,10 +40,14 @@ const _baseCipherDecipher = async (passData, ...saltData) => {
 				_salt,
 				_algorithmKeyLen,
 				(err, derivedKey) => {
-					if (err) {
+					try {
+						if (err) {
+							reject(err);
+						} else {
+							resolve(derivedKey);
+						}
+					} catch (err) {
 						reject(err);
-					} else {
-						resolve(derivedKey);
 					}
 				}
 			);

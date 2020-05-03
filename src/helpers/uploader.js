@@ -17,8 +17,8 @@ const functions = require('@serverRoot/helpers/functions');
 /*
 Realiza o upload de um ou mais arquivos (POST / enctype: "multipart/form-data")
 
-	-> sempre array de objects para fileNames ou vazio para todos (sem checagem de nomes)
-		-> formato para fileNames: [{ name: 'inputFileName1' }, { name: 'inputFileName2' }, { name: 'inputFileName3' }, ...]
+	-> fieldNames: campo html que informa a localizacao dos arquivos de upload no form (se mais de um campo, separar por virgula)
+		-> "inputFieldName1, inputFieldName2, inputFieldName3, ..."
 
 	-> extraPath vazio para upload de arquivos direto na pasta default, ou informa pasta(s) extras (default: vazio)
 
@@ -27,61 +27,63 @@ Realiza o upload de um ou mais arquivos (POST / enctype: "multipart/form-data")
 	-> storageToDisk true para diskStorage | false para memoryStorage (default: true)
 		-> se memoryStorage selecionado, utilizar Buffer.from(req.files[].buffer, 'utf8') para converter valor da memoria
 */
-const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, storageToDisk = true) => {
-	const diskStorage = multer.diskStorage ({
-		destination: (req, file, callback) => {
-			try {
-				const configKey = configUpload.path + (extraPath ? `/${extraPath}` : '');
-
-				let initPath = __serverRoot;
-
-				const filePath = initPath + configKey;
-
-				fs.access (
-					filePath,
-					fs.constants.F_OK, // Check if exists
-					async err => {
+const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, storageToDisk = true) => {
+	const uploadFiles = formattedFieldNames => {
+		return new Promise((resolve, reject) => {
+			const diskStorage = multer.diskStorage (
+				{
+					destination: (req, file, callback) => {
 						try {
-							if (err) {
-								await functions.promiseForEach (
-									functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
-									async folder => {
-										try {
-											initPath = path.join(initPath, folder);
-											await functions.createNewFolder(fs, initPath);
-										} catch (err) {
-											callback(err);
-										}
-									}
-								);
-							}
+							const configKey = configUpload.path + (extraPath ? `/${extraPath}` : '');
 
-							callback(null, filePath);
+							let initPath = __serverRoot;
+
+							const filePath = initPath + configKey;
+
+							fs.access (
+								filePath,
+								fs.constants.F_OK, // Check if exists
+								async err => {
+									try {
+										if (err) {
+											await functions.promiseForEach (
+												functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
+												async folder => {
+													try {
+														initPath = path.join(initPath, folder);
+														await functions.createNewFolder(fs, initPath);
+													} catch (err) {
+														callback(err);
+													}
+												}
+											);
+										}
+
+										callback(null, filePath);
+									} catch (err) {
+										callback(err);
+									}
+								}
+							);
+						} catch (err) {
+							callback(err);
+						}
+					},
+					filename: (req, file, callback) => {
+						try {
+							const fileOriginalName = file.originalname;
+							const findLastDot = fileOriginalName.lastIndexOf('.');
+							const uniqueId = functions.generateUniqueId(3);
+							const fileName = `${fileOriginalName.substring(0, (findLastDot !== -1 ? findLastDot : fileOriginalName.length))}-${uniqueId + (findLastDot !== -1 ? fileOriginalName.substr(findLastDot) : '')}`;
+
+							callback(null, fileName);
 						} catch (err) {
 							callback(err);
 						}
 					}
-				);
-			} catch (err) {
-				callback(err);
-			}
-		},
-		filename: (req, file, callback) => {
-			try {
-				const fileOriginalName = file.originalname;
-				const findLastDot = fileOriginalName.lastIndexOf('.');
-				const uniqueId = functions.generateUniqueId(3);
-				const fileName = `${fileOriginalName.substring(0, (findLastDot !== -1 ? findLastDot : fileOriginalName.length))}-${uniqueId + (findLastDot !== -1 ? fileOriginalName.substr(findLastDot) : '')}`;
+				}
+			);
 
-				callback(null, fileName);
-			} catch (err) {
-				callback(err);
-			}
-		}
-	});
-
-	const uploadFiles = fileNames => {
-		return new Promise((resolve, reject) => {
 			const upload = multer (
 				{
 					fileFilter: (req, file, callback) => {
@@ -112,46 +114,76 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 							if (extName && mimeType) {
 								callback(null, true);
 							} else {
-								callback(`Upload de arquivos apenas suporta as seguintes extensões - ${checkExtensions.join(', ')} com seus respectivos MIME Types - ${checkMimeTypes.join(', ')}...`);
+								callback (
+									errWrapper.throwThis('UPLOADER', 400, `Upload de arquivos apenas suporta as seguintes extensões - ${checkExtensions.join(', ')} com seus respectivos MIME Types - ${checkMimeTypes.join(', ')}...`)
+								);
 							}
 						} catch (err) {
 							callback(err);
 						}
 					},
-					storage: (storageToDisk ? diskStorage : multer.memoryStorage()),
 					limits: {
 						fileSize: (configUpload.maxFileSize || Infinity),
 						files: (maxFileUploads || Infinity)
-					}
+					},
+					storage: (storageToDisk ? diskStorage : multer.memoryStorage())
 				}
 			);
 
-			const result = err => {
+			const showResults = err => {
+				const filesToArray = uploadedResults => {
+					const files = [];
+
+					Object.keys(uploadedResults.originalFiles).forEach (
+						fieldName => {
+							const uploadedFiles = uploadedResults.originalFiles[fieldName];
+
+							if (uploadedFiles) {
+								uploadedFiles.forEach (
+									file => {
+										files.push(file);
+									}
+								);
+							}
+						}
+					);
+
+					return files;
+				};
+
 				if (err) {
 					reject(err);
 				} else {
-					resolve({ body: { ...req.body }, files: { ...req.files } });
+					resolve({ body: { ...req.body }, files: filesToArray({ originalFiles: { ...req.files } }) });
 				}
 			};
 
-			if (fileNames) {
-				upload.fields(fileNames) (
-					req,
-					res,
-					err => {
-						result(err);
-					}
-				);
-			} else {
-				upload.any() (
-					req,
-					res,
-					err => {
-						result(err);
-					}
-				);
-			}
+			upload.fields(formattedFieldNames) (
+				req,
+				res,
+				err => {
+					showResults(err);
+				}
+			);
 		});
+	};
+
+	// Saida formatada (array de objetos) => [{ name: 'inputFieldName1' }, { name: 'inputFieldName2' }, { name: 'inputFieldName3' }, ...]
+	const formatFieldNames = _fieldNames => {
+		return (
+			String(_fieldNames || '').split(',')
+			.map (
+				fieldName => {
+					const trimmed = fieldName.trim();
+					return (trimmed ? { name: trimmed } : {});
+				}
+			)
+			.filter (
+				fieldName => {
+					return (Object.keys(fieldName).length === 1 && Object.prototype.hasOwnProperty.call(fieldName, 'name'));
+				}
+			)
+		);
 	};
 
 	const configUpload = __serverConfig.server.fileUpload;
@@ -161,7 +193,7 @@ const push = async (req, res, fileNames, extraPath = '', maxFileUploads = 0, sto
 		errWrapper.throwThis('UPLOADER', 400, 'Favor utilizar verbo POST para realizar o upload dos arquivos...');
 	}
 
-	return await uploadFiles(fileNames);
+	return await uploadFiles(formatFieldNames(fieldNames));
 };
 // -------------------------------------------------------------------------
 
