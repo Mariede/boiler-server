@@ -101,7 +101,11 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 	});
 };
 
-// Chamada inicial, verifica os dados de entrada do cliente, executa a acao
+/*
+Chamada inicial, verifica os dados de entrada do cliente, executa a acao
+
+	** setSearch so funciona com MS SQL Server **
+*/
 const setSearch = async (req, baseQuery, targetReplace) => {
 	const falsyCheck = param => {
 		const falsy = [null, undefined, NaN]; // Excecao => 0 / false / ""

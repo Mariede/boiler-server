@@ -90,6 +90,21 @@ const msSqlServer = {
 					if (Object.prototype.hasOwnProperty.call(p, 'formato') && Object.prototype.hasOwnProperty.call(p, 'dados')) {
 						if (Object.prototype.hasOwnProperty.call(p.dados, 'executar')) {
 							const dataTypeCheck = _param => {
+								const validateE = _paramE => {
+									return (
+										_paramE ? (
+											_paramE.split(',').map(
+												element => {
+													const iNum = parseFloat(element);
+													return (isNaN(iNum) ? (element.trim().toUpperCase() === 'MAX' ? sql.MAX : element) : iNum);
+												}
+											)
+										) : (
+											_paramE
+										)
+									);
+								};
+
 								const dataTypesSupported = [
 									'Bit',
 									'BigInt',
@@ -129,19 +144,14 @@ const msSqlServer = {
 								const checkParamA = param.indexOf('(');
 								const checkParamB = checkParamA !== -1 ? checkParamA : param.length;
 								const checkParamC = param.substr(0, checkParamB).trim();
-								const checkParamD = (dataTypesSupported.find(
+								const checkParamD = dataTypesSupported.find(
 									element => {
 										return element.toUpperCase() === checkParamC.toUpperCase();
 									}
-								) || '');
-								const checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : '').split(',').map(
-									element => {
-										const iNum = parseFloat(element);
-										return ((isNaN(element) || isNaN(iNum)) ? element : iNum);
-									}
 								);
+								const checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : undefined);
 
-								return { base: checkParamD, ext: checkParamE };
+								return { base: checkParamD, ext: validateE(checkParamE) };
 							};
 
 							const inputCheck = (r, p) => {
@@ -150,8 +160,8 @@ const msSqlServer = {
 										if (key.length === 3) {
 											const dataType = dataTypeCheck(key[1]);
 
-											if (dataType.base !== '') {
-												if (dataType.ext !== '') {
+											if (dataType.base) {
+												if (Array.isArray(dataType.ext)) {
 													r.input(key[0], sql[dataType.base](...dataType.ext), key[2]);
 												} else {
 													r.input(key[0], sql[dataType.base], key[2]);
@@ -176,8 +186,8 @@ const msSqlServer = {
 										if (key.length === 2) {
 											const dataType = dataTypeCheck(key[1]);
 
-											if (dataType.base !== '') {
-												if (dataType.ext !== '') {
+											if (dataType.base) {
+												if (Array.isArray(dataType.ext)) {
 													r.output(key[0], sql[dataType.base](...dataType.ext));
 												} else {
 													r.output(key[0], sql[dataType.base]);

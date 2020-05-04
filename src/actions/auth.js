@@ -33,6 +33,9 @@ const logon = async (req, res) => {
 				const query = {
 					formato: 1,
 					dados: {
+						input: [
+							['login', 'varchar(200)', login]
+						],
 						executar: `
 							SELECT
 								A.ID_USUARIO
@@ -46,7 +49,7 @@ const logon = async (req, res) => {
 								INNER JOIN TIPO B (NOLOCK)
 									ON (A.ID_TIPO = B.ID_TIPO)
 							WHERE
-								A.EMAIL = '${login}';
+								A.EMAIL = @login;
 						`
 					}
 				};

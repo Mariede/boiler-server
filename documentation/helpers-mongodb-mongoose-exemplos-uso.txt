@@ -24,9 +24,11 @@ const dbCon = require('@serverRoot/helpers/db');
 
 const typesModel = await dbCon.mongoDB.noSqlExecute('types');
 
-await typesModel.deleteMany ({
-	type: /^[ ]*Alpha/i
-});
+await typesModel.deleteMany(
+	{
+		type: /^[ ]*Alpha/i
+	}
+);
 
 await typesModel.create(
 	[
@@ -48,9 +50,11 @@ const dbCon = require('@serverRoot/helpers/db');
 const typesModel = await dbCon.mongoDB.noSqlExecute('types');
 const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-await usersModel.deleteMany ({
-	name: /^[ ]*joaquim/i
-});
+await usersModel.deleteMany(
+	{
+		name: /^[ ]*joaquim/i
+	}
+);
 
 await usersModel.create(
 	[
@@ -119,13 +123,17 @@ const dbCon = require('@serverRoot/helpers/db');
 const typesModel = await dbCon.mongoDB.noSqlExecute('types');
 const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-await typesModel.deleteMany ({
-	type: /^[ ]*Alpha/i
-});
+await typesModel.deleteMany(
+	{
+		type: /^[ ]*Alpha/i
+	}
+);
 
-await usersModel.deleteMany ({
-	name: /^[ ]*joaquim/i
-});
+await usersModel.deleteMany(
+	{
+		name: /^[ ]*joaquim/i
+	}
+);
 
 return dbCon.mongoDB.noSqlFormattedResult(await usersModel.find());
 
@@ -147,9 +155,11 @@ const typesModel = await dbCon.mongoDB.noSqlExecute('types');
 const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 const session = await dbCon.mongoDB.noSqlTransactionStart();
 
-await typesModel.deleteMany ({
-	type: /^[ ]*Alpha/i
-}).session(session);
+await typesModel.deleteMany(
+	{
+		type: /^[ ]*Alpha/i
+	}
+).session(session);
 
 await typesModel.create(
 	[
@@ -162,9 +172,11 @@ await typesModel.create(
 	}
 );
 
-await usersModel.deleteMany ({
-	name: /^[ ]*joaquim/i
-}).session(session);
+await usersModel.deleteMany(
+	{
+		name: /^[ ]*joaquim/i
+	}
+).session(session);
 
 await usersModel.create(
 	[
@@ -205,9 +217,11 @@ const dbCon = require('@serverRoot/helpers/db');
 const typesModel = await dbCon.mongoDB.noSqlExecute('types');
 const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-await typesModel.deleteMany ({
-	type: /^[ ]*Alpha/i
-});
+await typesModel.deleteMany(
+	{
+		type: /^[ ]*Alpha/i
+	}
+);
 
 await typesModel.create(
 	[
@@ -217,9 +231,11 @@ await typesModel.create(
 	]
 );
 
-await usersModel.deleteMany ({
-	name: /^[ ]*joaquim/i
-});
+await usersModel.deleteMany(
+	{
+		name: /^[ ]*joaquim/i
+	}
+);
 
 await usersModel.create(
 	[

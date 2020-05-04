@@ -81,6 +81,7 @@ const query = {
 		input: [
 			['nome', 'varchar(200)', 'Joaquim Santos'],
 			['senha', 'varchar(20)', 'SENH@TESTE123'],
+			['relatorio', 'varchar(max)', 'teste inicial'],
 			['ativo', 'bit', 1],
 			['nomeCheck', '%Jo%']
 		],
@@ -105,10 +106,12 @@ const query = {
 			INSERT INTO USUARIO (
 				NOME
 				,SENHA
+				,RELATORIO
 				,ATIVO
 			) VALUES (
 				@nome + ' ' + CAST(@INCR AS varchar) -- variavel input externa + interna
 				,@senha -- variavel input externa
+				,@relatorio -- variavel input externa
 				,@ativo -- variavel input externa
 			);
 			SET
