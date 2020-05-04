@@ -30,7 +30,7 @@ Realiza o upload de um ou mais arquivos (POST / enctype: "multipart/form-data")
 const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, storageToDisk = true) => {
 	const uploadFiles = formattedFieldNames => {
 		return new Promise((resolve, reject) => {
-			const diskStorage = multer.diskStorage (
+			const diskStorage = multer.diskStorage(
 				{
 					destination: (req, file, callback) => {
 						try {
@@ -40,13 +40,13 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 
 							const filePath = initPath + configKey;
 
-							fs.access (
+							fs.access(
 								filePath,
 								fs.constants.F_OK, // Check if exists
 								async err => {
 									try {
 										if (err) {
-											await functions.promiseForEach (
+											await functions.promiseForEach(
 												functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 												async folder => {
 													try {
@@ -84,25 +84,25 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 				}
 			);
 
-			const upload = multer (
+			const upload = multer(
 				{
 					fileFilter: (req, file, callback) => {
 						try {
-							const checkExtensions = [...new Set((configUpload.allowedExtensions || '').split('|').map (
+							const checkExtensions = [...new Set((configUpload.allowedExtensions || '').split('|').map(
 								item => {
 									return item.substr(0, (item.indexOf(':') !== -1 ? item.indexOf(':') : item.length)).trim();
 								}
-							))].filter (
+							))].filter(
 								item => {
 									return item !== '';
 								}
 							); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
 
-							const checkMimeTypes = [...new Set((configUpload.allowedExtensions || '').split('|').map (
+							const checkMimeTypes = [...new Set((configUpload.allowedExtensions || '').split('|').map(
 								item => {
 									return item.substr((item.indexOf(':') !== -1 ? item.indexOf(':') + 1 : '')).trim();
 								}
-							))].filter (
+							))].filter(
 								item => {
 									return item !== '';
 								}
@@ -114,7 +114,7 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 							if (extName && mimeType) {
 								callback(null, true);
 							} else {
-								callback (
+								callback(
 									errWrapper.throwThis('UPLOADER', 400, `Upload de arquivos apenas suporta as seguintes extensões - ${checkExtensions.join(', ')} com seus respectivos MIME Types - ${checkMimeTypes.join(', ')}...`)
 								);
 							}
@@ -134,12 +134,12 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 				const filesToArray = uploadedResults => {
 					const files = [];
 
-					Object.keys(uploadedResults.originalFiles).forEach (
+					Object.keys(uploadedResults.originalFiles).forEach(
 						fieldName => {
 							const uploadedFiles = uploadedResults.originalFiles[fieldName];
 
 							if (uploadedFiles) {
-								uploadedFiles.forEach (
+								uploadedFiles.forEach(
 									file => {
 										files.push(file);
 									}
@@ -158,7 +158,7 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 				}
 			};
 
-			upload.fields(formattedFieldNames) (
+			upload.fields(formattedFieldNames)(
 				req,
 				res,
 				err => {
@@ -172,13 +172,13 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 	const formatFieldNames = _fieldNames => {
 		return (
 			String(_fieldNames || '').split(',')
-			.map (
+			.map(
 				fieldName => {
 					const trimmed = fieldName.trim();
 					return (trimmed ? { name: trimmed } : {});
 				}
 			)
-			.filter (
+			.filter(
 				fieldName => {
 					return (Object.keys(fieldName).length === 1 && Object.prototype.hasOwnProperty.call(fieldName, 'name'));
 				}

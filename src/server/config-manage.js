@@ -31,7 +31,7 @@ const check = config => {
 
 			timeoutReadFile = setTimeout(() => {
 				try {
-					functions.readFile (
+					functions.readFile(
 						fs,
 						param,
 						data => {

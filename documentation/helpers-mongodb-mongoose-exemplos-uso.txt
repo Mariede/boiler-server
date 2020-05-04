@@ -28,7 +28,7 @@ await typesModel.deleteMany ({
 	type: /^[ ]*Alpha/i
 });
 
-await typesModel.create (
+await typesModel.create(
 	[
 		{
 			type: 'Alpha'
@@ -52,7 +52,7 @@ await usersModel.deleteMany ({
 	name: /^[ ]*joaquim/i
 });
 
-await usersModel.create (
+await usersModel.create(
 	[
 		{
 			name: 'Joaquim Silva',
@@ -77,7 +77,7 @@ const dbCon = require('@serverRoot/helpers/db');
 
 const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-await usersModel.findOneAndUpdate (
+await usersModel.findOneAndUpdate(
 	{
 		name: /^[ ]*joaquim/i
 	},
@@ -98,7 +98,7 @@ const dbCon = require('@serverRoot/helpers/db');
 const typesModel = await dbCon.mongoDB.noSqlExecute('types');
 const usersModel = await dbCon.mongoDB.noSqlExecute('users');
 
-await usersModel.findOneAndUpdate (
+await usersModel.findOneAndUpdate(
 	{
 		name: /^[ ]*joaquim/i
 	},
@@ -151,7 +151,7 @@ await typesModel.deleteMany ({
 	type: /^[ ]*Alpha/i
 }).session(session);
 
-await typesModel.create (
+await typesModel.create(
 	[
 		{
 			type: 'Alpha'
@@ -166,7 +166,7 @@ await usersModel.deleteMany ({
 	name: /^[ ]*joaquim/i
 }).session(session);
 
-await usersModel.create (
+await usersModel.create(
 	[
 		{
 			name: 'Joaquim Silva',
@@ -183,7 +183,7 @@ await usersModel.create (
 	}
 );
 
-await usersModel.findOneAndUpdate (
+await usersModel.findOneAndUpdate(
 	{
 		name: /^[ ]*joaquim/i
 	},
@@ -209,7 +209,7 @@ await typesModel.deleteMany ({
 	type: /^[ ]*Alpha/i
 });
 
-await typesModel.create (
+await typesModel.create(
 	[
 		{
 			type: 'Alpha'
@@ -221,7 +221,7 @@ await usersModel.deleteMany ({
 	name: /^[ ]*joaquim/i
 });
 
-await usersModel.create (
+await usersModel.create(
 	[
 		{
 			name: 'Joaquim Silva',
@@ -235,7 +235,7 @@ await usersModel.create (
 	]
 );
 
-await usersModel.findOneAndUpdate (
+await usersModel.findOneAndUpdate(
 	{
 		name: /^[ ]*joaquim/i
 	},

@@ -283,7 +283,7 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-const { recordsets: recordSets, ...resultSet } = await searcher.setSearch (
+const { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
 	req,
 	baseQuery,
 	replaceQuery
@@ -321,7 +321,7 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-const { recordsets: recordSets, ...resultSet } = await searcher.setSearch (
+const { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
 	req,
 	baseQuery,
 	replaceQuery
@@ -359,7 +359,7 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-const { recordsets: recordSets, ...resultSet } = await searcher.setSearch (
+const { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
 	req,
 	baseQuery,
 	replaceQuery

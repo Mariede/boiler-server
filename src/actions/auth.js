@@ -86,7 +86,7 @@ const logout = (req, res) => {
 	return new Promise((resolve, reject) => {
 		const sess = req.session;
 
-		sess.destroy (
+		sess.destroy(
 			err => {
 				try {
 					if (err) {

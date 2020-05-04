@@ -32,7 +32,7 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 
 	const newData = Array.from(jsonData);
 	const sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
-	const collator = new Intl.Collator (
+	const collator = new Intl.Collator(
 		undefined, // Default locale
 		{
 			ignorePunctuation: false,
@@ -43,7 +43,7 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 		}
 	);
 
-	newData.sort (
+	newData.sort(
 		(a, b) => {
 			return sortThis(a, b, 0, sortElementsLen);
 		}
@@ -67,7 +67,7 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output =
 	};
 	const indexSearchStart = backPage * itemsPerPage;
 	const indexSearchStop = indexSearchStart + itemsPerPage;
-	const recordSet = jsonData.filter (
+	const recordSet = jsonData.filter(
 		(e, i) => {
 			return (i >= indexSearchStart && i < indexSearchStop);
 		}
@@ -83,7 +83,7 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output =
 const keysToCamelCase = jsonData => {
 	const convertKeys = (cKey, cValue, nDocument) => {
 		const transformP = p => {
-			const changedP = p.toLowerCase().replace (
+			const changedP = p.toLowerCase().replace(
 				/[_]([a-z])/g,
 				g => {
 					return g[1].toUpperCase();
@@ -109,7 +109,7 @@ const keysToCamelCase = jsonData => {
 	};
 
 	const loopKeys = (cDocument, nDocument) => {
-		Object.keys(cDocument).forEach (
+		Object.keys(cDocument).forEach(
 			currentKey => {
 				const currentValue = cDocument[currentKey];
 				const newKey = convertKeys(currentKey, currentValue, nDocument);
@@ -153,7 +153,7 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 
 	if (method.toUpperCase() === 'GET') {
 		if (req.query.sort_fields) {
-			req.query.sort_fields.split(/[,|]/).forEach (
+			req.query.sort_fields.split(/[,|]/).forEach(
 				e => {
 					const sortField = e.split(/[:]/);
 

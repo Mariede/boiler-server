@@ -61,7 +61,7 @@ const startIo = cert => {
 
 		// Listeners aqui
 		if (listeners) {
-			Object.keys(listeners).forEach (
+			Object.keys(listeners).forEach(
 				l => {
 					listeners[l](ios);
 					listeningMethods.push(l);
@@ -77,7 +77,7 @@ const startIo = cert => {
 					if (lm.length) {
 						messageComplement = ' (listeners ativos:';
 
-						lm.forEach (
+						lm.forEach(
 							l => {
 								messageComplement += ` ${l}`;
 							}

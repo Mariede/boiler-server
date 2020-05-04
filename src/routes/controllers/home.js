@@ -22,16 +22,16 @@ const _commonGate = (req, res) => {
 const homeRoutes = (router, handleErrorsController) => {
 	// Rota: root ----------------------------------------------------------
 	router.route('/')
-	.all (
-		handleErrorsController (
+	.all(
+		handleErrorsController(
 			(req, res, next) => {
 				_commonGate(req, res);
 				next();
 			}
 		)
 	)
-	.get (
-		handleErrorsController (
+	.get(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await home.root(req, res);
 				res.status(200).render(result.path + result.file, result.pageData);

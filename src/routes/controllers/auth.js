@@ -22,16 +22,16 @@ const _commonGate = (req, res) => {
 const authRoutes = (router, handleErrorsController) => {
 	// Rota: logon ---------------------------------------------------------
 	router.route('/logon')
-	.all (
-		handleErrorsController (
+	.all(
+		handleErrorsController(
 			(req, res, next) => {
 				_commonGate(req, res);
 				next();
 			}
 		)
 	)
-	.post (
-		handleErrorsController (
+	.post(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await auth.logon(req, res);
 				res.status(200).send(result);
@@ -42,16 +42,16 @@ const authRoutes = (router, handleErrorsController) => {
 
 	// Rota: logout --------------------------------------------------------
 	router.route('/logout')
-	.all (
-		handleErrorsController (
+	.all(
+		handleErrorsController(
 			(req, res, next) => {
 				_commonGate(req, res);
 				next();
 			}
 		)
 	)
-	.post (
-		handleErrorsController (
+	.post(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await auth.logout(req, res);
 				res.status(200).send(result);
@@ -62,16 +62,16 @@ const authRoutes = (router, handleErrorsController) => {
 
 	// Rota: isLogged ------------------------------------------------------
 	router.route('/isLogged')
-	.all (
-		handleErrorsController (
+	.all(
+		handleErrorsController(
 			(req, res, next) => {
 				_commonGate(req, res);
 				next();
 			}
 		)
 	)
-	.get (
-		handleErrorsController (
+	.get(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await auth.isLogged(req, res);
 				res.status(200).send(result);

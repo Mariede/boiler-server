@@ -34,15 +34,15 @@ const asyncForEach = async (array, callback) => {
 
 // Executa uma sequencia ordenada de promessas com uma array de itens como argumento de entrada
 const promiseForEach = (arrayItems, callback) => {
-	return arrayItems.reduce (
+	return arrayItems.reduce(
 		(promise, item) => {
 			return promise
-			.then (
+			.then(
 				() => {
 					return callback(item);
 				}
 			)
-			.catch (
+			.catch(
 				err => {
 					throw err;
 				}
@@ -63,13 +63,13 @@ const createNewFolder = (fs, newFolder, callback) => {
 			}
 		};
 
-		fs.access (
+		fs.access(
 			newFolder,
 			fs.constants.F_OK, // Check if exists
 			err => {
 				try {
 					if (err) {
-						fs.mkdir (
+						fs.mkdir(
 							newFolder,
 							err => {
 								try {
@@ -101,7 +101,7 @@ const createNewFolder = (fs, newFolder, callback) => {
 // Le um arquivo e executa o callback se existir
 const readFile = (fs, file, callback) => {
 	return new Promise((resolve, reject) => {
-		fs.readFile (
+		fs.readFile(
 			file,
 			'utf8',
 			(err, data) => {
@@ -126,7 +126,7 @@ const readFile = (fs, file, callback) => {
 // Escreve um arquivo e executa o callback se existir
 const writeFile = (fs, file, content, callback) => {
 	return new Promise((resolve, reject) => {
-		fs.writeFile (
+		fs.writeFile(
 			file,
 			content,
 			'utf8',

@@ -17,10 +17,10 @@ const _camelCaseToSnakeCase = searchFields => {
 	const newSearchFields = [];
 
 	if (searchFields && Array.isArray(searchFields)) {
-		searchFields.forEach (
+		searchFields.forEach(
 			e => {
 				const transformP = p => {
-					const changedP = p.replace (
+					const changedP = p.replace(
 						/([A-Z])/g,
 						g => {
 							return `_${g[0]}`;
@@ -64,7 +64,7 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 		let queryReplace = '';
 
 		if (searchFields.length > 0) {
-			searchFields.forEach (
+			searchFields.forEach(
 				(e, i) => {
 					searchQuery.dados.input[i] = [e, `%${searchValue}%`];
 
@@ -88,12 +88,12 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 		searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace);
 
 		dbCon.msSqlServer.sqlExecuteAll(searchQuery)
-		.then (
+		.then(
 			result => {
 				resolve(result);
 			}
 		)
-		.catch (
+		.catch(
 			err => {
 				reject(err);
 			}
@@ -116,7 +116,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 
 	if (method.toUpperCase() === 'GET') {
 		if (req.query.fullsearch_fields) {
-			req.query.fullsearch_fields.split(/[,|]/).forEach (
+			req.query.fullsearch_fields.split(/[,|]/).forEach(
 				e => {
 					searchFields.push(e.trim());
 				}

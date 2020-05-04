@@ -22,16 +22,16 @@ const _commonGate = (req, res) => {
 const userRoutes = (router, handleErrorsController) => {
 	// Colecao usuarios ----------------------------------------------------
 	router.route('/usuario')
-	.all (
-		handleErrorsController (
+	.all(
+		handleErrorsController(
 			(req, res, next) => {
 				_commonGate(req, res);
 				next();
 			}
 		)
 	)
-	.get (
-		handleErrorsController (
+	.get(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await user.consultarTodos(req, res);
 				res.status(200).send(result);
@@ -42,40 +42,40 @@ const userRoutes = (router, handleErrorsController) => {
 
 	// Model usuario -------------------------------------------------------
 	router.route('/usuario/:id')
-	.all (
-		handleErrorsController (
+	.all(
+		handleErrorsController(
 			(req, res, next) => {
 				_commonGate(req, res);
 				next();
 			}
 		)
 	)
-	.get (
-		handleErrorsController (
+	.get(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await user.consultar(req, res);
 				res.status(200).send(result);
 			}
 		)
 	)
-	.post (
-		handleErrorsController (
+	.post(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await user.inserir(req, res);
 				res.status(200).send(result);
 			}
 		)
 	)
-	.put (
-		handleErrorsController (
+	.put(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await user.alterar(req, res);
 				res.status(200).send(result);
 			}
 		)
 	)
-	.delete (
-		handleErrorsController (
+	.delete(
+		handleErrorsController(
 			async (req, res) => {
 				const result = await user.excluir(req, res);
 				res.status(200).send(result);

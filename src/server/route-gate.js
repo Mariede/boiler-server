@@ -21,7 +21,7 @@ router.use((req, res, next) => {
 			const exceptInspect = (paramTable, paramRoute) => {
 				const routePrefix = `${(__serverConfig.server.routePrefix || '').replace(/\/+$/, '')}/`;
 
-				return paramTable.some (
+				return paramTable.some(
 					element => {
 						const elementPick = element.trim().toUpperCase().replace(/^\/+|\/+$/, '');
 						const elementCheck = routePrefix + (elementPick !== '' ? `${elementPick}/` : '');
@@ -91,11 +91,13 @@ router.use((req, res, next) => {
 		if (releasedReq) {
 			controllersRoutes();
 		} else {
-			res.status(401).send ({
-				name: 'ROUTER',
-				code: 401,
-				message: 'Rota protegida, acesso não autorizado...'
-			});
+			res.status(401).send(
+				{
+					name: 'ROUTER',
+					code: 401,
+					message: 'Rota protegida, acesso não autorizado...'
+				}
+			);
 		}
 	} catch (err) {
 		next(err);

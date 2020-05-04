@@ -26,22 +26,22 @@ const msSqlServer = {
 				if (__serverConfig.db.msSqlServer.conexaoTipo === 2) {
 				// Conexao simples, direta, sem pool
 					sql.connect(__serverConfig.db.msSqlServer.configSql)
-					.then (
+					.then(
 						pool => {
 							return new sql.Transaction(pool);
 						}
 					)
-					.then (
+					.then(
 						transaction => {
 							return transaction.begin();
 						}
 					)
-					.then (
+					.then(
 						transaction => {
 							resolve(transaction);
 						}
 					)
-					.catch (
+					.catch(
 						err => {
 							failReturn(err);
 						}
@@ -49,22 +49,22 @@ const msSqlServer = {
 				} else {
 				// DEFAULT - Conexao com pool
 					new sql.ConnectionPool(__serverConfig.db.msSqlServer.configSql).connect()
-					.then (
+					.then(
 						pool => {
 							return new sql.Transaction(pool);
 						}
 					)
-					.then (
+					.then(
 						transaction => {
 							return transaction.begin();
 						}
 					)
-					.then (
+					.then(
 						transaction => {
 							resolve(transaction);
 						}
 					)
-					.catch (
+					.catch(
 						err => {
 							failReturn(err);
 						}
@@ -129,15 +129,15 @@ const msSqlServer = {
 								const checkParamA = param.indexOf('(');
 								const checkParamB = checkParamA !== -1 ? checkParamA : param.length;
 								const checkParamC = param.substr(0, checkParamB).trim();
-								const checkParamD = (dataTypesSupported.find (
+								const checkParamD = (dataTypesSupported.find(
 									element => {
 										return element.toUpperCase() === checkParamC.toUpperCase();
 									}
 								) || '');
-								const checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : '').split(',').map (
-									i => {
-										const iNum = parseFloat(i);
-										return ((isNaN(i) || isNaN(iNum)) ? i : iNum);
+								const checkParamE = ((checkParamD && checkParamA !== -1) ? param.substr(checkParamA).replace(/[()]/g, '') : '').split(',').map(
+									element => {
+										const iNum = parseFloat(element);
+										return ((isNaN(element) || isNaN(iNum)) ? element : iNum);
 									}
 								);
 
@@ -217,12 +217,12 @@ const msSqlServer = {
 				};
 
 				sqlAction(request, params)
-				.then (
+				.then(
 					res => {
 						resolve(res);
 					}
 				)
-				.catch (
+				.catch(
 					err => {
 						failReturn(err);
 					}
@@ -246,7 +246,7 @@ const msSqlServer = {
 				};
 
 				transaction.commit()
-				.then (
+				.then(
 					() => {
 						if (__serverConfig.db.msSqlServer.conexaoTipo === 2 || forceClose) {
 						// Conexao simples, direta, sem pool
@@ -255,7 +255,7 @@ const msSqlServer = {
 						resolve();
 					}
 				)
-				.catch (
+				.catch(
 					err => {
 						failReturn(err);
 					}
@@ -294,12 +294,12 @@ const mongoDB = {
 				const uri = __serverConfig.db.mongoose.connectionString;
 
 				mongoose.connect(uri, __serverConfig.db.mongoose.configDb)
-				.then (
+				.then(
 					() => {
 						resolve();
 					}
 				)
-				.catch (
+				.catch(
 					err => {
 						reject(err);
 					}
@@ -341,7 +341,7 @@ const mongoDB = {
 						verifiedCompoundIndexes.push(compoundIndexes);
 					}
 
-					verifiedCompoundIndexes.forEach (
+					verifiedCompoundIndexes.forEach(
 						cVal => {
 							if (typeof cVal === 'object') {
 								if (Object.prototype.hasOwnProperty.call(cVal, '_unique')) {
@@ -357,23 +357,23 @@ const mongoDB = {
 					myModel = mongoose.model(schema, mySchema);
 
 					myModel.syncIndexes()
-					.then (
+					.then(
 						() => {
 							myModel.init();
 						}
 					)
-					.then (
+					.then(
 						() => {
 							resolve(myModel);
 						}
 					)
-					.catch (
+					.catch(
 						err => {
 							reject(err);
 						}
 					);
 				} else {
-					reject (
+					reject(
 						errWrapper.throwThis('DB', 400, 'Esquema não encontrado...')
 					);
 				}
@@ -389,18 +389,18 @@ const mongoDB = {
 	noSqlTransactionStart: () => {
 		return new Promise((resolve, reject) => {
 			mongoDB.noSqlOpenCon()
-			.then (
+			.then(
 				() => {
 					return mongoose.startSession();
 				}
 			)
-			.then (
+			.then(
 				session => {
 					session.startTransaction();
 					resolve(session);
 				}
 			)
-			.catch (
+			.catch(
 				err => {
 					reject(err);
 				}
@@ -412,12 +412,12 @@ const mongoDB = {
 	noSqlTransactionCommit: session => {
 		return new Promise((resolve, reject) => {
 			session.commitTransaction()
-			.then (
+			.then(
 				() => {
 					resolve();
 				}
 			)
-			.catch (
+			.catch(
 				err => {
 					reject(err);
 				}

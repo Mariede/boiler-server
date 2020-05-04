@@ -56,9 +56,9 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		// Definindo pastas de conteudo estatico
 		const checkPathStaticFiles = pathVirtualStaticFiles => {
 			const setPathStaticFiles = p => {
-				app.use (
+				app.use(
 					p.virtualPath,
-					express.static (
+					express.static(
 						__serverRoot + p.physicalPath, {
 							etag: true,
 							lastModified: true,
@@ -69,7 +69,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			};
 
 			if (Array.isArray(pathVirtualStaticFiles)) {
-				pathVirtualStaticFiles.forEach (
+				pathVirtualStaticFiles.forEach(
 					path => {
 						setPathStaticFiles(path);
 					}
@@ -97,7 +97,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		// Headers (seguranca) -----------------------------------------------------
 		app.disable('x-powered-by'); // Desabilita header x-powered-by (hidepoweredby)
 
-		app.use (
+		app.use(
 			(req, res, next) => {
 				res.set('X-Content-Type-Options', 'nosniff'); // Browser sniffing mime types (nosniff)
 				res.set('X-XSS-Protection', '1; mode=block'); // Cross Site Scripting (xssfilter)
@@ -106,8 +106,8 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// CORS --------------------------------------------------------------------
-		app.use (
-			cors (
+		app.use(
+			cors(
 				{
 					origin: __serverConfig.server.cors.origin,
 					methods: __serverConfig.server.cors.methods,
@@ -119,11 +119,11 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// Sessions - store no file system -----------------------------------------
-		app.use (
-			session (
+		app.use(
+			session(
 				{
 					name: __serverConfig.server.session.cookieName,
-					store: new sessionFileStore (
+					store: new sessionFileStore(
 						{
 							logFn: err => {
 								log.logger('warn', (err.stack || err));
@@ -151,13 +151,13 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// Body parser, application/json -------------------------------------------
-		app.use (
+		app.use(
 			bodyParser.json()
 		);
 
 		// Body parser, application/x-www-form-urlencoded --------------------------
-		app.use (
-			bodyParser.urlencoded (
+		app.use(
+			bodyParser.urlencoded(
 				{
 					extended: true
 				}
@@ -165,12 +165,12 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// Cookie parser (req.cookies) ---------------------------------------------
-		app.use (
+		app.use(
 			cookieParser()
 		);
 
 		// Compressao Gzip ---------------------------------------------------------
-		app.use (
+		app.use(
 			compression()
 		);
 
@@ -178,32 +178,32 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		checkPathStaticFiles(__serverConfig.server.pathVirtualStaticFiles);
 
 		// Favicon -----------------------------------------------------------------
-		app.use (
+		app.use(
 			favicon(__serverRoot + __serverConfig.server.pathFavicon)
 		);
 
 		// Views -------------------------------------------------------------------
 
 		// Caminho padrao
-		app.set (
+		app.set(
 			'views',
 			`${__serverRoot}/views/server-side/pages`
 		);
 
 		// Engine padrao
-		app.set (
+		app.set(
 			'view engine',
 			'ejs'
 		);
 
 		// Extensoes da engine (e webpack)
-		app.engine (
+		app.engine(
 			'ejs',
 			ejs.__express
 		);
 
 		// Rotas -------------------------------------------------------------------
-		app.use (
+		app.use(
 			checkRoutePrefix(),
 			routeGate
 		);
@@ -219,7 +219,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 		// Proxy para o servidor de Websockets (Socket.io) -------------------------
 		// Se mais de uma aplicacao estiver rodando no mesmo servidor, diferenciar pelas portas em config
-		const wsProxy = proxy.createProxyServer (
+		const wsProxy = proxy.createProxyServer(
 			{
 				secure: false,
 				target: `${pServerCheck.socketIo.serverProtocol}${__serverConfig.socketIo.serverHost}:${__serverConfig.socketIo.serverPort}`,
@@ -228,7 +228,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// Listener para erros de proxy
-		wsProxy.on (
+		wsProxy.on(
 			'error',
 			(err, req, res) => {
 				log.logger('error', `[http-proxy] ${(err.stack || err)}`);
@@ -237,10 +237,10 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// Rotas de resposta para socket.io ----------------------------------------
-		app.all ( // Pooling
+		app.all( // Pooling
 			`${__serverConfig.socketIo.path}/*`,
 			(req, res) => {
-				wsProxy.web (
+				wsProxy.web(
 					req,
 					res,
 					{
@@ -251,10 +251,10 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			}
 		);
 
-		_server.on ( // Websockets
+		_server.on( // Websockets
 			'upgrade',
 			(req, socket, head) => {
-				wsProxy.ws (
+				wsProxy.ws(
 					req,
 					socket,
 					head,
@@ -267,10 +267,10 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// Rotas nao encontradas ---------------------------------------------------
-		app.all (
+		app.all(
 			'*',
 			(req, res) => {
-				res.status(404).send (
+				res.status(404).send(
 					{
 						name: 'ROUTER',
 						code: 404,
@@ -281,7 +281,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		);
 
 		// Handler erros oriundos dos controllers ----------------------------------
-		app.use (
+		app.use(
 			(err, req, res, next) => { // eslint-disable-line no-unused-vars
 				log.errorsController(res, err, 'error');
 			}

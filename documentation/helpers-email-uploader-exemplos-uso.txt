@@ -18,7 +18,7 @@ const filePath = 'server/files/path/'; // Caminho onde serao salvos os arquivos 
 const uploaderResults = await uploader.push(req, res, fieldNames, filePath, 0, true);
 const attachments = email.getAttachments(uploaderResults.files);
 
-return await email.sendEmail (
+return await email.sendEmail(
 	['testefrom@server.com', 'From Name'],
 	[
 		['testeto1@server.com', 'To 1'],

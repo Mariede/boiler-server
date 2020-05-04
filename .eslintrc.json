@@ -93,10 +93,10 @@
 		"dot-notation": 2,
 		"eol-last": 2,
 		"eqeqeq": 2,
-		// "func-call-spacing": [
-		// 	2,
-		// 	"never"
-		// ],
+		"func-call-spacing": [
+			2,
+			"never"
+		],
 		"func-style": [
 			2,
 			"expression"

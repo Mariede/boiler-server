@@ -35,7 +35,7 @@ const _checkSaltData = (...saltData) => {
 const _baseCipherDecipher = async (passData, ...saltData) => {
 	const scryptAsync = (_pass, _salt, _algorithmKeyLen) => {
 		return new Promise((resolve, reject) => {
-			crypto.scrypt (
+			crypto.scrypt(
 				_pass,
 				_salt,
 				_algorithmKeyLen,

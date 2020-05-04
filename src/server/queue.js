@@ -32,26 +32,26 @@ const queueStartMailCheck = () => {
 
 		// Validacoes dos parametros essenciais no config
 		if (!Number.isInteger(limitPerRound) || limitPerRound <= 0) {
-			return reject (
+			return reject(
 				new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro limitPerRound em config é inválido: ${limitPerRound} - precisa ser numérico e maior que zero`)
 			);
 		}
 
 		if (!Number.isInteger(timeCheck) || timeCheck <= 5000) {
-			return reject (
+			return reject(
 				new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeCheck em config é inválido: ${timeCheck} - precisa ser numérico e maior que 5000`)
 			);
 		}
 
 		if (!Number.isInteger(timeFirstCheck) || timeFirstCheck <= 1000) {
-			return reject (
+			return reject(
 				new Error(`Serviço de fila de e-mails falhou ao iniciar: parâmetro timeFirstCheck em config é inválido: ${timeFirstCheck} - precisa ser numérico e maior que 1000`)
 			);
 		}
 
 		const queueMailCheck = () => {
 			try {
-				fs.readdir (
+				fs.readdir(
 					queuePathSend,
 					'utf8',
 					async (err, files) => {
@@ -60,7 +60,7 @@ const queueStartMailCheck = () => {
 								return new Promise((resolve, reject) => {
 									const moveThis = (fpSend, fpSending) => {
 										return new Promise((resolve, reject) => {
-											fs.rename (
+											fs.rename(
 												fpSend,
 												fpSending,
 												err => {
@@ -82,13 +82,13 @@ const queueStartMailCheck = () => {
 									const filePathSend = `${queuePathSend}/${f}`;
 									const filePathSending = `${queuePathSending}/${f}`;
 
-									fs.access (
+									fs.access(
 										queuePathSending,
 										fs.constants.F_OK, // Check if exists
 										err => {
 											try {
 												if (err) {
-													fs.mkdir (
+													fs.mkdir(
 														queuePathSending,
 														err => {
 															try {
@@ -96,12 +96,12 @@ const queueStartMailCheck = () => {
 																	reject(err);
 																} else {
 																	moveThis(filePathSend, filePathSending)
-																	.then (
+																	.then(
 																		result => {
 																			resolve(result);
 																		}
 																	)
-																	.catch (
+																	.catch(
 																		err => {
 																			reject(err);
 																		}
@@ -114,12 +114,12 @@ const queueStartMailCheck = () => {
 													);
 												} else {
 													moveThis(filePathSend, filePathSending)
-													.then (
+													.then(
 														result => {
 															resolve(result);
 														}
 													)
-													.catch (
+													.catch(
 														err => {
 															reject(err);
 														}
@@ -134,7 +134,7 @@ const queueStartMailCheck = () => {
 							};
 
 							const readThis = async param => {
-								return await functions.readFile (
+								return await functions.readFile(
 									fs,
 									param,
 									data => {
@@ -145,7 +145,7 @@ const queueStartMailCheck = () => {
 
 							const deleteThis = f => {
 								return new Promise((resolve, reject) => {
-									fs.unlink (
+									fs.unlink(
 										f,
 										err => {
 											try {
@@ -166,7 +166,7 @@ const queueStartMailCheck = () => {
 								log.logger('error', `Não foi possível ler o conteúdo da pasta ${queuePathSend}: ${(err.stack || err)}`, 'mailQueue');
 							} else {
 								if (files && files.length) {
-									const targetFiles = files.filter (
+									const targetFiles = files.filter(
 										file => {
 											return path.extname(file).toLowerCase() === fileExtension;
 										}
@@ -175,13 +175,13 @@ const queueStartMailCheck = () => {
 									let sentTotal = 0;
 
 									if (targetFiles.length) {
-										targetFiles.sort (
+										targetFiles.sort(
 											(a, b) => {
 												return (a > b ? 1 : (a < b ? -1 : 0));
 											}
 										);
 
-										await functions.asyncForEach (
+										await functions.asyncForEach(
 											targetFiles,
 											async file => {
 												try {
@@ -252,7 +252,7 @@ const queueStartMailCheck = () => {
 			resolve(watch);
 		};
 
-		fs.access (
+		fs.access(
 			queuePathSend,
 			fs.constants.F_OK, // Check if exists
 			async err => {
@@ -260,7 +260,7 @@ const queueStartMailCheck = () => {
 					let goWatch = true;
 
 					if (err) {
-						await functions.promiseForEach (
+						await functions.promiseForEach(
 							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 							async folder => {
 								try {

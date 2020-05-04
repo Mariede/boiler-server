@@ -47,19 +47,19 @@ const logon = (login, senha, idTipoUsuario = 0) => {
 		}
 
 		axios
-		.post (
+		.post(
 			address,
 			dataSend,
 			config
 		)
-		.then (
+		.then(
 			result => {
 				resolve(result.data);
 			}
 		)
-		.catch (
+		.catch(
 			err => {
-				reject (
+				reject(
 					errWrapper.returnThis('PERMISYS', 500, err)
 				);
 			}

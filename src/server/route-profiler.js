@@ -17,7 +17,7 @@ const showDetails = (req, res) => {
 	const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || (req.connection.socket ? req.connection.socket.remoteAddress : null);
 	const logDisplay = (__serverConfig.server.saveRouteLogs ? 'routes' : 'consoleOnly');
 
-	res.once (
+	res.once(
 		'finish',
 		() => {
 			log.logger('info', `${res.locals.routeIsProtectedRoute ? '* PROTEGIDA * ' : ''}Rota ${(res.locals.routeEscapedRoute || '')} (método: ${req.method.toUpperCase()}, status: ${res.statusCode}) solicitada por ${ip} => em Controller ${(res.locals.routeControllerRoute || '')} (${Date.now() - start} ms)`, logDisplay);

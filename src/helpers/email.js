@@ -29,13 +29,13 @@ const _executeQueue = (e, counter) => {
 		const queuePathSend = initPath + configKey;
 		const fileName = `${queuePathSend}/mail-queue-${uniqueId}.${counter + configQueue.fileExtension}`;
 
-		fs.access (
+		fs.access(
 			queuePathSend,
 			fs.constants.F_OK, // Check if exists
 			async err => {
 				try {
 					if (err) {
-						await functions.promiseForEach (
+						await functions.promiseForEach(
 							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 							async folder => {
 								try {
@@ -48,17 +48,17 @@ const _executeQueue = (e, counter) => {
 						);
 					}
 
-					functions.writeFile (
+					functions.writeFile(
 						fs,
 						fileName,
 						queueFile
 					)
-					.then (
+					.then(
 						() => {
 							resolve(queueFile);
 						}
 					)
-					.catch (
+					.catch(
 						err => {
 							reject(err);
 						}
@@ -109,7 +109,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 
 		let i = 0;
 
-		await functions.asyncForEach (
+		await functions.asyncForEach(
 			m,
 			async e => {
 				i++;
@@ -124,7 +124,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 				if (!sendQueue) {
 					try {
 						const sentInfo = await t.sendMail(e); // Envia chunk de e-mails
-						sentInfos.push (
+						sentInfos.push(
 							{
 								toQueue: false,
 								envelope: envelope,
@@ -132,7 +132,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 							}
 						);
 					} catch (err) {
-						sentInfos.push (
+						sentInfos.push(
 							{
 								toQueue: false,
 								envelope: envelope,
@@ -143,7 +143,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 				} else {
 					try {
 						const sentInfo = await _executeQueue(e, i); // Enfileira chunk de e-mails
-						sentInfos.push (
+						sentInfos.push(
 							{
 								toQueue: true,
 								envelope: envelope,
@@ -151,7 +151,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 							}
 						);
 					} catch (err) {
-						sentInfos.push (
+						sentInfos.push(
 							{
 								toQueue: true,
 								envelope: envelope,
@@ -242,7 +242,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 				if (Array.isArray(a[0])) {
 					const emailListCheckUnique = [];
 
-					a.forEach (
+					a.forEach(
 						recip => {
 							if (Array.isArray(recip)) {
 								const recipLen = recip.length;
@@ -426,7 +426,7 @@ const getAttachments = attachments => {
 	const attachmentsResult = [];
 
 	if (Array.isArray(attachments)) {
-		attachments.forEach (
+		attachments.forEach(
 			file => {
 				const objFile = {};
 
