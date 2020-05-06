@@ -84,8 +84,8 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		};
 
 		// Server Worker identifica o cluster trabalhador, se existir
-		//    => Utiliza variavel global para manter sempre o ID inicial em eventuais "mortes" e "reinicios" do processo
-		//    => Codigo: cluster[0].worker.process.env.workerMyId no lugar de cluster[0].worker.id (incremental)
+		//	=> Utiliza variavel global para manter sempre o ID inicial em eventuais "mortes" e "reinicios" do processo
+		//	=> Codigo: cluster[0].worker.process.env.workerMyId no lugar de cluster[0].worker.id (incremental)
 		if (numWorkers && typeof(cluster[0]) === 'object' && cluster[0] !== null) {
 			__serverWorker = cluster[0].worker.process.env.workerMyId;
 		}

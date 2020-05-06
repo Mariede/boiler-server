@@ -150,7 +150,7 @@ const writeFile = (fs, file, content, callback) => {
 };
 
 // Verifica caracteres invalidos na criacao de pastas windows
-//    os => sistema operacional: 1: windows
+//	os => sistema operacional: 1: windows
 const removeInvalidFileNameChars = (_param, os = 1) => {
 	let param = _param;
 
@@ -166,7 +166,7 @@ const removeInvalidFileNameChars = (_param, os = 1) => {
 };
 
 // Gera um identificador o mais unico possivel, em diferentes formatos
-//    fullUnique => adiciona data completa e id do cluster (se existir)
+//	fullUnique => adiciona data completa e id do cluster (se existir)
 const generateUniqueId = (_length, fullUnique = true) => {
 	const length = (Number.isInteger(_length) && _length > 0 ? (_length < 15 ? _length : 15) : 1);
 
