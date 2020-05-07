@@ -123,12 +123,13 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 
 				if (!sendQueue) {
 					try {
-						const sentInfo = await t.sendMail(e); // Envia chunk de e-mails
+						const { sentErr, sentInfo } = await functions.sendMail(t, e); // Envia chunk de e-mails
 						sentInfos.push(
 							{
 								toQueue: false,
 								envelope: envelope,
-								data: sentInfo
+								data: sentInfo,
+								error: sentErr
 							}
 						);
 					} catch (err) {
@@ -136,6 +137,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 							{
 								toQueue: false,
 								envelope: envelope,
+								data: null,
 								error: err
 							}
 						);
@@ -147,7 +149,8 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 							{
 								toQueue: true,
 								envelope: envelope,
-								data: sentInfo
+								data: sentInfo,
+								error: null
 							}
 						);
 					} catch (err) {
@@ -155,6 +158,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 							{
 								toQueue: true,
 								envelope: envelope,
+								data: null,
 								error: err
 							}
 						);

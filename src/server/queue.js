@@ -187,7 +187,7 @@ const queueStartMailCheck = () => {
 												try {
 													const filePathSending = await prepareThis(file);
 													const fileContent = await readThis(filePathSending);
-													const sentInfo = await transporter.sendMail(fileContent);
+													const { sentErr, sentInfo } = await functions.sendMail(transporter, fileContent);
 													const sentAccepted = (Array.isArray(sentInfo.accepted) ? sentInfo.accepted.length : 0);
 													const sentRejected = (Array.isArray(sentInfo.rejected) ? sentInfo.rejected.length : 0);
 													const sentPending = (Array.isArray(sentInfo.pending) ? sentInfo.pending.length : 0);
@@ -199,6 +199,10 @@ const queueStartMailCheck = () => {
 
 													if (emailsAffected !== 0) {
 														await deleteThis(filePathSending);
+													}
+
+													if (sentErr) {
+														log.logger('error', `Disparo de arquivo mal sucedido: ${(sentErr.stack || sentErr)}`, 'mailQueue');
 													}
 
 													log.logger('info', `E-mails disparados na fila - Aceitos: ${sentAccepted} | Rejeitados: ${sentRejected} | Pendentes: ${sentPending}${emailsAffected === 0 ? ' * Favor verificar a pasta sending (arquivo não excluído) *' : ''}`, 'mailQueue');

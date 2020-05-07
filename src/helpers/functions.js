@@ -149,6 +149,22 @@ const writeFile = (fs, file, content, callback) => {
 	});
 };
 
+// Disparo de e-mails, via lib NODEMAILER
+const sendMail = (transporter, content) => {
+	return new Promise((resolve, reject) => {
+		transporter.sendMail(
+			content,
+			(sentErr, sentInfo) => {
+				try {
+					resolve({ sentErr, sentInfo });
+				} catch (err) {
+					reject(err);
+				}
+			}
+		);
+	});
+};
+
 // Verifica caracteres invalidos na criacao de pastas windows
 //	os => sistema operacional: 1: windows
 const removeInvalidFileNameChars = (_param, os = 1) => {
@@ -191,6 +207,7 @@ module.exports = {
 	createNewFolder,
 	readFile,
 	writeFile,
+	sendMail,
 	removeInvalidFileNameChars,
 	generateUniqueId
 };

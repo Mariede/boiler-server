@@ -62,7 +62,7 @@ const schemas = {
 
 /*
 Indices compostos associados na criacao dos esquemas
-	-> ex: [{ key1: 1, key2: -1 }, { ke5: 1, key6: 1, _unique: true }]
+	-> ex: { key1: 1, key2: -1, _unique: true } ou [{ key1: 1, key2: -1 }, { ke5: 1, key6: 1, _unique: true }]
 		 1: Ascendente
 		-1: Descendente
 
@@ -74,6 +74,7 @@ const schemasCompoundIndexes = {
 
 /*
 Opcoes extras associadas na criacao dos esquemas e acopladas as opcoes gerais (em config)
+	-> ex: { bufferCommands: true }
 */
 const schemasExtraOptions = {};
 

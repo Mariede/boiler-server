@@ -88,7 +88,9 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 				{
 					fileFilter: (req, file, callback) => {
 						try {
-							const checkExtensions = [...new Set((configUpload.allowedExtensions || '').split('|').map(
+							const allowedExtensions = String(configUpload.allowedExtensions || '');
+
+							const checkExtensions = [...new Set(allowedExtensions.split('|').map(
 								item => {
 									return item.substr(0, (item.indexOf(':') !== -1 ? item.indexOf(':') : item.length)).trim();
 								}
@@ -98,7 +100,7 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 								}
 							); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
 
-							const checkMimeTypes = [...new Set((configUpload.allowedExtensions || '').split('|').map(
+							const checkMimeTypes = [...new Set(allowedExtensions.split('|').map(
 								item => {
 									return item.substr((item.indexOf(':') !== -1 ? item.indexOf(':') + 1 : '')).trim();
 								}

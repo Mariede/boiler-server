@@ -340,7 +340,7 @@ const mongoDB = {
 				const checkedSchema = mongooseSchemas.schemas[schema];
 
 				if (checkedSchema) {
-					const options = Object.assign(__serverConfig.db.mongoose.configSchema, getExtraOptions(schema));
+					const options = { ...__serverConfig.db.mongoose.configSchema, ...getExtraOptions(schema) };
 					const mySchema = new mongoose.Schema(checkedSchema, options);
 					const compoundIndexes = getCompoundIndexes(schema);
 					const verifiedCompoundIndexes = [];
