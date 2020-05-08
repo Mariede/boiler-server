@@ -119,6 +119,11 @@ npm run build
 ## Lib Functions
   * Com métodos genéricos para acesso global (forEach async, promises ordenadas, generateUniqueId, etc)
 
+## Lib Image
+  * Para manipulação e compressão de imagens
+  * JPEG, PNG, WebP, TIFF, GIF e SVG
+  * SHARP: lib de alta performance
+
 ## Engine de templates para expor arquivos html dinâmicos
   * EJS - Embedded Javascript Templates (semelhante ao asp)
   * Acoplado ao sistema de views do Express
