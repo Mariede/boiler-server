@@ -1,29 +1,37 @@
+// ------------------------------------------------------------------------------
+/* Required modules */
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
 const NodeExternals = require('webpack-node-externals');
 const Path = require('path');
 const WebpackMessages = require('webpack-messages');
+// ------------------------------------------------------------------------------
 
-/* path to source code */
+// ------------------------------------------------------------------------------
+/* Path to source code */
 const shortSourcePath = './src';
 
-/* config.json */
-const configJson =  require(`${shortSourcePath}/config.json`);
-const configJsonCertFolder = `.${((configJson.server && configJson.server.secure && configJson.server.secure.certFolder) || '/cert')}`;
+/* Read config.json */
+const configJsonFile =  require(`${shortSourcePath}/config.json`);
+const certFolder = `.${((configJsonFile.server && configJsonFile.server.secure && configJsonFile.server.secure.certFolder) || '/cert')}`;
 
-/* package.json */
-const packageJsonLocation = './package.json';
-const packageJson = require(packageJsonLocation);
+/* Read package.json */
+const packageJsonFile = './package.json';
+const packageJson = require(packageJsonFile);
 
-const versionPackage = (packageJson.version || '');
-const outputNamePackage = (packageJson.outputName || 'main.js');
+const name = (packageJson.name || '');
+const version = (packageJson.version || '');
+const outputName = (packageJson.outputName || 'main.js');
 
-/* paths */
+/* Final paths */
 const sourcePath = Path.resolve(__dirname, shortSourcePath);
-const destinyPath = Path.resolve(__dirname, `./build${(versionPackage ? '/' + versionPackage : '')}`);
+const destinyPath = Path.resolve(__dirname, `./build${(version ? `/${version}` : '')}`);
+// ------------------------------------------------------------------------------
 
-module.exports = {
+// ------------------------------------------------------------------------------
+/* Build configuration */
+const generateBuild = {
 	target: 'node',
 	mode: 'production', // development para dev | production para prod
 	node: {
@@ -34,7 +42,7 @@ module.exports = {
 		main: (packageJson.main || '')
 	},
 	output: {
-		filename: outputNamePackage,
+		filename: outputName,
 		path: destinyPath
 	},
 	externals: [
@@ -56,7 +64,7 @@ module.exports = {
 	},
 	plugins: [
 		new CleanWebpackPlugin(),
-		new CopyWebpackPlugin (
+		new CopyWebpackPlugin(
 			[
 				{
 					from: Path.resolve(sourcePath, './config.json'), to: Path.resolve(destinyPath, './config.json'), force: true
@@ -65,26 +73,26 @@ module.exports = {
 					from: Path.resolve(sourcePath, './views'), to: Path.resolve(destinyPath, './views'), force: true
 				},
 				{
-					from: Path.resolve(sourcePath, configJsonCertFolder), to: Path.resolve(destinyPath, configJsonCertFolder), force: true
+					from: Path.resolve(sourcePath, certFolder), to: Path.resolve(destinyPath, certFolder), force: true
 				}
 			]
 		),
-		new GeneratePackageJsonPlugin (
+		new GeneratePackageJsonPlugin(
 			{
-				'name': (packageJson.name || ''),
-				'version': versionPackage,
-				'description': (packageJson.description || ''),
-				'main': outputNamePackage,
-				'license': (packageJson.license || ''),
-				'private': true
+				name: name,
+				version: version,
+				description: (packageJson.description || ''),
+				main: outputName,
+				license: (packageJson.license || ''),
+				private: true
 			},
-			packageJsonLocation
+			packageJsonFile
 		),
-		new WebpackMessages (
+		new WebpackMessages(
 			{
-				name: (packageJson.name || ''),
-				logger: str => {
-					console.log(`>> ${str}`);
+				name: name,
+				logger: res => {
+					console.log(`>> ${res}`);
 				}
 			}
 		)
@@ -95,3 +103,6 @@ module.exports = {
 		}
 	}
 };
+// ------------------------------------------------------------------------------
+
+module.exports = generateBuild;

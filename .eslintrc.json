@@ -130,7 +130,7 @@
 			0,
 			"windows"
 		],
-		// "new-cap": 2,
+		"new-cap": 2,
 		"no-array-constructor": 2,
 		"no-async-promise-executor": 2,
 		"no-buffer-constructor": 2,

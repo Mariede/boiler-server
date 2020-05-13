@@ -14,7 +14,7 @@ const http = require('http');
 const https = require('https');
 const proxy = require('http-proxy');
 const session = require('express-session');
-const sessionFileStore = require('session-file-store')(session);
+const SessionStore = require('session-file-store')(session);
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -123,7 +123,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			session(
 				{
 					name: __serverConfig.server.session.cookieName,
-					store: new sessionFileStore(
+					store: new SessionStore(
 						{
 							logFn: err => {
 								log.logger('warn', (err.stack || err));

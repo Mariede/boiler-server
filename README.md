@@ -121,7 +121,7 @@ npm run build
 
 ## Lib Image
   * Para manipulação e compressão de imagens
-  * JPEG, PNG, WebP, TIFF, GIF e SVG
+  * GIF, JPEG, PNG, TIFF, SVG e WebP
   * SHARP: lib de alta performance
 
 ## Engine de templates para expor arquivos html dinâmicos

@@ -58,7 +58,7 @@
 		},
 		"fileUpload": {
 			"path": "/uploads",
-			"allowedExtensions": ".gif:image/gif | .jpeg:image/jpeg | .jpg:image/jpeg | .png:image/png | .pdf:application/pdf | .txt:text/plain | .doc:application/msword | .docx:application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+			"allowedExtensions": ".gif:image/gif | .jpeg:image/jpeg | .jpg:image/jpeg | .png:image/png | .tiff:image/tiff | .svg:image/svg+xml | .webp:image/webp | .pdf:application/pdf | .txt:text/plain | .doc:application/msword | .docx:application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 			"maxFileSize": 5242880
 		},
 		"session": {
