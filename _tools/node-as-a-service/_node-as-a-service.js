@@ -4,7 +4,7 @@
 // Modulos de inicializacao
 const config = require('./config');
 const parseArgs = require('minimist');
-const service = require('node-windows').Service;
+const Service = require('node-windows').Service;
 
 // Constantes globais
 const sOn = 'on';
@@ -30,7 +30,7 @@ const _servicoOnOff = param => {
 		dataService.env = config.env;
 	}
 
-	const svc = new service(
+	const svc = new Service(
 		dataService
 	);
 

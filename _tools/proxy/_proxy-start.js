@@ -15,7 +15,7 @@ const path = require('path');
 const startProxy = () => {
 	return new Promise((resolve, reject) => {
 		// Logs --------------------------------------------------
-		log4js.configure (
+		log4js.configure(
 			{
 				appenders: {
 					consoleAppender: {
@@ -66,7 +66,7 @@ const startProxy = () => {
 		const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, app);
 
 		// Proxy -------------------------------------------------
-		const wsProxy = httpProxy.createProxyServer (
+		const wsProxy = httpProxy.createProxyServer(
 			{
 				secure: false,
 				ws: true
@@ -74,7 +74,7 @@ const startProxy = () => {
 		);
 
 		// Listener para erros de proxy
-		wsProxy.on (
+		wsProxy.on(
 			'error',
 			(err, req, res) => {
 				log4js.getLogger('default').error(err.stack || err);
@@ -83,18 +83,18 @@ const startProxy = () => {
 
 		const serversToProxy = [['/APP1', 'http://localhost:5000', true], ['/APP2', 'http://localhost:5001', false]];
 
-		serversToProxy.forEach (
+		serversToProxy.forEach(
 			serverData => {
 				const path = serverData[0];
 				const origin = serverData[1];
 				const wsOn = serverData[2];
 
-				app.all (
+				app.all(
 					`${path}/*`,
 					(req, res) => {
 						log4js.getLogger('default').info(`Redirecionando para ${path} (${origin})`);
 
-						wsProxy.web (
+						wsProxy.web(
 							req,
 							res,
 							{
@@ -116,12 +116,12 @@ const startProxy = () => {
 				);
 
 				if (wsOn) {
-					_server.on (
+					_server.on(
 						'upgrade',
 						(req, socket, head) => {
 							log4js.getLogger('default').info(`Redirecionando (ws) para ${path} (${origin})`);
 
-							wsProxy.ws (
+							wsProxy.ws(
 								req,
 								socket,
 								head,
@@ -138,14 +138,14 @@ const startProxy = () => {
 		);
 
 		// Rotas -------------------------------------------------
-		app.get (
+		app.get(
 			'/',
 			(req, res) => {
 				res.status(200).send(`Servidor de proxy está rodando em ${pServerCheck.protocolInfo}${listenOptions.host}:${listenOptions.port}...`);
 			}
 		);
 
-		app.all (
+		app.all(
 			'*',
 			(req, res) => {
 				res.status(404).send('Essa rota não existe no servidor de proxy');
@@ -169,7 +169,7 @@ const startProxy = () => {
 // -------------------------------------------------------------------------
 
 startProxy()
-.catch (
+.catch(
 	err => {
 		console.error(err.stack || err);
 	}
