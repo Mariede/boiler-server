@@ -9,11 +9,12 @@
 3) Caminho deve ser salvo como variável de ambiente de sistema no windows (Path).
 
 4) Definir uma pasta específica e criar arquivo de requisição do certificado (configuração):
-	-> pasta específica: security
+	-> A extensão .pem é utilizada para diferentes arquivos tipo X.509v3 (Base64) e começam por “—– BEGIN …”
+	-> pasta: ./PEM
 	-> arquivo de requisição: req.cnf
 
 5) Abrir terminal e navegar até a pasta específica. Executar comando para geração do certificado:
-	-> pasta específica: security
+	-> pasta: ./PEM
 	-> comando: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout cert.key -out cert.pem -config req.cnf -sha256
 
 6) Exemplo:
