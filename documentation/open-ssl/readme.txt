@@ -24,7 +24,13 @@
 	-> chave privada: cert.key
 	-> certificado: cert.pem
 
-8) Certificado exportado pelo navegador Chrome, para importação em Autoridades de Certificação Raíz Confiáveis:
-	-> chromeExportedCert.cer
-	-> identificado como: www.localhost.com
-	-> apenas para Google Chrome
+8) Exportações:
+
+	8.1) Exportar para CER: via navegador Chrome, para importação em Autoridades de Certificação Raíz Confiáveis:
+		-> chromeExportedCert.cer
+		-> identificado como: www.localhost.com
+		-> apenas para Google Chrome
+
+	8.2) Exportar para PFX: openssl pkcs12 -export -inkey ../cert.key -in ../cert.pem -out cert.pfx
+		-> Caminho para cert.key e cert.pem configurável
+		-> Export Password: 123
