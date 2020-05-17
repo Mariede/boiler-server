@@ -15,7 +15,7 @@ const mailTemplate = `${__serverRoot}/views/server-side/pages/_mail-templates/te
 const dataTemplate = await ejs.renderFile(mailTemplate, { tableHeader: 'TABLE HEADER!!' }); // Template dinamico
 const fieldNames = 'files1, files2'; // Nome do campo html que informa a localizacao dos arquivos de upload no form (se mais de um campo, separar por virgula)
 const filePath = 'server/files/path/'; // Caminho onde serao salvos os arquivos de upload no servidor (valido se storageToDisk for true)
-const uploaderResults = await uploader.push(req, res, fieldNames, filePath, 0, true);
+const uploaderResults = await uploader.push(req, res, fieldNames, filePath, true);
 const attachments = email.getAttachments(uploaderResults.files);
 
 return await email.sendEmail(

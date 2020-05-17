@@ -163,6 +163,43 @@ const isPisPasep = _pisPasep => {
 	return vRet;
 };
 
+// Verifica se RENAVAM do veiculo e valido
+const isRenavam = _renavam => {
+	const peso = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+	let renavam = (_renavam || '').toString().replace(/\D/gi, ''),
+		resto = -1,
+		soma = 0,
+		vRet = false;
+
+	// Completa com zeros a esquerda
+	if (renavam.length < 11) {
+		for (let i = 1; i <= 11; i++) {
+			if (renavam.length < 11) {
+				renavam = `0${renavam}`;
+			}
+		}
+	}
+
+	if (!(/^(0{11}|1{11}|2{11}|3{11}|4{11}|5{11}|6{11}|7{11}|8{11}|9{11})$/).test(renavam) && renavam.length <= 11) {
+		for (let i = 1; i < 11; i++) {
+			soma = soma + (parseInt(renavam.substring(i - 1, i), 10) * peso[i - 1]);
+		}
+
+		resto = 11 - (soma % 11);
+
+		if ((resto === 10) || (resto === 11)) {
+			resto = 0;
+		}
+
+		if (resto === parseInt(renavam.substring(10, 11), 10)) {
+			vRet = true;
+		}
+	}
+
+	return vRet;
+};
+
 // Verifica se email e valido
 const isEmail = _email => {
 	const email = (_email || '').toString();
@@ -339,6 +376,7 @@ module.exports = {
 	isCnpj,
 	isCpf,
 	isPisPasep,
+	isRenavam,
 	isEmail,
 	isCep,
 	isEmpty,

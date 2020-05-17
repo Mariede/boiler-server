@@ -179,8 +179,8 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 
 	const messages = [];
 
-	// Testa se algum possivel elemento html no corpo
-	if (/<[a-z][\s\S]*>/i.test(text)) {
+	// Testa possiveis elementos html no corpo
+	if (/<[a-zA-Z!/]{1}[^>]*>/g.test(text)) {
 		message.html = text;
 		message.text = htmlToText.fromString(text, { wordwrap: 80, preserveNewlines: true });
 	} else {

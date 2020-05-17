@@ -106,6 +106,7 @@ npm run build
 ## Lib Uploader
   * Upload de grupos de arquivos com filtros por tamanho, quantidade de arquivos, extensão, MIME types, ...
   * MULTER: Upload direto para memória ou pastas específicas no servidor
+  * Erros personalizados
 
 ## Lib Email + Queue
   * Envio de e-mails, com anexos, direto e/ou por chunks asyncs e/ou enfileirados em pasta no servidor

@@ -20,14 +20,24 @@ Realiza o upload de um ou mais arquivos (POST / enctype: "multipart/form-data")
 	-> fieldNames: campo html que informa a localizacao dos arquivos de upload no form (se mais de um campo, separar por virgula)
 		-> "inputFieldName1, inputFieldName2, inputFieldName3, ..."
 
-	-> extraPath vazio para upload de arquivos direto na pasta default, ou informa pasta(s) extras (default: vazio)
-
-	-> maxFileUploads indica o numero maximo de arquivo permitidos para upload (default: 0 ou ilimitado)
+	-> extraPath vazio para upload de arquivos direto na pasta default, ou informa pasta(s) extras
+		-> default: ''
 
 	-> storageToDisk true para diskStorage | false para memoryStorage (default: true)
-		-> se memoryStorage selecionado, utilizar Buffer.from(req.files[].buffer, 'utf8') para converter valor da memoria
+		-> se memoryStorage selecionado, utilizar Buffer.from(file.buffer).toString('base64') para converter valor da memoria
+
+	-> extensionsFromConfig define um subconjunto customizado de extensoes do config (fileUpload.allowedFiles) que estao permitidas
+		-> default: '' ou todas as extensoes definidas no config estao permitidas
+		-> usar apenas extensoes, como no exemplo: ".gif | .png | .pdf"
+		-> se a extensao informada no parametro nao existir tambem no config, nao funciona
+
+	-> maxFileSize indica o tamanho maximo para upload
+		-> em bytes, default 524288 (500KB)
+
+	-> maxFileUploads indica o numero maximo de arquivo permitidos para upload
+		-> default: 0 ou ilimitado
 */
-const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, storageToDisk = true) => {
+const push = async (req, res, fieldNames, extraPath = '', storageToDisk = true, extensionsFromConfig = '', maxFileSize = 524288, maxFileUploads = 0) => {
 	const uploadFiles = formattedFieldNames => {
 		return new Promise((resolve, reject) => {
 			const diskStorage = multer.diskStorage(
@@ -88,36 +98,66 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 				{
 					fileFilter: (req, file, callback) => {
 						try {
-							const allowedExtensions = String(configUpload.allowedExtensions || '');
-
-							const checkExtensions = [...new Set(allowedExtensions.split('|').map(
+							const allowedFiles = String(configUpload.allowedFiles || '').split('|').map(
 								item => {
-									return item.substr(0, (item.indexOf(':') !== -1 ? item.indexOf(':') : item.length)).trim();
-								}
-							))].filter(
-								item => {
-									return item !== '';
-								}
-							); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
+									const separator = item.indexOf(':');
+									const extension = item.substr(0, (separator !== -1 ? separator : item.length)).trim().toLowerCase();
+									const mimeType = item.substr((separator !== -1 ? separator + 1 : '')).trim().toLowerCase();
 
-							const checkMimeTypes = [...new Set(allowedExtensions.split('|').map(
-								item => {
-									return item.substr((item.indexOf(':') !== -1 ? item.indexOf(':') + 1 : '')).trim();
-								}
-							))].filter(
-								item => {
-									return item !== '';
-								}
-							); // O new Set para valores unicos e nao vazios (remove duplicados), assim podemos repetir extensoes para eventuais novos MIME Types
+									const acceptItem = (
+										extensionsFromConfig ? (
+											extensionsFromConfig.split('|').some(
+												extensionFromConfig => {
+													return (extensionFromConfig.trim().toLowerCase() === extension);
+												}
+											)
+										) : (
+											true
+										)
+									);
 
-							const extName = new RegExp(`^(${checkExtensions.join('|')}){1}$`, 'i').test(path.extname(file.originalname).toLowerCase());
-							const mimeType = new RegExp(`^(${checkMimeTypes.join('|')}){1}$`, 'i').test(file.mimetype);
+									return (acceptItem ? { extension, mimeType } : { extension: '', mimeType: '' });
+								}
+							);
 
-							if (extName && mimeType) {
+							// O new Set remove duplicados, assim podemos repetir extensoes para eventuais novos MIME Types
+							const allowedExtensions = [...new Set(allowedFiles.map(
+								obj => {
+									return obj.extension;
+								}
+							))]
+							.filter(
+								item => {
+									return (
+										item !== ''
+									);
+								}
+							);
+
+							// O new Set remove duplicados, assim podemos repetir extensoes para eventuais novos MIME Types
+							const allowedMimeTypes = [...new Set(allowedFiles.map(
+								obj => {
+									return obj.mimeType;
+								}
+							))]
+							.filter(
+								item => {
+									return (
+										item !== ''
+									);
+								}
+							);
+
+							const fileExtension = path.extname(file.originalname).toLowerCase();
+							const fileMimetype = file.mimetype.toLowerCase();
+							const checkedExtension = new RegExp(`^(${allowedExtensions.join('|')}){1}$`, 'i').test(fileExtension);
+							const checkedMimeType = new RegExp(`^(${allowedMimeTypes.join('|')}){1}$`, 'i').test(fileMimetype);
+
+							if (checkedExtension && checkedMimeType) {
 								callback(null, true);
 							} else {
 								callback(
-									errWrapper.throwThis('UPLOADER', 400, `Upload de arquivos apenas suporta as seguintes extensões - ${checkExtensions.join(', ')} com seus respectivos MIME Types - ${checkMimeTypes.join(', ')}...`)
+									errWrapper.throwThis('UPLOADER', 400, `Upload de arquivos suporta apenas as seguintes extensões - ${allowedExtensions.join(', ')} com seus respectivos MIME Types - ${allowedMimeTypes.join(', ')}...`)
 								);
 							}
 						} catch (err) {
@@ -125,7 +165,7 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 						}
 					},
 					limits: {
-						fileSize: (configUpload.maxFileSize || Infinity),
+						fileSize: (maxFileSize || Infinity),
 						files: (maxFileUploads || Infinity)
 					},
 					storage: (storageToDisk ? diskStorage : multer.memoryStorage())
@@ -154,6 +194,34 @@ const push = async (req, res, fieldNames, extraPath = '', maxFileUploads = 0, st
 				};
 
 				if (err) {
+					if (err instanceof multer.MulterError) {
+						if (err.name) {
+							err.name = 'UPLOADER';
+						}
+
+						// Erros do multer personalizados
+						switch (err.code) {
+							case 'LIMIT_FILE_COUNT': {
+								err.code = 400;
+
+								if (err.message) {
+									err.message = `Muitos arquivos para upload - a quantidade máxima permitida para upload é de ${maxFileUploads + (maxFileUploads === 1 ? ' arquivo' : ' arquivos')}...`;
+								}
+
+								break;
+							}
+							case 'LIMIT_FILE_SIZE' : {
+								err.code = 400;
+
+								if (err.message) {
+									err.message = `Um ou mais arquivos estão muito estão grandes - o tamanho máximo de um arquivo para upload é de ${parseInt(maxFileSize / 1024, 10)} KB...`;
+								}
+
+								break;
+							}
+						}
+					}
+
 					reject(err);
 				} else {
 					resolve({ body: { ...req.body }, files: filesToArray({ originalFiles: { ...req.files } }) });

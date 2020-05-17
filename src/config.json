@@ -58,8 +58,7 @@
 		},
 		"fileUpload": {
 			"path": "/uploads",
-			"allowedExtensions": ".gif:image/gif | .jpeg:image/jpeg | .jpg:image/jpeg | .png:image/png | .tiff:image/tiff | .svg:image/svg+xml | .webp:image/webp | .pdf:application/pdf | .txt:text/plain | .doc:application/msword | .docx:application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-			"maxFileSize": 5242880
+			"allowedFiles": ".gif:image/gif | .jpeg:image/jpeg | .jpg:image/jpeg | .png:image/png | .tiff:image/tiff | .svg:image/svg+xml | .webp:image/webp | .pdf:application/pdf | .txt:text/plain | .doc:application/msword | .docx:application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 		},
 		"session": {
 			"secret": [
@@ -76,7 +75,7 @@
 		"_comments3": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
 		"_comments4": "se o servidor estiver ativo via PROXY, valor definido em routePrefix deve ser anexado no inicio de virtualPath (pathVirtualStaticFiles) e tambem em path (socketIo) - para o ultimo caso como garantia se a lib socket.io utilizar o protocolo pooling ao inves de websockets",
 		"_comments5": "maxAge em pathVirtualStaticFiles em minutos",
-		"_comments6": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada, fileUpload: maxFileSize em bytes, session: timeout em minutos"
+		"_comments6": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada, session: timeout em minutos"
 	},
 	"auth": {
 		"sessWrapper": "userData",
