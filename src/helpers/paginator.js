@@ -145,28 +145,24 @@ const keysToCamelCase = jsonData => {
 
 // Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordenador)
 const setSort = (req, jsonData, toCamelCase = false) => {
-	const method = req.method;
 	const sortElements = [];
 	const sortOrder = [];
+	const sortCaseInsensitive = /^(true|yes|y|sim|s){0,1}$/i.test(req.query.sort_case_insensitive);
 
-	let sortCaseInsensitive = false;
+	if (req.query.sort_fields) {
+		req.query.sort_fields.split(/[,|]/).forEach(
+			e => {
+				const sortField = e.split(/[:]/);
 
-	if (method.toUpperCase() === 'GET') {
-		if (req.query.sort_fields) {
-			req.query.sort_fields.split(/[,|]/).forEach(
-				e => {
-					const sortField = e.split(/[:]/);
-
-					if (sortField[0]) {
-						sortElements.push(sortField[0]);
-						sortOrder.push((sortField[1] || ''));
-					}
+				if (sortField[0]) {
+					sortElements.push(sortField[0]);
+					sortOrder.push((sortField[1] || ''));
 				}
-			);
+			}
+		);
+	}
 
-			sortCaseInsensitive = /^(true|yes|y|sim|s){0,1}$/i.test(req.query.sort_case_insensitive);
-		}
-	} else {
+	if (req.method.toUpperCase() !== 'GET') {
 		errWrapper.throwThis('ORDENAÇÃO (SORTER)', 400, 'Favor utilizar verbo GET para realizar a ordenação...');
 	}
 
@@ -178,25 +174,23 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao (pagina
 	-> page na querystring e obrigatorio para a paginacao
 */
 const setPage = (req, jsonData, jsonDataLen, toCamelCase = false) => {
-	const method = req.method;
-
 	let currentPage = 0,
 		itemsPerPage = 10;
 
-	if (method.toUpperCase() === 'GET') {
-		if (/^(\d)+$/.test(req.query.page)) {
-			currentPage = parseInt(req.query.page, 10);
-		}
+	if (/^(\d)+$/.test(req.query.page)) {
+		currentPage = parseInt(req.query.page, 10);
+	}
 
-		if (/^(\d)+$/.test(req.query.items_per_page)) {
-			itemsPerPage = parseInt(req.query.items_per_page, 10);
-		}
-	} else {
-		errWrapper.throwThis('PAGINAÇÃO (PAGINATOR)', 400, 'Favor utilizar verbo GET para realizar a consulta...');
+	if (/^(\d)+$/.test(req.query.items_per_page)) {
+		itemsPerPage = parseInt(req.query.items_per_page, 10);
 	}
 
 	if (toCamelCase && jsonData.recordset) {
 		jsonData.recordset = keysToCamelCase(jsonData.recordset);
+	}
+
+	if (req.method.toUpperCase() !== 'GET') {
+		errWrapper.throwThis('PAGINAÇÃO (PAGINATOR)', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 	}
 
 	if (currentPage && jsonData.recordset) {

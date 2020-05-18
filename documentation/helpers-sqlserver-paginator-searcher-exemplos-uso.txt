@@ -274,14 +274,21 @@ const searcher = require('@serverRoot/helpers/searcher');
 
 const replaceQuery = '{{REPLACE}}';
 const baseQuery = `
-	select top 10
-		*
-	from
-		usuario a (nolock)
-		inner join tipo b (nolock)
-			on (a.id_tipo = b.id_tipo)
-	where
-		a.nome like('%jo%')
+	SELECT
+		a.ID_USUARIO
+		,a.ID_TIPO
+		,a.NOME
+		,a.EMAIL
+		,a.SENHA
+		,a.SALT
+		,a.ATIVO
+		,b.TIPO
+	FROM
+		USUARIO a (NOLOCK)
+		INNER JOIN TIPO b (NOLOCK)
+			on (a.ID_TIPO = b.ID_TIPO)
+	WHERE
+		a.NOME LIKE ('%jo%')
 		${replaceQuery}
 `;
 
@@ -312,14 +319,21 @@ const searcher = require('@serverRoot/helpers/searcher');
 
 const replaceQuery = '{{REPLACE}}';
 const baseQuery = `
-	select top 10
-		*
-	from
-		usuario a (nolock)
-		inner join tipo b (nolock)
-			on (a.id_tipo = b.id_tipo)
-	where
-		a.nome like('%jo%')
+	SELECT
+		a.ID_USUARIO
+		,a.ID_TIPO
+		,a.NOME
+		,a.EMAIL
+		,a.SENHA
+		,a.SALT
+		,a.ATIVO
+		,b.TIPO
+	FROM
+		USUARIO a (NOLOCK)
+		INNER JOIN TIPO b (NOLOCK)
+			on (a.ID_TIPO = b.ID_TIPO)
+	WHERE
+		a.NOME LIKE ('%jo%')
 		${replaceQuery}
 `;
 
@@ -352,12 +366,19 @@ const searcher = require('@serverRoot/helpers/searcher');
 
 const replaceQuery = '{{REPLACE}}';
 const baseQuery = `
-	select top 10
-		*
-	from
-		usuario a (nolock)
-		inner join tipo b (nolock)
-			on (a.id_tipo = b.id_tipo)
+	SELECT
+		a.ID_USUARIO
+		,a.ID_TIPO
+		,a.NOME
+		,a.EMAIL
+		,a.SENHA
+		,a.SALT
+		,a.ATIVO
+		,b.TIPO
+	FROM
+		USUARIO a (NOLOCK)
+		INNER JOIN TIPO b (NOLOCK)
+			on (a.ID_TIPO = b.ID_TIPO)
 	${replaceQuery}
 `;
 

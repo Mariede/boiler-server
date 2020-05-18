@@ -20,6 +20,7 @@ npm run build
   * body parser
   * cookie parser
   * compression
+  * Headers de segurança
   * Pastas de arquivo estáticos (imagens, css ...)
   * Permite aplicações RESTFUL
   * Permite APIs de terceiros
@@ -92,10 +93,12 @@ npm run build
   * Configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
   * "Sort" inteligente, levando em conta a "collation" nas ordenações
   * Conversão configurável para "lowerCamelCase" do json (recordset de retorno)
+  * Requisição via query params - page, items_per_page, sort_fields, sort_case_insensitive
 
 ## Lib Searcher
   * Facilita as consultas em geral com algorítmo unificado de pesquisa em múltiplas colunas
   * Apenas para MS SQL Server
+  * Requisição via query params - fullsearch_fields, fullsearch_value
 
 ## Lib Validator
   * Com os métodos de validação de entradas mais comuns (cpf, alfanumérico, e-mail), personalizável via regex

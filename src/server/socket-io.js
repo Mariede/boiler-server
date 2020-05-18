@@ -38,7 +38,7 @@ const startIo = cert => {
 		};
 
 		const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, (req, res) => {
-			if (req.method === 'GET') {
+			if (req.method.toUpperCase() === 'GET') {
 				if (req.url !== '/favicon.ico') {
 					res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
 					res.write(`Servidor socket.io está rodando em ${pServerCheck.protocolInfo}${ios.httpServer.address().address}:${ios.httpServer.address().port}...`);

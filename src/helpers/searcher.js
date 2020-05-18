@@ -50,9 +50,10 @@ const _camelCaseToSnakeCase = searchFields => {
 Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final (metodo privado)
 	-> se WHERE for definido na query, deve conter uma condição ANTES do replace
 */
-const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => {
+const _executeSearch = (baseQuery, targetReplace, _searchFields, searchValue) => {
 	return new Promise((resolve, reject) => {
-		const queryWhere = baseQuery.search(/where[ \t\n]/i);
+		const searchFields = [..._camelCaseToSnakeCase(_searchFields)];
+		const queryWhere = baseQuery.search(/[ \t\n]{1}where[ \t\n]{1}/i);
 
 		const searchQuery = {
 			formato: 1,
@@ -63,10 +64,10 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 
 		let queryReplace = '';
 
-		if (searchFields.length > 0) {
+		if (searchFields.length > 0 && searchValue) {
 			searchFields.forEach(
 				(e, i) => {
-					searchQuery.dados.input[i] = [e, `%${searchValue}%`];
+					searchQuery.dados.input[i] = [e, 'varchar', `%${searchValue}%`];
 
 					if (queryWhere !== -1 || i !== 0) {
 						if (i !== 0) {
@@ -104,39 +105,27 @@ const _executeSearch = (baseQuery, targetReplace, searchFields, searchValue) => 
 /*
 Chamada inicial, verifica os dados de entrada do cliente, executa a acao
 
-	** setSearch so funciona com MS SQL Server **
+	=> setSearch so funciona com MS SQL Server
+	=> Algoritmo sempre espera que as colunas no banco de dados estejam em SNAKE_CASE
+	=> fullsearch_fields e fullsearch_value: parametros querystring esperados
 */
 const setSearch = async (req, baseQuery, targetReplace) => {
-	const falsyCheck = param => {
-		const falsy = [null, undefined, NaN]; // Excecao => 0 / false / ""
-		return (falsy.includes(param) ? '' : ((param === 0 || param === false) ? param.toString() : (param || '').toString()));
-	};
-
-	const method = req.method;
 	const searchFields = [];
-	const _searchFields = [];
+	const searchValue = (req.query.fullsearch_value || '');
 
-	let searchValue = '';
+	if (req.query.fullsearch_fields) {
+		req.query.fullsearch_fields.split(/[,|]/).forEach(
+			e => {
+				searchFields.push(e.trim());
+			}
+		);
+	}
 
-	if (method.toUpperCase() === 'GET') {
-		if (req.query.fullsearch_fields) {
-			req.query.fullsearch_fields.split(/[,|]/).forEach(
-				e => {
-					searchFields.push(e.trim());
-				}
-			);
-		}
-
-		if (Array.isArray(searchFields) && searchFields.length > 0) {
-			searchValue += falsyCheck(req.query.fullsearch_value);
-		}
-	} else {
+	if (req.method.toUpperCase() !== 'GET') {
 		errWrapper.throwThis('SEARCHER', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 	}
 
-	_searchFields.push(..._camelCaseToSnakeCase(searchFields));
-
-	return await _executeSearch(baseQuery, targetReplace, _searchFields, searchValue);
+	return await _executeSearch(baseQuery, targetReplace, searchFields, searchValue);
 };
 // -------------------------------------------------------------------------
 

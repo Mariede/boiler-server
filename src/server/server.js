@@ -94,12 +94,14 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		// -------------------------------------------------------------------------
 		// Middleware
 
-		// Headers (seguranca) -----------------------------------------------------
+		// Security Headers --------------------------------------------------------
 		app.disable('x-powered-by'); // Desabilita header x-powered-by (hidepoweredby)
 
 		app.use(
 			(req, res, next) => {
 				res.set('X-Content-Type-Options', 'nosniff'); // Browser sniffing mime types (nosniff)
+				res.set('X-DNS-Prefetch-Control', 'off'); // Blocks prefetching DNS requests
+				res.set('X-Download-Options', 'noopen'); // Blocks old versions of ie from executing malicious downloads
 				res.set('X-XSS-Protection', '1; mode=block'); // Cross Site Scripting (xssfilter)
 				next();
 			}
@@ -200,6 +202,20 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		app.engine(
 			'ejs',
 			ejs.__express
+		);
+
+		// Middleware de seguranca - parametros querystring ------------------------
+		app.use(
+			(req, res, next) => {
+				Object.entries(req.query).forEach(
+					([qKey, qValue]) => {
+						if (typeof qValue !== 'string') {
+							req.query[qKey] = '';
+						}
+					}
+				);
+				next();
+			}
 		);
 
 		// Rotas -------------------------------------------------------------------

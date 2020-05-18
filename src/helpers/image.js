@@ -23,7 +23,6 @@ Comprime uma imagem de acordo com as opcoes
 */
 const compress = (_input, _maxWidth = 0, _qualityLevel = 9) => {
 	return new Promise((resolve, reject) => {
-		const qualityLevel = (/^[1-9]{1}$/.test(_qualityLevel) ? parseFloat(_qualityLevel) : 9) / 10;
 		const iMaxWidth = parseFloat(_maxWidth);
 		const maxWidth = (isNaN(iMaxWidth) ? 0 : Math.round(iMaxWidth));
 		const input = (
@@ -41,6 +40,7 @@ const compress = (_input, _maxWidth = 0, _qualityLevel = 9) => {
 				sharp(_input)
 			)
 		);
+		const qualityLevel = (/^[1-9]{1}$/.test(_qualityLevel) ? parseInt(_qualityLevel, 10) : 9) / 10;
 
 		// Para jpeg comprimido
 		input

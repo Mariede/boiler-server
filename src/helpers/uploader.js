@@ -257,9 +257,8 @@ const push = async (req, res, fieldNames, extraPath = '', storageToDisk = true, 
 	};
 
 	const configUpload = __serverConfig.server.fileUpload;
-	const method = req.method;
 
-	if (method.toUpperCase() !== 'POST') {
+	if (req.method.toUpperCase() !== 'POST') {
 		errWrapper.throwThis('UPLOADER', 400, 'Favor utilizar verbo POST para realizar o upload dos arquivos...');
 	}
 
