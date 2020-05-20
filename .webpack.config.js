@@ -65,17 +65,19 @@ const generateBuild = {
 	plugins: [
 		new CleanWebpackPlugin(),
 		new CopyWebpackPlugin(
-			[
-				{
-					from: Path.resolve(sourcePath, './config.json'), to: Path.resolve(destinyPath, './config.json'), force: true
-				},
-				{
-					from: Path.resolve(sourcePath, './views'), to: Path.resolve(destinyPath, './views'), force: true
-				},
-				{
-					from: Path.resolve(sourcePath, certFolder), to: Path.resolve(destinyPath, certFolder), force: true
-				}
-			]
+			{
+				patterns: [
+					{
+						from: Path.resolve(sourcePath, './config.json'), to: Path.resolve(destinyPath, './config.json'), force: true
+					},
+					{
+						from: Path.resolve(sourcePath, './views'), to: Path.resolve(destinyPath, './views'), force: true
+					},
+					{
+						from: Path.resolve(sourcePath, certFolder), to: Path.resolve(destinyPath, certFolder), force: true
+					}
+				]
+			}
 		),
 		new GeneratePackageJsonPlugin(
 			{
