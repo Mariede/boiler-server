@@ -5,18 +5,33 @@ Conexão e execução de queries no MS SQL Server através do pacote NODE mssql
 
 
 // ---------------------------------------------------------------------------------------------------------
-// Recordsets - padrão de retorno:
+Recordsets - padrão de retorno ao front-end:
 
-Não paginado (Lib MSSQL / Searcher):
+1) Não paginado (Lib MSSQL / Searcher):
+
+- Apenas um recordset de retorno (direto ou com paginator.setResult):
 {
 	"recordset": [],
-	"output": {},
-	"rowsAffected": [
-		0
-	]
+	"rowsAffected": 0,
+	"output": {}, // Se existir
+	"returnValue": 0 // Se existir
 }
 
-Paginado (default):
+- Mais de um recordset de retorno (direto):
+{
+	"recordsets": [
+		[],
+		[]
+	],
+	"rowsAffected": [
+		0,
+		0
+	],
+	"output": {}, // Se existir
+	"returnValue": 0 // Se existir
+}
+
+2) Paginado (com paginator.setPage):
 {
 	"pageDetails": {
 		"currentPage": 1,
@@ -27,10 +42,9 @@ Paginado (default):
 		"totalPages": 0
 	},
 	"recordset": [],
-	"output": {},
-	"rowsAffected": [
-		0
-	]
+	"rowsAffected": 0,
+	"output": {}, // Se existir
+	"returnValue": 0 // Se existir
 }
 // ---------------------------------------------------------------------------------------------------------
 
@@ -154,15 +168,13 @@ const anotherQuery = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamadas nos métodos (exemplos)
-
-// Execute (async await)
+// Chamadas nos métodos especificando a transação
 const dbCon = require('@serverRoot/helpers/db');
 
 const query = {
@@ -176,8 +188,7 @@ const query = {
 };
 
 const transaction = await dbCon.msSqlServer.sqlOpenCon();
-
-const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
+const resultSet = await dbCon.msSqlServer.sqlExecute(transaction, query); // Executa query ou queries
 
 await dbCon.msSqlServer.sqlCloseCon(transaction);
 
@@ -185,7 +196,7 @@ return resultSet;
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// ou com o método agrupador ExecuteAll (async await)
+// ou com o método agrupador ExecuteAll (transação toda ocorre dentro de dados.executar)
 const dbCon = require('@serverRoot/helpers/db');
 
 const query = {
@@ -194,18 +205,43 @@ const query = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 
 // Executa query ou queries
-const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 return resultSet;
 // ---------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------
-// Chamada com PAGINAÇÃO
+// Chamada com setResult - SEM PAGINAÇÃO (util apenas quando resultSet de retorno vem com recordsets ao inves de recordset)
+const dbCon = require('@serverRoot/helpers/db');
+const paginator = require('@serverRoot/helpers/paginator');
+
+const query = {
+	formato: 2,
+	dados: {
+		input: [
+			['id_Usuario', 'int', 1],
+			['nome', 'varchar(200)', 'jo']
+		],
+		output: [
+			['QTD_RET', 'int']
+		],
+		executar: 'USUARIO_CONSULTAR'
+	}
+};
+
+const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+const noPagedResult = paginator.setResult(resultSet, resultSet.recordsets[0], resultSet.rowsAffected[0], true); // Recordset selecionado
+
+return noPagedResult;
+// ---------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------------------------------------
+// Chamada com setPage - PAGINAÇÃO (util quando resultSet de retorno vem com recordset ou recordsets)
 const dbCon = require('@serverRoot/helpers/db');
 const paginator = require('@serverRoot/helpers/paginator');
 
@@ -220,10 +256,8 @@ const query = {
 };
 
 // Executa query ou queries
-const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
-
-// Paginador (page)
-const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0], true);
+const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected, true); // Paginador
 
 return pagedResultSet;
 // ---------------------------------------------------------------------------------------------------------
@@ -244,21 +278,18 @@ const query = {
 };
 
 // Executa query ou queries
-const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-// Ordenador (sort)
-resultSet.recordset = paginator.setSort(req, resultSet.recordset, true);
-
-// Paginador (page)
-const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
+resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
+const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
 
 return pagedResultSet;
 
 /*
 	* Apenas UM toCamelCase é necessário em todas as chamadas
-		=> parâmetro toCamelCase existe em ambos os métodos setSort e em setPage da lib paginator
+		=> parâmetro toCamelCase existe nos métodos setSort, setPage e setResult da lib paginator
 
-	* se toCamelCase = true no setSort:
+	* se toCamelCase = true no setSort (ou antes da chamada setSort):
 		=> utilizar camelCase exato (case sensitive) para identificar as chaves de sort no Json
 		=> é o caso do exemplo
 
@@ -293,7 +324,7 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-const { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+const resultSet = await searcher.setSearch(
 	req,
 	baseQuery,
 	replaceQuery
@@ -338,13 +369,13 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-const { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+const resultSet = await searcher.setSearch(
 	req,
 	baseQuery,
 	replaceQuery
 );
 
-resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset);
+resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
 
 return resultSet;
 
@@ -383,17 +414,14 @@ const baseQuery = `
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
-const { recordsets: recordSets, ...resultSet } = await searcher.setSearch(
+const resultSet = await searcher.setSearch(
 	req,
 	baseQuery,
 	replaceQuery
 );
 
-// Ordenador (sort)
-resultSet.recordset = paginator.setSort(req, resultSet.recordset, true);
-
-// Paginador (page)
-const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0]);
+resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
+const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
 
 return pagedResultSet;
 
@@ -408,9 +436,9 @@ return pagedResultSet;
 
 /*
 	* Apenas UM toCamelCase é necessário em todas as chamadas
-		=> parâmetro toCamelCase existe em ambos os métodos setSort e em setPage da lib paginator
+		=> parâmetro toCamelCase existe nos métodos setSort, setPage e setResult da lib paginator
 
-	* se toCamelCase = true no setSort:
+	* se toCamelCase = true no setSort (ou antes da chamada setSort):
 		=> utilizar camelCase exato (case sensitive) para identificar as chaves de sort no Json
 		=> é o caso do exemplo
 
@@ -448,11 +476,10 @@ const consultarTodos = async (req, res) => {
 		}
 	};
 
-	const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 	resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
-
-	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
+	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
 
 	return pagedResultSet;
 };
@@ -467,46 +494,43 @@ const paginator = require('@serverRoot/helpers/paginator');
 const validator = require('@serverRoot/helpers/validator');
 
 const consultar = async (req, res) => {
+	// Parametros de entrada
 	const idUsuario = req.params.id;
 
-	let checkedResultSet = {};
-
-	if (validator.isInteger(idUsuario, false)) {
-		const query = {
-			formato: 1,
-			dados: {
-				input: [
-					['idUsuario', 'int', idUsuario]
-				],
-				executar: `
-					SELECT
-						A.ID_USUARIO
-						,A.ID_TIPO
-						,A.NOME
-						,A.EMAIL
-						,A.SENHA
-						,A.SALT
-						,A.ATIVO
-						,B.TIPO
-					FROM
-						USUARIO A (NOLOCK)
-						INNER JOIN TIPO B (NOLOCK)
-							ON (A.ID_TIPO = B.ID_TIPO)
-					WHERE
-						A.ID_USUARIO = @idUsuario;
-				`
-			}
-		};
-
-		const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
-
-		resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
-
-		checkedResultSet = resultSet;
-	} else {
+	// Validacoes entrada
+	if (!validator.isInteger(idUsuario, false)) {
 		errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	return checkedResultSet;
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['idUsuario', 'int', idUsuario]
+			],
+			executar: `
+				SELECT
+					A.ID_USUARIO
+					,A.ID_TIPO
+					,A.NOME
+					,A.EMAIL
+					,A.SENHA
+					,A.SALT
+					,A.ATIVO
+					,B.TIPO
+				FROM
+					USUARIO A (NOLOCK)
+					INNER JOIN TIPO B (NOLOCK)
+						ON (A.ID_TIPO = B.ID_TIPO)
+				WHERE
+					A.ID_USUARIO = @idUsuario;
+			`
+		}
+	};
+
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+	resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
+
+	return resultSet;
 };
 // ---------------------------------------------------------------------------------------------------------

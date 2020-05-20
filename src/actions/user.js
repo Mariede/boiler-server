@@ -37,57 +37,53 @@ const consultarTodos = async (req, res) => {
 		}
 	};
 
-	const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 	resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
-
-	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.rowsAffected[0]); // Paginador
+	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
 
 	return pagedResultSet;
 };
 
 const consultar = async (req, res) => {
+	// Parametros de entrada
 	const idUsuario = req.params.id;
 
-	let checkedResultSet = {};
-
-	if (validator.isInteger(idUsuario, false)) {
-		const query = {
-			formato: 1,
-			dados: {
-				input: [
-					['idUsuario', 'int', idUsuario]
-				],
-				executar: `
-					SELECT
-						A.ID_USUARIO
-						,A.ID_TIPO
-						,A.NOME
-						,A.EMAIL
-						,A.SENHA
-						,A.SALT
-						,A.ATIVO
-						,B.TIPO
-					FROM
-						USUARIO A (NOLOCK)
-						INNER JOIN TIPO B (NOLOCK)
-							ON (A.ID_TIPO = B.ID_TIPO)
-					WHERE
-						A.ID_USUARIO = @idUsuario;
-				`
-			}
-		};
-
-		const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
-
-		resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
-
-		checkedResultSet = resultSet;
-	} else {
+	// Validacoes entrada
+	if (!validator.isInteger(idUsuario, false)) {
 		errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	return checkedResultSet;
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['idUsuario', 'int', idUsuario]
+			],
+			executar: `
+				SELECT
+					A.ID_USUARIO
+					,A.ID_TIPO
+					,A.NOME
+					,A.EMAIL
+					,A.SENHA
+					,A.SALT
+					,A.ATIVO
+					,B.TIPO
+				FROM
+					USUARIO A (NOLOCK)
+					INNER JOIN TIPO B (NOLOCK)
+						ON (A.ID_TIPO = B.ID_TIPO)
+				WHERE
+					A.ID_USUARIO = @idUsuario;
+			`
+		}
+	};
+
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+	resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
+
+	return resultSet;
 };
 
 const inserir = (req, res) => {

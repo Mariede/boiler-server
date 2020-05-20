@@ -25,9 +25,11 @@ const logon = async (req, res) => {
 	if (Object.prototype.hasOwnProperty.call(sess, sessWraper)) {
 		errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
 	} else {
+		// Parametros de entrada
 		const login = req.body.login;
 		const pass = req.body.pass;
 
+		// Validacoes entrada
 		if (!validator.isEmpty(login)) {
 			if (!validator.isEmpty(pass)) {
 				const query = {
@@ -54,8 +56,8 @@ const logon = async (req, res) => {
 					}
 				};
 
-				const { recordsets: recordSets, ...resultSet } = await dbCon.msSqlServer.sqlExecuteAll(query);
-				const dataUser = resultSet && resultSet.rowsAffected[0] === 1 && resultSet.recordset[0];
+				const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+				const dataUser = resultSet && resultSet.rowsAffected === 1 && resultSet.recordset[0];
 				const passCheck = (dataUser ? cryptoHash.hash(pass, dataUser.SALT) : null);
 
 				if (passCheck && (passCheck.passHash === dataUser.SENHA)) {

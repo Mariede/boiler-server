@@ -86,8 +86,10 @@ npm run build
 ## Lib de acesso a bancos de dados
   * Parametrizável para MS SQL Server
     - Transacional, acesso a múltiplas queries e stored procedures, agrupadas ou desmembradas, variáveis de output, etc
+    - Saída formatada
   * Parametrizável para MongoDB
     - Transacional, via esquemas Mongoose, índices compostos por esquemas, opções extras por esquemas, noSql, etc
+    - Saída formatada
 
 ## Lib Paginator com paginador e ordenador
   * Configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc

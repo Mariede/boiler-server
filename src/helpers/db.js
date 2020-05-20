@@ -226,10 +226,36 @@ const msSqlServer = {
 					}
 				};
 
+				const sqlFormattedResult = result => {
+					const formattedResult = {};
+
+					if (result.rowsAffected.length === 1 && result.recordsets.length === 1) {
+						formattedResult.recordset = result.recordsets[0];
+						formattedResult.rowsAffected = result.rowsAffected[0];
+					} else {
+						formattedResult.recordsets = result.recordsets;
+						formattedResult.rowsAffected = result.rowsAffected;
+					}
+
+					// Output values, se existirem
+					if (typeof result.output === 'object' && Object.keys(result.output).length) {
+						formattedResult.output = result.output;
+					}
+
+					// Return value, se existir
+					if (result.returnValue) {
+						formattedResult.returnValue = result.returnValue;
+					}
+
+					return formattedResult;
+				};
+
 				sqlAction(request, params)
 				.then(
 					res => {
-						resolve(res);
+						resolve(
+							sqlFormattedResult(res)
+						);
 					}
 				)
 				.catch(

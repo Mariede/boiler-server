@@ -12,7 +12,7 @@ const errWrapper = require('@serverRoot/helpers/err-wrapper');
 
 // -------------------------------------------------------------------------
 /*
-Ordenador (sort): sortElements deve ser uma array e case sensitive para as chaves (metodo privado)
+Ordenador: sortElements deve ser uma array e case sensitive para as chaves (metodo privado)
 	-> sortOrder Array ASC/DESC (default: ASC)
 	-> sortCaseInsensitive true/false
 */
@@ -52,8 +52,11 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 	return newData;
 };
 
-// Paginador (page): pagina currentPage / itemsPerPage, retorno => pageDetails, recordset, output, rowsAffected (metodo privado)
-const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output = {}) => {
+/*
+Paginador: currentPage / itemsPerPage (metodo privado)
+	-> Retorna pageDetails, recordset, rowsAffected, output, returnValue
+*/
+const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output, returnValue) => {
 	const backPage = currentPage - 1;
 	const _iFrom = (backPage * itemsPerPage) + 1;
 	const _iTo = currentPage * itemsPerPage;
@@ -72,14 +75,24 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output =
 			return (i >= indexSearchStart && i < indexSearchStop);
 		}
 	);
-	const rowsAffected = [recordSet.length];
+	const rowsAffected = recordSet.length;
+	const result = { pageDetails: pageDetails, recordset: recordSet, rowsAffected: rowsAffected };
 
-	return (
-		{ pageDetails: pageDetails, recordset: recordSet, output: output, rowsAffected: rowsAffected }
-	);
+	if (typeof output === 'object' && Object.keys(output).length) {
+		result.output = output;
+	}
+
+	if (returnValue) {
+		result.returnValue = returnValue;
+	}
+
+	return result;
 };
 
-// Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
+/*
+Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
+	-> Realiza conversão profunda nas sub chaves (deep)
+*/
 const keysToCamelCase = jsonData => {
 	const convertKeys = (cKey, cValue, nDocument) => {
 		const transformP = p => {
@@ -173,7 +186,7 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 Chamada inicial, verifica os dados de entrada do cliente, executa a acao (paginador)
 	-> page na querystring e obrigatorio para a paginacao
 */
-const setPage = (req, jsonData, jsonDataLen, toCamelCase = false) => {
+const setPage = (req, jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) => {
 	let currentPage = 0,
 		itemsPerPage = 10;
 
@@ -185,24 +198,35 @@ const setPage = (req, jsonData, jsonDataLen, toCamelCase = false) => {
 		itemsPerPage = parseInt(req.query.items_per_page, 10);
 	}
 
-	if (toCamelCase && jsonData.recordset) {
-		jsonData.recordset = keysToCamelCase(jsonData.recordset);
-	}
-
 	if (req.method.toUpperCase() !== 'GET') {
 		errWrapper.throwThis('PAGINAÇÃO (PAGINATOR)', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 	}
 
-	if (currentPage && jsonData.recordset) {
-		return _executePage(jsonData.recordset, jsonDataLen, currentPage, itemsPerPage, jsonData.output);
+	return _executePage((toCamelCase ? keysToCamelCase(jsonData) : jsonData), jsonDataLen, currentPage, itemsPerPage, jsonDataAll.output, jsonDataAll.returnValue);
+};
+
+// Formata a saida para o cliente selecionando o recordset de retorno, casos existam recordsets
+const setResult = (jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) => {
+	const formattedResult = {};
+
+	formattedResult.recordset = (toCamelCase ? keysToCamelCase(jsonData) : jsonData);
+	formattedResult.rowsAffected = jsonDataLen;
+
+	if (typeof jsonDataAll.output === 'object' && Object.keys(jsonDataAll.output).length) {
+		formattedResult.output = jsonDataAll.output;
 	}
 
-	return jsonData;
+	if (jsonDataAll.returnValue) {
+		formattedResult.returnValue = jsonDataAll.returnValue;
+	}
+
+	return formattedResult;
 };
 // -------------------------------------------------------------------------
 
 module.exports = {
 	keysToCamelCase,
 	setSort,
-	setPage
+	setPage,
+	setResult
 };
