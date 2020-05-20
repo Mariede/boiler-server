@@ -86,7 +86,7 @@ const _executeSearch = (baseQuery, targetReplace, _searchFields, searchValue) =>
 			queryReplace += ')';
 		}
 
-		searchQuery.dados.executar = baseQuery.replace(targetReplace, queryReplace);
+		searchQuery.dados.executar = baseQuery.replace(new RegExp(targetReplace, 'g'), queryReplace);
 
 		dbCon.msSqlServer.sqlExecuteAll(searchQuery)
 		.then(

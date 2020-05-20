@@ -495,7 +495,7 @@ const mongoDB = {
 
 		if (Array.isArray(arrayData)) {
 			resultSet.recordset = arrayData;
-			resultSet.rowsAffected = [arrayData.length];
+			resultSet.rowsAffected = arrayData.length;
 		}
 
 		return resultSet;

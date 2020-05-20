@@ -183,7 +183,7 @@ const query = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 
@@ -251,7 +251,7 @@ const query = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 
@@ -273,7 +273,7 @@ const query = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome)'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 
@@ -320,7 +320,7 @@ const baseQuery = `
 			on (a.ID_TIPO = b.ID_TIPO)
 	WHERE
 		a.NOME LIKE ('%jo%')
-		${replaceQuery}
+		${replaceQuery};
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
@@ -365,7 +365,7 @@ const baseQuery = `
 			on (a.ID_TIPO = b.ID_TIPO)
 	WHERE
 		a.NOME LIKE ('%jo%')
-		${replaceQuery}
+		${replaceQuery};
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)
@@ -410,7 +410,7 @@ const baseQuery = `
 		USUARIO a (NOLOCK)
 		INNER JOIN TIPO b (NOLOCK)
 			on (a.ID_TIPO = b.ID_TIPO)
-	${replaceQuery}
+	${replaceQuery};
 `;
 
 // Searcher: searchFields deve ser uma array (colunas inválidas para pesquisa geram erro)

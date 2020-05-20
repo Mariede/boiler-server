@@ -11,9 +11,7 @@ Conexão e execução de comandos noSql em mongoDB
 
 {
 	"recordset": [],
-	"rowsAffected": [
-		0
-	]
+	"rowsAffected": 0
 }
 
 // ---------------------------------------------------------------------------------------------------------
