@@ -41,7 +41,7 @@ npm run build
 ## Estrutura de código com pontos definidos de entrada / saída
   * Roteamento em camadas
   * Tratamento conjunto da pilha de Erros (sync e async)
-  * Erros personalizados
+  * Erros personalizados, nas camadas com as regras de negócio (message) ou diretamente no controller (customMessage)
   * Opção de enviar o stackTrace de erros para o cliente (default falso)
 
 ## Prefixamento de rotas e Proxy geral de acesso

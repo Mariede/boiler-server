@@ -61,6 +61,28 @@ const logger = (escopo, _mensagem, incorporador = '') => {
 
 // Retorna erros oriundos dos controllers ao usuario
 const errorsController = (res, err, escopo, incorporador = '') => {
+	const checkCustomErrors = () => {
+		/*
+		Erros customizados, definidos no config
+			=> chave server.customErrors e uma array de objetos
+			=> formato do objeto para verificacao { code: '', message: '', customMessage: '' }
+			=> code deve ser exato, message pode ser parcial
+			=> customMessage e a mensagem de erro customizada
+		*/
+		if (typeof err.message === 'string') {
+			const customErrors = __serverConfig.server.customErrors;
+			const customError = Array.isArray(customErrors) && customErrors.find(
+				element => {
+					return (err.code === element.code && err.message.includes(element.message));
+				}
+			);
+
+			if (customError && error.message) {
+				error.customMessage = customError.customMessage;
+			}
+		}
+	};
+
 	const error = new Error();
 	const genericErrorName = 'Error';
 
@@ -96,6 +118,8 @@ const errorsController = (res, err, escopo, incorporador = '') => {
 
 			if (err.message) {
 				error.message = err.message;
+			} else {
+				error.message = '';
 			}
 
 			if (err.stack && __serverConfig.server.showFrontEndStackTraceErr) {
@@ -114,6 +138,9 @@ const errorsController = (res, err, escopo, incorporador = '') => {
 			}
 		}
 	}
+
+	// Verifica por erros customizados no config
+	checkCustomErrors();
 
 	logger(escopo, err.stack || err, incorporador);
 	res.status(httpStatusCode).send(error);

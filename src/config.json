@@ -70,12 +70,14 @@
 			"cookieName": "cookie-server",
 			"timeout": 20
 		},
+		"customErrors": [],
 		"_comments1": "backlog (default 511), maxConnections (default depende), timeout em segundos (default 120s), keepAliveTimeout em segundos (default 5s), maxHeadersCount (default 2000), headersTimeout em segundos (default 40s)",
 		"_comments2": "eventLoopMonitor: ativa monitoramento do loop de eventos. Apenas para fins de analise de performance e testes (default: false)",
 		"_comments3": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
 		"_comments4": "se o servidor estiver ativo via PROXY, valor definido em routePrefix deve ser anexado no inicio de virtualPath (pathVirtualStaticFiles) e tambem em path (socketIo) - para o ultimo caso como garantia se a lib socket.io utilizar o protocolo pooling ao inves de websockets",
 		"_comments5": "maxAge em pathVirtualStaticFiles em minutos",
-		"_comments6": "secao custom (server) so e valida se alguma lib custom estiver sendo utilizada, session: timeout em minutos"
+		"_comments6": "chave custom (server) so e valida se alguma lib custom estiver sendo utilizada, session: timeout em minutos",
+		"_comments7": "customErrors define um ou mais erros customizados no controller para o cliente: formato array de objetos - ex: { code: 11000, message: 'duplicate key error collection: test.types index', customMessage: '' } - code deve ser exato, message pode ser parcial, customMessage e a mensagem de erro customizada"
 	},
 	"auth": {
 		"sessWrapper": "userData",
