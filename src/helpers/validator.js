@@ -36,7 +36,7 @@ const isCnpj = _cnpj => {
 		}
 	}
 
-	if (!(/^(0{14}|1{14}|2{14}|3{14}|4{14}|5{14}|6{14}|7{14}|8{14}|9{14})$/).test(cnpj) && cnpj.length <= 14) {
+	if (!(/([0-9])\1{13,}/).test(cnpj) && cnpj.length <= 14) {
 		for (let i = 1; i <= 12; i++) {
 			soma = soma + (parseInt(cnpj.substring(i - 1, i), 10) * peso1[i - 1]);
 		}
@@ -89,7 +89,7 @@ const isCpf = _cpf => {
 		}
 	}
 
-	if (!(/^(0{11}|1{11}|2{11}|3{11}|4{11}|5{11}|6{11}|7{11}|8{11}|9{11})$/).test(cpf) && cpf.length <= 11) {
+	if (!(/([0-9])\1{10,}/).test(cpf) && cpf.length <= 11) {
 		for (let i = 1; i <= 9; i++) {
 			soma = soma + (parseInt(cpf.substring(i - 1, i), 10) * (11 - i));
 		}
@@ -144,7 +144,7 @@ const isPisPasep = _pisPasep => {
 		}
 	}
 
-	if (!(/^(0{11}|1{11}|2{11}|3{11}|4{11}|5{11}|6{11}|7{11}|8{11}|9{11})$/).test(pisPasep) && pisPasep.length <= 11) {
+	if (!(/([0-9])\1{10,}/).test(pisPasep) && pisPasep.length <= 11) {
 		for (let i = 1; i < 11; i++) {
 			soma = soma + (parseInt(pisPasep.substring(i - 1, i), 10) * peso[i - 1]);
 		}
@@ -181,7 +181,7 @@ const isRenavam = _renavam => {
 		}
 	}
 
-	if (!(/^(0{11}|1{11}|2{11}|3{11}|4{11}|5{11}|6{11}|7{11}|8{11}|9{11})$/).test(renavam) && renavam.length <= 11) {
+	if (!(/([0-9])\1{10,}/).test(renavam) && renavam.length <= 11) {
 		for (let i = 1; i < 11; i++) {
 			soma = soma + (parseInt(renavam.substring(i - 1, i), 10) * peso[i - 1]);
 		}
@@ -214,8 +214,12 @@ const isEmail = _email => {
 	return vRet;
 };
 
-// Verifica se CEP e valido
-const isCep = (_cep, separator = true) => {
+/*
+Verifica se CEP e valido
+	=> separator === false : 18111300
+	=> separator === true : 18111-300
+*/
+const isCep = (_cep, separator = false) => {
 	const cep = (_cep || '').toString();
 	const regExp = (separator ? /^([0-9]{5})-([0-9]{3})$/ : /^([0-9]{8})$/);
 
@@ -322,6 +326,43 @@ const isDate = _date => {
 	return vRet;
 };
 
+/*
+Verifica a placa do carro nacional (BR / Mercosul)
+	=> separator === false : ABC1234 ou ABC1A34 ou ABC12A4
+	=> separator === true : ABC 1234 ou ABC 1A34 ou ABC 12A4 ou ABC-1234 ou ABC-1A34 ou ABC-12A4
+*/
+const isVehicleLicensePlate = (_licensePlate, separator = false) => {
+	const licensePlate = (_licensePlate || '').toString();
+	const regExpBrNationalPlate = new RegExp(`^([a-zA-Z]{2,3}${(separator ? '[ -]' : '')})([0-9]{4})$`);
+	const regExpBrMercosulPlate1 = new RegExp(`^([a-zA-Z]{3}${(separator ? '[ -]' : '')})([0-9][a-zA-Z][0-9]{2})$`); // Carros
+	const regExpBrMercosulPlate2 = new RegExp(`^([a-zA-Z]{3}${(separator ? '[ -]' : '')})([0-9]{2}[a-zA-Z][0-9])$`); // Motos
+
+	let vRet = false;
+
+	if (regExpBrNationalPlate.test(licensePlate) || regExpBrMercosulPlate1.test(licensePlate) || regExpBrMercosulPlate2.test(licensePlate)) {
+		vRet = true;
+	}
+
+	return vRet;
+};
+
+// Verifica o numero do chassi do veiculo
+const isVehicleChassis = _chassis => {
+	const chassis = (_chassis || '').toString();
+	const regExpChassisBase = /^(?!.*?[ioqIOQ])([a-zA-Z1-9]{1})([a-zA-Z0-9]{8})([a-zA-Z0-9-]{2})([0-9]{6})$/;
+	const regExpChassisRepeated = /([a-zA-Z0-9])\1{6,}/;
+
+	let vRet = false;
+
+	if (regExpChassisBase.test(chassis)) {
+		if (!regExpChassisRepeated.test(chassis)) {
+			vRet = true;
+		}
+	}
+
+	return vRet;
+};
+
 // Verifica se string _paramCompare esta contida em _param
 const contains = (_param, _paramCompare, caseInsensitive = true) => {
 	const param = (_param === true ? false : _falsyCheck(_param));
@@ -385,6 +426,8 @@ module.exports = {
 	isIntegerOrFloat,
 	isIntegerOrFixed,
 	isDate,
+	isVehicleLicensePlate,
+	isVehicleChassis,
 	contains,
 	equal,
 	lenRange
