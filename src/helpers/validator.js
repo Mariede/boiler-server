@@ -350,14 +350,12 @@ const isVehicleLicensePlate = (_licensePlate, separator = false) => {
 const isVehicleChassis = _chassis => {
 	const chassis = (_chassis || '').toString();
 	const regExpChassisBase = /^(?!.*?[ioqIOQ])([a-zA-Z1-9]{1})([a-zA-Z0-9]{8})([a-zA-Z0-9-]{2})([0-9]{6})$/;
-	const regExpChassisRepeated = /([a-zA-Z0-9])\1{6,}/;
+	const regExpChassisRepeated = /([a-zA-Z0-9])\1{6,}/g;
 
 	let vRet = false;
 
-	if (regExpChassisBase.test(chassis)) {
-		if (!regExpChassisRepeated.test(chassis)) {
-			vRet = true;
-		}
+	if (regExpChassisBase.test(chassis) && !regExpChassisRepeated.test(chassis)) {
+		vRet = true;
 	}
 
 	return vRet;

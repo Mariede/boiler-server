@@ -167,13 +167,13 @@ const msSqlServer = {
 													r.input(key[0], sql[dataType.base], key[2]);
 												}
 											} else {
-												errWrapper.throwThis('DB', 400, `Tipo de dados ${key[1]} definido no input da query não configurado no método, favor corrigir ou avise um administrador...`);
+												errWrapper.throwThis('DB', 500, `Tipo de dados ${key[1]} definido no input da query não configurado no método, favor corrigir ou avise um administrador...`);
 											}
 										} else {
 											if (key.length === 2) {
 												r.input(key[0], key[1]);
 											} else {
-												errWrapper.throwThis('DB', 400, `Formato { ${key} } inválido para input da query, necessita de duas ou três chaves dependendo do modelo da chamada...`);
+												errWrapper.throwThis('DB', 500, `Formato { ${key} } inválido para input da query, necessita de duas ou três chaves dependendo do modelo da chamada...`);
 											}
 										}
 									});
@@ -193,10 +193,10 @@ const msSqlServer = {
 													r.output(key[0], sql[dataType.base]);
 												}
 											} else {
-												errWrapper.throwThis('DB', 400, `Tipo de dados ${key[1]} definido no output da query não configurado no método, favor corrigir ou avise um administrador...`);
+												errWrapper.throwThis('DB', 500, `Tipo de dados ${key[1]} definido no output da query não configurado no método, favor corrigir ou avise um administrador...`);
 											}
 										} else {
-											errWrapper.throwThis('DB', 400, `Formato { ${key} } inválido para output da query, necessita de duas chaves...`);
+											errWrapper.throwThis('DB', 500, `Formato { ${key} } inválido para output da query, necessita de duas chaves...`);
 										}
 									});
 								}
@@ -215,14 +215,14 @@ const msSqlServer = {
 									return await r.execute(p.dados.executar);
 								}
 								default: {
-									errWrapper.throwThis('DB', 400, 'Formato não foi corretamente definido nos parâmetros JSON para execução da query, ele contempla apenas os valores numéricos: 1 (Queries locais) ou 2 (Stored Procedure)...');
+									errWrapper.throwThis('DB', 500, 'Formato não foi corretamente definido nos parâmetros JSON para execução da query, ele contempla apenas os valores numéricos: 1 (Queries locais) ou 2 (Stored Procedure)...');
 								}
 							}
 						} else {
-							errWrapper.throwThis('DB', 400, 'A propriedade executar não foi corretamente definida nos parâmetros JSON para execução da query, verifique seu código...');
+							errWrapper.throwThis('DB', 500, 'A propriedade executar não foi corretamente definida nos parâmetros JSON para execução da query, verifique seu código...');
 						}
 					} else {
-						errWrapper.throwThis('DB', 400, 'O formato e/ou os dados não foram corretamente definidos nos parâmetros JSON para execução da query, verifique seu código...');
+						errWrapper.throwThis('DB', 500, 'O formato e/ou os dados não foram corretamente definidos nos parâmetros JSON para execução da query, verifique seu código...');
 					}
 				};
 
@@ -410,7 +410,7 @@ const mongoDB = {
 					);
 				} else {
 					reject(
-						errWrapper.throwThis('DB', 400, 'Esquema não encontrado...')
+						errWrapper.throwThis('DB', 500, 'Esquema não encontrado...')
 					);
 				}
 			}
