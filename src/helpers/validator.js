@@ -126,6 +126,62 @@ const isCpf = _cpf => {
 	return vRet;
 };
 
+// Verifica se CNH e valida
+const isCnh = _cnh => {
+	const peso1 = [9, 8, 7, 6, 5, 4, 3, 2, 1];
+	const peso2 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+	let cnh = (_cnh || '').toString().replace(/\D/gi, ''),
+		resto = -1,
+		soma = 0,
+		decr = 0,
+		vRet = false;
+
+	// Completa com zeros a esquerda
+	if (cnh.length < 11) {
+		for (let i = 1; i <= 11; i++) {
+			if (cnh.length < 11) {
+				cnh = `0${cnh}`;
+			}
+		}
+	}
+
+	if (!(/([0-9])\1{10,}/).test(cnh) && cnh.length <= 11) {
+		for (let i = 1; i <= 9; i++) {
+			soma = soma + (parseInt(cnh.substring(i - 1, i), 10) * peso1[i - 1]);
+		}
+
+		resto = soma % 11;
+
+		if ((resto === 10) || (resto === 11)) {
+			resto = 0;
+			decr = 2;
+		}
+
+		if (resto === parseInt(cnh.substring(9, 10), 10)) {
+			soma = 0;
+
+			for (let i = 1; i <= 9; i++) {
+				soma = soma + (parseInt(cnh.substring(i - 1, i), 10) * peso2[i - 1]);
+			}
+
+			resto = soma % 11;
+
+			if ((resto === 10) || (resto === 11)) {
+				resto = 0;
+			} else {
+				resto = resto - decr;
+			}
+
+			if (resto === parseInt(cnh.substring(10, 11), 10)) {
+				vRet = true;
+			}
+		}
+	}
+
+	return vRet;
+};
+
 // Verifica se PIS/PASEP e valido
 const isPisPasep = _pisPasep => {
 	const peso = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
@@ -414,6 +470,7 @@ const lenRange = (_param, lMin = 0, lMax = lMin) => {
 module.exports = {
 	isCnpj,
 	isCpf,
+	isCnh,
 	isPisPasep,
 	isRenavam,
 	isEmail,
