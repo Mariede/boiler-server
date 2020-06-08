@@ -128,9 +128,6 @@ const isCpf = _cpf => {
 
 // Verifica se CNH e valida
 const isCnh = _cnh => {
-	const peso1 = [9, 8, 7, 6, 5, 4, 3, 2, 1];
-	const peso2 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
 	let cnh = (_cnh || '').toString().replace(/\D/gi, ''),
 		resto = -1,
 		soma = 0,
@@ -148,7 +145,7 @@ const isCnh = _cnh => {
 
 	if (!(/([0-9])\1{10,}/).test(cnh) && cnh.length <= 11) {
 		for (let i = 1; i <= 9; i++) {
-			soma = soma + (parseInt(cnh.substring(i - 1, i), 10) * peso1[i - 1]);
+			soma = soma + (parseInt(cnh.substring(i - 1, i), 10) * (10 - i));
 		}
 
 		resto = soma % 11;
@@ -162,7 +159,7 @@ const isCnh = _cnh => {
 			soma = 0;
 
 			for (let i = 1; i <= 9; i++) {
-				soma = soma + (parseInt(cnh.substring(i - 1, i), 10) * peso2[i - 1]);
+				soma = soma + (parseInt(cnh.substring(i - 1, i), 10) * i);
 			}
 
 			resto = soma % 11;
