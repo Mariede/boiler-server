@@ -60,7 +60,7 @@ const logon = (login, senha, idTipoUsuario = 0) => {
 		.catch(
 			err => {
 				reject(
-					errWrapper.returnThis('PERMISYS', 500, err)
+					errWrapper.returnThis('PERMISYS-SERVICE', 500, err)
 				);
 			}
 		);

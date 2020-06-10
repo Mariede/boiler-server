@@ -47,6 +47,9 @@
 			"credentials": true
 		},
 		"custom": {
+			"fipe": {
+				"address": "http://fipeapi.appspot.com/api/1"
+			},
 			"permisys": {
 				"address": "https://address-permisys-service.com",
 				"siglaSistema": "SYS",
