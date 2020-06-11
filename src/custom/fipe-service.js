@@ -34,9 +34,22 @@ const _types = _type => {
 	return result;
 };
 
-// Compara se sCheck esta inclusa em sBase (metodo privado)
-const _keywordCheck = (sBase, sCheck) => {
-	return String(sBase || '').toLowerCase().includes(sCheck.toLowerCase());
+/*
+Compara se _sCheck esta contido em _sBase (metodo privado)
+
+	* validacao por palavra-chave, separadas por espaco caso mais de uma
+*/
+const _keywordCheck = (_sBase, _sCheck) => {
+	const sBase = String(_sBase || '').trim().toLowerCase();
+	const sCheck = _sCheck.trim().toLowerCase();
+
+	return (
+		sCheck.split(' ').every(
+			wordCheck => {
+				return sBase.includes(wordCheck);
+			}
+		)
+	);
 };
 
 /*
@@ -45,7 +58,7 @@ Retorna marcas ou marca (API FIPE)
 
 	* retorna array
 
-	ex: brand(21) ou brand('fiat')
+	ex: brand(59) ou brand('volks')
 */
 const brand = (_brand = '', _type = 1) => {
 	return new Promise((resolve, reject) => {
@@ -101,7 +114,7 @@ Retorna veiculos por modelos ou veiculo por modelo (API FIPE)
 	* marca e obrigatoria
 	* retorna array
 
-	ex: brandModel(21, 4826) ou brandModel(21, 'palio 1.0')
+	ex: brandModel(59, 5599) ou brandModel(59, 'fox rock rio')
 */
 const brandModel = (brand, _model = '', _type = 1) => {
 	return new Promise((resolve, reject) => {
@@ -158,7 +171,11 @@ Retorna modelo especifico de veiculo por detalhes (API FIPE)
 	* se brand/model retorna array, se brand/model/details retorna "objeto completo"
 	* caso retorno seja "objeto completo" (brand/model/details) o valor para filter em _details e descartado
 
-	ex: vehicle({ brand: 21, model: 4826 }, '2013') ou vehicle({ brand: 21, model: 4826, details: '2013-1' })
+	ex:
+		- vehicle({ brand: 59, model: 5599 })
+		- ou vehicle({ brand: 59, model: 5599 }, '2016')
+		- ou vehicle({ brand: 59, model: 5599, details: '2016-1' })
+		- ou vehicle({ brand: 59, model: '005332-5', details: '2016-1' })
 */
 const vehicle = (search, _details = '', _type = 1) => {
 	return new Promise((resolve, reject) => {
