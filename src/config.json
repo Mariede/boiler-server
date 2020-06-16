@@ -4,7 +4,7 @@
 		"port": 5000,
 		"backlog": 511,
 		"maxConnections": 50,
-		"timeout": 240,
+		"timeout": 0,
 		"keepAliveTimeout": 60,
 		"maxHeadersCount": 2000,
 		"headersTimeout": 65,
@@ -73,14 +73,7 @@
 			"cookieName": "cookie-server",
 			"timeout": 20
 		},
-		"customErrors": [],
-		"_comments1": "backlog (default 511), maxConnections (default depende), timeout em segundos (default 120s), keepAliveTimeout em segundos (default 5s), maxHeadersCount (default 2000), headersTimeout em segundos (default 40s)",
-		"_comments2": "eventLoopMonitor: ativa monitoramento do loop de eventos. Apenas para fins de analise de performance e testes (default: false)",
-		"_comments3": "clustered: valor numerico e inteiro que indica o numero de processos executados no cluster. true / 0 para todos os processos possiveis",
-		"_comments4": "se o servidor estiver ativo via PROXY, valor definido em routePrefix deve ser anexado no inicio de virtualPath (pathVirtualStaticFiles) e tambem em path (socketIo) - para o ultimo caso como garantia se a lib socket.io utilizar o protocolo pooling ao inves de websockets",
-		"_comments5": "maxAge em pathVirtualStaticFiles em minutos",
-		"_comments6": "chave custom (server) so e valida se alguma lib custom estiver sendo utilizada, session: timeout em minutos",
-		"_comments7": "customErrors define um ou mais erros customizados no controller para o cliente: formato array de objetos - ex: { code: 11000, message: 'duplicate key error collection: test.types index', customMessage: '' } - code deve ser exato, message pode ser parcial, customMessage e a mensagem de erro customizada"
+		"customErrors": []
 	},
 	"auth": {
 		"sessWrapper": "userData",
@@ -90,10 +83,7 @@
 			"/socket.io",
 			"/logon",
 			"/islogged"
-		],
-		"_comments1": "authTipo => 2: toda rota livre, exceto except / Default: toda rota protegida, exceto except",
-		"_comments2": "except => Except aceita rota parcial ou exata; utilizar / para separadores de grupos no caminho ex: /PATH1/PATH2",
-		"_comments3": "chave path de socketIo (sem routePrefix) fica livre em auth para o caso da lib socket.io utilizar protocolo pooling ao inves de websockets"
+		]
 	},
 	"socketIo": {
 		"serverHost": "localhost",
@@ -111,8 +101,8 @@
 	},
 	"db": {
 		"msSqlServer": {
-			"conexaoTipo": 1,
-			"configSql": {
+			"connectionType": 1,
+			"configDb": {
 				"user": "user",
 				"password": "pass",
 				"server": "server",
@@ -133,8 +123,7 @@
 					"min": 0,
 					"idleTimeoutMillis": 30000
 				}
-			},
-			"_comments1": "conexaoTipo => 2: sem pool / Default: com pool"
+			}
 		},
 		"mongoose": {
 			"connectionString": "mongodb://user:pass@10.28.10.21:27017/database?retryWrites=true&w=majority",
@@ -162,8 +151,7 @@
 					"createdAt": "dataCriacao",
 					"updatedAt": "dataAlteracao"
 				}
-			},
-			"_comments1": "authSource opcional"
+			}
 		}
 	},
 	"email": {
@@ -192,7 +180,6 @@
 				"pass": "pass",
 				"authMethod": "PLAIN"
 			}
-		},
-		"_comments1": "limitPerRound: quantidade de envios por rodada, timeCheck: intervalo entre as rodadas, timeFirstCheck: primeira checagem antes de iniciar o loop de rodadas - serve tambem para evitar que os cluster realizem checagens na queue simultaneamente a cada timeCheck"
+		}
 	}
 }
