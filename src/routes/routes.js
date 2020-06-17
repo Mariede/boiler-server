@@ -4,7 +4,6 @@
 // Rotas (controllers)
 const auth = require('@serverRoot/routes/controllers/auth');
 const home = require('@serverRoot/routes/controllers/home');
-const user = require('@serverRoot/routes/controllers/user');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -12,7 +11,6 @@ const user = require('@serverRoot/routes/controllers/user');
 const startRoutes = (router, handleErrorsController) => {
 	auth.authRoutes(router, handleErrorsController);
 	home.homeRoutes(router, handleErrorsController);
-	user.userRoutes(router, handleErrorsController);
 };
 // -------------------------------------------------------------------------
 
