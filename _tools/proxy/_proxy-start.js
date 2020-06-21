@@ -130,9 +130,9 @@ const startProxy = () => {
 				_server.on(
 					'upgrade',
 					(req, socket, head) => {
-						log4js.getLogger('default').info(`Redirecionando (ws) para ${path} (${toOrigin})`);
+						if (String(req.url || '').toLowerCase().includes(`${path.toLowerCase()}/`)) {
+							log4js.getLogger('default').info(`Redirecionando (ws) para ${path} (${toOrigin})`);
 
-						if (req.url.includes(path)) {
 							wsProxy.ws(
 								req,
 								socket,
