@@ -1,20 +1,9 @@
-'use strict';
+// ---------------------------------------------------------------------------------------------------------
+// usuario.consultarTodos (Exemplo de codificação no boiler)
 
-// -------------------------------------------------------------------------
-// Modulos de inicializacao
-
-// -------------------------------------------------------------------------
-
-// -------------------------------------------------------------------------
-// Modulos de apoio
 const dbCon = require('@serverRoot/helpers/db');
-const errWrapper = require('@serverRoot/helpers/err-wrapper');
 const paginator = require('@serverRoot/helpers/paginator');
-const validator = require('@serverRoot/helpers/validator');
-// -------------------------------------------------------------------------
 
-// -------------------------------------------------------------------------
-// Acoes
 const consultarTodos = async (req, res) => {
 	const query = {
 		formato: 1,
@@ -44,6 +33,15 @@ const consultarTodos = async (req, res) => {
 
 	return pagedResultSet;
 };
+// ---------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------------------------------------
+// usuario.consultar (Exemplo de codificação no boiler)
+
+const dbCon = require('@serverRoot/helpers/db');
+const errWrapper = require('@serverRoot/helpers/err-wrapper');
+const paginator = require('@serverRoot/helpers/paginator');
+const validator = require('@serverRoot/helpers/validator');
 
 const consultar = async (req, res) => {
 	// Parametros de entrada
@@ -85,33 +83,4 @@ const consultar = async (req, res) => {
 
 	return resultSet;
 };
-
-const inserir = (req, res) => {
-	const fRet = 'insere usuario';
-	const id = req.params.id;
-
-	return `${fRet} ${id}`;
-};
-
-const alterar = (req, res) => {
-	const fRet = 'altera usuario';
-	const id = req.params.id;
-
-	return `${fRet} ${id}`;
-};
-
-const excluir = (req, res) => {
-	const fRet = 'exclui usuario';
-	const id = req.params.id;
-
-	return `${fRet} ${id}`;
-};
-// -------------------------------------------------------------------------
-
-module.exports = {
-	consultarTodos,
-	consultar,
-	inserir,
-	alterar,
-	excluir
-};
+// ---------------------------------------------------------------------------------------------------------
