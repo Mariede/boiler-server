@@ -7,9 +7,9 @@ const app = express();
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
-const httpProxy = require('http-proxy');
 const log4js = require('log4js');
 const path = require('path');
+const proxy = require('http-proxy');
 // -------------------------------------------------------------------------
 
 const startProxy = () => {
@@ -30,7 +30,7 @@ const startProxy = () => {
 			}
 		);
 
-		// Servidor  web -----------------------------------------
+		// Servidor web ------------------------------------------
 		const getAppCert = () => { // Certificado digital (apenas se ativo)
 			const result = {};
 
@@ -60,13 +60,14 @@ const startProxy = () => {
 
 		const listenOptions = {
 			port: 80,
-			host: 'localhost'
+			host: 'localhost',
+			backlog: 511
 		};
 
 		const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, app);
 
 		// Proxy -------------------------------------------------
-		const wsProxy = httpProxy.createProxyServer(
+		const wsProxy = proxy.createProxyServer(
 			{
 				secure: false,
 				ws: true
@@ -81,18 +82,29 @@ const startProxy = () => {
 			}
 		);
 
-		const serversToProxy = [['/APP1', 'http://localhost:5000', true], ['/APP2', 'http://localhost:5001', false]];
+		// Array de objetos com rotas base a serem redirecionadas (proxy)
+		const serversToProxy = [
+			{ path: '/APP1', toProtocol: 'http://', toHost: 'localhost', toPort: 5000 },
+			{ path: '/APP2', toProtocol: 'http://', toHost: 'localhost', toPort: 5010 }
+		];
 
 		serversToProxy.forEach(
 			serverData => {
-				const path = serverData[0];
-				const origin = serverData[1];
-				const wsOn = serverData[2];
+				const path = serverData.path;
+				const toProtocol = serverData.toProtocol;
+				const toHost = serverData.toHost;
+				const toPort = serverData.toPort;
+				const toOrigin = `${toProtocol}${toHost}:${toPort}`;
+				const target = {
+					protocol: toProtocol,
+					host: toHost,
+					port: toPort
+				};
 
 				app.all(
 					`${path}/*`,
 					(req, res) => {
-						log4js.getLogger('default').info(`Redirecionando para ${path} (${origin})`);
+						log4js.getLogger('default').info(`Redirecionando para ${path} (${toOrigin})`);
 
 						wsProxy.web(
 							req,
@@ -107,7 +119,7 @@ const startProxy = () => {
 								// 	passphrase: 'password',
 								// },
 								/* ------------------ */
-								target: origin,
+								target: target,
 								cookiePathRewrite: false,
 								changeOrigin: true
 							}
@@ -115,25 +127,25 @@ const startProxy = () => {
 					}
 				);
 
-				if (wsOn) {
-					_server.on(
-						'upgrade',
-						(req, socket, head) => {
-							log4js.getLogger('default').info(`Redirecionando (ws) para ${path} (${origin})`);
+				_server.on(
+					'upgrade',
+					(req, socket, head) => {
+						log4js.getLogger('default').info(`Redirecionando (ws) para ${path} (${toOrigin})`);
 
+						if (req.url.includes(path)) {
 							wsProxy.ws(
 								req,
 								socket,
 								head,
 								{
-									target: origin,
+									target: target,
 									cookiePathRewrite: false,
 									changeOrigin: true
 								}
 							);
 						}
-					);
-				}
+					}
+				);
 			}
 		);
 
