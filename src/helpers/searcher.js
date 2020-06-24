@@ -67,6 +67,10 @@ const _executeSearch = (baseQuery, targetReplace, _searchFields, searchValue) =>
 		if (searchFields.length > 0 && searchValue) {
 			searchFields.forEach(
 				(e, i) => {
+					const regExp = new RegExp(`^\\s*select\\s+[\\s\\S]*?(\\w+\\.)(${e})\\s+`, 'i');
+					const searchAlias = regExp.exec(baseQuery);
+					const alias = (Array.isArray(searchAlias) ? (searchAlias[1] || '') : '');
+
 					searchQuery.dados.input[i] = [e, 'varchar', `%${searchValue}%`];
 
 					if (queryWhere !== -1 || i !== 0) {
@@ -79,7 +83,7 @@ const _executeSearch = (baseQuery, targetReplace, _searchFields, searchValue) =>
 						queryReplace += ' WHERE (';
 					}
 
-					queryReplace += `CAST(${e} AS varchar(max)) LIKE(@${e})`;
+					queryReplace += `CAST(${alias + e} AS varchar(max)) LIKE(@${e})`;
 				}
 			);
 
@@ -116,7 +120,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 	if (req.query.fullsearch_fields) {
 		req.query.fullsearch_fields.split(/[,|]/).forEach(
 			e => {
-				searchFields.push(e.trim());
+				searchFields.push(String(e || '').trim());
 			}
 		);
 	}

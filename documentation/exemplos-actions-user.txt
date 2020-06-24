@@ -11,13 +11,13 @@ const consultarTodos = async (req, res) => {
 			executar: `
 				SELECT
 					A.ID_USUARIO
-					,A.ID_TIPO
 					,A.NOME
 					,A.EMAIL
 					,A.SENHA
 					,A.SALT
 					,A.ATIVO
-					,B.TIPO
+					,A.ID_TIPO 'TIPO.ID'
+					,B.TIPO 'TIPO.NOME'
 				FROM
 					USUARIO A (NOLOCK)
 					INNER JOIN TIPO B (NOLOCK)
@@ -61,13 +61,13 @@ const consultar = async (req, res) => {
 			executar: `
 				SELECT
 					A.ID_USUARIO
-					,A.ID_TIPO
 					,A.NOME
 					,A.EMAIL
 					,A.SENHA
 					,A.SALT
 					,A.ATIVO
-					,B.TIPO
+					,A.ID_TIPO 'TIPO.ID'
+					,B.TIPO 'TIPO.NOME'
 				FROM
 					USUARIO A (NOLOCK)
 					INNER JOIN TIPO B (NOLOCK)

@@ -307,13 +307,13 @@ const replaceQuery = '{{REPLACE}}';
 const baseQuery = `
 	SELECT
 		a.ID_USUARIO
-		,a.ID_TIPO
 		,a.NOME
 		,a.EMAIL
 		,a.SENHA
 		,a.SALT
 		,a.ATIVO
-		,b.TIPO
+		,a.ID_TIPO 'TIPO.ID'
+		,b.TIPO 'TIPO.TIPO'
 	FROM
 		USUARIO a (NOLOCK)
 		INNER JOIN TIPO b (NOLOCK)
@@ -352,13 +352,13 @@ const replaceQuery = '{{REPLACE}}';
 const baseQuery = `
 	SELECT
 		a.ID_USUARIO
-		,a.ID_TIPO
 		,a.NOME
 		,a.EMAIL
 		,a.SENHA
 		,a.SALT
 		,a.ATIVO
-		,b.TIPO
+		,a.ID_TIPO 'TIPO.ID'
+		,b.TIPO 'TIPO.TIPO'
 	FROM
 		USUARIO a (NOLOCK)
 		INNER JOIN TIPO b (NOLOCK)
@@ -399,13 +399,13 @@ const replaceQuery = '{{REPLACE}}';
 const baseQuery = `
 	SELECT
 		a.ID_USUARIO
-		,a.ID_TIPO
 		,a.NOME
 		,a.EMAIL
 		,a.SENHA
 		,a.SALT
 		,a.ATIVO
-		,b.TIPO
+		,a.ID_TIPO 'TIPO.ID'
+		,b.TIPO 'TIPO.TIPO'
 	FROM
 		USUARIO a (NOLOCK)
 		INNER JOIN TIPO b (NOLOCK)

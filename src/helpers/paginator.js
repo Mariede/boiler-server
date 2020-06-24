@@ -18,10 +18,19 @@ Ordenador: sortElements deve ser uma array e case sensitive para as chaves (meto
 */
 const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) => {
 	const sortThis = (a, b, i, iLen) => {
+		const getNestedValue = (obj, currentKey) => {
+			return currentKey.split('.').reduce(
+				(o, k) => {
+					return o[k];
+				},
+				obj
+			);
+		};
+
 		if (i < iLen) {
 			const order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
-			const aCheck = (a[sortElements[i]] || '');
-			const bCheck = (b[sortElements[i]] || '');
+			const aCheck = (getNestedValue(a, sortElements[i]) || '');
+			const bCheck = (getNestedValue(b, sortElements[i]) || '');
 			const checkData = collator.compare(aCheck, bCheck);
 
 			return ((checkData < 0) ? order.d1 : ((checkData > 0) ? order.a1 : sortThis(a, b, i + 1, iLen)));
@@ -91,12 +100,15 @@ const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output, 
 
 /*
 Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
-	-> Realiza conversão profunda nas sub chaves (deep)
+	-> Realiza conversao nas subchaves aninhadas dos objetos (nested keys)
+	-> Formata resultados tabulares especificos para novas subchaves aninhadas
+		-> Regra: utilizar . no nome da chave para identificar niveis das subchaves do objeto
+			-> ex: 'USUARIO.TIPO.ID'
 */
 const keysToCamelCase = jsonData => {
 	const convertKeys = (cKey, cValue, nDocument) => {
 		const transformP = p => {
-			const changedP = p.toLowerCase().replace(
+			const changedP = String(p || '').toLowerCase().replace(
 				/[_]([a-z])/g,
 				g => {
 					return g[1].toUpperCase();
@@ -113,7 +125,10 @@ const keysToCamelCase = jsonData => {
 			loopKeys(cValue, nDocument[nKey]);
 		} else {
 			if (typeof cValue === 'object' && cValue !== null) {
-				nDocument[nKey] = {};
+				if (!Object.prototype.hasOwnProperty.call(nDocument, nKey)) {
+					nDocument[nKey] = {};
+				}
+
 				loopKeys(cValue, nDocument[nKey]);
 			}
 		}
@@ -125,10 +140,32 @@ const keysToCamelCase = jsonData => {
 		Object.keys(cDocument).forEach(
 			currentKey => {
 				const currentValue = cDocument[currentKey];
-				const newKey = convertKeys(currentKey, currentValue, nDocument);
 
-				if (currentValue === null || typeof currentValue !== 'object') {
-					nDocument[newKey] = currentValue;
+				const deepValueCheck = currentKey.split('.').filter(
+					item => {
+						return item !== '';
+					}
+				);
+
+				const resultValue = (
+					deepValueCheck.reduceRight(
+						(acc, key) => {
+							return {
+								[key]: acc
+							};
+						},
+						currentValue
+					)
+				)[deepValueCheck[0]] || currentValue;
+
+				const newKey = convertKeys(
+					deepValueCheck[0],
+					resultValue,
+					nDocument
+				);
+
+				if (resultValue === null || typeof resultValue !== 'object') {
+					nDocument[newKey] = resultValue;
 				}
 			}
 		);
@@ -168,8 +205,8 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 				const sortField = e.split(/[:]/);
 
 				if (sortField[0]) {
-					sortElements.push(sortField[0]);
-					sortOrder.push((sortField[1] || ''));
+					sortElements.push(String(sortField[0] || '').trim());
+					sortOrder.push(String(sortField[1] || '').trim());
 				}
 			}
 		);
