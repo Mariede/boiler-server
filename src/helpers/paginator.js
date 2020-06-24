@@ -21,6 +21,10 @@ const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) =>
 		const getNestedValue = (obj, currentKey) => {
 			return currentKey.split('.').reduce(
 				(o, k) => {
+					if (!Object.prototype.hasOwnProperty.call(o, k)) {
+						return o;
+					}
+
 					return o[k];
 				},
 				obj
