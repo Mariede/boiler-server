@@ -24,17 +24,26 @@
 
 			const socket = io.connect('<%= ioUrl %>', { path: '<%= ioPath %>', transports: ['websocket', 'polling'], forceNew: true });
 
-			socket.on('serverTimeTick', data => {
-				showData(true, data);
-			});
+			socket.on(
+				'serverTimeTick',
+				data => {
+					showData(true, data);
+				}
+			);
 
-			socket.on('connect', () => {
-				socket.emit('serverTimeStart');
-			});
+			socket.on(
+				'connect',
+				() => {
+					socket.emit('serverTimeStart');
+				}
+			);
 
-			socket.on('disconnect', () => {
-				showData(false);
-			});
+			socket.on(
+				'disconnect',
+				() => {
+					showData(false);
+				}
+			);
 		};
 
 		ioConnection();

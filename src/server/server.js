@@ -378,9 +378,12 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			}
 		};
 
-		_server.listen(listenOptions, serverStarter()).on('error', err => {
-			log.logger('error', `[web-servidor] ${(err.stack || err)}`);
-		});
+		_server.listen(listenOptions, serverStarter()).on(
+			'error',
+			err => {
+				log.logger('error', `[web-servidor] ${(err.stack || err)}`);
+			}
+		);
 	});
 };
 // -------------------------------------------------------------------------

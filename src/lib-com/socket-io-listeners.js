@@ -16,24 +16,33 @@ const log = require('@serverRoot/helpers/log');
 const listeners = {
 	ioRootListening: io => { // Listeners para Home do servidor
 		const ioChannel = io.of(nameSpaces.ioRootNameSpace);
-		ioChannel.on('connection', socket => {
-			let rootServerTime = null;
+		ioChannel.on(
+			'connection',
+			socket => {
+				let rootServerTime = null;
 
-			socket.on('serverTimeStart', () => {
-				rootServerTime = setInterval(() => {
-					try {
-						ioChannel.to(socket.id).emit('serverTimeTick', functions.getDateNow(true));
-					} catch (err) {
-						log.logger('error', `[socket.io-servidor] ${(err.stack || err)}`);
+				socket.on(
+					'serverTimeStart',
+					() => {
+						rootServerTime = setInterval(() => {
+							try {
+								ioChannel.to(socket.id).emit('serverTimeTick', functions.getDateNow(true));
+							} catch (err) {
+								log.logger('error', `[socket.io-servidor] ${(err.stack || err)}`);
+								clearInterval(rootServerTime);
+							}
+						}, 1000);
+					}
+				);
+
+				socket.on(
+					'disconnect',
+					() => {
 						clearInterval(rootServerTime);
 					}
-				}, 1000);
-			});
-
-			socket.on('disconnect', () => {
-				clearInterval(rootServerTime);
-			});
-		});
+				);
+			}
+		);
 	}
 };
 

@@ -173,9 +173,12 @@ const startProxy = () => {
 			} catch (err) {
 				reject(err);
 			}
-		}).on('error', err => {
-			log4js.getLogger('default').error(err.stack || err);
-		});
+		}).on(
+			'error',
+			err => {
+				log4js.getLogger('default').error(err.stack || err);
+			}
+		);
 	});
 };
 // -------------------------------------------------------------------------

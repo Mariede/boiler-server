@@ -30,7 +30,8 @@ const startIo = cert => {
 
 		const listenOptions = {
 			port: __serverConfig.socketIo.serverPort,
-			host: __serverConfig.socketIo.serverHost
+			host: __serverConfig.socketIo.serverHost,
+			backlog: __serverConfig.server.backlog
 		};
 
 		const ioOptions = {
@@ -50,14 +51,22 @@ const startIo = cert => {
 			res.end();
 		});
 
+		_server.maxConnections = __serverConfig.server.maxConnections;
+		_server.timeout = __serverConfig.server.timeout * 1000;
+		_server.keepAliveTimeout = __serverConfig.server.keepAliveTimeout * 1000;
+		_server.maxHeadersCount = __serverConfig.server.maxHeadersCount;
+		_server.headersTimeout = __serverConfig.server.headersTimeout * 1000;
+
 		const ios = io(ioOptions).attach(_server);
 		const listeners = socketIoListeners.listeners;
-
 		const listeningMethods = [];
 
-		_server.listen(listenOptions).on('error', err => {
-			log.logger('error', `[socket.io-servidor] ${(err.stack || err)}`);
-		});
+		_server.listen(listenOptions).on(
+			'error',
+			err => {
+				log.logger('error', `[socket.io-servidor] ${(err.stack || err)}`);
+			}
+		);
 
 		// Listeners aqui
 		if (listeners) {
@@ -69,35 +78,38 @@ const startIo = cert => {
 			);
 		}
 
-		ios.httpServer.once('listening', () => {
-			try {
-				const showMessageComplement = lm => {
-					let messageComplement = '';
+		ios.httpServer.once(
+			'listening',
+			() => {
+				try {
+					const showMessageComplement = lm => {
+						let messageComplement = '';
 
-					if (lm.length) {
-						messageComplement = ' (listeners ativos:';
+						if (lm.length) {
+							messageComplement = ' (listeners ativos:';
 
-						lm.forEach(
-							l => {
-								messageComplement += ` ${l}`;
-							}
-						);
+							lm.forEach(
+								l => {
+									messageComplement += ` ${l}`;
+								}
+							);
 
-						messageComplement += ')';
-					} else {
-						messageComplement = ' (nenhum listener ativo)';
-					}
+							messageComplement += ')';
+						} else {
+							messageComplement = ' (nenhum listener ativo)';
+						}
 
-					return messageComplement;
-				};
+						return messageComplement;
+					};
 
-				log.logger('info', `Servidor socket.io está rodando em ${pServerCheck.protocolInfo}${ios.httpServer.address().address}:${ios.httpServer.address().port}...${showMessageComplement(listeningMethods)}\r\n`, 'startUp');
+					log.logger('info', `Servidor socket.io está rodando em ${pServerCheck.protocolInfo}${ios.httpServer.address().address}:${ios.httpServer.address().port}...${showMessageComplement(listeningMethods)}\r\n`, 'startUp');
 
-				resolve();
-			} catch (err) {
-				reject(err);
+					resolve();
+				} catch (err) {
+					reject(err);
+				}
 			}
-		});
+		);
 	});
 };
 // -------------------------------------------------------------------------
