@@ -22,6 +22,7 @@ const SessionStore = require('session-file-store')(session);
 const configManage = require('@serverRoot/server/config-manage'); // Verifica config.json
 const log = require('@serverRoot/helpers/log');
 const queue = require('@serverRoot/server/queue'); // Queue de e-mails
+const redirectHttpToHttps = require('@serverRoot/server/redirectHttpToHttps');
 const routeGate = require('@serverRoot/server/route-gate'); // Gate de roteamento
 // -------------------------------------------------------------------------
 
@@ -370,6 +371,30 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 					}
 				} else {
 					messages.push(['info', 'Monitoramento do loop de eventos no servidor não habilitado (padrão)']);
+				}
+
+				if (isHttps) {
+					try {
+						const resultRedirectHttpToHttps = await redirectHttpToHttps.startRedirectHttpToHttps(listenOptions.host, listenOptions.port);
+
+						switch (resultRedirectHttpToHttps) {
+							case -1: {
+								messages.push(['info', 'Redirecionamento http -> https NÃO ativo (porta de redirecionamento não definida)']);
+								break;
+							}
+							case -2: {
+								messages.push(['error', 'Redirecionamento http -> https NÃO ativo (porta de redirecionamento inválida)']);
+								break;
+							}
+							default: {
+								messages.push(['info', `Redirecionamento http -> https ativo na porta ${resultRedirectHttpToHttps}`]);
+							}
+						}
+					} catch (err) {
+						messages.push(['error', `Redirecionamento http -> https falhou ao iniciar: ${(err.stack || err)}`]);
+					}
+				} else {
+					messages.push(['info', 'Redirecionamento http -> https NÃO ativo (https desabilitado)']);
 				}
 
 				resolve(messages);

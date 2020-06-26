@@ -26,6 +26,7 @@ npm run build
   * Permite APIs de terceiros
   * Monitoramento do loop de eventos para análises de performance e testes
     - Opcional
+  * Permite redirecionamento automático http para https, se necessário
 
 ## Arquivo de configuração unificado
   * config.json
