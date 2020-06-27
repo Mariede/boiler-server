@@ -45,27 +45,21 @@ npm run build
   * Erros personalizados, nas camadas com as regras de negócio (message) ou diretamente no controller (customMessage)
   * Opção de enviar o stackTrace de erros para o cliente (default falso)
 
-## Prefixamento de rotas e Proxy geral de acesso
-  * Via porta 80 (default), configurável
+## Prefixamento de rotas
   * Prefixo configurável, atua em todas as rotas da aplicação
   * Funciona também em requisições socket.io (websockets / pooling)
-  * _tools/proxy/_proxy-start.js
 
 ## Socket.io configurado junto ao servidor http / https
   * Conversação bidirecional cliente <-> servidor
   * Biblioteca socket.io (websockets / pooling)
   * Integrado com a aplicação, mas com servidor próprio em porta separada
-  * Proxy automático, direto pelo servidor web
+  * Redirecionamento automático, proxy acoplado internamento no servidor web
   * Funciona normalmente single-thread e multi-thread (cluster)
   * Trabalha http ou https (ws ou wss), baseado na requisição web
 
-## Possibilidade de utilizar a aplicação como serviço do Windows ou via "Forever"
+## Possibilidade de utilizar a aplicação como serviço nativo do Windows ou via "Forever"
   * Pacote node-windows
-    - Inicia junto com a máquina
-    - Serviço reinicia automaticamente, se houver problemas
-    - _tools/node-as-a-service/_node-as-a-service.js
-  * Pacote Forever (instalar global)
-    - Funciona em Windows ou Linux
+  * Pacote Forever
 
 ## Sessions com armazenamento via arquivos criptografados
   * sessionFileStore
@@ -95,7 +89,7 @@ npm run build
 ## Lib Paginator com paginador e ordenador
   * Configuráveis, items_per_page, current_page, total_pages, ASC/DESC, ordenação por mais de uma coluna, etc
   * "Sort" inteligente, levando em conta a "collation" nas ordenações
-  * Conversão configurável para "lowerCamelCase" do json (recordset de retorno)
+  * Conversão configurável para "camelCase" e string para "nested objects" do json (recordset de retorno)
   * Requisição via query params - page, items_per_page, sort_fields, sort_case_insensitive
 
 ## Lib Searcher
