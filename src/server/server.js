@@ -306,7 +306,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		// -------------------------------------------------------------------------
 
 		// -------------------------------------------------------------------------
-		// Inicia servidor ouvindo em host:port
+		// Inicia servidor
 		const serverStarter = async () => {
 			try {
 				const eventLoopMonitor = () => {

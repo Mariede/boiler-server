@@ -38,6 +38,7 @@ const startIo = cert => {
 			path: __serverConfig.socketIo.path
 		};
 
+		// Cria servidor socket.io -------------------------------------------------
 		const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, (req, res) => {
 			if (req.method.toUpperCase() === 'GET') {
 				if (req.url !== '/favicon.ico') {
@@ -57,6 +58,8 @@ const startIo = cert => {
 		_server.maxHeadersCount = __serverConfig.server.maxHeadersCount;
 		_server.headersTimeout = __serverConfig.server.headersTimeout * 1000;
 
+		// -------------------------------------------------------------------------
+		// Inicia servidor socket.io
 		const ios = io(ioOptions).attach(_server);
 		const listeners = socketIoListeners.listeners;
 		const listeningMethods = [];

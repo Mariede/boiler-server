@@ -34,6 +34,7 @@ const startRedirectHttpToHttps = (webServerHost, webServerPort) => {
 					backlog: __serverConfig.server.backlog
 				};
 
+				// Cria servidor de redirect -----------------------------------------------
 				const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, (req, res) => {
 					const redirectUrl = pServerCheck.httpsRedirectUrl + (req.url ? req.url : '');
 
