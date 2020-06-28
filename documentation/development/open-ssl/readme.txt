@@ -6,7 +6,7 @@
 	-> caminho padrão para o executável openssl.exe: C:\Program Files\OpenSSL-Win64\bin
 	-> copiar OpenSSL DLLs, binários para a pasta \bin
 
-3) Caminho deve ser salvo como variável de ambiente de sistema no windows (Path).
+3) Caminho deve ser salvo como variável de ambiente de sistema no windows (em Path).
 
 4) Definir uma pasta específica e criar arquivo de requisição do certificado (configuração):
 	-> A extensão .pem é utilizada para diferentes arquivos tipo X.509v3 (Base64) e começam por “—– BEGIN …”
