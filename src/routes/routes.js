@@ -2,8 +2,8 @@
 
 // -------------------------------------------------------------------------
 // Rotas (controllers)
-const auth = require('@serverRoot/routes/controllers/auth');
-const home = require('@serverRoot/routes/controllers/home');
+const auth = require('@serverRoot/routes/controllers/base/auth');
+const home = require('@serverRoot/routes/controllers/base/home');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

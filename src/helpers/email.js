@@ -16,61 +16,6 @@ const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Queue: E-mails como arquivos em uma fila para serem enviados posteriormente (metodo privado)
-const _executeQueue = (e, counter) => {
-	return new Promise((resolve, reject) => {
-		const configQueue = __serverConfig.email.queue;
-		const configKey = `${configQueue.path}/trabalhador-${(__serverWorker ? __serverWorker : 'unico')}`;
-		const queueFile = JSON.stringify(e);
-		const uniqueId = functions.generateUniqueId(3);
-
-		let initPath = __serverRoot;
-
-		const queuePathSend = initPath + configKey;
-		const fileName = `${queuePathSend}/mail-queue-${uniqueId}.${counter + configQueue.fileExtension}`;
-
-		fs.access(
-			queuePathSend,
-			fs.constants.F_OK, // Check if exists
-			async err => {
-				try {
-					if (err) {
-						await functions.promiseForEach(
-							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
-							async folder => {
-								try {
-									initPath = path.join(initPath, folder);
-									await functions.createNewFolder(fs, initPath);
-								} catch (err) {
-									reject(err);
-								}
-							}
-						);
-					}
-
-					functions.writeFile(
-						fs,
-						fileName,
-						queueFile
-					)
-					.then(
-						() => {
-							resolve(queueFile);
-						}
-					)
-					.catch(
-						err => {
-							reject(err);
-						}
-					);
-				} catch (err) {
-					reject(err);
-				}
-			}
-		);
-	});
-};
-
 // Dados validados, e-mails serao enviados ou colocados na fila (metodo privado)
 const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendChunks, sendQueue) => {
 	const setChunks = (key, d, lastCall) => {
@@ -105,6 +50,60 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 	};
 
 	const sendAndReturn = async (m, t) => {
+		const _executeQueue = (e, counter) => {
+			return new Promise((resolve, reject) => {
+				const configQueue = __serverConfig.email.queue;
+				const configKey = `${configQueue.path}/trabalhador-${(__serverWorker ? __serverWorker : 'unico')}`;
+				const queueFile = JSON.stringify(e);
+				const uniqueId = functions.generateUniqueId(3);
+
+				let initPath = __serverRoot;
+
+				const queuePathSend = initPath + configKey;
+				const fileName = `${queuePathSend}/mail-queue-${uniqueId}.${counter + configQueue.fileExtension}`;
+
+				fs.access(
+					queuePathSend,
+					fs.constants.F_OK, // Check if exists
+					async err => {
+						try {
+							if (err) {
+								await functions.promiseForEach(
+									functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
+									async folder => {
+										try {
+											initPath = path.join(initPath, folder);
+											await functions.createNewFolder(fs, initPath);
+										} catch (err) {
+											reject(err);
+										}
+									}
+								);
+							}
+
+							functions.writeFile(
+								fs,
+								fileName,
+								queueFile
+							)
+							.then(
+								() => {
+									resolve(queueFile);
+								}
+							)
+							.catch(
+								err => {
+									reject(err);
+								}
+							);
+						} catch (err) {
+							reject(err);
+						}
+					}
+				);
+			});
+		};
+
 		const sentInfos = [];
 
 		let i = 0;
@@ -144,7 +143,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 					}
 				} else {
 					try {
-						const sentInfo = await _executeQueue(e, i); // Enfileira chunk de e-mails
+						const sentInfo = await _executeQueue(e, i); // Enfileira chunk de e-mails (envio posterior)
 						sentInfos.push(
 							{
 								toQueue: true,
@@ -425,7 +424,7 @@ const sendEmail = async (from, to, cc, bcc, subject, text, attachments = [], sen
 };
 
 // Prepara a array de arquivos a serem anexados
-//		attachments => arquivos a serem anexados (base de comparacao do codigo: lib uploader)
+//		attachments -> arquivos a serem anexados (base de comparacao do codigo: lib uploader)
 const getAttachments = attachments => {
 	const attachmentsResult = [];
 

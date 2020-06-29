@@ -350,14 +350,6 @@ const mongoDB = {
 	*/
 	noSqlGetModel: schema => {
 		return new Promise((resolve, reject) => {
-			const getCompoundIndexes = s => {
-				return (mongooseSchemas.schemasCompoundIndexes[s] || []);
-			};
-
-			const getExtraOptions = s => {
-				return (mongooseSchemas.schemasExtraOptions[s] || {});
-			};
-
 			let myModel = mongoose.models[schema];
 
 			if (myModel) {
@@ -366,6 +358,14 @@ const mongoDB = {
 				const checkedSchema = mongooseSchemas.schemas[schema];
 
 				if (checkedSchema) {
+					const getCompoundIndexes = s => {
+						return (mongooseSchemas.schemasCompoundIndexes[s] || []);
+					};
+
+					const getExtraOptions = s => {
+						return (mongooseSchemas.schemasExtraOptions[s] || {});
+					};
+
 					const options = { ...__serverConfig.db.mongoose.configSchema, ...getExtraOptions(schema) };
 					const mySchema = new mongoose.Schema(checkedSchema, options);
 					const compoundIndexes = getCompoundIndexes(schema);

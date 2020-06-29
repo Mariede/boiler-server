@@ -139,6 +139,7 @@ npm run build
       + é local, relacionado a rota em execução
       + uma action pode chamar uma ou mais actions e/ou um ou mais helpers
     - as actions podem ser quebradas em subpastas, componentizadas após os controllers
+      + pasta actions/base contém métodos relacionados as rotas base do boiler (página inicial e autenticação padrão)
   * cert (* opcional, configurável)
     - contém os arquivos do certificado digital para chamadas https
     - se o modo https estiver desligado, a aplicação desconsidera esta pasta
@@ -168,6 +169,7 @@ npm run build
     - ponto centralizador do contato client/server
       + todas as requisições/retornos do cliente são projetadas e passam por aqui
     - os controllers podem ser quebrados em subpastas, componentizados após routes
+      + pasta routes/controllers/base contém as rotas base do boiler (página inicial e autenticação padrão)
   * server
     - arquivos de inicialização do servidor e assistência ao seu funcionamento
     - núcleo do servidor, transparente para os projetos
