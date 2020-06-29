@@ -12,97 +12,6 @@ const errWrapper = require('@serverRoot/helpers/err-wrapper');
 
 // -------------------------------------------------------------------------
 /*
-Ordenador: sortElements deve ser uma array e case sensitive para as chaves (metodo privado)
-	-> sortOrder Array ASC/DESC (default: ASC)
-	-> sortCaseInsensitive true/false
-*/
-const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) => {
-	const sortThis = (a, b, i, iLen) => {
-		const getNestedValue = (obj, currentKey) => {
-			return currentKey.split('.').reduce(
-				(o, k) => {
-					if (!Object.prototype.hasOwnProperty.call(o, k)) {
-						return o;
-					}
-
-					return o[k];
-				},
-				obj
-			);
-		};
-
-		if (i < iLen) {
-			const order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
-			const aCheck = (getNestedValue(a, sortElements[i]) || '');
-			const bCheck = (getNestedValue(b, sortElements[i]) || '');
-			const checkData = collator.compare(aCheck, bCheck);
-
-			return ((checkData < 0) ? order.d1 : ((checkData > 0) ? order.a1 : sortThis(a, b, i + 1, iLen)));
-		}
-
-		return 0;
-	};
-
-	const newData = Array.from(jsonData);
-	const sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
-	const collator = new Intl.Collator(
-		undefined, // Default locale
-		{
-			ignorePunctuation: false,
-			localeMatcher: 'best fit',
-			numeric: true,
-			sensitivity: (sortCaseInsensitive ? 'base' : 'case'),
-			usage: 'sort'
-		}
-	);
-
-	newData.sort(
-		(a, b) => {
-			return sortThis(a, b, 0, sortElementsLen);
-		}
-	);
-
-	return newData;
-};
-
-/*
-Paginador: currentPage / itemsPerPage (metodo privado)
-	-> Retorna pageDetails, recordset, rowsAffected, output, returnValue
-*/
-const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output, returnValue) => {
-	const backPage = currentPage - 1;
-	const _iFrom = (backPage * itemsPerPage) + 1;
-	const _iTo = currentPage * itemsPerPage;
-	const pageDetails = {
-		currentPage: currentPage,
-		itemsPerPage: itemsPerPage,
-		itemsFrom: (_iFrom <= jsonDataLen ? (_iTo !== 0 ? _iFrom : 0) : 0),
-		itemsTo: (_iFrom <= jsonDataLen ? (_iTo <= jsonDataLen ? _iTo : jsonDataLen) : 0),
-		itemsCount: jsonDataLen,
-		totalPages: Math.ceil(jsonDataLen / itemsPerPage)
-	};
-	const indexSearchStart = backPage * itemsPerPage;
-	const indexSearchStop = indexSearchStart + itemsPerPage;
-	const recordSet = jsonData.filter(
-		(e, i) => {
-			return (i >= indexSearchStart && i < indexSearchStop);
-		}
-	);
-	const rowsAffected = recordSet.length;
-	const result = { pageDetails: pageDetails, recordset: recordSet, rowsAffected: rowsAffected };
-
-	if (typeof output === 'object' && Object.keys(output).length) {
-		result.output = output;
-	}
-
-	if (returnValue) {
-		result.returnValue = returnValue;
-	}
-
-	return result;
-};
-
-/*
 Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
 	-> Realiza conversao nas subchaves aninhadas dos objetos (nested keys)
 	-> Formata resultados tabulares especificos para novas subchaves aninhadas
@@ -197,8 +106,63 @@ const keysToCamelCase = jsonData => {
 	return newData;
 };
 
-// Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordenador)
+/*
+Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordenador)
+
+	Ordenador: sortElements deve ser uma array e case sensitive para as chaves
+		-> sortOrder Array ASC/DESC (default: ASC)
+		-> sortCaseInsensitive true/false
+*/
 const setSort = (req, jsonData, toCamelCase = false) => {
+	const _executeSort = (jsonData, sortElements, sortOrder, sortCaseInsensitive) => {
+		const sortThis = (a, b, i, iLen) => {
+			const getNestedValue = (obj, currentKey) => {
+				return currentKey.split('.').reduce(
+					(o, k) => {
+						if (!Object.prototype.hasOwnProperty.call(o, k)) {
+							return o;
+						}
+
+						return o[k];
+					},
+					obj
+				);
+			};
+
+			if (i < iLen) {
+				const order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
+				const aCheck = (getNestedValue(a, sortElements[i]) || '');
+				const bCheck = (getNestedValue(b, sortElements[i]) || '');
+				const checkData = collator.compare(aCheck, bCheck);
+
+				return ((checkData < 0) ? order.d1 : ((checkData > 0) ? order.a1 : sortThis(a, b, i + 1, iLen)));
+			}
+
+			return 0;
+		};
+
+		const newData = Array.from(jsonData);
+		const sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
+		const collator = new Intl.Collator(
+			undefined, // Default locale
+			{
+				ignorePunctuation: false,
+				localeMatcher: 'best fit',
+				numeric: true,
+				sensitivity: (sortCaseInsensitive ? 'base' : 'case'),
+				usage: 'sort'
+			}
+		);
+
+		newData.sort(
+			(a, b) => {
+				return sortThis(a, b, 0, sortElementsLen);
+			}
+		);
+
+		return newData;
+	};
+
 	const sortElements = [];
 	const sortOrder = [];
 	const sortCaseInsensitive = /^(true|yes|y|sim|s){0,1}$/i.test(req.query.sort_case_insensitive);
@@ -226,8 +190,44 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 /*
 Chamada inicial, verifica os dados de entrada do cliente, executa a acao (paginador)
 	-> page na querystring e obrigatorio para a paginacao
+
+	Paginador: currentPage / itemsPerPage
+		-> retorna pageDetails, recordset, rowsAffected, output, returnValue
 */
 const setPage = (req, jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) => {
+	const _executePage = (jsonData, jsonDataLen, currentPage, itemsPerPage, output, returnValue) => {
+		const backPage = currentPage - 1;
+		const _iFrom = (backPage * itemsPerPage) + 1;
+		const _iTo = currentPage * itemsPerPage;
+		const pageDetails = {
+			currentPage: currentPage,
+			itemsPerPage: itemsPerPage,
+			itemsFrom: (_iFrom <= jsonDataLen ? (_iTo !== 0 ? _iFrom : 0) : 0),
+			itemsTo: (_iFrom <= jsonDataLen ? (_iTo <= jsonDataLen ? _iTo : jsonDataLen) : 0),
+			itemsCount: jsonDataLen,
+			totalPages: Math.ceil(jsonDataLen / itemsPerPage)
+		};
+		const indexSearchStart = backPage * itemsPerPage;
+		const indexSearchStop = indexSearchStart + itemsPerPage;
+		const recordSet = jsonData.filter(
+			(e, i) => {
+				return (i >= indexSearchStart && i < indexSearchStop);
+			}
+		);
+		const rowsAffected = recordSet.length;
+		const result = { pageDetails: pageDetails, recordset: recordSet, rowsAffected: rowsAffected };
+
+		if (typeof output === 'object' && Object.keys(output).length) {
+			result.output = output;
+		}
+
+		if (returnValue) {
+			result.returnValue = returnValue;
+		}
+
+		return result;
+	};
+
 	let currentPage = 0,
 		itemsPerPage = 10;
 

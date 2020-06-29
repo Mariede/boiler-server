@@ -7,10 +7,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const dbCon = require('@serverRoot/helpers/db');
-const errWrapper = require('@serverRoot/helpers/err-wrapper');
-const paginator = require('@serverRoot/helpers/paginator');
-const validator = require('@serverRoot/helpers/validator');
+
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
