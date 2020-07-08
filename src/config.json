@@ -30,6 +30,11 @@
 				"virtualPath": "/css",
 				"physicalPath": "/views/server-side/assets/css",
 				"maxAge": 0
+			},
+			{
+				"virtualPath": "/",
+				"physicalPath": "/views/client-side/public",
+				"maxAge": 0
 			}
 		],
 		"pathFavicon": "/views/server-side/assets/images/favicon.ico",
@@ -81,6 +86,7 @@
 		"authTipo": 1,
 		"except": [
 			"/",
+			"/server",
 			"/socket.io",
 			"/logon",
 			"/islogged"

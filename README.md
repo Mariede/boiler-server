@@ -181,3 +181,4 @@ npm run build
     - arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
       + server-side : páginas interpretadas diretamente no servidor (.ejs)
       + client-side : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)
+        * caminho para pasta pública: /client-side/public

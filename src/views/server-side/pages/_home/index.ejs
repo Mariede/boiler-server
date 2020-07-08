@@ -1,64 +1,65 @@
 <!DOCTYPE html>
-
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>Servidor em NODE.js</title>
-	<link rel="shortcut icon" href="img/favicon.ico">
-	<link rel="stylesheet" href="css/home-style.css" type="text/css">
+	<head>
+		<meta charset="utf-8">
 
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+		<title>Servidor em NODE.js</title>
 
-	<script type="text/javascript">
-		const ioConnection = () => {
-			const showData = (connected, ...data) => {
-				const el = document.getElementById('panel-bottom-date');
+		<link rel="shortcut icon" href="img/favicon.ico">
+		<link rel="stylesheet" href="css/home-style.css" type="text/css">
 
-				if (connected) {
-					el.innerHTML = `${data} h`;
-					el.style.color = '';
-				} else {
-					el.style.color = 'red';
-				}
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+		<script type="text/javascript">
+			const ioConnection = () => {
+				const showData = (connected, ...data) => {
+					const el = document.getElementById('panel-bottom-date');
+
+					if (connected) {
+						el.innerHTML = `${data} h`;
+						el.style.color = '';
+					} else {
+						el.style.color = 'red';
+					}
+				};
+
+				const socket = io.connect('<%= ioUrl %>', { path: '<%= ioPath %>', transports: ['websocket', 'polling'], forceNew: true });
+
+				socket.on(
+					'serverTimeTick',
+					data => {
+						showData(true, data);
+					}
+				);
+
+				socket.on(
+					'connect',
+					() => {
+						socket.emit('serverTimeStart');
+					}
+				);
+
+				socket.on(
+					'disconnect',
+					() => {
+						showData(false);
+					}
+				);
 			};
 
-			const socket = io.connect('<%= ioUrl %>', { path: '<%= ioPath %>', transports: ['websocket', 'polling'], forceNew: true });
-
-			socket.on(
-				'serverTimeTick',
-				data => {
-					showData(true, data);
-				}
-			);
-
-			socket.on(
-				'connect',
-				() => {
-					socket.emit('serverTimeStart');
-				}
-			);
-
-			socket.on(
-				'disconnect',
-				() => {
-					showData(false);
-				}
-			);
-		};
-
-		ioConnection();
-	</script>
-</head>
-<body>
-	<div id="wrapper">
-		<div id="content">
-			<img id="logo-img" src="img/server-logo.png" alt="logo">
-			<h2>Bem vindo, servidor em Express NODE.js</h2>
+			ioConnection();
+		</script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="content">
+				<img id="logo-img" src="img/server-logo.png" alt="logo">
+				<h2>Bem vindo, servidor em Express NODE.js</h2>
+			</div>
+			<hr>
+			<div id="panel-bottom">
+				Hora do servidor : <span id="panel-bottom-date"><%= date %> h</span>
+			</div>
 		</div>
-		<hr>
-		<div id="panel-bottom">
-			Hora do servidor : <span id="panel-bottom-date"><%= date %> h</span>
-		</div>
-	</div>
-</body>
+	</body>
 </html>
