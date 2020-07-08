@@ -21,7 +21,7 @@ npm run build
   * cookie parser
   * compression
   * Headers de segurança
-  * Pastas de arquivo estáticos (imagens, css ...)
+  * Pastas de arquivos estáticos (imagens, css, front-end ...)
   * Permite aplicações RESTFUL com single page applications (SPA)
   * Permite APIs de terceiros
   * Monitoramento do loop de eventos para análises de performance e testes
@@ -128,6 +128,8 @@ npm run build
 ## Engine de templates para expor arquivos html dinâmicos
   * EJS - Embedded Javascript Templates (semelhante ao asp)
   * Acoplado ao sistema de views do Express
+  * Essas páginas são montadas diretamente pelo servidor
+    - Servidas em pasta separada de uma aplicação front-end estática, como uma SPA (server-side ou client-side)
 
 ## Build gerável
   * Através do Webpack
@@ -180,5 +182,6 @@ npm run build
   * views
     - arquivos do front-end como páginas e templates (htmls dinâmicos), imagens, css etc...
       + server-side : páginas interpretadas diretamente no servidor (.ejs)
+        * caminho para o motor de páginas: /server-side/pages
       + client-side : páginas dinâmicas no cliente, contato via AJAX / RESTFUL (opcional)
         * caminho para pasta pública: /client-side/public
