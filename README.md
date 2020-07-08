@@ -45,6 +45,17 @@ npm run build
   * Erros personalizados, nas camadas com as regras de negócio (message) ou diretamente no controller (customMessage)
   * Opção de enviar o stackTrace de erros para o cliente (default falso)
 
+## Rotas padrão
+  * Rotas protegidas ou abertas - via lib de autenticação (configurável em config.json)
+    - /islogged
+      + verifica se usuário autenticado
+    - /logon e /logout
+      + acesso a sistemas controlados
+    - /server
+      + informa detalhes do servidor e teste de socket.io
+    - /egg
+      + easter egg :neckbeard:
+
 ## Prefixamento de rotas
   * Prefixo configurável, atua em todas as rotas da aplicação
   * Funciona também em requisições socket.io (websockets / pooling)
@@ -71,12 +82,6 @@ npm run build
     - Erros originários dos controllers
     - Fila de e-mails
     - Acessos e modificações no arquivo de configuração (config.json)
-
-## Autenticação das rotas personalizável
-  * Lib de autenticação
-    - Rotas protegidas (configurável)
-    - isLogged
-    - logon / logout
 
 ## Lib de acesso a bancos de dados
   * Parametrizável para MS SQL Server

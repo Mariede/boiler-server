@@ -20,8 +20,8 @@ const _commonGate = (req, res) => {
 // -------------------------------------------------------------------------
 // Rotas
 const homeRoutes = (router, handleErrorsController) => {
-	// Rota: root ----------------------------------------------------------
-	router.route('/')
+	// Rota: egg -----------------------------------------------------------
+	router.route('/egg')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {
@@ -33,7 +33,7 @@ const homeRoutes = (router, handleErrorsController) => {
 	.get(
 		handleErrorsController(
 			async (req, res) => {
-				const result = await home.root(req, res);
+				const result = await home.egg(req, res);
 				res.status(200).sendFile(
 					result.file,
 					{

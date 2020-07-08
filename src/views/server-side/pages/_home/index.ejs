@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
+		<meta charset="utf-8" />
 
 		<title>Servidor em NODE.js</title>
 
-		<link rel="shortcut icon" href="img/favicon.ico">
-		<link rel="stylesheet" href="css/home-style.css" type="text/css">
+		<link rel="shortcut icon" href="img/favicon.ico" />
+		<link rel="stylesheet" href="css/pages-style.css" type="text/css" />
 
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 
 		<script type="text/javascript">
 			const ioConnection = () => {
 				const showData = (connected, ...data) => {
-					const el = document.getElementById('panel-bottom-date');
+					const el = document.getElementById('panel-home-date');
 
 					if (connected) {
 						el.innerHTML = `${data} h`;
@@ -53,12 +53,12 @@
 	<body>
 		<div id="wrapper">
 			<div id="content">
-				<img id="logo-img" src="img/server-logo.png" alt="logo">
+				<img id="logo-img" src="img/server-logo.png" alt="logo" />
 				<h2>Bem vindo, servidor em Express NODE.js</h2>
 			</div>
-			<hr>
-			<div id="panel-bottom">
-				Hora do servidor : <span id="panel-bottom-date"><%= date %> h</span>
+			<hr />
+			<div class="panel panel-home-bottom">
+				Hora do servidor : <span id="panel-home-date"><%= date %> h</span>
 			</div>
 		</div>
 	</body>

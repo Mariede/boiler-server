@@ -13,8 +13,8 @@ const socketIoListeners = require('@serverRoot/lib-com/socket-io-listeners');
 
 // -------------------------------------------------------------------------
 // Acoes
-const root = (req, res) => {
-	const fRet = { file: 'index.html', path: '/views/client-side/public' };
+const egg = (req, res) => {
+	const fRet = { file: 'index.html', path: '/views/server-side/pages/_egg/' };
 	return fRet;
 };
 
@@ -25,6 +25,6 @@ const server = (req, res) => {
 // -------------------------------------------------------------------------
 
 module.exports = {
-	root,
+	egg,
 	server
 };

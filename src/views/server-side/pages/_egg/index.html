@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#000000" />
+
+		<title>Servidor em NODE.js - Easter eggs</title>
+
+		<link rel="shortcut icon" href="img/favicon.ico">
+		<link rel="stylesheet" href="css/pages-style.css" type="text/css">
+
+		<script src="https://rawgit.com/WeiChiaChang/Easter-egg/master/easter-eggs-collection.js"></script>
+
+		<script type="text/javascript">
+			window.onload = () => {
+				const suaSorte = document.getElementById('sua-sorte');
+
+				suaSorte.focus();
+
+				suaSorte.addEventListener(
+					'keyup',
+					e => {
+						e.preventDefault();
+
+						const lenVal = (suaSorte.value || '').length;
+						const maxVal = (suaSorte.maxLength || 50);
+
+						if (lenVal >= maxVal) {
+							suaSorte.value = '';
+						}
+					}
+				);
+			};
+		</script>
+	</head>
+	<body>
+		<noscript>É preciso habilitar o JavaScript para rodar esta aplicação</noscript>
+
+		<div id="wrapper">
+			<div id="content">
+				<h2>Digite a palavra chave e mostre o que deseja!</h2>
+				<hr />
+				<div class="panel panel-egg">
+					<input id="sua-sorte" type="text" value="" maxlength="50" autocomplete="off" placeholder="sua sorte aqui...">
+					<a href="https://codepen.io/WeiChiaChang/full/xLQVXm" target="_dicas">Quer dicas?</a>
+					<div class="tips">
+						Digite a palavra chave completamente, sem backspace...
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

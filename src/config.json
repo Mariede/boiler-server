@@ -85,7 +85,7 @@
 		"sessWrapper": "userData",
 		"authTipo": 1,
 		"except": [
-			"/",
+			"/egg",
 			"/server",
 			"/socket.io",
 			"/logon",
