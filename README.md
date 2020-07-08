@@ -22,7 +22,7 @@ npm run build
   * compression
   * Headers de segurança
   * Pastas de arquivo estáticos (imagens, css ...)
-  * Permite aplicações RESTFUL
+  * Permite aplicações RESTFUL com single page applications (SPA)
   * Permite APIs de terceiros
   * Monitoramento do loop de eventos para análises de performance e testes
     - Opcional
