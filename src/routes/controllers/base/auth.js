@@ -60,8 +60,8 @@ const authRoutes = (router, handleErrorsController) => {
 	);
 	// ---------------------------------------------------------------------
 
-	// Rota: isLogged ------------------------------------------------------
-	router.route('/isLogged')
+	// Rota: islogged ------------------------------------------------------
+	router.route('/islogged')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {
