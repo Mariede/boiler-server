@@ -16,7 +16,7 @@ const isLogged = (req, resType) => { // Se resType === 1 => retorna object. Defa
 	const sess = req.session;
 	const sessWraper = __serverConfig.auth.sessWrapper;
 
-	let fRet = false;
+	let fRet = (resType === 1 ? {} : false);
 
 	if (Object.prototype.hasOwnProperty.call(sess, sessWraper)) {
 		if (resType === 1) {
