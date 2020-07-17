@@ -18,7 +18,7 @@
     "http-proxy": "^1.18.1",
     "log4js": "^6.3.0",
     "module-alias": "^2.2.2",
-    "mongoose": "^5.9.20",
+    "mongoose": "^5.9.25",
     "mssql": "^6.2.0",
     "multer": "^1.4.2",
     "nodemailer": "^6.4.10",
@@ -29,15 +29,15 @@
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^6.0.2",
-    "eslint": "^7.3.1",
+    "copy-webpack-plugin": "^6.0.3",
+    "eslint": "^7.4.0",
     "eslint-loader": "^4.0.2",
     "generate-package-json-webpack-plugin": "^1.1.2",
     "nodemon": "^2.0.4",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
     "webpack-messages": "^2.0.4",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^2.5.0"
   },
   "scripts": {
     "start": "cls && nodemon ./src/main.js",
