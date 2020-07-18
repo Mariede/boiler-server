@@ -5,9 +5,9 @@
 */
 {
 	"env": {
-		"commonjs": true,
+		"node": true,
 		"es2020": true,
-		"node": true
+		"commonjs": true
 	},
 	"extends": "eslint:recommended",
 	"globals": {
