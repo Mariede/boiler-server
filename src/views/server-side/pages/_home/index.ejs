@@ -56,7 +56,11 @@
 				<img id="logo-img" src="img/server-logo.png" alt="logo" />
 				<h2>Bem vindo, servidor em Express NODE.js</h2>
 			</div>
+
 			<hr />
+
+			<em><%= (server.name ? `${server.name}, ` : '') %>versão <strong><%= (server.version || 'N/D') %></strong></em>
+
 			<div class="panel panel-home-bottom">
 				Hora do servidor : <span id="panel-home-date"><%= date %> h</span>
 			</div>

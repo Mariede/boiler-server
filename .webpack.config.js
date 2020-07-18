@@ -86,7 +86,10 @@ const generateBuild = {
 				description: (packageJson.description || ''),
 				main: outputName,
 				license: (packageJson.license || ''),
-				private: true
+				private: true,
+				scripts: {
+					start: `node ${outputName}`
+				}
 			},
 			packageJsonFile
 		),
