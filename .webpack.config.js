@@ -87,6 +87,9 @@ const generateBuild = {
 				main: outputName,
 				license: (packageJson.license || ''),
 				private: true,
+				engines: {
+					node: '>=10.5.0'
+				},
 				scripts: {
 					start: `node ${outputName}`
 				}
