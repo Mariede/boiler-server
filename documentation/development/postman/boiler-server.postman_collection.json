@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c0ae6ad6-5a53-4570-8fd6-3f06bc7f64dc",
+		"_postman_id": "c5774de2-86f0-4154-a8a0-985e9f5b6943",
 		"name": "boiler-server",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -101,6 +101,40 @@
 					],
 					"path": [
 						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/server",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serverhost}}/server",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"server"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{serverhost}}/egg",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{serverhost}}/egg",
+					"host": [
+						"{{serverhost}}"
+					],
+					"path": [
+						"egg"
 					]
 				}
 			},
