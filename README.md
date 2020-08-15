@@ -96,6 +96,7 @@ npm run build
   * "Sort" inteligente, levando em conta a "collation" nas ordenações
   * Conversão configurável para "camelCase" e string para "nested objects" do json (recordset de retorno)
   * Requisição via query params - page, items_per_page, sort_fields, sort_case_insensitive
+  * Compatível com componentes Paginator e Sorter no front-end boiler-react
 
 ## Lib Searcher
   * Facilita as consultas em geral com algorítmo unificado de pesquisa em múltiplas colunas
