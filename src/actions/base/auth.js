@@ -97,7 +97,7 @@ const logout = (req, res) => {
 					if (err) {
 						reject(err);
 					} else {
-						res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date() });
+						res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date(0) });
 						resolve();
 					}
 				} catch (err) {
