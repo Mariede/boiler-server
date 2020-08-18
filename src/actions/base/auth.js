@@ -90,6 +90,9 @@ const logon = async (req, res) => {
 const logout = (req, res) => {
 	return new Promise((resolve, reject) => {
 		const sess = req.session;
+		const sessWraper = __serverConfig.auth.sessWrapper;
+
+		const sessionExists = Object.prototype.hasOwnProperty.call(sess, sessWraper);
 
 		sess.destroy(
 			err => {
@@ -98,7 +101,7 @@ const logout = (req, res) => {
 						reject(err);
 					} else {
 						res.cookie(__serverConfig.server.session.cookieName, '', { expires: new Date(0) });
-						resolve();
+						resolve(sessionExists);
 					}
 				} catch (err) {
 					reject(err);

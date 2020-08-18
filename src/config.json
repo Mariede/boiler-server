@@ -89,6 +89,7 @@
 			"/server",
 			"/socket.io",
 			"/logon",
+			"/logout",
 			"/islogged"
 		]
 	},
