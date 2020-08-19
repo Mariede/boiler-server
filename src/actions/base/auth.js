@@ -66,7 +66,9 @@ const logon = async (req, res) => {
 						sess[sessWraper] = {
 							id: dataUser.ID_USUARIO,
 							nome: dataUser.NOME,
-							email: dataUser.EMAIL
+							email: dataUser.EMAIL,
+							perfis: ['Administrador', 'supervisor'],
+							funcoes: ['fn1', 'fn2', 'fn3', 'fn4']
 						};
 						/* Session data */
 					} else {
