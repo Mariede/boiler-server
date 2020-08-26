@@ -22,13 +22,18 @@
 		},
 		"pathVirtualStaticFiles": [
 			{
+				"virtualPath": "/css",
+				"physicalPath": "/views/server-side/assets/css",
+				"maxAge": 0
+			},
+			{
 				"virtualPath": "/img",
 				"physicalPath": "/views/server-side/assets/images",
 				"maxAge": 0
 			},
 			{
-				"virtualPath": "/css",
-				"physicalPath": "/views/server-side/assets/css",
+				"virtualPath": "/packages",
+				"physicalPath": "/views/server-side/assets/packages",
 				"maxAge": 0
 			},
 			{
