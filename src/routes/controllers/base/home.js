@@ -21,7 +21,8 @@ const _commonGate = (req, res) => {
 // Rotas
 const homeRoutes = (router, handleErrorsController) => {
 	// Rota: egg -----------------------------------------------------------
-	router.route('/egg')
+	router
+	.route('/egg')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {
@@ -46,7 +47,8 @@ const homeRoutes = (router, handleErrorsController) => {
 	// ---------------------------------------------------------------------
 
 	// Rota: server --------------------------------------------------------
-	router.route('/server')
+	router
+	.route('/server')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {

@@ -21,7 +21,8 @@ const _commonGate = (req, res) => {
 // Rotas
 const authRoutes = (router, handleErrorsController) => {
 	// Rota: logon ---------------------------------------------------------
-	router.route('/logon')
+	router
+	.route('/logon')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {
@@ -41,7 +42,8 @@ const authRoutes = (router, handleErrorsController) => {
 	// ---------------------------------------------------------------------
 
 	// Rota: logout --------------------------------------------------------
-	router.route('/logout')
+	router
+	.route('/logout')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {
@@ -61,7 +63,8 @@ const authRoutes = (router, handleErrorsController) => {
 	// ---------------------------------------------------------------------
 
 	// Rota: islogged ------------------------------------------------------
-	router.route('/islogged')
+	router
+	.route('/islogged')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {

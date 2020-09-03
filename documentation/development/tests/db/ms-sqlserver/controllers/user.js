@@ -21,7 +21,8 @@ const _commonGate = (req, res) => {
 // Rotas
 const userRoutes = (router, handleErrorsController) => {
 	// Colecao usuarios ----------------------------------------------------
-	router.route('/usuario')
+	router
+	.route('/usuario')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {
@@ -41,7 +42,8 @@ const userRoutes = (router, handleErrorsController) => {
 	// ---------------------------------------------------------------------
 
 	// Model usuario -------------------------------------------------------
-	router.route('/usuario/:id')
+	router
+	.route('/usuario/:id')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {
