@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-
+const xml2js = require('xml2js');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -14,11 +14,16 @@ const errWrapper = require('@serverRoot/helpers/err-wrapper');
 /*
 Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
 	-> Realiza conversao nas subchaves aninhadas dos objetos (nested keys)
+
 	-> Formata resultados tabulares especificos para novas subchaves aninhadas
 		-> Regra: utilizar . no nome da chave para identificar niveis das subchaves do objeto
 			-> ex: 'USUARIO.TIPO.ID'
+
+	-> Se existir keysXmlToJson no formato array de objetos, converte dados XML relacionados para JSON
+			-> [{ xmlRoot: 'ROOT1', xmlPath: 'PATH1' }, { xmlRoot: 'ROOT2', xmlPath: 'PATH2' }, ...]
+			** xmlRoot deve ter o mesmo identificador da coluna no recordset **
 */
-const keysToCamelCase = jsonData => {
+const keysToCamelCase = (jsonData, keysXmlToJson) => {
 	const convertKeys = (cKey, cValue, nDocument) => {
 		const transformP = p => {
 			const changedP = String(p || '').toLowerCase().replace(
@@ -97,10 +102,50 @@ const keysToCamelCase = jsonData => {
 		}
 	};
 
+	// Conversao de XML para JSON, se for o caso
+	const validateXmlToJson = () => {
+		const checkData = Array.from(jsonData);
+
+		if (Array.isArray(keysXmlToJson) && keysXmlToJson.length !== 0) {
+			checkData.map(
+				record => {
+					return (
+						keysXmlToJson.forEach(
+							arrKey => {
+								xml2js.parseString(
+									record[arrKey.xmlRoot],
+									{
+										explicitRoot: false,
+										explicitArray: false,
+										valueProcessors: [
+											xml2js.processors.parseNumbers,
+											xml2js.processors.parseBooleans
+										]
+									},
+									(err, result) => {
+										if (!err) {
+											record[arrKey.xmlRoot] = (result[arrKey.xmlPath] || result);
+										}
+
+										return record;
+									}
+								);
+							}
+						)
+					);
+				}
+			);
+		}
+
+		return checkData;
+	};
+
+	const validatedData = validateXmlToJson();
+
 	const newData = [];
 
-	if (jsonData) {
-		loopArray(jsonData);
+	if (validatedData) {
+		loopArray(validatedData);
 	}
 
 	return newData;
@@ -112,6 +157,8 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordena
 	Ordenador: sortElements deve ser uma array e case sensitive para as chaves
 		-> sortOrder Array ASC/DESC (default: ASC)
 		-> sortCaseInsensitive true/false
+
+	toCamelCase: Boolean ou Array de objetos caso true mais propriedades em xml para conversao json
 */
 const setSort = (req, jsonData, toCamelCase = false) => {
 	const _executeSort = (sortElements, sortOrder, sortCaseInsensitive) => {
@@ -141,7 +188,7 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 			return 0;
 		};
 
-		const newData = (toCamelCase ? keysToCamelCase(jsonData) : Array.from(jsonData));
+		const newData = (toCamelCase ? keysToCamelCase(jsonData, toCamelCase) : Array.from(jsonData));
 		const sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
 		const collator = new Intl.Collator(
 			undefined, // Default locale
@@ -193,6 +240,8 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao (pagina
 
 	Paginador: currentPage / itemsPerPage
 		-> retorna pageDetails, recordset, rowsAffected, output, returnValue
+
+	toCamelCase: Boolean ou Array de objetos caso true mais propriedades em xml para conversao json
 */
 const setPage = (req, jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) => {
 	const _executePage = (currentPage, itemsPerPage, output, returnValue) => {
@@ -209,7 +258,7 @@ const setPage = (req, jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) =
 		};
 		const indexSearchStart = backPage * itemsPerPage;
 		const indexSearchStop = indexSearchStart + itemsPerPage;
-		const recordSet = (toCamelCase ? keysToCamelCase(jsonData) : Array.from(jsonData)).filter(
+		const recordSet = (toCamelCase ? keysToCamelCase(jsonData, toCamelCase) : Array.from(jsonData)).filter(
 			(e, i) => {
 				return (i >= indexSearchStart && i < indexSearchStop);
 			}
@@ -246,11 +295,15 @@ const setPage = (req, jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) =
 	return _executePage(currentPage, itemsPerPage, jsonDataAll.output, jsonDataAll.returnValue);
 };
 
-// Formata a saida para o cliente selecionando o recordset de retorno, casos existam recordsets
+/*
+Formata a saida para o cliente selecionando o recordset de retorno, casos existam recordsets
+
+	toCamelCase: Boolean ou Array de objetos caso true mais propriedades em xml para conversao json
+*/
 const setResult = (jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) => {
 	const formattedResult = {};
 
-	formattedResult.recordset = (toCamelCase ? keysToCamelCase(jsonData) : Array.from(jsonData));
+	formattedResult.recordset = (toCamelCase ? keysToCamelCase(jsonData, toCamelCase) : Array.from(jsonData));
 	formattedResult.rowsAffected = jsonDataLen;
 
 	if (typeof jsonDataAll.output === 'object' && Object.keys(jsonDataAll.output).length) {

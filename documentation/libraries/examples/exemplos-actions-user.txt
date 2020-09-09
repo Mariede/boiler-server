@@ -16,8 +16,8 @@ const consultarTodos = async (req, res) => {
 					,A.SENHA
 					,A.SALT
 					,A.ATIVO
-					,A.ID_TIPO 'TIPO.ID'
-					,B.TIPO 'TIPO.NOME'
+					,A.ID_TIPO [TIPO.ID]
+					,B.TIPO [TIPO.NOME]
 				FROM
 					USUARIO A (NOLOCK)
 					INNER JOIN TIPO B (NOLOCK)
@@ -28,8 +28,11 @@ const consultarTodos = async (req, res) => {
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
-	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
+	// Ordenador
+	resultSet.recordset = paginator.setSort(req, resultSet.recordset, true);
+
+	// Paginador
+	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected);
 
 	return pagedResultSet;
 };
@@ -66,8 +69,8 @@ const consultar = async (req, res) => {
 					,A.SENHA
 					,A.SALT
 					,A.ATIVO
-					,A.ID_TIPO 'TIPO.ID'
-					,B.TIPO 'TIPO.NOME'
+					,A.ID_TIPO [TIPO.ID]
+					,B.TIPO [TIPO.NOME]
 				FROM
 					USUARIO A (NOLOCK)
 					INNER JOIN TIPO B (NOLOCK)
@@ -79,7 +82,9 @@ const consultar = async (req, res) => {
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
-	resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
+
+	// Chaves para camelCase
+	resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset);
 
 	return resultSet;
 };

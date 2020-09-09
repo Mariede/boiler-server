@@ -39,8 +39,8 @@ const consultarTodos = async (req, res) => {
 								ON C.ID_PERFIL = D.ID_PERFIL
 						WHERE
 							A.ID_USUARIO = C.ID_USUARIO
-						FOR XML PATH ('PERFIL')
-					) 'PERFIS'
+						FOR XML PATH ('PERFIL'), ROOT('PERFIS')
+					) [PERFIS]
 				FROM
 					USUARIO A (NOLOCK)
 					INNER JOIN TIPO B (NOLOCK)
@@ -51,8 +51,11 @@ const consultarTodos = async (req, res) => {
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
-	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
+	// Ordenador
+	resultSet.recordset = paginator.setSort(req, resultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
+
+	// Paginador
+	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected);
 
 	return pagedResultSet;
 };
@@ -92,8 +95,8 @@ const consultar = async (req, res) => {
 								ON C.ID_PERFIL = D.ID_PERFIL
 						WHERE
 							A.ID_USUARIO = C.ID_USUARIO
-						FOR XML PATH ('PERFIL')
-					) 'PERFIS'
+						FOR XML PATH ('PERFIL'), ROOT('PERFIS')
+					) [PERFIS]
 				FROM
 					USUARIO A (NOLOCK)
 					INNER JOIN TIPO B (NOLOCK)
@@ -105,7 +108,9 @@ const consultar = async (req, res) => {
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
-	resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset); // Chaves para camelCase
+
+	// Chaves para camelCase
+	resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
 
 	return resultSet;
 };
