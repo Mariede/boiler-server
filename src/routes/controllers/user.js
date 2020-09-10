@@ -84,6 +84,25 @@ const userRoutes = (router, handleErrorsController) => {
 			}
 		)
 	);
+
+	router
+	.route('/usuario/:id/ativacao')
+	.all(
+		handleErrorsController(
+			(req, res, next) => {
+				_commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.put(
+		handleErrorsController(
+			async (req, res) => {
+				const result = await user.ativacao(req, res);
+				res.status(200).send(result);
+			}
+		)
+	);
 	// -------------------------------------------------------------------------
 };
 // -------------------------------------------------------------------------

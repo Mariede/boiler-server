@@ -129,11 +129,75 @@ const alterar = (req, res) => {
 	return `${fRet} ${id}`;
 };
 
-const excluir = (req, res) => {
-	const fRet = 'exclui usuario';
-	const id = req.params.id;
+const excluir = async (req, res) => {
+	// Parametros de entrada
+	const idUsuario = req.params.id;
 
-	return `${fRet} ${id}`;
+	// Validacoes entrada
+	if (!validator.isInteger(idUsuario, false)) {
+		errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
+	}
+
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['idUsuario', 'int', idUsuario]
+			],
+			executar: `
+				DELETE
+				FROM
+					PERFIL_USUARIO
+				WHERE
+					ID_USUARIO = @idUsuario;
+
+				DELETE
+				FROM
+					USUARIO
+				WHERE
+					ID_USUARIO = @idUsuario;
+			`
+		}
+	};
+
+	await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	return idUsuario;
+};
+
+const ativacao = async (req, res) => {
+	// Parametros de entrada
+	const idUsuario = req.params.id;
+	const ativo = req.body.ativo === true;
+
+	// Validacoes entrada
+	if (!validator.isInteger(idUsuario, false)) {
+		errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
+	}
+
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['idUsuario', 'int', idUsuario],
+				['ativo', 'bit', !ativo]
+			],
+			executar: `
+				UPDATE
+					A
+				SET
+					A.ATIVO = @ativo
+				FROM
+					USUARIO A
+				WHERE
+					A.ID_USUARIO = @idUsuario;
+			`
+		}
+	};
+
+	await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	return idUsuario;
 };
 // -------------------------------------------------------------------------
 
@@ -142,5 +206,6 @@ module.exports = {
 	consultar,
 	inserir,
 	alterar,
-	excluir
+	excluir,
+	ativacao
 };
