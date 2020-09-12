@@ -286,6 +286,22 @@ const isCep = (_cep, separator = false) => {
 };
 
 /*
+Verifica se nome e completo: com pelo menos uma letra, um espaco e duas letra em sequencia
+*/
+const isCompleteName = _name => {
+	const name = (_name || '').toString().trim();
+	const regExp = /([a-zA-Z]{1,})(\s{1})([a-zA-Z]{2,})/;
+
+	let vRet = false;
+
+	if (regExp.test(name)) {
+		vRet = true;
+	}
+
+	return vRet;
+};
+
+/*
 Verifica se valor e vazio
 	* se trimmed === true	=> realiza trim automatico no _param de entrada
 	* se implicit === true	=> valores falsy: null, undefined, NaN, false sao tratados como empty
@@ -472,6 +488,7 @@ module.exports = {
 	isRenavam,
 	isEmail,
 	isCep,
+	isCompleteName,
 	isEmpty,
 	isAlphaNumeric,
 	isInteger,

@@ -142,10 +142,18 @@ const alterar = async (req, res) => {
 
 	if (validator.isEmpty(nome)) {
 		errorStack.push('Nome não pode ser vazio...');
+	} else {
+		if (!validator.isCompleteName(nome)) {
+			errorStack.push('Nome não parece completo...');
+		}
 	}
 
-	if (!validator.isEmail(email)) {
-		errorStack.push('E-mail inválido...');
+	if (validator.isEmpty(email)) {
+		errorStack.push('E-mail não pode ser vazio...');
+	} else {
+		if (!validator.isEmail(email)) {
+			errorStack.push('E-mail inválido...');
+		}
 	}
 
 	if (errorStack.length !== 0) {
