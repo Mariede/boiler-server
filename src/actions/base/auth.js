@@ -28,6 +28,7 @@ const logon = async (req, res) => {
 		// Parametros de entrada
 		const login = req.body.login;
 		const pass = req.body.pass;
+		// -------------------------------------------------------------------------
 
 		// Validacoes entrada
 		if (!validator.isEmpty(login)) {

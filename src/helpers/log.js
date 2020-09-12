@@ -65,20 +65,52 @@ const errorsController = (res, err, escopo, incorporador = '') => {
 		/*
 		Erros customizados, definidos no config
 			=> chave server.customErrors e uma array de objetos
-			=> formato do objeto para verificacao { code: '', message: '', customMessage: '' }
-			=> code deve ser exato, message pode ser parcial
+			=> formato do objeto para verificacao { message: '', customMessage: '' }
+			=> message pode ser parcial
 			=> customMessage e a mensagem de erro customizada
 		*/
-		if (typeof err.message === 'string') {
-			const customErrors = __serverConfig.server.customErrors;
-			const customError = Array.isArray(customErrors) && customErrors.find(
-				element => {
-					return (err.code === element.code && err.message.includes(element.message));
-				}
-			);
+		const customErrors = __serverConfig.server.customErrors;
 
-			if (customError && error.message) {
-				error.customMessage = customError.customMessage;
+		if (Array.isArray(customErrors)) {
+			if (typeof err.message === 'string') {
+				const findCustomError = customErrors.find(
+					element => {
+						return (
+							err.message.includes(element.message)
+						);
+					}
+				);
+
+				if (findCustomError && error.message) {
+					error.customMessage = findCustomError.customMessage;
+				}
+			} else {
+				if (Array.isArray(err.message)) {
+					let customErrorsFound = 0;
+
+					const findCustomErrors = err.message.map(
+						errorMessageItem => {
+							const findCustomError = customErrors.find(
+								element => {
+									return (
+										errorMessageItem.includes(element.message)
+									);
+								}
+							);
+
+							if (findCustomError) {
+								customErrorsFound = customErrorsFound + 1;
+								return findCustomError.customMessage;
+							}
+
+							return errorMessageItem;
+						}
+					);
+
+					if (customErrorsFound && error.message) {
+						error.customMessage = findCustomErrors;
+					}
+				}
 			}
 		}
 	};

@@ -63,11 +63,13 @@ const consultarTodos = async (req, res) => {
 const consultar = async (req, res) => {
 	// Parametros de entrada
 	const idUsuario = req.params.id;
+	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
 	if (!validator.isInteger(idUsuario, false)) {
-		errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
+		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
+	// -------------------------------------------------------------------------
 
 	const query = {
 		formato: 1,
@@ -122,21 +124,83 @@ const inserir = (req, res) => {
 	return `${fRet} ${id}`;
 };
 
-const alterar = (req, res) => {
-	const fRet = 'altera usuario';
-	const id = req.params.id;
-
-	return `${fRet} ${id}`;
-};
-
-const excluir = async (req, res) => {
+const alterar = async (req, res) => {
 	// Parametros de entrada
 	const idUsuario = req.params.id;
+	const nome = req.body.nome;
+	const email = req.body.email;
+	const ativo = req.body.ativo === true;
+	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
 	if (!validator.isInteger(idUsuario, false)) {
-		errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
+		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
+
+	// Stack de erros
+	const errorStack = [];
+
+	if (validator.isEmpty(nome)) {
+		errorStack.push('Nome não pode ser vazio...');
+	}
+
+	if (!validator.isEmail(email)) {
+		errorStack.push('E-mail inválido...');
+	}
+
+	if (errorStack.length !== 0) {
+		errWrapper.throwThis('USUARIO', 400, errorStack);
+	}
+	// -------------------------------------------------------------------------
+
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['idUsuario', 'int', idUsuario],
+				['nome', 'varchar(200)', nome],
+				['email', 'varchar(200)', email],
+				['ativo', 'bit', ativo]
+			],
+			executar: `
+				UPDATE
+					A
+				SET
+					A.NOME = @nome,
+					A.EMAIL = @email,
+					A.ATIVO = @ativo
+				FROM
+					USUARIO A
+				WHERE
+					A.ID_USUARIO = @idUsuario;
+			`
+		}
+	};
+
+	await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	return idUsuario;
+};
+
+const excluir = async (req, res) => {
+	// Parametros de sessao
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	// -------------------------------------------------------------------------
+
+	// Parametros de entrada
+	const idUsuario = req.params.id;
+	// -------------------------------------------------------------------------
+
+	// Validacoes entrada
+	if (!validator.isInteger(idUsuario, false)) {
+		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
+	}
+
+	if (!sess[sessWraper] || sess[sessWraper].id === parseInt(idUsuario, 10)) {
+		errWrapper.throwThis('USUARIO', 400, 'Não é possível realizar esta operação em si mesmo...');
+	}
+	// -------------------------------------------------------------------------
 
 	const query = {
 		formato: 1,
@@ -166,14 +230,25 @@ const excluir = async (req, res) => {
 };
 
 const ativacao = async (req, res) => {
+	// Parametros de sessao
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	// -------------------------------------------------------------------------
+
 	// Parametros de entrada
 	const idUsuario = req.params.id;
 	const ativo = req.body.ativo === true;
+	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
 	if (!validator.isInteger(idUsuario, false)) {
-		errWrapper.throwThis('AUTH', 400, 'ID do usuário deve ser numérico...');
+		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
+
+	if (!sess[sessWraper] || sess[sessWraper].id === parseInt(idUsuario, 10)) {
+		errWrapper.throwThis('USUARIO', 400, 'Não é possível realizar esta operação em si mesmo...');
+	}
+	// -------------------------------------------------------------------------
 
 	const query = {
 		formato: 1,
