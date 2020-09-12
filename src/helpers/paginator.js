@@ -11,6 +11,33 @@ const errWrapper = require('@serverRoot/helpers/err-wrapper');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+
+/*
+Utilizado na preparacao para o JSON final de retorno
+	-> Adiciona chaves ao JSON de uma consulta, baseado em outras consultas
+*/
+const addKeysToRecords = (jsonData, arrKeysToAdd) => {
+	if (Array.isArray(jsonData) && Array.isArray(arrKeysToAdd)) {
+		return (
+			jsonData.map(
+				newRecord => {
+					arrKeysToAdd.forEach(
+						newKey => {
+							newRecord[newKey.key] = newKey.content;
+						}
+					);
+
+					return (
+						newRecord
+					);
+				}
+			)
+		);
+	}
+
+	return jsonData;
+};
+
 /*
 Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
 	-> Realiza conversao nas subchaves aninhadas dos objetos (nested keys)
@@ -319,6 +346,7 @@ const setResult = (jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) => {
 // -------------------------------------------------------------------------
 
 module.exports = {
+	addKeysToRecords,
 	keysToCamelCase,
 	setSort,
 	setPage,

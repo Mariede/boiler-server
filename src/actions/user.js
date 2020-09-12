@@ -14,6 +14,24 @@ const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
+// Constantes gerais
+// utilizar key como 'OPTIONS.XXX', pois vai ajustar os niveis json ao converter para camelCase em paginator
+const recordsetEnumOptions = {
+	ativo: {
+		key: 'OPTIONS.ATIVO',
+		content: [
+			{
+				id: 0,
+				nome: 'INATIVO'
+			},
+			{
+				id: 1,
+				nome: 'ATIVO'
+			}
+		]
+	}
+};
+
 // Acoes
 const consultarTodos = async (req, res) => {
 	const query = {
@@ -31,8 +49,8 @@ const consultarTodos = async (req, res) => {
 					,B.TIPO [TIPO.NOME]
 					,(
 						SELECT
-							D.ID_PERFIL [PERFIL.ID]
-							,D.PERFIL [PERFIL.NOME]
+							D.ID_PERFIL [ID]
+							,D.PERFIL [NOME]
 						FROM
 							PERFIL_USUARIO C (NOLOCK)
 							INNER JOIN PERFIL D (NOLOCK)
@@ -45,17 +63,49 @@ const consultarTodos = async (req, res) => {
 					USUARIO A (NOLOCK)
 					INNER JOIN TIPO B (NOLOCK)
 						ON (A.ID_TIPO = B.ID_TIPO);
+
+				SELECT
+					ID_TIPO [ID]
+					,TIPO [NOME]
+				FROM
+					TIPO (NOLOCK)
+				ORDER BY
+					TIPO DESC;
+
+				SELECT
+					ID_PERFIL [ID]
+					,PERFIL [NOME]
+				FROM
+					PERFIL (NOLOCK)
+				ORDER BY
+					PERFIL;
 			`
 		}
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	// Ordenador
-	resultSet.recordset = paginator.setSort(req, resultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
+	// Adiciona chaves extras ao resultset oficial (options)
+	resultSet.recordsets[0] = paginator.addKeysToRecords(
+		resultSet.recordsets[0],
+		[
+			{
+				key: 'OPTIONS.TIPOS',
+				content: Array.from(resultSet.recordsets[1])
+			},
+			{
+				key: 'OPTIONS.PERFIS',
+				content: Array.from(resultSet.recordsets[2])
+			},
+			recordsetEnumOptions.ativo
+		]
+	);
+
+	// Ordenador, chaves para camelCase
+	resultSet.recordsets[0] = paginator.setSort(req, resultSet.recordsets[0], [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
 
 	// Paginador
-	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected);
+	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordsets[0], resultSet.rowsAffected[0]);
 
 	return pagedResultSet;
 };
@@ -89,8 +139,8 @@ const consultar = async (req, res) => {
 					,B.TIPO [TIPO.NOME]
 					,(
 						SELECT
-							D.ID_PERFIL [PERFIL.ID]
-							,D.PERFIL [PERFIL.NOME]
+							D.ID_PERFIL [ID]
+							,D.PERFIL [NOME]
 						FROM
 							PERFIL_USUARIO C (NOLOCK)
 							INNER JOIN PERFIL D (NOLOCK)
@@ -105,16 +155,48 @@ const consultar = async (req, res) => {
 						ON (A.ID_TIPO = B.ID_TIPO)
 				WHERE
 					A.ID_USUARIO = @idUsuario;
+
+				SELECT
+					ID_TIPO [ID]
+					,TIPO [NOME]
+				FROM
+					TIPO (NOLOCK)
+				ORDER BY
+					TIPO DESC;
+
+				SELECT
+					ID_PERFIL [ID]
+					,PERFIL [NOME]
+				FROM
+					PERFIL (NOLOCK)
+				ORDER BY
+					PERFIL;
 			`
 		}
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	// Chaves para camelCase
-	resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
+	// Adiciona chaves extras ao resultset oficial (options)
+	resultSet.recordsets[0] = paginator.addKeysToRecords(
+		resultSet.recordsets[0],
+		[
+			{
+				key: 'OPTIONS.TIPOS',
+				content: Array.from(resultSet.recordsets[1])
+			},
+			{
+				key: 'OPTIONS.PERFIS',
+				content: Array.from(resultSet.recordsets[2])
+			},
+			recordsetEnumOptions.ativo
+		]
+	);
 
-	return resultSet;
+	// Para o caso de mais de um recordset no result, mantem apenas o recordset oficial, chaves para camelCase
+	const settedResult = paginator.setResult(resultSet, resultSet.recordsets[0], resultSet.rowsAffected[0], [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
+
+	return settedResult;
 };
 
 const inserir = (req, res) => {
