@@ -63,6 +63,9 @@ const logon = async (req, res) => {
 
 				if (passCheck && (passCheck.passHash === dataUser.SENHA)) {
 					if (dataUser.ATIVO) {
+						// Limpa eventuais sessoes anteriores ativas para este usuario
+						await helpersAuth.checkForLoggedSessions(req, dataUser.ID_USUARIO);
+
 						/* Session data */
 						sess[sessWraper] = {
 							id: dataUser.ID_USUARIO,
