@@ -75,6 +75,7 @@ npm run build
 ## Sessions com armazenamento via arquivos criptografados
   * sessionFileStore
   * Utiliza o sistema de arquivos
+  * Apenas uma sessão ativa por usuário (login)
 
 ## Logs com informações na tela e/ou arquivos diários
   * Arquivos de logs separados por grupos
