@@ -20,7 +20,7 @@ const _commonGate = (req, res) => {
 // -------------------------------------------------------------------------
 // Rotas
 const userRoutes = (router, handleErrorsController) => {
-	// Colecao usuarios ----------------------------------------------------
+	// Colecao/Model usuario -----------------------------------------------
 	router
 	.route('/usuario')
 	.all(
@@ -31,17 +31,23 @@ const userRoutes = (router, handleErrorsController) => {
 			}
 		)
 	)
-	.get(
+	.get( // Colecao usuarios (todos)
 		handleErrorsController(
 			async (req, res) => {
 				const result = await user.consultarTodos(req, res);
 				res.status(200).send(result);
 			}
 		)
+	)
+	.post(
+		handleErrorsController(
+			async (req, res) => {
+				const result = await user.inserir(req, res);
+				res.status(200).send(result);
+			}
+		)
 	);
-	// ---------------------------------------------------------------------
 
-	// Model usuario -------------------------------------------------------
 	router
 	.route('/usuario/:id')
 	.all(
@@ -56,14 +62,6 @@ const userRoutes = (router, handleErrorsController) => {
 		handleErrorsController(
 			async (req, res) => {
 				const result = await user.consultar(req, res);
-				res.status(200).send(result);
-			}
-		)
-	)
-	.post(
-		handleErrorsController(
-			async (req, res) => {
-				const result = await user.inserir(req, res);
 				res.status(200).send(result);
 			}
 		)

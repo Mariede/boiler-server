@@ -21,12 +21,12 @@ const recordsetEnumOptions = {
 		key: 'OPTIONS.ATIVO',
 		content: [
 			{
-				id: 0,
-				nome: 'INATIVO'
-			},
-			{
 				id: 1,
 				nome: 'ATIVO'
+			},
+			{
+				id: 2,
+				nome: 'INATIVO'
 			}
 		]
 	}
@@ -201,9 +201,8 @@ const consultar = async (req, res) => {
 
 const inserir = (req, res) => {
 	const fRet = 'insere usuario';
-	const id = req.params.id;
 
-	return `${fRet} ${id}`;
+	return `${fRet}`;
 };
 
 const alterar = async (req, res) => {
@@ -211,7 +210,8 @@ const alterar = async (req, res) => {
 	const idUsuario = req.params.id;
 	const nome = req.body.nome;
 	const email = req.body.email;
-	const ativo = req.body.ativo === true;
+	const tipo = req.body.tipo;
+	const ativo = req.body.ativo === '1';
 	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
@@ -238,6 +238,14 @@ const alterar = async (req, res) => {
 		}
 	}
 
+	if (validator.isEmpty(tipo)) {
+		errorStack.push('Tipo não pode ser vazio...');
+	} else {
+		if (!validator.isInteger(tipo, false)) {
+			errorStack.push('Tipo inválido...');
+		}
+	}
+
 	if (errorStack.length !== 0) {
 		errWrapper.throwThis('USUARIO', 400, errorStack);
 	}
@@ -250,6 +258,7 @@ const alterar = async (req, res) => {
 				['idUsuario', 'int', idUsuario],
 				['nome', 'varchar(200)', nome],
 				['email', 'varchar(200)', email],
+				['tipo', 'int', parseInt(tipo, 10)],
 				['ativo', 'bit', ativo]
 			],
 			executar: `
@@ -258,6 +267,7 @@ const alterar = async (req, res) => {
 				SET
 					A.NOME = @nome,
 					A.EMAIL = @email,
+					A.ID_TIPO = @tipo,
 					A.ATIVO = @ativo
 				FROM
 					USUARIO A
