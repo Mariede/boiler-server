@@ -7,6 +7,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const cryptoHash = require('@serverRoot/helpers/crypto-hash');
 const dbCon = require('@serverRoot/helpers/db');
 const errWrapper = require('@serverRoot/helpers/err-wrapper');
 const paginator = require('@serverRoot/helpers/paginator');
@@ -14,9 +15,13 @@ const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-// Constantes gerais
-// utilizar key como 'OPTIONS.XXX', pois vai ajustar os niveis json ao converter para camelCase em paginator
-const recordsetEnumOptions = {
+/*
+Constantes gerais
+	- utilizar key como 'OPTIONS.XXX'
+	- ajuste automatico dos niveis json ao converter para camelCase em paginator, quando necessario
+	- na rota options a propriedade key nao e utlizada
+*/
+const enumOptions = {
 	ativo: {
 		key: 'OPTIONS.ATIVO',
 		content: [
@@ -31,6 +36,43 @@ const recordsetEnumOptions = {
 		]
 	}
 };
+// -------------------------------------------------------------------------
+
+// Funcoes compartilhadas
+
+// Validacao comum para insert e update de usuarios
+const _commonValidationErrStack = (nome, email, tipo) => {
+	const errorStack = [];
+
+	if (validator.isEmpty(nome)) {
+		errorStack.push('Nome não pode ser vazio...');
+	} else {
+		if (!validator.isCompleteName(nome)) {
+			errorStack.push('Nome não parece completo...');
+		}
+	}
+
+	if (validator.isEmpty(email)) {
+		errorStack.push('E-mail não pode ser vazio...');
+	} else {
+		if (!validator.isEmail(email)) {
+			errorStack.push('E-mail inválido...');
+		}
+	}
+
+	if (validator.isEmpty(tipo)) {
+		errorStack.push('Tipo não pode ser vazio...');
+	} else {
+		if (!validator.isInteger(tipo, false)) {
+			errorStack.push('Tipo inválido...');
+		}
+	}
+
+	if (errorStack.length !== 0) {
+		errWrapper.throwThis('USUARIO', 400, errorStack);
+	}
+};
+// -------------------------------------------------------------------------
 
 // Acoes
 const consultarTodos = async (req, res) => {
@@ -63,49 +105,17 @@ const consultarTodos = async (req, res) => {
 					USUARIO A (NOLOCK)
 					INNER JOIN TIPO B (NOLOCK)
 						ON (A.ID_TIPO = B.ID_TIPO);
-
-				SELECT
-					ID_TIPO [ID]
-					,TIPO [NOME]
-				FROM
-					TIPO (NOLOCK)
-				ORDER BY
-					TIPO DESC;
-
-				SELECT
-					ID_PERFIL [ID]
-					,PERFIL [NOME]
-				FROM
-					PERFIL (NOLOCK)
-				ORDER BY
-					PERFIL;
 			`
 		}
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	// Adiciona chaves extras ao resultset oficial (options)
-	resultSet.recordsets[0] = paginator.addKeysToRecords(
-		resultSet.recordsets[0],
-		[
-			{
-				key: 'OPTIONS.TIPOS',
-				content: Array.from(resultSet.recordsets[1])
-			},
-			{
-				key: 'OPTIONS.PERFIS',
-				content: Array.from(resultSet.recordsets[2])
-			},
-			recordsetEnumOptions.ativo
-		]
-	);
-
 	// Ordenador, chaves para camelCase
-	resultSet.recordsets[0] = paginator.setSort(req, resultSet.recordsets[0], [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
+	resultSet.recordset = paginator.setSort(req, resultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
 
 	// Paginador
-	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordsets[0], resultSet.rowsAffected[0]);
+	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected);
 
 	return pagedResultSet;
 };
@@ -177,7 +187,7 @@ const consultar = async (req, res) => {
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	// Adiciona chaves extras ao resultset oficial (options)
+	// Adiciona chaves extras ao resultset inicial (options acoplado)
 	resultSet.recordsets[0] = paginator.addKeysToRecords(
 		resultSet.recordsets[0],
 		[
@@ -189,23 +199,81 @@ const consultar = async (req, res) => {
 				key: 'OPTIONS.PERFIS',
 				content: Array.from(resultSet.recordsets[2])
 			},
-			recordsetEnumOptions.ativo
+			enumOptions.ativo
 		]
 	);
 
-	// Para o caso de mais de um recordset no result, mantem apenas o recordset oficial, chaves para camelCase
+	// Para o caso de mais de um recordset no result, mantem apenas o recordset inicial, chaves para camelCase
 	const settedResult = paginator.setResult(resultSet, resultSet.recordsets[0], resultSet.rowsAffected[0], [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
 
 	return settedResult;
 };
 
-const inserir = (req, res) => {
-	const fRet = 'insere usuario';
+const inserir = async (req, res) => {
+	// Parametros de entrada
+	const nome = req.body.nome;
+	const email = req.body.email;
+	const tipo = req.body.tipo;
+	const ativo = req.body.ativo === '1';
 
-	return `${fRet}`;
+	// Senha inicial padrao (testes)
+	const salt = cryptoHash.generateSalt(5, false);
+	const senha = cryptoHash.hash('@123', salt).passHash;
+	// -------------------------------------------------------------------------
+
+	// Validacoes entrada
+	// Stack de erros
+	_commonValidationErrStack(nome, email, tipo);
+	// -------------------------------------------------------------------------
+
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['nome', 'varchar(200)', nome],
+				['email', 'varchar(200)', email],
+				['senha', 'varchar(128)', senha],
+				['salt', 'varchar(5)', salt],
+				['tipo', 'int', parseInt(tipo, 10)],
+				['ativo', 'bit', ativo]
+			],
+			output: [
+				['id', 'int']
+			],
+			executar: `
+				INSERT INTO USUARIO(
+					ID_TIPO
+					,NOME
+					,EMAIL
+					,SENHA
+					,SALT
+					,ATIVO
+				)
+				VALUES(
+					@tipo
+					,@nome
+					,@email
+					,@senha
+					,@salt
+					,@ativo
+				);
+
+				SET @id = SCOPE_IDENTITY();
+			`
+		}
+	};
+
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	return resultSet.output;
 };
 
 const alterar = async (req, res) => {
+	// Parametros de sessao
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	// -------------------------------------------------------------------------
+
 	// Parametros de entrada
 	const idUsuario = req.params.id;
 	const nome = req.body.nome;
@@ -219,36 +287,14 @@ const alterar = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
+	if (!sess[sessWraper] || sess[sessWraper].id === parseInt(idUsuario, 10)) {
+		if (!ativo) {
+			errWrapper.throwThis('USUARIO', 400, 'Não é possível desativar a si mesmo...');
+		}
+	}
+
 	// Stack de erros
-	const errorStack = [];
-
-	if (validator.isEmpty(nome)) {
-		errorStack.push('Nome não pode ser vazio...');
-	} else {
-		if (!validator.isCompleteName(nome)) {
-			errorStack.push('Nome não parece completo...');
-		}
-	}
-
-	if (validator.isEmpty(email)) {
-		errorStack.push('E-mail não pode ser vazio...');
-	} else {
-		if (!validator.isEmail(email)) {
-			errorStack.push('E-mail inválido...');
-		}
-	}
-
-	if (validator.isEmpty(tipo)) {
-		errorStack.push('Tipo não pode ser vazio...');
-	} else {
-		if (!validator.isInteger(tipo, false)) {
-			errorStack.push('Tipo inválido...');
-		}
-	}
-
-	if (errorStack.length !== 0) {
-		errWrapper.throwThis('USUARIO', 400, errorStack);
-	}
+	_commonValidationErrStack(nome, email, tipo);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -260,6 +306,9 @@ const alterar = async (req, res) => {
 				['email', 'varchar(200)', email],
 				['tipo', 'int', parseInt(tipo, 10)],
 				['ativo', 'bit', ativo]
+			],
+			output: [
+				['id', 'int']
 			],
 			executar: `
 				UPDATE
@@ -273,13 +322,15 @@ const alterar = async (req, res) => {
 					USUARIO A
 				WHERE
 					A.ID_USUARIO = @idUsuario;
+
+				SET @id = @idUsuario;
 			`
 		}
 	};
 
-	await dbCon.msSqlServer.sqlExecuteAll(query);
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	return idUsuario;
+	return resultSet.output;
 };
 
 const excluir = async (req, res) => {
@@ -308,6 +359,9 @@ const excluir = async (req, res) => {
 			input: [
 				['idUsuario', 'int', idUsuario]
 			],
+			output: [
+				['id', 'int']
+			],
 			executar: `
 				DELETE
 				FROM
@@ -320,13 +374,15 @@ const excluir = async (req, res) => {
 					USUARIO
 				WHERE
 					ID_USUARIO = @idUsuario;
+
+				SET @id = @idUsuario;
 			`
 		}
 	};
 
-	await dbCon.msSqlServer.sqlExecuteAll(query);
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	return idUsuario;
+	return resultSet.output;
 };
 
 const ativacao = async (req, res) => {
@@ -357,6 +413,9 @@ const ativacao = async (req, res) => {
 				['idUsuario', 'int', idUsuario],
 				['ativo', 'bit', !ativo]
 			],
+			output: [
+				['id', 'int']
+			],
 			executar: `
 				UPDATE
 					A
@@ -366,13 +425,58 @@ const ativacao = async (req, res) => {
 					USUARIO A
 				WHERE
 					A.ID_USUARIO = @idUsuario;
+
+				SET @id = @idUsuario;
 			`
 		}
 	};
 
-	await dbCon.msSqlServer.sqlExecuteAll(query);
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	return idUsuario;
+	return resultSet.output;
+};
+
+const options = async (req, res) => {
+	const query = {
+		formato: 1,
+		dados: {
+			executar: `
+				SELECT
+					ID_TIPO [ID]
+					,TIPO [NOME]
+				FROM
+					TIPO (NOLOCK)
+				ORDER BY
+					TIPO DESC;
+
+				SELECT
+					ID_PERFIL [ID]
+					,PERFIL [NOME]
+				FROM
+					PERFIL (NOLOCK)
+				ORDER BY
+					PERFIL;
+			`
+		}
+	};
+
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	const optionsSet = {
+		tipos: paginator.keysToCamelCase(resultSet.recordsets[0]), // Chaves para camelCase
+		perfis: paginator.keysToCamelCase(resultSet.recordsets[1]) // Chaves para camelCase
+	};
+
+	const lEnumOptions = { ...enumOptions };
+
+	// Mantem apenas a chave de conteudo
+	Object.keys(enumOptions).forEach(
+		key => {
+			lEnumOptions[key] = enumOptions[key].content;
+		}
+	);
+
+	return { ...optionsSet, ...lEnumOptions };
 };
 // -------------------------------------------------------------------------
 
@@ -382,5 +486,6 @@ module.exports = {
 	inserir,
 	alterar,
 	excluir,
-	ativacao
+	ativacao,
+	options
 };

@@ -49,6 +49,25 @@ const userRoutes = (router, handleErrorsController) => {
 	);
 
 	router
+	.route('/usuario/options')
+	.all(
+		handleErrorsController(
+			(req, res, next) => {
+				_commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.get(
+		handleErrorsController(
+			async (req, res) => {
+				const result = await user.options(req, res);
+				res.status(200).send(result);
+			}
+		)
+	);
+
+	router
 	.route('/usuario/:id')
 	.all(
 		handleErrorsController(
