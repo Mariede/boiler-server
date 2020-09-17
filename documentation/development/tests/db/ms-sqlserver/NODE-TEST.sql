@@ -67,6 +67,8 @@ CREATE TABLE [dbo].[USUARIO](
 	[SENHA] [varchar](128) NOT NULL,
 	[SALT] [varchar](5) NOT NULL,
 	[ATIVO] [bit] NOT NULL,
+	[CEP] [numeric](8, 0) NULL,
+	[CPF] [numeric](11, 0) NULL,
  CONSTRAINT [PK_USUARIO] PRIMARY KEY CLUSTERED
 (
 	[ID_USUARIO] ASC

@@ -41,7 +41,7 @@ const enumOptions = {
 // Funcoes compartilhadas
 
 // Validacao comum para insert e update de usuarios
-const _commonValidationErrStack = (nome, email, tipo) => {
+const _commonValidationErrStack = (nome, email, tipo, cep, cpf) => {
 	const errorStack = [];
 
 	if (validator.isEmpty(nome)) {
@@ -65,6 +65,18 @@ const _commonValidationErrStack = (nome, email, tipo) => {
 	} else {
 		if (!validator.isInteger(tipo, false)) {
 			errorStack.push('Tipo inválido...');
+		}
+	}
+
+	if (!validator.isEmpty(cep)) {
+		if (!validator.isCep(cep)) {
+			errorStack.push('CEP inválido...');
+		}
+	}
+
+	if (!validator.isEmpty(cpf)) {
+		if (!validator.isCpf(cpf)) {
+			errorStack.push('CPF inválido...');
 		}
 	}
 
@@ -215,6 +227,8 @@ const inserir = async (req, res) => {
 	const email = req.body.email;
 	const tipo = req.body.tipo;
 	const ativo = req.body.ativo === '1';
+	const cep = req.body.cep;
+	const cpf = req.body.cpf;
 
 	// Senha inicial padrao (testes)
 	const salt = cryptoHash.generateSalt(5, false);
@@ -223,7 +237,7 @@ const inserir = async (req, res) => {
 
 	// Validacoes entrada
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo);
+	_commonValidationErrStack(nome, email, tipo, cep, cpf);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -235,7 +249,9 @@ const inserir = async (req, res) => {
 				['senha', 'varchar(128)', senha],
 				['salt', 'varchar(5)', salt],
 				['tipo', 'int', parseInt(tipo, 10)],
-				['ativo', 'bit', ativo]
+				['ativo', 'bit', ativo],
+				['cep', 'numeric(8, 0)', cep || null],
+				['cpf', 'numeric(11, 0)', cpf || null]
 			],
 			output: [
 				['id', 'int']
@@ -248,6 +264,8 @@ const inserir = async (req, res) => {
 					,SENHA
 					,SALT
 					,ATIVO
+					,CEP
+					,CPF
 				)
 				VALUES(
 					@tipo
@@ -256,6 +274,8 @@ const inserir = async (req, res) => {
 					,@senha
 					,@salt
 					,@ativo
+					,@cep
+					,@cpf
 				);
 
 				SET @id = SCOPE_IDENTITY();
@@ -280,6 +300,8 @@ const alterar = async (req, res) => {
 	const email = req.body.email;
 	const tipo = req.body.tipo;
 	const ativo = req.body.ativo === '1';
+	const cep = req.body.cep;
+	const cpf = req.body.cpf;
 	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
@@ -294,7 +316,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo);
+	_commonValidationErrStack(nome, email, tipo, cep, cpf);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -305,7 +327,9 @@ const alterar = async (req, res) => {
 				['nome', 'varchar(200)', nome],
 				['email', 'varchar(200)', email],
 				['tipo', 'int', parseInt(tipo, 10)],
-				['ativo', 'bit', ativo]
+				['ativo', 'bit', ativo],
+				['cep', 'numeric(8, 0)', cep || null],
+				['cpf', 'numeric(11, 0)', cpf || null]
 			],
 			output: [
 				['id', 'int']
@@ -314,10 +338,12 @@ const alterar = async (req, res) => {
 				UPDATE
 					A
 				SET
-					A.NOME = @nome,
-					A.EMAIL = @email,
-					A.ID_TIPO = @tipo,
-					A.ATIVO = @ativo
+					A.NOME = @nome
+					,A.EMAIL = @email
+					,A.ID_TIPO = @tipo
+					,A.ATIVO = @ativo
+					,A.CEP = @cep
+					,A.CPF = @cpf
 				FROM
 					USUARIO A
 				WHERE
