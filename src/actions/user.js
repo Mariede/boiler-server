@@ -26,11 +26,11 @@ const enumOptions = {
 		key: 'OPTIONS.ATIVO',
 		content: [
 			{
-				id: 1,
+				id: true,
 				nome: 'ATIVO'
 			},
 			{
-				id: 2,
+				id: false,
 				nome: 'INATIVO'
 			}
 		]
@@ -41,7 +41,7 @@ const enumOptions = {
 // Funcoes compartilhadas
 
 // Validacao comum para insert e update de usuarios
-const _commonValidationErrStack = (nome, email, tipo, cep, cpf) => {
+const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf) => {
 	const errorStack = [];
 
 	if (validator.isEmpty(nome)) {
@@ -65,6 +65,14 @@ const _commonValidationErrStack = (nome, email, tipo, cep, cpf) => {
 	} else {
 		if (!validator.isInteger(tipo, false)) {
 			errorStack.push('Tipo inválido...');
+		}
+	}
+
+	if (validator.isEmpty(ativo, true, false)) { // Nao considera false vazio
+		errorStack.push('Estado não pode ser vazio...');
+	} else {
+		if (!validator.isBoolean(ativo)) {
+			errorStack.push('Estado inválido...');
 		}
 	}
 
@@ -99,6 +107,8 @@ const consultarTodos = async (req, res) => {
 					,A.SENHA
 					,A.SALT
 					,A.ATIVO
+					,A.CEP
+					,A.CPF
 					,A.ID_TIPO [TIPO.ID]
 					,B.TIPO [TIPO.NOME]
 					,(
@@ -157,6 +167,8 @@ const consultar = async (req, res) => {
 					,A.SENHA
 					,A.SALT
 					,A.ATIVO
+					,A.CEP
+					,A.CPF
 					,A.ID_TIPO [TIPO.ID]
 					,B.TIPO [TIPO.NOME]
 					,(
@@ -226,7 +238,7 @@ const inserir = async (req, res) => {
 	const nome = req.body.nome;
 	const email = req.body.email;
 	const tipo = req.body.tipo;
-	const ativo = req.body.ativo === '1';
+	const ativo = req.body.ativo;
 	const cep = req.body.cep;
 	const cpf = req.body.cpf;
 
@@ -237,7 +249,7 @@ const inserir = async (req, res) => {
 
 	// Validacoes entrada
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo, cep, cpf);
+	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -248,10 +260,10 @@ const inserir = async (req, res) => {
 				['email', 'varchar(200)', email],
 				['senha', 'varchar(128)', senha],
 				['salt', 'varchar(5)', salt],
-				['tipo', 'int', parseInt(tipo, 10)],
+				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
-				['cep', 'numeric(8, 0)', cep || null],
-				['cpf', 'numeric(11, 0)', cpf || null]
+				['cep', 'numeric(8, 0)', (cep ? Number(String(cep).replace(/\D/g, '')) : null)],
+				['cpf', 'numeric(11, 0)', (cpf ? Number(String(cpf).replace(/\D/g, '')) : null)]
 			],
 			output: [
 				['id', 'int']
@@ -299,7 +311,7 @@ const alterar = async (req, res) => {
 	const nome = req.body.nome;
 	const email = req.body.email;
 	const tipo = req.body.tipo;
-	const ativo = req.body.ativo === '1';
+	const ativo = req.body.ativo;
 	const cep = req.body.cep;
 	const cpf = req.body.cpf;
 	// -------------------------------------------------------------------------
@@ -316,7 +328,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo, cep, cpf);
+	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -326,10 +338,10 @@ const alterar = async (req, res) => {
 				['idUsuario', 'int', idUsuario],
 				['nome', 'varchar(200)', nome],
 				['email', 'varchar(200)', email],
-				['tipo', 'int', parseInt(tipo, 10)],
+				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
-				['cep', 'numeric(8, 0)', cep || null],
-				['cpf', 'numeric(11, 0)', cpf || null]
+				['cep', 'numeric(8, 0)', (cep ? Number(String(cep).replace(/\D/g, '')) : null)],
+				['cpf', 'numeric(11, 0)', (cpf ? Number(String(cpf).replace(/\D/g, '')) : null)]
 			],
 			output: [
 				['id', 'int']

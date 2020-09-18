@@ -339,6 +339,19 @@ const isAlphaNumeric = (_param, spaceAndUnderscore = true) => {
 	return vRet;
 };
 
+// Verifica se valor e booleano
+const isBoolean = _param => {
+	const regExp = /^(true|false)$/;
+
+	let vRet = false;
+
+	if (regExp.test(_param)) {
+		vRet = true;
+	}
+
+	return vRet;
+};
+
 // Verifica se valor e numerico inteiro
 const isInteger = (_num, signed = true) => {
 	const num = _falsyCheck(_num);
@@ -491,6 +504,7 @@ module.exports = {
 	isCompleteName,
 	isEmpty,
 	isAlphaNumeric,
+	isBoolean,
 	isInteger,
 	isIntegerOrFloat,
 	isIntegerOrFixed,
