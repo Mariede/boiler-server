@@ -239,8 +239,8 @@ const inserir = async (req, res) => {
 	const email = req.body.email;
 	const tipo = req.body.tipo;
 	const ativo = req.body.ativo;
-	const cep = req.body.cep;
-	const cpf = req.body.cpf;
+	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
+	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
 
 	// Senha inicial padrao (testes)
 	const salt = cryptoHash.generateSalt(5, false);
@@ -262,8 +262,8 @@ const inserir = async (req, res) => {
 				['salt', 'varchar(5)', salt],
 				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
-				['cep', 'numeric(8, 0)', (cep ? Number(String(cep).replace(/\D/g, '')) : null)],
-				['cpf', 'numeric(11, 0)', (cpf ? Number(String(cpf).replace(/\D/g, '')) : null)]
+				['cep', 'numeric(8, 0)', (cep ? Number(cep) : null)],
+				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)]
 			],
 			output: [
 				['id', 'int']
@@ -312,8 +312,8 @@ const alterar = async (req, res) => {
 	const email = req.body.email;
 	const tipo = req.body.tipo;
 	const ativo = req.body.ativo;
-	const cep = req.body.cep;
-	const cpf = req.body.cpf;
+	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
+	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
 	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
@@ -340,8 +340,8 @@ const alterar = async (req, res) => {
 				['email', 'varchar(200)', email],
 				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
-				['cep', 'numeric(8, 0)', (cep ? Number(String(cep).replace(/\D/g, '')) : null)],
-				['cpf', 'numeric(11, 0)', (cpf ? Number(String(cpf).replace(/\D/g, '')) : null)]
+				['cep', 'numeric(8, 0)', (cep ? Number(cep) : null)],
+				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)]
 			],
 			output: [
 				['id', 'int']
