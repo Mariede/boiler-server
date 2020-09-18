@@ -269,12 +269,10 @@ const isEmail = _email => {
 
 /*
 Verifica se CEP e valido
-	=> separator === false : 18111300
-	=> separator === true : 18111-300
 */
-const isCep = (_cep, separator = false) => {
+const isCep = _cep => {
 	const cep = (_cep || '').toString();
-	const regExp = (separator ? /^([0-9]{5})-([0-9]{3})$/ : /^([0-9]{8})$/);
+	const regExp = /^([0-9]{5})[ -]?([0-9]{3})$/;
 
 	let vRet = false;
 
@@ -410,14 +408,12 @@ const isDate = _date => {
 
 /*
 Verifica a placa do carro nacional (BR / Mercosul)
-	=> separator === false : ABC1234 ou ABC1A34 ou ABC12A4
-	=> separator === true : ABC 1234 ou ABC 1A34 ou ABC 12A4 ou ABC-1234 ou ABC-1A34 ou ABC-12A4
 */
-const isVehicleLicensePlate = (_licensePlate, separator = false) => {
+const isVehicleLicensePlate = _licensePlate => {
 	const licensePlate = (_licensePlate || '').toString();
-	const regExpBrNationalPlate = new RegExp(`^([a-zA-Z]{2,3}${(separator ? '[ -]' : '')})([0-9]{4})$`);
-	const regExpBrMercosulPlate1 = new RegExp(`^([a-zA-Z]{3}${(separator ? '[ -]' : '')})([0-9][a-zA-Z][0-9]{2})$`); // Carros
-	const regExpBrMercosulPlate2 = new RegExp(`^([a-zA-Z]{3}${(separator ? '[ -]' : '')})([0-9]{2}[a-zA-Z][0-9])$`); // Motos
+	const regExpBrNationalPlate = /^([a-zA-Z]{2,3})[ -]?([0-9]{4})$/;
+	const regExpBrMercosulPlate1 = /^([a-zA-Z]{3})[ -]?([0-9][a-zA-Z][0-9]{2})$/; // Carros
+	const regExpBrMercosulPlate2 = /^([a-zA-Z]{3})[ -]?([0-9]{2}[a-zA-Z][0-9])$/; // Motos
 
 	let vRet = false;
 
