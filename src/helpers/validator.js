@@ -303,19 +303,27 @@ const isCompleteName = _name => {
 Verifica se valor e vazio
 	* se trimmed === true	=> realiza trim automatico no _param de entrada
 	* se implicit === true	=> valores falsy: null, undefined, NaN, false sao tratados como empty
+
+	** Verifica se array e vazia
 */
 const isEmpty = (_param, trimmed = true, implicit = true) => {
 	let param = _falsyCheck(_param),
 		vRet = false;
 
-	if (trimmed && param) {
-		param = param.trim();
-	}
+	if (!Array.isArray(param)) {
+		if (trimmed && param) {
+			param = param.trim();
+		}
 
-	if (param === '') {
-		vRet = true;
+		if (param === '') {
+			vRet = true;
+		} else {
+			if (implicit && !param) {
+				vRet = true;
+			}
+		}
 	} else {
-		if (implicit && !param) {
+		if (param.length === 0) {
 			vRet = true;
 		}
 	}
