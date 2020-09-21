@@ -315,6 +315,66 @@ const msSqlServer = {
 		await msSqlServer.sqlCloseCon(transaction, forceClose);
 
 		return result;
+	},
+
+	/*
+	Espera uma array em param
+		-> Limpa cada item da array, validando caracteres perigosos (sanitize)
+			-> Retorna Boolean, Number ou String
+	*/
+	sanitizeArray: param => {
+		return (
+			Array.isArray(param) ? (
+				param.map(
+					value => {
+						const sanitizeThis = _s => {
+							return _s.replace(
+								/[\0\x08\x09\x1a\n\r"'\\%]/g, // eslint-disable-line no-control-regex
+								char => {
+									switch (char) {
+										case '\0':
+											return '\\0';
+										case '\x08':
+											return '\\b';
+										case '\x09':
+											return '\\t';
+										case '\x1a':
+											return '\\z';
+										case '\n':
+											return '\\n';
+										case '\r':
+											return '\\r';
+										case '"':
+										case '\'':
+										case '\\':
+										case '%':
+											return `\\${char}`;
+										default:
+											return char;
+									}
+								}
+							);
+						};
+
+						if (value === true || value === false) {
+							return value;
+						}
+
+						if ((/^([+-]?\d+)(\.{1}\d+|())$/).test(value)) {
+							return Number(value);
+						}
+
+						if (value === 'true' || value === 'false') {
+							return value === 'true';
+						}
+
+						return sanitizeThis(String(value || ''));
+					}
+				)
+			) : (
+				param
+			)
+		);
 	}
 };
 

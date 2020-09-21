@@ -41,9 +41,9 @@ const logon = async (req, res) => {
 						],
 						executar: `
 							SELECT
-								A.ID_USUARIO
-								,A.NOME
-								,A.EMAIL
+								A.ID_USUARIO idUsuario
+								,A.NOME nome
+								,A.EMAIL email
 								,A.SENHA
 								,A.SALT
 								,A.ATIVO
@@ -53,25 +53,44 @@ const logon = async (req, res) => {
 									ON (A.ID_TIPO = B.ID_TIPO)
 							WHERE
 								A.EMAIL = @login;
+
+							SELECT
+								B.PERFIL perfil
+							FROM
+								PERFIL_USUARIO A (NOLOCK)
+								INNER JOIN PERFIL B (NOLOCK)
+									ON (A.ID_PERFIL = B.ID_PERFIL)
+								INNER JOIN USUARIO C (NOLOCK)
+									ON (A.ID_USUARIO = C.ID_USUARIO)
+							WHERE
+								C.EMAIL = @login;
 						`
 					}
 				};
 
 				const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
-				const dataUser = resultSet && resultSet.rowsAffected === 1 && resultSet.recordset[0];
+				const dataUser = resultSet && resultSet.rowsAffected[0] === 1 && resultSet.recordsets[0].pop();
 				const passCheck = (dataUser ? cryptoHash.hash(pass, dataUser.SALT) : null);
 
 				if (passCheck && (passCheck.passHash === dataUser.SENHA)) {
 					if (dataUser.ATIVO) {
 						// Limpa eventuais sessoes anteriores ativas para este usuario
-						await helpersAuth.checkForLoggedSessions(req, dataUser.ID_USUARIO);
+						await helpersAuth.checkForLoggedSessions(req, dataUser.idUsuario);
+
+						const perfis = (
+							resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
+								_p => {
+									return _p.perfil;
+								}
+							)
+						) || [];
 
 						/* Session data */
 						sess[sessWraper] = {
-							id: dataUser.ID_USUARIO,
-							nome: dataUser.NOME,
-							email: dataUser.EMAIL,
-							perfis: ['Administrador', 'supervisor'],
+							id: dataUser.idUsuario,
+							nome: dataUser.nome,
+							email: dataUser.email,
+							perfis: perfis,
 							funcoes: ['fn1', 'fn2', 'fn3', 'fn4']
 						};
 						/* Session data */

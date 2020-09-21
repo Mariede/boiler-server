@@ -41,7 +41,7 @@ const enumOptions = {
 // Funcoes compartilhadas
 
 // Validacao comum para insert e update de usuarios
-const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf) => {
+const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf, perfis) => {
 	const errorStack = [];
 
 	if (validator.isEmpty(nome)) {
@@ -86,6 +86,10 @@ const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf) => {
 		if (!validator.isCpf(cpf)) {
 			errorStack.push('CPF inválido...');
 		}
+	}
+
+	if (validator.isEmpty(perfis)) {
+		errorStack.push('Perfis não pode ser vazio...');
 	}
 
 	if (errorStack.length !== 0) {
@@ -241,6 +245,7 @@ const inserir = async (req, res) => {
 	const ativo = req.body.ativo;
 	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
 	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
+	const perfis = dbCon.msSqlServer.sanitizeArray(req.body.perfis);
 
 	// Senha inicial padrao (testes)
 	const salt = cryptoHash.generateSalt(5, false);
@@ -249,7 +254,7 @@ const inserir = async (req, res) => {
 
 	// Validacoes entrada
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf);
+	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf, perfis);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -291,6 +296,24 @@ const inserir = async (req, res) => {
 				);
 
 				SET @id = SCOPE_IDENTITY();
+
+				DELETE
+				FROM
+					PERFIL_USUARIO
+				WHERE
+					ID_USUARIO = @id;
+
+				INSERT INTO PERFIL_USUARIO(
+					ID_PERFIL
+					,ID_USUARIO
+				)
+				VALUES ${
+	perfis.map(
+		perfil => {
+			return `\n(${perfil}, @id)`;
+		}
+	)
+}
 			`
 		}
 	};
@@ -314,6 +337,7 @@ const alterar = async (req, res) => {
 	const ativo = req.body.ativo;
 	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
 	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
+	const perfis = dbCon.msSqlServer.sanitizeArray(req.body.perfis);
 	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
@@ -328,7 +352,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf);
+	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf, perfis);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -362,6 +386,24 @@ const alterar = async (req, res) => {
 					A.ID_USUARIO = @idUsuario;
 
 				SET @id = @idUsuario;
+
+				DELETE
+				FROM
+					PERFIL_USUARIO
+				WHERE
+					ID_USUARIO = @id;
+
+				INSERT INTO PERFIL_USUARIO(
+					ID_PERFIL
+					,ID_USUARIO
+				)
+				VALUES ${
+	perfis.map(
+		perfil => {
+			return `\n(${perfil}, @id)`;
+		}
+	)
+}
 			`
 		}
 	};
