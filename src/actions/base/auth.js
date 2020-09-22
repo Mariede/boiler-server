@@ -55,7 +55,8 @@ const logon = async (req, res) => {
 								A.EMAIL = @login;
 
 							SELECT
-								B.PERFIL perfil
+								B.ID_PERFIL id
+								,B.PERFIL nome
 							FROM
 								PERFIL_USUARIO A (NOLOCK)
 								INNER JOIN PERFIL B (NOLOCK)
@@ -80,7 +81,15 @@ const logon = async (req, res) => {
 						const perfis = (
 							resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
 								_p => {
-									return _p.perfil;
+									return _p.nome;
+								}
+							)
+						) || [];
+
+						const funcoes = (
+							resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
+								_f => {
+									return _f.id;
 								}
 							)
 						) || [];
@@ -91,7 +100,7 @@ const logon = async (req, res) => {
 							nome: dataUser.nome,
 							email: dataUser.email,
 							perfis: perfis,
-							funcoes: ['fn1', 'fn2', 'fn3', 'fn4']
+							funcoes: funcoes
 						};
 						/* Session data */
 					} else {

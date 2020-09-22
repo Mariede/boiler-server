@@ -345,10 +345,8 @@ const alterar = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (!sess[sessWraper] || sess[sessWraper].id === parseInt(idUsuario, 10)) {
-		if (!ativo) {
-			errWrapper.throwThis('USUARIO', 400, 'Não é possível desativar a si mesmo...');
-		}
+	if (sess[sessWraper].id === parseInt(idUsuario, 10) && !ativo) {
+		errWrapper.throwThis('USUARIO', 400, 'Não é possível desativar a si mesmo...');
 	}
 
 	// Stack de erros
@@ -404,11 +402,61 @@ const alterar = async (req, res) => {
 		}
 	)
 }
+
+				SELECT
+					A.ID_USUARIO id
+					,A.NOME nome
+					,A.EMAIL email
+				FROM
+					USUARIO A (NOLOCK)
+					INNER JOIN TIPO B (NOLOCK)
+						ON (A.ID_TIPO = B.ID_TIPO)
+				WHERE
+					A.ID_USUARIO = @id;
+
+				SELECT
+					B.ID_PERFIL id
+					,B.PERFIL nome
+				FROM
+					PERFIL_USUARIO A (NOLOCK)
+					INNER JOIN PERFIL B (NOLOCK)
+						ON (A.ID_PERFIL = B.ID_PERFIL)
+					INNER JOIN USUARIO C (NOLOCK)
+						ON (A.ID_USUARIO = C.ID_USUARIO)
+				WHERE
+					C.ID_USUARIO = @id;
 			`
 		}
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	// Atualiza dados da sessao ativa, apenas se mesmo usuario
+	if (sess[sessWraper] && sess[sessWraper].id === parseInt(idUsuario, 10)) {
+		if (resultSet && resultSet.recordsets) {
+			const rsLen = resultSet.recordsets.length;
+
+			const dataUser = resultSet.recordsets[rsLen - 2].length === 1 && resultSet.recordsets[rsLen - 2].pop();
+
+			const perfis = (
+				resultSet.recordsets[rsLen - 1].length !== 0 && resultSet.recordsets[rsLen - 1].map(
+					_p => {
+						return _p.nome;
+					}
+				)
+			) || [];
+
+			const funcoes = (
+				resultSet.recordsets[rsLen - 1].length !== 0 && resultSet.recordsets[rsLen - 1].map(
+					_f => {
+						return _f.id;
+					}
+				)
+			) || [];
+
+			sess[sessWraper] = { ...sess[sessWraper], ...dataUser, perfis: perfis, funcoes: funcoes };
+		}
+	}
 
 	return resultSet.output;
 };
@@ -428,7 +476,7 @@ const excluir = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (!sess[sessWraper] || sess[sessWraper].id === parseInt(idUsuario, 10)) {
+	if (sess[sessWraper].id === parseInt(idUsuario, 10)) {
 		errWrapper.throwThis('USUARIO', 400, 'Não é possível realizar esta operação em si mesmo...');
 	}
 	// -------------------------------------------------------------------------
@@ -481,7 +529,7 @@ const ativacao = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (!sess[sessWraper] || sess[sessWraper].id === parseInt(idUsuario, 10)) {
+	if (sess[sessWraper].id === parseInt(idUsuario, 10)) {
 		errWrapper.throwThis('USUARIO', 400, 'Não é possível realizar esta operação em si mesmo...');
 	}
 	// -------------------------------------------------------------------------
