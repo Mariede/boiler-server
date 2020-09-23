@@ -483,9 +483,9 @@ const equal = (_param, _paramCompare, caseInsensitive = true) => {
 Verifica limites de comprimento minimo e maximo para string _param
 	* se lMax nao informado, assume o mesmo valor de lMin
 */
-const lenRange = (_param, lMin = 0, lMax = lMin) => {
+const lenRange = (_param, lMin = 0, lMax = lMin, trimmed = true) => {
 	const param = (_param === true ? false : _falsyCheck(_param));
-	const paramLen = (param ? param.length : 0);
+	const paramLen = (param ? (trimmed ? param.trim().length : param.length) : 0);
 
 	let vRet = false;
 
