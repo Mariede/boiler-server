@@ -42,6 +42,8 @@ const addKeysToRecords = (jsonData, arrKeysToAdd) => {
 Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
 	-> Realiza conversao nas subchaves aninhadas dos objetos (nested keys)
 
+	-> Remove chaves null do JSON
+
 	-> Formata resultados tabulares especificos para novas subchaves aninhadas
 		-> Regra: utilizar . no nome da chave para identificar niveis das subchaves do objeto
 			-> ex: 'USUARIO.TIPO.ID'
@@ -109,7 +111,8 @@ const keysToCamelCase = (jsonData, keysXmlToJson) => {
 					nDocument
 				);
 
-				if (resultValue === null || typeof resultValue !== 'object') {
+				// Adicionar resultValue === null ||, para incluir valores nulos no JSON final
+				if (typeof resultValue !== 'object') {
 					nDocument[newKey] = resultValue;
 				}
 			}

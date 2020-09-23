@@ -41,7 +41,7 @@ const enumOptions = {
 // Funcoes compartilhadas
 
 // Validacao comum para insert e update de usuarios
-const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf, perfis) => {
+const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf, detalhes, perfis) => {
 	const errorStack = [];
 
 	if (validator.isEmpty(nome)) {
@@ -88,6 +88,12 @@ const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf, perfis) =
 		}
 	}
 
+	if (!validator.isEmpty(detalhes)) {
+		if (!validator.lenRange(detalhes, 5, 8000)) {
+			errorStack.push('Detalhes deve possuir entre 5 e 8000 caracteres...');
+		}
+	}
+
 	if (validator.isEmpty(perfis)) {
 		errorStack.push('Perfis não pode ser vazio...');
 	}
@@ -113,6 +119,7 @@ const consultarTodos = async (req, res) => {
 					,A.ATIVO
 					,A.CEP
 					,A.CPF
+					,A.DETALHES
 					,A.ID_TIPO [TIPO.ID]
 					,B.TIPO [TIPO.NOME]
 					,(
@@ -173,6 +180,7 @@ const consultar = async (req, res) => {
 					,A.ATIVO
 					,A.CEP
 					,A.CPF
+					,A.DETALHES
 					,A.ID_TIPO [TIPO.ID]
 					,B.TIPO [TIPO.NOME]
 					,(
@@ -245,6 +253,7 @@ const inserir = async (req, res) => {
 	const ativo = req.body.ativo;
 	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
 	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
+	const detalhes = req.body.detalhes;
 	const perfis = dbCon.msSqlServer.sanitizeArray(req.body.perfis);
 
 	// Senha inicial padrao (testes)
@@ -254,7 +263,7 @@ const inserir = async (req, res) => {
 
 	// Validacoes entrada
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf, perfis);
+	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf, detalhes, perfis);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -268,7 +277,8 @@ const inserir = async (req, res) => {
 				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
 				['cep', 'numeric(8, 0)', (cep ? Number(cep) : null)],
-				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)]
+				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
+				['detalhes', 'varchar(max)', detalhes || null]
 			],
 			output: [
 				['id', 'int']
@@ -283,6 +293,7 @@ const inserir = async (req, res) => {
 					,ATIVO
 					,CEP
 					,CPF
+					,DETALHES
 				)
 				VALUES(
 					@tipo
@@ -293,6 +304,7 @@ const inserir = async (req, res) => {
 					,@ativo
 					,@cep
 					,@cpf
+					,@detalhes
 				);
 
 				SET @id = SCOPE_IDENTITY();
@@ -337,6 +349,7 @@ const alterar = async (req, res) => {
 	const ativo = req.body.ativo;
 	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
 	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
+	const detalhes = req.body.detalhes;
 	const perfis = dbCon.msSqlServer.sanitizeArray(req.body.perfis);
 	// -------------------------------------------------------------------------
 
@@ -350,7 +363,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf, perfis);
+	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf, detalhes, perfis);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -363,7 +376,8 @@ const alterar = async (req, res) => {
 				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
 				['cep', 'numeric(8, 0)', (cep ? Number(cep) : null)],
-				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)]
+				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
+				['detalhes', 'varchar(max)', detalhes || null]
 			],
 			output: [
 				['id', 'int']
@@ -378,6 +392,7 @@ const alterar = async (req, res) => {
 					,A.ATIVO = @ativo
 					,A.CEP = @cep
 					,A.CPF = @cpf
+					,A.DETALHES = @detalhes
 				FROM
 					USUARIO A
 				WHERE
