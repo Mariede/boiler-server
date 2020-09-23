@@ -41,7 +41,7 @@ const logon = async (req, res) => {
 						],
 						executar: `
 							SELECT
-								A.ID_USUARIO idUsuario
+								A.ID_USUARIO id
 								,A.NOME nome
 								,A.EMAIL email
 								,A.SENHA
@@ -76,7 +76,7 @@ const logon = async (req, res) => {
 				if (passCheck && (passCheck.passHash === dataUser.SENHA)) {
 					if (dataUser.ATIVO) {
 						// Limpa eventuais sessoes anteriores ativas para este usuario
-						await helpersAuth.checkForLoggedSessions(req, dataUser.idUsuario);
+						await helpersAuth.checkForLoggedSessions(req, dataUser.id);
 
 						const perfis = (
 							resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
@@ -96,7 +96,7 @@ const logon = async (req, res) => {
 
 						/* Session data */
 						sess[sessWraper] = {
-							id: dataUser.idUsuario,
+							id: dataUser.id,
 							nome: dataUser.nome,
 							email: dataUser.email,
 							perfis: perfis,

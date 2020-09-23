@@ -135,7 +135,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 							encoding: 'utf8',
 							retries: 5,
 							secret: __serverConfig.server.session.secretStore,
-							reapInterval: 60 * __serverConfig.server.session.timeout * 1.5, // 1 = 1 segundo (timeout em minutos)
+							reapInterval: 60 * __serverConfig.server.session.timeout * 0.75, // 1 = 1 segundo (timeout em minutos)
 							ttl: 60 * __serverConfig.server.session.timeout // 1 = 1 segundo (timeout em minutos)
 						}
 					),
