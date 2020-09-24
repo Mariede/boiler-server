@@ -94,7 +94,7 @@
 			"/server",
 			"/socket.io",
 			"/logon",
-			"/logout",
+			"/logoff",
 			"/islogged"
 		]
 	},

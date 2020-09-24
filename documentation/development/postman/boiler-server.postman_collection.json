@@ -30,7 +30,7 @@
 			"response": []
 		},
 		{
-			"name": "{{serverhost}}/logout",
+			"name": "{{serverhost}}/logoff",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -39,12 +39,12 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "{{serverhost}}/logout",
+					"raw": "{{serverhost}}/logoff",
 					"host": [
 						"{{serverhost}}"
 					],
 					"path": [
-						"logout"
+						"logoff"
 					]
 				}
 			},

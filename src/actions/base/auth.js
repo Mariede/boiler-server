@@ -121,7 +121,7 @@ const logon = async (req, res) => {
 };
 
 // Finaliza a sessao no servidor, rotas protegidas ficam inascessiveis
-const logout = (req, res) => {
+const logoff = (req, res) => {
 	return new Promise((resolve, reject) => {
 		const sess = req.session;
 		const sessWraper = __serverConfig.auth.sessWrapper;
@@ -156,6 +156,6 @@ const isLogged = (req, res) => {
 
 module.exports = {
 	logon,
-	logout,
+	logoff,
 	isLogged
 };

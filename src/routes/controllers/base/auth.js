@@ -41,9 +41,9 @@ const authRoutes = (router, handleErrorsController) => {
 	);
 	// ---------------------------------------------------------------------
 
-	// Rota: logout --------------------------------------------------------
+	// Rota: logoff --------------------------------------------------------
 	router
-	.route('/logout')
+	.route('/logoff')
 	.all(
 		handleErrorsController(
 			(req, res, next) => {
@@ -55,7 +55,7 @@ const authRoutes = (router, handleErrorsController) => {
 	.post(
 		handleErrorsController(
 			async (req, res) => {
-				const result = await auth.logout(req, res);
+				const result = await auth.logoff(req, res);
 				res.status(200).send(result);
 			}
 		)
