@@ -117,7 +117,8 @@
 			"tab",
 			{
 				"MemberExpression": 0,
-				"SwitchCase": 1
+				"SwitchCase": 1,
+				"ignoredNodes": ["TemplateLiteral > *"]
 			}
 		],
 		"keyword-spacing": [

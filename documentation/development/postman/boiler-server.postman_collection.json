@@ -71,7 +71,7 @@
 							"type": "text"
 						},
 						{
-							"key": "pass",
+							"key": "senha",
 							"value": "@123",
 							"type": "text"
 						}

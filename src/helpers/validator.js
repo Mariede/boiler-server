@@ -448,7 +448,7 @@ const isVehicleChassis = _chassis => {
 };
 
 // Verifica se string _paramCompare esta contida em _param
-const contains = (_param, _paramCompare, caseInsensitive = true) => {
+const contains = (_param, _paramCompare, caseInsensitive = false) => {
 	const param = (_param === true ? false : _falsyCheck(_param));
 	const paramCompare = (_paramCompare === true ? false : _falsyCheck(_paramCompare));
 
@@ -464,7 +464,7 @@ const contains = (_param, _paramCompare, caseInsensitive = true) => {
 };
 
 // Verifica se string _paramCompare e identica a _param
-const equal = (_param, _paramCompare, caseInsensitive = true) => {
+const equal = (_param, _paramCompare, caseInsensitive = false) => {
 	const param = (_param === true ? false : _falsyCheck(_param));
 	const paramCompare = (_paramCompare === true ? false : _falsyCheck(_paramCompare));
 

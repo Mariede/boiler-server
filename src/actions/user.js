@@ -41,7 +41,7 @@ const enumOptions = {
 // Funcoes compartilhadas
 
 // Validacao comum para insert e update de usuarios
-const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf, detalhes, perfis) => {
+const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, cpf, detalhes, perfis, senha, senhaCheck) => {
 	const errorStack = [];
 
 	if (validator.isEmpty(nome)) {
@@ -98,6 +98,21 @@ const _commonValidationErrStack = (nome, email, tipo, ativo, cep, cpf, detalhes,
 		errorStack.push('Perfis não pode ser vazio...');
 	}
 
+	// Apenas para novos usuarios
+	if (isNewRecord) {
+		if (validator.isEmpty(senha)) {
+			errorStack.push('Senha não pode ser vazia...');
+		} else {
+			if (validator.isEmpty(senhaCheck)) {
+				errorStack.push('Confirmação de senha não pode ser vazia...');
+			} else {
+				if (!validator.equal(senhaCheck, senha)) {
+					errorStack.push('Confirmação de senha não confere...');
+				}
+			}
+		}
+	}
+
 	if (errorStack.length !== 0) {
 		errWrapper.throwThis('USUARIO', 400, errorStack);
 	}
@@ -114,8 +129,6 @@ const consultarTodos = async (req, res) => {
 					A.ID_USUARIO
 					,A.NOME
 					,A.EMAIL
-					,A.SENHA
-					,A.SALT
 					,A.ATIVO
 					,A.CEP
 					,A.CPF
@@ -175,8 +188,6 @@ const consultar = async (req, res) => {
 					A.ID_USUARIO
 					,A.NOME
 					,A.EMAIL
-					,A.SENHA
-					,A.SALT
 					,A.ATIVO
 					,A.CEP
 					,A.CPF
@@ -256,14 +267,15 @@ const inserir = async (req, res) => {
 	const detalhes = req.body.detalhes;
 	const perfis = dbCon.msSqlServer.sanitizeArray(req.body.perfis);
 
-	// Senha inicial padrao (testes)
+	// Senha inicial
+	const senha = req.body.senha;
+	const senhaCheck = req.body.senhaCheck;
 	const salt = cryptoHash.generateSalt(5, false);
-	const senha = cryptoHash.hash('@123', salt).passHash;
 	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf, detalhes, perfis);
+	_commonValidationErrStack(true, nome, email, tipo, ativo, cep, cpf, detalhes, perfis, senha, senhaCheck);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -272,7 +284,7 @@ const inserir = async (req, res) => {
 			input: [
 				['nome', 'varchar(200)', nome],
 				['email', 'varchar(200)', email],
-				['senha', 'varchar(128)', senha],
+				['senha', 'varchar(128)', cryptoHash.hash(senha, salt).passHash],
 				['salt', 'varchar(5)', salt],
 				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
@@ -320,12 +332,12 @@ const inserir = async (req, res) => {
 					,ID_USUARIO
 				)
 				VALUES ${
-	perfis.map(
-		perfil => {
-			return `\n(${perfil}, @id)`;
-		}
-	)
-}
+					perfis.map(
+						perfil => {
+							return `\n(${perfil}, @id)`;
+						}
+					)
+				}
 			`
 		}
 	};
@@ -363,7 +375,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Stack de erros
-	_commonValidationErrStack(nome, email, tipo, ativo, cep, cpf, detalhes, perfis);
+	_commonValidationErrStack(false, nome, email, tipo, ativo, cep, cpf, detalhes, perfis);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -411,12 +423,12 @@ const alterar = async (req, res) => {
 					,ID_USUARIO
 				)
 				VALUES ${
-	perfis.map(
-		perfil => {
-			return `\n(${perfil}, @id)`;
-		}
-	)
-}
+					perfis.map(
+						perfil => {
+							return `\n(${perfil}, @id)`;
+						}
+					)
+				}
 
 				SELECT
 					A.ID_USUARIO id

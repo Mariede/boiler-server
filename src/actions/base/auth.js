@@ -27,12 +27,12 @@ const logon = async (req, res) => {
 	} else {
 		// Parametros de entrada
 		const login = req.body.login;
-		const pass = req.body.pass;
+		const senha = req.body.senha;
 		// -------------------------------------------------------------------------
 
 		// Validacoes entrada
 		if (!validator.isEmpty(login)) {
-			if (!validator.isEmpty(pass)) {
+			if (!validator.isEmpty(senha)) {
 				const query = {
 					formato: 1,
 					dados: {
@@ -71,9 +71,9 @@ const logon = async (req, res) => {
 
 				const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 				const dataUser = resultSet && resultSet.rowsAffected[0] === 1 && resultSet.recordsets[0].pop();
-				const passCheck = (dataUser ? cryptoHash.hash(pass, dataUser.SALT) : null);
+				const senhaCheck = (dataUser ? cryptoHash.hash(senha, dataUser.SALT) : null);
 
-				if (passCheck && (passCheck.passHash === dataUser.SENHA)) {
+				if (senhaCheck && (senhaCheck.passHash === dataUser.SENHA)) {
 					if (dataUser.ATIVO) {
 						// Limpa eventuais sessoes anteriores ativas para este usuario
 						await helpersAuth.checkForLoggedSessions(req, dataUser.id);
