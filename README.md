@@ -49,7 +49,7 @@ npm run build
   * Rotas protegidas ou abertas - via lib de autenticação (configurável em config.json)
     - /islogged
       + verifica se usuário autenticado
-    - /logon e /logout
+    - /logon e /logoff
       + acesso a sistemas controlados
     - /server
       + informa detalhes do servidor e teste de socket.io
@@ -131,6 +131,9 @@ npm run build
   * Para manipulação e compressão de imagens
   * GIF, JPEG, PNG, TIFF, SVG e WebP
   * SHARP: lib de alta performance
+
+## checkPermissions
+  * Helper para validação das permissões de acesso do usuário logado
 
 ## Engine de templates para expor arquivos html dinâmicos
   * EJS - Embedded Javascript Templates (semelhante ao asp)
