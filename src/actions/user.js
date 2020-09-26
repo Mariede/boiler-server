@@ -38,9 +38,11 @@ const enumOptions = {
 };
 // -------------------------------------------------------------------------
 
-// Funcoes compartilhadas
-
-// Validacao comum para insert e update de usuarios
+// -------------------------------------------------------------------------
+/*
+Funcoes compartilhadas
+	- validacao comum para insert e update de usuarios
+*/
 const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, cpf, detalhes, perfis, senha, senhaCheck) => {
 	const errorStack = [];
 
@@ -119,6 +121,7 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 };
 // -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
 // Acoes
 const consultarTodos = async (req, res) => {
 	const query = {
