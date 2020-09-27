@@ -16,9 +16,8 @@ Verifica se o usuario logado tem permissao de acesso a rota (controller)
 	-> allowedPermissions: Identificadores das permissoes permitidas, em formato de array
 
 	** Validacao case insensitive
-	** Modulo retorna a propria funcao checkPermissions
 */
-const checkPermissions = (req, allowedPermissions) => {
+const validate = (req, allowedPermissions) => {
 	const sess = req.session;
 	const sessWraper = __serverConfig.auth.sessWrapper;
 
@@ -66,4 +65,6 @@ const checkPermissions = (req, allowedPermissions) => {
 };
 // -------------------------------------------------------------------------
 
-module.exports = checkPermissions;
+module.exports = {
+	validate
+};
