@@ -57,8 +57,10 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 				return newSearchFields;
 			};
 
-			const searchFields = [..._camelCaseToSnakeCase(_searchFields)]; // Converte searchFields de camelCase para SNAKE_CASE
-			const queryWhere = baseQuery.search(/[ \t\n]{1}where[ \t\n]{1}/i);
+			// Converte searchFields de camelCase para SNAKE_CASE
+			const searchFields = [..._camelCaseToSnakeCase(_searchFields)];
+
+			const queryWhere = baseQuery.search(/\swhere\s/i);
 
 			const searchQuery = {
 				formato: 1,
@@ -112,7 +114,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 	};
 
 	const searchFields = [];
-	const searchValue = (req.query.fullsearch_value || '');
+	const searchValue = String(req.query.fullsearch_value || '').trim();
 
 	if (req.query.fullsearch_fields) {
 		req.query.fullsearch_fields.split(/[,|]/).forEach(

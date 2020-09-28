@@ -11,6 +11,7 @@ const cryptoHash = require('@serverRoot/helpers/crypto-hash');
 const dbCon = require('@serverRoot/helpers/db');
 const errWrapper = require('@serverRoot/helpers/err-wrapper');
 const paginator = require('@serverRoot/helpers/paginator');
+const searcher = require('@serverRoot/helpers/searcher');
 const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
 
@@ -124,41 +125,43 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 // -------------------------------------------------------------------------
 // Acoes
 const consultarTodos = async (req, res) => {
-	const query = {
-		formato: 1,
-		dados: {
-			executar: `
+	const replaceQuery = '{{REPLACE}}';
+	const baseQuery = `
+		SELECT
+			A.ID_USUARIO
+			,A.NOME
+			,A.EMAIL
+			,A.ATIVO
+			,A.CEP
+			,A.CPF
+			,A.DETALHES
+			,A.ID_TIPO [TIPO.ID]
+			,B.TIPO [TIPO.NOME]
+			,(
 				SELECT
-					A.ID_USUARIO
-					,A.NOME
-					,A.EMAIL
-					,A.ATIVO
-					,A.CEP
-					,A.CPF
-					,A.DETALHES
-					,A.ID_TIPO [TIPO.ID]
-					,B.TIPO [TIPO.NOME]
-					,(
-						SELECT
-							D.ID_PERFIL [ID]
-							,D.PERFIL [NOME]
-						FROM
-							PERFIL_USUARIO C (NOLOCK)
-							INNER JOIN PERFIL D (NOLOCK)
-								ON C.ID_PERFIL = D.ID_PERFIL
-						WHERE
-							A.ID_USUARIO = C.ID_USUARIO
-						FOR XML PATH ('PERFIL'), ROOT('PERFIS')
-					) [PERFIS]
+					D.ID_PERFIL [ID]
+					,D.PERFIL [NOME]
 				FROM
-					USUARIO A (NOLOCK)
-					INNER JOIN TIPO B (NOLOCK)
-						ON (A.ID_TIPO = B.ID_TIPO);
-			`
-		}
-	};
+					PERFIL_USUARIO C (NOLOCK)
+					INNER JOIN PERFIL D (NOLOCK)
+						ON C.ID_PERFIL = D.ID_PERFIL
+				WHERE
+					A.ID_USUARIO = C.ID_USUARIO
+				FOR XML PATH ('PERFIL'), ROOT('PERFIS')
+			) [PERFIS]
+		FROM
+			USUARIO A (NOLOCK)
+			INNER JOIN TIPO B (NOLOCK)
+				ON (A.ID_TIPO = B.ID_TIPO)
+		${replaceQuery};
+	`;
 
-	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+	// Searcher: colunas invalidas para pesquisa geram erro
+	const resultSet = await searcher.setSearch(
+		req,
+		baseQuery,
+		replaceQuery
+	);
 
 	// Ordenador, chaves para camelCase
 	resultSet.recordset = paginator.setSort(req, resultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
