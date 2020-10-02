@@ -167,7 +167,7 @@ const consultarTodos = async (req, res) => {
 		${
 			searchValue ? (`
 				WHERE
-					D1.PERFIL IN('${searchValue}') OR
+					D1.PERFIL LIKE('%${searchValue}%') OR
 			`
 			) : (
 				''
