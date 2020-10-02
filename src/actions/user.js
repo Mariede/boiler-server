@@ -125,9 +125,16 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 // -------------------------------------------------------------------------
 // Acoes
 const consultarTodos = async (req, res) => {
+	// Parametros de entrada
+	const searchValue = String(req.query.fullsearch_value || '').trim();
+
+	/*
+		- Searcher nao funciona com tabelas associativas (PERFIL)
+		- Para esses casos, a query precisa de intervencao na entrada
+	*/
 	const replaceQuery = '{{REPLACE}}';
 	const baseQuery = `
-		SELECT
+		SELECT DISTINCT
 			A.ID_USUARIO
 			,A.NOME
 			,A.EMAIL
@@ -153,7 +160,20 @@ const consultarTodos = async (req, res) => {
 			USUARIO A (NOLOCK)
 			INNER JOIN TIPO B (NOLOCK)
 				ON (A.ID_TIPO = B.ID_TIPO)
-		${replaceQuery};
+			INNER JOIN PERFIL_USUARIO C1 (NOLOCK)
+				ON (A.ID_USUARIO = C1.ID_USUARIO)
+			INNER JOIN PERFIL D1 (NOLOCK)
+				ON (C1.ID_PERFIL = D1.ID_PERFIL)
+		${
+			searchValue ? (`
+				WHERE
+					D1.PERFIL IN('${searchValue}') OR
+			`
+			) : (
+				''
+			)
+		}
+		${replaceQuery}
 	`;
 
 	// Searcher: colunas invalidas para pesquisa geram erro

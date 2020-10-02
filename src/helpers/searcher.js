@@ -19,7 +19,10 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao
 	-> fullsearch_fields e fullsearch_value: parametros querystring esperados
 
 	Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final
-		-> se WHERE for definido na query, deve conter uma condição ANTES do replace
+		-> se WHERE for definido na query:
+			* deve conter uma condição ANTES do replace
+			* deve terminar por OR ou AND, seguido pelo replace
+				(devido ao regEx de validacao do where)
 */
 const setSearch = async (req, baseQuery, targetReplace) => {
 	const _executeSearch = (baseQuery, targetReplace, _searchFields, searchValue) => {
@@ -57,10 +60,18 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 				return newSearchFields;
 			};
 
-			// Converte searchFields de camelCase para SNAKE_CASE
-			const searchFields = [..._camelCaseToSnakeCase(_searchFields)];
+			/*
+			- Converte searchFields de camelCase para SNAKE_CASE
+			- Retira eventuais valores vazios
+			*/
+			const searchFields = [..._camelCaseToSnakeCase(_searchFields)].filter(
+				e => {
+					return (e !== '');
+				}
+			);
 
-			const queryWhere = baseQuery.search(/\swhere\s/i);
+			const regExpWhere = new RegExp(`\\s+WHERE\\s+[\\s\\S]*?(OR|AND){1}[\\s]*?${targetReplace}`, 'i');
+			const queryWhere = baseQuery.search(regExpWhere);
 
 			const searchQuery = {
 				formato: 1,
@@ -74,8 +85,8 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 			if (searchFields.length > 0 && searchValue) {
 				searchFields.forEach(
 					(e, i) => {
-						const regExp = new RegExp(`^\\s*select\\s+[\\s\\S]*?(\\w+\\.)(${e})\\s+`, 'i');
-						const searchAlias = regExp.exec(baseQuery);
+						const regExpAlias = new RegExp(`^\\s*SELECT\\s+[\\s\\S]*?(\\w+\\.)(${e})\\s+`, 'i');
+						const searchAlias = regExpAlias.exec(baseQuery);
 						const alias = (Array.isArray(searchAlias) ? (searchAlias[1] || '') : '');
 
 						searchQuery.dados.input[i] = [e, 'varchar', `%${searchValue}%`];
@@ -84,7 +95,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 							if (i !== 0) {
 								queryReplace += ' OR ';
 							} else {
-								queryReplace += ' AND (';
+								queryReplace += ' (';
 							}
 						} else {
 							queryReplace += ' WHERE (';
