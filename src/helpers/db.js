@@ -318,61 +318,66 @@ const msSqlServer = {
 	},
 
 	/*
-	Espera uma array em param
-		-> Limpa cada item da array, validando caracteres perigosos (sanitize)
-			-> Retorna Boolean, Number ou String
+	Espera uma array de valores ou valor unico em param
+		-> Limpa cada valor da array ou valor unico, validando caracteres perigosos (sanitize)
+			-> Retorna null, undefined, Boolean, Number ou String
+
+		** converte tipos nao especificados para string
+		** remove espacos extras em branco, caso string
 	*/
-	sanitizeArray: param => {
+	sanitize: param => {
+		const sanitizeThis = _s => {
+			if (_s === null || _s === undefined) {
+				return _s;
+			}
+
+			if (_s === true || _s === false) {
+				return _s;
+			}
+
+			if ((/^([+-]?\d+)(\.{1}\d+|())$/).test(_s)) {
+				return Number(_s);
+			}
+
+			return String(_s || '').trim().replace(
+				/[\0\x08\x09\x1a\n\r"'\\%]/g, // eslint-disable-line no-control-regex
+				char => {
+					switch (char) {
+						case '\0':
+							return '\\0';
+						case '\x08':
+							return '\\b';
+						case '\x09':
+							return '\\t';
+						case '\x1a':
+							return '\\z';
+						case '\n':
+							return '\\n';
+						case '\r':
+							return '\\r';
+						case '"':
+							return '""';
+						case '\'':
+							return '\'\'';
+						case '\\':
+						case '%':
+							return `\\${char}`;
+						default:
+							return char;
+					}
+				}
+			);
+		};
+
 		return (
 			Array.isArray(param) ? (
 				param.map(
 					value => {
-						const sanitizeThis = _s => {
-							return _s.replace(
-								/[\0\x08\x09\x1a\n\r"'\\%]/g, // eslint-disable-line no-control-regex
-								char => {
-									switch (char) {
-										case '\0':
-											return '\\0';
-										case '\x08':
-											return '\\b';
-										case '\x09':
-											return '\\t';
-										case '\x1a':
-											return '\\z';
-										case '\n':
-											return '\\n';
-										case '\r':
-											return '\\r';
-										case '"':
-										case '\'':
-										case '\\':
-										case '%':
-											return `\\${char}`;
-										default:
-											return char;
-									}
-								}
-							);
-						};
-
-						if (value === true || value === false) {
-							return value;
-						}
-
-						if ((/^([+-]?\d+)(\.{1}\d+|())$/).test(value)) {
-							return Number(value);
-						}
-
-						if (value === 'true' || value === 'false') {
-							return value === 'true';
-						}
-
-						return sanitizeThis(String(value || ''));
+						return sanitizeThis(value);
 					}
 				)
 			) : (
-				param
+				sanitizeThis(param)
 			)
 		);
 	}

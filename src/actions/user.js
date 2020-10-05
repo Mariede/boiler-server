@@ -126,7 +126,7 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 // Acoes
 const consultarTodos = async (req, res) => {
 	// Parametros de entrada
-	const searchValue = String(req.query.fullsearch_value || '').trim();
+	const searchValue = dbCon.msSqlServer.sanitize(req.query.fullsearch_value);
 
 	/*
 		- Searcher nao funciona com tabelas associativas (PERFIL)
@@ -291,7 +291,7 @@ const inserir = async (req, res) => {
 	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
 	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
 	const detalhes = req.body.detalhes;
-	const perfis = dbCon.msSqlServer.sanitizeArray(req.body.perfis);
+	const perfis = dbCon.msSqlServer.sanitize(req.body.perfis);
 
 	// Senha inicial
 	const senha = req.body.senha;
@@ -388,7 +388,7 @@ const alterar = async (req, res) => {
 	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
 	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
 	const detalhes = req.body.detalhes;
-	const perfis = dbCon.msSqlServer.sanitizeArray(req.body.perfis);
+	const perfis = dbCon.msSqlServer.sanitize(req.body.perfis);
 	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
