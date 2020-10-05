@@ -17,12 +17,16 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao
 	-> setSearch so funciona com MS SQL Server
 	-> algoritmo sempre espera que as colunas no banco de dados estejam em SNAKE_CASE
 	-> fullsearch_fields e fullsearch_value: parametros querystring esperados
+		-> fullsearch_fields contem os nomes das colunas no DB, pode estar em camelCase - sempre converte para SNAKE_CASE
 
 	Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final
-		-> se WHERE for definido na query:
+		-> se WHERE for definido na baseQuery:
 			* deve conter uma condição ANTES do replace
 			* deve terminar por OR ou AND, seguido pelo replace
-				(devido ao regEx de validacao do where)
+				(devido ao regExp de validacao do where)
+
+	Queries dinamicas: captura de alias para as colunas selecionadas no select (regExp):
+		-> Subqueries devem ficar no final das colunas selecionadas em baseQuery
 */
 const setSearch = async (req, baseQuery, targetReplace) => {
 	const _executeSearch = (baseQuery, targetReplace, _searchFields, searchValue) => {
@@ -85,7 +89,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 			if (searchFields.length > 0 && searchValue) {
 				searchFields.forEach(
 					(e, i) => {
-						const regExpAlias = new RegExp(`^\\s*SELECT\\s+[\\s\\S]*?(\\w+\\.)(${e})\\s+`, 'i');
+						const regExpAlias = new RegExp(`^\\s*SELECT\\s+(?:(?!SELECT)[\\s\\S])*?(\\w+\\.)(${e}),?\\s+`, 'i');
 						const searchAlias = regExpAlias.exec(baseQuery);
 						const alias = (Array.isArray(searchAlias) ? (searchAlias[1] || '') : '');
 

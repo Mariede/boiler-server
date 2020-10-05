@@ -125,13 +125,6 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 // -------------------------------------------------------------------------
 // Acoes
 const consultarTodos = async (req, res) => {
-	// Parametros de entrada
-	const searchValue = dbCon.msSqlServer.sanitize(req.query.fullsearch_value);
-
-	/*
-		- Searcher nao funciona com tabelas associativas (PERFIL)
-		- Para esses casos, a query precisa de intervencao na entrada
-	*/
 	const replaceQuery = '{{REPLACE}}';
 	const baseQuery = `
 		SELECT DISTINCT
@@ -164,15 +157,6 @@ const consultarTodos = async (req, res) => {
 				ON (A.ID_USUARIO = C1.ID_USUARIO)
 			INNER JOIN PERFIL D1 (NOLOCK)
 				ON (C1.ID_PERFIL = D1.ID_PERFIL)
-		${
-			searchValue ? (`
-				WHERE
-					D1.PERFIL LIKE('%${searchValue}%') OR
-			`
-			) : (
-				''
-			)
-		}
 		${replaceQuery}
 	`;
 
