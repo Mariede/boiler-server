@@ -19,14 +19,14 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao
 	-> fullsearch_fields e fullsearch_value: parametros querystring esperados
 		-> fullsearch_fields contem os nomes das colunas no DB, pode estar em camelCase - sempre converte para SNAKE_CASE
 
-	Queries dinamicas: searchFields Array, targetReplace e o identificador em baseQuery para montagem da query final
+	Queries dinamicas: searchFields Array, targetReplace informa o identificador em baseQuery para montagem da query final
 		-> se WHERE for definido na baseQuery:
 			* deve conter uma condição ANTES do replace
-			* deve terminar por OR ou AND, seguido pelo replace
-				(devido ao regExp de validacao do where)
+			* o conteudo da clausula where sempre sera um AND para o searcher
 
-	Queries dinamicas: captura de alias para as colunas selecionadas no select (regExp):
-		-> Subqueries devem ficar no final das colunas selecionadas em baseQuery
+	Queries dinamicas: captura de alias para as colunas selecionadas no select da baseQuery (regExp):
+		-> Alias nas subqueries devem ser avaliados com cuidado,
+		-> ja que o alias sera capturado no primeiro encontro da coluna, caso exista
 */
 const setSearch = async (req, baseQuery, targetReplace) => {
 	const _executeSearch = (baseQuery, targetReplace, _searchFields, searchValue) => {
@@ -74,7 +74,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 				}
 			);
 
-			const regExpWhere = new RegExp(`\\s+WHERE\\s+[\\s\\S]*?(OR|AND){1}[\\s]*?${targetReplace}`, 'i');
+			const regExpWhere = /\s+(FROM)\s+(?![\s\S]*?\1)[\s\S]*?\s+WHERE\s+/;
 			const queryWhere = baseQuery.search(regExpWhere);
 
 			const searchQuery = {
@@ -89,7 +89,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 			if (searchFields.length > 0 && searchValue) {
 				searchFields.forEach(
 					(e, i) => {
-						const regExpAlias = new RegExp(`^\\s*SELECT\\s+(?:(?!SELECT)[\\s\\S])*?(\\w+\\.)(${e}),?\\s+`, 'i');
+						const regExpAlias = new RegExp(`SELECT\\s+[\\s\\S]*?(\\w+\\.)(${e}),?\\s+`, 'i');
 						const searchAlias = regExpAlias.exec(baseQuery);
 						const alias = (Array.isArray(searchAlias) ? (searchAlias[1] || '') : '');
 
@@ -99,7 +99,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 							if (i !== 0) {
 								queryReplace += ' OR ';
 							} else {
-								queryReplace += ' (';
+								queryReplace += ' AND (';
 							}
 						} else {
 							queryReplace += ' WHERE (';

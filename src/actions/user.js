@@ -20,7 +20,7 @@ const validator = require('@serverRoot/helpers/validator');
 Constantes gerais
 	- utilizar key como 'OPTIONS.XXX'
 	- ajuste automatico dos niveis json ao converter para camelCase em paginator, quando necessario
-	- na rota options a propriedade key nao e utlizada
+	- na rota options a propriedade key nao e utilizada
 */
 const enumOptions = {
 	ativo: {
@@ -127,6 +127,7 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 const consultarTodos = async (req, res) => {
 	const replaceQuery = '{{REPLACE}}';
 	const baseQuery = `
+		-- Dados dos usuario (via searcher)
 		SELECT DISTINCT
 			A.ID_USUARIO
 			,A.NOME
@@ -153,11 +154,12 @@ const consultarTodos = async (req, res) => {
 			USUARIO A (NOLOCK)
 			INNER JOIN TIPO B (NOLOCK)
 				ON (A.ID_TIPO = B.ID_TIPO)
-			INNER JOIN PERFIL_USUARIO C1 (NOLOCK)
-				ON (A.ID_USUARIO = C1.ID_USUARIO)
-			INNER JOIN PERFIL D1 (NOLOCK)
-				ON (C1.ID_PERFIL = D1.ID_PERFIL)
+			INNER JOIN PERFIL_USUARIO C (NOLOCK)
+				ON (A.ID_USUARIO = C.ID_USUARIO)
+			INNER JOIN PERFIL D (NOLOCK)
+				ON (C.ID_PERFIL = D.ID_PERFIL)
 		${replaceQuery}
+		-- ----------------------------------------
 	`;
 
 	// Searcher: colunas invalidas para pesquisa geram erro
@@ -194,6 +196,7 @@ const consultar = async (req, res) => {
 				['idUsuario', 'int', idUsuario]
 			],
 			executar: `
+				-- Dados do usuario
 				SELECT
 					A.ID_USUARIO
 					,A.NOME
@@ -222,7 +225,9 @@ const consultar = async (req, res) => {
 						ON (A.ID_TIPO = B.ID_TIPO)
 				WHERE
 					A.ID_USUARIO = @idUsuario;
+				-- ----------------------------------------
 
+				-- Retorna opcoes na mesma chamada, no mesmo json de retorno
 				SELECT
 					ID_TIPO [ID]
 					,TIPO [NOME]
@@ -238,6 +243,7 @@ const consultar = async (req, res) => {
 					PERFIL (NOLOCK)
 				ORDER BY
 					PERFIL;
+				-- ----------------------------------------
 			`
 		}
 	};
@@ -306,6 +312,7 @@ const inserir = async (req, res) => {
 				['id', 'int']
 			],
 			executar: `
+				-- Cria novo usuario
 				INSERT INTO USUARIO(
 					ID_TIPO
 					,NOME
@@ -348,6 +355,7 @@ const inserir = async (req, res) => {
 						}
 					)
 				}
+				-- ----------------------------------------
 			`
 		}
 	};
@@ -405,6 +413,7 @@ const alterar = async (req, res) => {
 				['id', 'int']
 			],
 			executar: `
+				-- Atualiza usuario
 				UPDATE
 					A
 				SET
@@ -420,13 +429,11 @@ const alterar = async (req, res) => {
 				WHERE
 					A.ID_USUARIO = @idUsuario;
 
-				SET @id = @idUsuario;
-
 				DELETE
 				FROM
 					PERFIL_USUARIO
 				WHERE
-					ID_USUARIO = @id;
+					ID_USUARIO = @idUsuario;
 
 				INSERT INTO PERFIL_USUARIO(
 					ID_PERFIL
@@ -435,11 +442,15 @@ const alterar = async (req, res) => {
 				VALUES ${
 					perfis.map(
 						perfil => {
-							return `\n(${perfil}, @id)`;
+							return `\n(${perfil}, @idUsuario)`;
 						}
 					)
 				}
 
+				SET @id = @idUsuario;
+				-- ----------------------------------------
+
+				-- Se dados alterados forem do usuario logado, atualiza a sessao
 				SELECT
 					A.ID_USUARIO id
 					,A.NOME nome
@@ -462,6 +473,7 @@ const alterar = async (req, res) => {
 						ON (A.ID_USUARIO = C.ID_USUARIO)
 				WHERE
 					C.ID_USUARIO = @id;
+				-- ----------------------------------------
 			`
 		}
 	};
@@ -528,6 +540,7 @@ const excluir = async (req, res) => {
 				['id', 'int']
 			],
 			executar: `
+				-- Exclui usuario
 				DELETE
 				FROM
 					PERFIL_USUARIO
@@ -541,6 +554,7 @@ const excluir = async (req, res) => {
 					ID_USUARIO = @idUsuario;
 
 				SET @id = @idUsuario;
+				-- ----------------------------------------
 			`
 		}
 	};
@@ -582,6 +596,7 @@ const ativacao = async (req, res) => {
 				['id', 'int']
 			],
 			executar: `
+				-- Usuario Ativo / Inativo
 				UPDATE
 					A
 				SET
@@ -592,6 +607,7 @@ const ativacao = async (req, res) => {
 					A.ID_USUARIO = @idUsuario;
 
 				SET @id = @idUsuario;
+				-- ----------------------------------------
 			`
 		}
 	};
@@ -606,6 +622,7 @@ const options = async (req, res) => {
 		formato: 1,
 		dados: {
 			executar: `
+				-- Opcoes -> Tipos e Perfis disponiveis no DB
 				SELECT
 					ID_TIPO [ID]
 					,TIPO [NOME]
@@ -621,6 +638,7 @@ const options = async (req, res) => {
 					PERFIL (NOLOCK)
 				ORDER BY
 					PERFIL;
+				-- ----------------------------------------
 			`
 		}
 	};

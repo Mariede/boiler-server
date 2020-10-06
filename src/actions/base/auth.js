@@ -40,6 +40,7 @@ const logon = async (req, res) => {
 							['login', 'varchar(200)', login]
 						],
 						executar: `
+							-- Dados de login e sessao do usuario
 							SELECT
 								A.ID_USUARIO id
 								,A.NOME nome
@@ -65,6 +66,7 @@ const logon = async (req, res) => {
 									ON (A.ID_USUARIO = C.ID_USUARIO)
 							WHERE
 								C.EMAIL = @login;
+							-- ----------------------------------------
 						`
 					}
 				};
