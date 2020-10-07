@@ -74,7 +74,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 				}
 			);
 
-			const regExpWhere = /\s+(FROM)\s+(?![\s\S]*?\1)[\s\S]*?\s+WHERE\s+/;
+			const regExpWhere = /\s+(FROM)\s+(?![\s\S]*?\1)[\s\S]*?\s+WHERE\s+/i;
 			const queryWhere = baseQuery.search(regExpWhere);
 
 			const searchQuery = {
@@ -89,7 +89,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 			if (searchFields.length > 0 && searchValue) {
 				searchFields.forEach(
 					(e, i) => {
-						const regExpAlias = new RegExp(`SELECT\\s+[\\s\\S]*?(\\w+\\.)(${e}),?\\s+`, 'i');
+						const regExpAlias = new RegExp(`SELECT\\s+[\\s\\S]*?(\\w+\\.)(${e})`, 'i');
 						const searchAlias = regExpAlias.exec(baseQuery);
 						const alias = (Array.isArray(searchAlias) ? (searchAlias[1] || '') : '');
 
