@@ -184,7 +184,8 @@
 		"no-unused-vars": [
 			2,
 			{
-				"argsIgnorePattern": "^(req|res)$"
+				"argsIgnorePattern": "^(req|res)$",
+				"ignoreRestSiblings": true
 			}
 		],
 		"no-use-before-define": [

@@ -17,6 +17,8 @@ const functions = require('@serverRoot/helpers/functions');
 /*
 Realiza o upload de um ou mais arquivos (POST / enctype: "multipart/form-data")
 
+	** Retorna dados de req.body parseados, se necessario (devido a natureza de FormData no cliente, sempre string) **
+
 	-> fieldNames: campo html que informa a localizacao dos arquivos de upload no form (se mais de um campo, separar por virgula)
 		-> "inputFieldName1, inputFieldName2, inputFieldName3, ..."
 
@@ -173,26 +175,6 @@ const push = async (req, res, fieldNames, extraPath = '', storageToDisk = true, 
 			);
 
 			const showResults = err => {
-				const filesToArray = uploadedResults => {
-					const files = [];
-
-					Object.keys(uploadedResults.originalFiles).forEach(
-						fieldName => {
-							const uploadedFiles = uploadedResults.originalFiles[fieldName];
-
-							if (uploadedFiles) {
-								uploadedFiles.forEach(
-									file => {
-										files.push(file);
-									}
-								);
-							}
-						}
-					);
-
-					return files;
-				};
-
 				if (err) {
 					if (err instanceof multer.MulterError) {
 						if (err.name) {
@@ -224,7 +206,49 @@ const push = async (req, res, fieldNames, extraPath = '', storageToDisk = true, 
 
 					reject(err);
 				} else {
-					resolve({ body: { ...req.body }, files: filesToArray({ originalFiles: { ...req.files } }) });
+					const bodyParse = uploadedResults => {
+						if (Object.keys(uploadedResults.originalFiles).length) {
+							const parsedData = {};
+
+							// Espera dados stringificados no body, se existir ao menos um arquivo binario
+							Object.entries(uploadedResults.originalBody).forEach(
+								([key, value]) => {
+									parsedData[key] = JSON.parse(value);
+								}
+							);
+
+							return parsedData;
+						}
+
+						return uploadedResults.originalBody;
+					};
+
+					const filesToArray = uploadedFiles => {
+						const files = [];
+
+						Object.keys(uploadedFiles.originalFiles).forEach(
+							fieldName => {
+								const uploadedFilesField = uploadedFiles.originalFiles[fieldName];
+
+								if (uploadedFilesField) {
+									uploadedFilesField.forEach(
+										file => {
+											files.push(file);
+										}
+									);
+								}
+							}
+						);
+
+						return files;
+					};
+
+					resolve(
+						{
+							body: bodyParse({ originalBody: { ...req.body }, originalFiles: { ...req.files } }),
+							files: filesToArray({ originalFiles: { ...req.files } })
+						}
+					);
 				}
 			};
 
@@ -258,8 +282,8 @@ const push = async (req, res, fieldNames, extraPath = '', storageToDisk = true, 
 
 	const configUpload = __serverConfig.server.fileUpload;
 
-	if (req.method.toUpperCase() !== 'POST') {
-		errWrapper.throwThis('UPLOADER', 400, 'Favor utilizar verbo POST para realizar o upload dos arquivos...');
+	if (req.method.toUpperCase() !== 'POST' && req.method.toUpperCase() !== 'PUT') {
+		errWrapper.throwThis('UPLOADER', 400, 'Favor utilizar verbo POST ou PUT para realizar o upload de arquivos...');
 	}
 
 	return await uploadFiles(formatFieldNames(fieldNames));

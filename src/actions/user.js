@@ -12,6 +12,7 @@ const dbCon = require('@serverRoot/helpers/db');
 const errWrapper = require('@serverRoot/helpers/err-wrapper');
 const paginator = require('@serverRoot/helpers/paginator');
 const searcher = require('@serverRoot/helpers/searcher');
+const uploader = require('@serverRoot/helpers/uploader');
 const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
 
@@ -40,10 +41,9 @@ const enumOptions = {
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
-/*
-Funcoes compartilhadas
-	- validacao comum para insert e update de usuarios
-*/
+// Funcoes compartilhadas
+
+// Validacao comum para insert e update de usuarios
 const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, cpf, detalhes, perfis, senha, senhaCheck) => {
 	const errorStack = [];
 
@@ -119,6 +119,12 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 	if (errorStack.length !== 0) {
 		errWrapper.throwThis('USUARIO', 400, errorStack);
 	}
+};
+
+// Upload de arquivos para insert e update de usuarios
+const _upload = async (req, res) => {
+	const uploaderResults = await uploader.push(req, res, 'fileContent', 'files');
+	return uploaderResults;
 };
 // -------------------------------------------------------------------------
 
@@ -274,18 +280,22 @@ const consultar = async (req, res) => {
 
 const inserir = async (req, res) => {
 	// Parametros de entrada
-	const nome = req.body.nome;
-	const email = req.body.email;
-	const tipo = req.body.tipo;
-	const ativo = req.body.ativo;
-	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
-	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
-	const detalhes = req.body.detalhes;
-	const perfis = dbCon.msSqlServer.sanitize(req.body.perfis);
+
+	// Uploads, trocar req.body para result.body
+	const uResult = await _upload(req, res);
+
+	const nome = uResult.body.nome;
+	const email = uResult.body.email;
+	const tipo = uResult.body.tipo;
+	const ativo = uResult.body.ativo;
+	const cep = String(uResult.body.cep).replace(/\D/g, ''); // Mascara no formulario
+	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
+	const detalhes = uResult.body.detalhes;
+	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
 
 	// Senha inicial
-	const senha = req.body.senha;
-	const senhaCheck = req.body.senhaCheck;
+	const senha = uResult.body.senha;
+	const senhaCheck = uResult.body.senhaCheck;
 	const salt = cryptoHash.generateSalt(5, false);
 	// -------------------------------------------------------------------------
 
@@ -373,14 +383,18 @@ const alterar = async (req, res) => {
 
 	// Parametros de entrada
 	const idUsuario = req.params.id;
-	const nome = req.body.nome;
-	const email = req.body.email;
-	const tipo = req.body.tipo;
-	const ativo = req.body.ativo;
-	const cep = String(req.body.cep).replace(/\D/g, ''); // Mascara no formulario
-	const cpf = String(req.body.cpf).replace(/\D/g, ''); // Mascara no formulario
-	const detalhes = req.body.detalhes;
-	const perfis = dbCon.msSqlServer.sanitize(req.body.perfis);
+
+	// Uploads, trocar req.body para result.body
+	const uResult = await _upload(req, res);
+
+	const nome = uResult.body.nome;
+	const email = uResult.body.email;
+	const tipo = uResult.body.tipo;
+	const ativo = uResult.body.ativo;
+	const cep = String(uResult.body.cep).replace(/\D/g, ''); // Mascara no formulario
+	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
+	const detalhes = uResult.body.detalhes;
+	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
 	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
