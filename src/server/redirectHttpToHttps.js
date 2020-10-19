@@ -19,7 +19,7 @@ const startRedirectHttpToHttps = (webServerHost, webServerPort) => {
 		if (!redirectHttpToHttpsPort) {
 			resolve(-1);
 		} else {
-			if (isNaN(parseFloat(redirectHttpToHttpsPort)) || !Number.isInteger(redirectHttpToHttpsPort) || redirectHttpToHttpsPort < 0) {
+			if (!Number.isInteger(redirectHttpToHttpsPort) || redirectHttpToHttpsPort < 0) {
 				resolve(-2);
 			} else {
 				const pServerCheck = {
