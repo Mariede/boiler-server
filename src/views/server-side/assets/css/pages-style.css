@@ -1,17 +1,18 @@
 @import url(https://fonts.googleapis.com/css?family=B612);
 
 html, body {
+	font: 15px B612, 'Segoe UI', Verdana, Arial, Helvetica;
+	color: #333;
 	width: 100%;
 	height: 100%;
-	font: 15px B612, Arial, Helvetica, san-serif;
 }
 
 body {
-	text-align: center;
-	margin: 0px;
+	background-color: #fcfffc;
+	margin: 0;
 	padding: 30px;
 	box-sizing: border-box;
-	background-color: #fcfffc;
+	text-align: center;
 }
 
 #wrapper {
@@ -63,19 +64,19 @@ a:active {
 	box-sizing: border-box;
 	width: 100%;
 	max-width: 500px;
-	padding: 12px 20px;
 	margin: 8px 0;
+	padding: 12px 20px;
 	border: 1px solid olive;
 	border-radius: 10px;
 	box-shadow: 10px 10px 5px -5px rgba(0, 0, 0, 0.20);
-	outline: none;
+	outline: 0;
 }
 
 div.panel {
+	background-color: #fff;
 	border: 1px solid olive;
 	border-radius: 10px;
 	padding: 10px;
-	background-color: #fff;
 }
 
 div.panel.panel-home-bottom {
@@ -94,7 +95,7 @@ div.panel.panel-egg {
 }
 
 div.tips {
-	font-size: 10px;
+	font-size: 0.7rem;
 	letter-spacing: 2px;
 	margin-top: 10px;
 }
