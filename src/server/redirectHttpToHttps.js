@@ -15,11 +15,13 @@ const log = require('@serverRoot/helpers/log');
 const startRedirectHttpToHttps = (webServerHost, webServerPort) => {
 	return new Promise((resolve, reject) => {
 		const redirectHttpToHttpsPort = __serverConfig.server.secure.redirectHttpToHttpsPort;
+		const portHttp = Array.isArray(redirectHttpToHttpsPort) ? redirectHttpToHttpsPort[0] : redirectHttpToHttpsPort;
+		const portHttps = Array.isArray(redirectHttpToHttpsPort) ? redirectHttpToHttpsPort[1] : webServerPort;
 
-		if (!redirectHttpToHttpsPort) {
+		if (!portHttp || !portHttps) {
 			resolve(-1);
 		} else {
-			if (!Number.isInteger(redirectHttpToHttpsPort) || redirectHttpToHttpsPort < 0) {
+			if (!Number.isInteger(portHttp) || portHttp < 0 || !Number.isInteger(portHttps) || portHttps < 0) {
 				resolve(-2);
 			} else {
 				const pServerCheck = {
@@ -28,14 +30,14 @@ const startRedirectHttpToHttps = (webServerHost, webServerPort) => {
 				};
 
 				const listenOptions = {
-					port: redirectHttpToHttpsPort,
+					port: portHttp,
 					host: webServerHost,
 					backlog: __serverConfig.server.backlog
 				};
 
 				// Cria servidor de redirect -----------------------------------------------
 				const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, (req, res) => {
-					const redirectUrl = `https://${String(req.headers.host || '').split(':')[0]}${(webServerPort === 443 ? '' : `:${webServerPort}`)}${req.url ? req.url : ''}`;
+					const redirectUrl = `https://${String(req.headers.host || '').split(':')[0]}${(portHttps === 443 ? '' : `:${portHttps}`)}${req.url ? req.url : ''}`;
 
 					if (req.method.toUpperCase() === 'GET') {
 						res.writeHead(301, { Location: redirectUrl });
@@ -56,7 +58,7 @@ const startRedirectHttpToHttps = (webServerHost, webServerPort) => {
 				// Inicia servidor de redirect
 				const serverStarter = () => {
 					try {
-						resolve(redirectHttpToHttpsPort);
+						resolve(portHttp);
 					} catch (err) {
 						reject(err);
 					}
