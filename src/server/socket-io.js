@@ -30,7 +30,7 @@ const startIo = cert => {
 
 		const listenOptions = {
 			port: __serverConfig.socketIo.serverPort,
-			host: __serverConfig.socketIo.serverHost,
+			host: (__serverConfig.socketIo.serverHost !== '' ? __serverConfig.socketIo.serverHost : '0.0.0.0'),
 			backlog: __serverConfig.server.backlog
 		};
 

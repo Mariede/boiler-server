@@ -24,8 +24,7 @@ const startRedirectHttpToHttps = (webServerHost, webServerPort) => {
 			} else {
 				const pServerCheck = {
 					protocol: http,
-					serverOptions: {},
-					httpsRedirectUrl: `https://${webServerHost}${(webServerPort === 443 ? '' : `:${webServerPort}`)}`
+					serverOptions: {}
 				};
 
 				const listenOptions = {
@@ -36,7 +35,7 @@ const startRedirectHttpToHttps = (webServerHost, webServerPort) => {
 
 				// Cria servidor de redirect -----------------------------------------------
 				const _server = pServerCheck.protocol.createServer(pServerCheck.serverOptions, (req, res) => {
-					const redirectUrl = pServerCheck.httpsRedirectUrl + (req.url ? req.url : '');
+					const redirectUrl = `https://${String(req.headers.host || '').split(':')[0]}${(webServerPort === 443 ? '' : `:${webServerPort}`)}${req.url ? req.url : ''}`;
 
 					if (req.method.toUpperCase() === 'GET') {
 						res.writeHead(301, { Location: redirectUrl });

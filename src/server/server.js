@@ -47,7 +47,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 		const listenOptions = {
 			port: __serverConfig.server.port,
-			host: __serverConfig.server.host,
+			host: (__serverConfig.server.host !== '' ? __serverConfig.server.host : '0.0.0.0'),
 			backlog: __serverConfig.server.backlog
 		};
 
@@ -240,7 +240,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		const wsProxy = proxy.createProxyServer(
 			{
 				secure: false,
-				target: `${pServerCheck.socketIo.serverProtocol}${__serverConfig.socketIo.serverHost}:${__serverConfig.socketIo.serverPort}`,
+				target: `${pServerCheck.socketIo.serverProtocol}${(__serverConfig.socketIo.serverHost !== '' ? __serverConfig.socketIo.serverHost : '0.0.0.0')}:${__serverConfig.socketIo.serverPort}`,
 				ws: true
 			}
 		);
