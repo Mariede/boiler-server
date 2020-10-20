@@ -1,0 +1,11 @@
+
+1) Portainer (imagem + container):
+	docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /users/mariede/.docker/portainer/data:/data portainer/portainer-ce
+
+
+2) Dockerfile para criação da imagem (versao do exemplo 1.0.0):
+	docker build --build-arg build_version=1.0.0 -t boiler-deploy-1.0.0 ./
+
+
+3) Container a partir da imagem criada (https precisa estar habilitado e configurado na imagem)
+	docker run -d -p 80:4000 -p 443:5000 -p 5001:5001 --name boiler-server --restart always -v /users/mariede/docker/boiler-server/logs:/app/logs boiler-deploy-1.0.0
