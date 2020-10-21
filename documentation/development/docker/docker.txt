@@ -1,3 +1,17 @@
+DOCKER COM WSL2:
+---------------
+
+- Windows 10 PRO/ENTERPRISE 64-bit, 1909 ou superior
+- Hyper-V habilitado
+- WSL habilitado (Subsistema do Windows para Linux)
+- VMP habilitado (Plataforma de máquina virtual)
+- Atualizar o kernel do Linux (https://docs.microsoft.com/pt-br/windows/wsl/wsl2-kernel)
+- Rodar wsl --set-default-version 2 (PS modo admin - desabilitar opção console herdado, se necessário)
+- Instalar o Docker Desktop
+
+
+CONFIGURAÇÃO:
+------------
 
 1) Portainer (imagem + container):
 
