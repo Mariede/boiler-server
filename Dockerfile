@@ -3,7 +3,6 @@
 # > Executar apos rodar o npm run build <
 
 FROM node:12.19-alpine
-ARG version
 
 RUN apk add -U tzdata
 RUN cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
@@ -12,13 +11,13 @@ RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 
 WORKDIR /home/node/app
 
-COPY ./build/${version}/package*.json ./
+COPY ./build/package*.json ./
 
 USER node
 
 RUN npm install
 
-COPY --chown=node:node ./build/${version}/ ./
+COPY --chown=node:node ./build/ ./
 
 EXPOSE 4000
 EXPOSE 5000

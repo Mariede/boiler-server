@@ -13,19 +13,21 @@ DOCKER COM WSL2:
 CONFIGURAÇÃO:
 ------------
 
+- Pasta do host para mount dos volumes: C:/users/mariede/.docker/
+
 1) Portainer (imagem + container):
 
 	docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v C:/users/mariede/.docker/portainer/data:/data portainer/portainer-ce
 
 
-2) Dockerfile para criação da imagem (versao do exemplo 1.0.0, na pasta build):
+2) Dockerfile para criação da imagem (nome da imagem: boiler-deploy, versao do exemplo: 1.0.0):
 
-	docker build --build-arg version=1.0.0 -t boiler-deploy-1.0.0 ./
+	docker build -t boiler-deploy:1.0.0 ./
 
 
 3) Container a partir da imagem criada (https precisa estar habilitado e configurado na imagem)
 
-	docker run -d -p 80:4000 -p 443:5000 -p 5001:5001 --name boiler-server --restart always --memory 8192m -v C:/Users/mariede/.docker/boiler-server/logs:/home/node/app/logs -v C:/Users/mariede/.docker/boiler-server/queue:/home/node/app/queue -v C:/Users/mariede/.docker/boiler-server/sessions:/home/node/app/sessions -v C:/Users/mariede/.docker/boiler-server/uploads:/home/node/app/uploads boiler-deploy-1.0.0
+	docker run -d -p 80:4000 -p 443:5000 -p 5001:5001 --name boiler-server --restart always --memory 8192m -v C:/Users/mariede/.docker/boiler-server/logs:/home/node/app/logs -v C:/Users/mariede/.docker/boiler-server/queue:/home/node/app/queue -v C:/Users/mariede/.docker/boiler-server/sessions:/home/node/app/sessions -v C:/Users/mariede/.docker/boiler-server/uploads:/home/node/app/uploads boiler-deploy:1.0.0
 
 
 4) Para inspecionar as configurações do novo container criado

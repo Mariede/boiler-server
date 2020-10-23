@@ -21,12 +21,11 @@ const packageJsonFile = './package.json';
 const packageJson = require(packageJsonFile);
 
 const name = (packageJson.name || '');
-const version = (packageJson.version || '');
 const outputName = (packageJson.outputName || 'main.js');
 
 /* Final paths */
 const sourcePath = Path.resolve(__dirname, shortSourcePath);
-const destinyPath = Path.resolve(__dirname, `./build${(version ? `/${version}` : '')}`);
+const destinyPath = Path.resolve(__dirname, './build');
 // ------------------------------------------------------------------------------
 
 // ------------------------------------------------------------------------------
@@ -82,7 +81,7 @@ const generateBuild = {
 		new GeneratePackageJsonPlugin(
 			{
 				name: name,
-				version: version,
+				version: (packageJson.version || ''),
 				description: (packageJson.description || ''),
 				main: outputName,
 				license: (packageJson.license || ''),
