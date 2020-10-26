@@ -9,6 +9,8 @@ set DOCKER_CONTAINER_PORTS=-p 80:4000 -p 443:5000 -p 5001:5001
 set DOCKER_CONTAINER_MEMORY=8192m
 set DOCKER_VOLUME_MOUNT=C:/Users/mariede/.docker/boiler-server
 
+REM set DOCKER_HOST=-H tcp://localhost:2375
+
 cls
 echo/
 choice /n /c:YN /m "Start script to build application? [Y|N]"
@@ -40,9 +42,9 @@ if not exist "%PATH_HOME_FRONT_END%\package.json" (
 )
 
 echo/
-echo ======================================================
-echo  1-3 GENERATE FRONT-END BUILD                        #
-echo ======================================================
+echo ================================================================
+echo  1-3 GENERATE FRONT-END BUILD                                  #
+echo ================================================================
 echo/
 
 cd %PATH_HOME_FRONT_END%
@@ -55,9 +57,9 @@ call npm run build
 IF ERRORLEVEL 1 GOTO ERROR
 
 echo/
-echo ======================================================
-echo  2-3 GENERATE BACK-END BUILD                         #
-echo ======================================================
+echo ================================================================
+echo  2-3 GENERATE BACK-END BUILD                                   #
+echo ================================================================
 echo/
 
 cd %PATH_HOME_BACK_END%
@@ -70,9 +72,9 @@ call npm run build
 IF ERRORLEVEL 1 GOTO ERROR
 
 echo/
-echo ======================================================
-echo  3-3 PACKING FINAL BUILD IN STATIC PUBLIC FOLDER     #
-echo ======================================================
+echo ================================================================
+echo  3-3 PACKING FINAL BUILD IN STATIC PUBLIC FOLDER               #
+echo ================================================================
 echo/
 
 del "%PATH_HOME_BACK_END%\build\views\client-side\public\*" /Q /S /F
@@ -82,7 +84,9 @@ xcopy "%PATH_HOME_FRONT_END%\build\" "%PATH_HOME_BACK_END%\build\views\client-si
 IF ERRORLEVEL 1 GOTO ERROR
 
 echo/
-echo Procedimento bem sucedido, build final criada!!!
+echo ================================================================
+echo  - Procedimento bem sucedido, build final criada !!!           #
+echo ================================================================
 echo/
 
 :CHECK_DEPLOY_SCRIPT
@@ -117,28 +121,30 @@ if not exist "%PATH_HOME_BACK_END%\build\views\client-side\public\config.json" (
 )
 
 echo/
-echo ======================================================
-echo  1-2 GENERATE DOCKER IMAGE BUILD                     #
-echo ======================================================
+echo ================================================================
+echo  1-2 GENERATE DOCKER IMAGE BUILD                               #
+echo ================================================================
 echo/
 
 cd %PATH_HOME_BACK_END%
 IF ERRORLEVEL 1 GOTO ERROR
 
-call docker build -t %DOCKER_IMAGE_NAME% ./
+call docker %DOCKER_HOST% build -t %DOCKER_IMAGE_NAME% ./
 IF ERRORLEVEL 1 GOTO ERROR
 
 echo/
-echo ======================================================
-echo  2-2 GENERATE DOCKER CONTAINER BUILD                 #
-echo ======================================================
+echo ================================================================
+echo  2-2 GENERATE DOCKER CONTAINER BUILD                           #
+echo ================================================================
 echo/
 
-call docker run -d %DOCKER_CONTAINER_PORTS% --name %DOCKER_CONTAINER_NAME% --restart always --memory %DOCKER_CONTAINER_MEMORY% -v "%DOCKER_VOLUME_MOUNT%/logs:/home/node/app/logs" -v "%DOCKER_VOLUME_MOUNT%/queue:/home/node/app/queue" -v "%DOCKER_VOLUME_MOUNT%/sessions:/home/node/app/sessions" -v "%DOCKER_VOLUME_MOUNT%/uploads:/home/node/app/uploads" %DOCKER_IMAGE_NAME%
+call docker %DOCKER_HOST% run -d %DOCKER_CONTAINER_PORTS% --name %DOCKER_CONTAINER_NAME% --restart always --memory %DOCKER_CONTAINER_MEMORY% -v "%DOCKER_VOLUME_MOUNT%/logs:/home/node/app/logs" -v "%DOCKER_VOLUME_MOUNT%/queue:/home/node/app/queue" -v "%DOCKER_VOLUME_MOUNT%/sessions:/home/node/app/sessions" -v "%DOCKER_VOLUME_MOUNT%/uploads:/home/node/app/uploads" %DOCKER_IMAGE_NAME%
 IF ERRORLEVEL 1 GOTO ERROR
 
 echo/
-echo Procedimento bem sucedido, docker image e container criados!!!
+echo ================================================================
+echo  - Procedimento bem sucedido, image / container criados !!!    #
+echo ================================================================
 echo/
 
 GOTO END_SCRIPT
