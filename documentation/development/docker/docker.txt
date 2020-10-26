@@ -30,6 +30,12 @@ CONFIGURAÇÃO:
 	docker run -d -p 80:4000 -p 443:5000 -p 5001:5001 --name boiler-server --restart always --memory 8192m -v C:/Users/mariede/.docker/boiler-server/logs:/home/node/app/logs -v C:/Users/mariede/.docker/boiler-server/queue:/home/node/app/queue -v C:/Users/mariede/.docker/boiler-server/sessions:/home/node/app/sessions -v C:/Users/mariede/.docker/boiler-server/uploads:/home/node/app/uploads boiler-deploy:1.0.0
 
 
-4) Para inspecionar as configurações do novo container criado
+4) Para inspecionar as configurações do container
 
 	docker container inspect boiler-server
+
+
+5) Para atualizar um arquivo do host diretamente dentro do container (supondo estar na pasta build)
+
+	docker cp ./config.json boiler-server:home/node/app
+	docker cp ./views/client-side/public/config.json boiler-server:home/node/app/views/client-side/public
