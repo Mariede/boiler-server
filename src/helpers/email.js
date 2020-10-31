@@ -3,7 +3,7 @@
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
 const fs = require('fs');
-const htmlToText = require('html-to-text');
+const { htmlToText } = require('html-to-text');
 const nodemailer = require('nodemailer');
 const path = require('path');
 // -------------------------------------------------------------------------
@@ -181,7 +181,13 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 	// Testa possiveis elementos html no corpo
 	if (/<[a-zA-Z!/]{1}[^>]*>/g.test(text)) {
 		message.html = text;
-		message.text = htmlToText.fromString(text, { wordwrap: 80, preserveNewlines: true });
+		message.text = htmlToText(
+			text,
+			{
+				wordwrap: 80,
+				preserveNewlines: true
+			}
+		);
 	} else {
 		message.text = text;
 	}
