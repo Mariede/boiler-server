@@ -4,7 +4,7 @@
 // Modulos de inicializacao
 const fs = require('fs');
 const multer = require('multer');
-const path = require('path');
+const { join, extname } = require('path');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -62,7 +62,7 @@ const push = async (req, res, fieldNames, extraPath = '', storageToDisk = true, 
 												functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 												async folder => {
 													try {
-														initPath = path.join(initPath, folder);
+														initPath = join(initPath, folder);
 														await functions.createNewFolder(fs, initPath);
 													} catch (err) {
 														callback(err);
@@ -150,7 +150,7 @@ const push = async (req, res, fieldNames, extraPath = '', storageToDisk = true, 
 								}
 							);
 
-							const fileExtension = path.extname(file.originalname).toLowerCase();
+							const fileExtension = extname(file.originalname).toLowerCase();
 							const fileMimetype = file.mimetype.toLowerCase();
 							const checkedExtension = new RegExp(`^(${allowedExtensions.join('|')}){1}$`, 'i').test(fileExtension);
 							const checkedMimeType = new RegExp(`^(${allowedMimeTypes.join('|')}){1}$`, 'i').test(fileMimetype);

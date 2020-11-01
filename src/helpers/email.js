@@ -5,7 +5,7 @@
 const fs = require('fs');
 const { htmlToText } = require('html-to-text');
 const nodemailer = require('nodemailer');
-const path = require('path');
+const { join } = require('path');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -72,7 +72,7 @@ const _executeSend = async (from, to, cc, bcc, subject, text, attachments, sendC
 									functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 									async folder => {
 										try {
-											initPath = path.join(initPath, folder);
+											initPath = join(initPath, folder);
 											await functions.createNewFolder(fs, initPath);
 										} catch (err) {
 											reject(err);

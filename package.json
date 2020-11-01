@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Boilerplate em express NODE.js",
   "main": "./src/main.js",
+  "type": "commonjs",
   "license": "GPL-3.0-only",
   "private": true,
   "engines": {

@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
 const NodeExternals = require('webpack-node-externals');
-const Path = require('path');
+const { resolve } = require('path');
 const WebpackMessages = require('webpack-messages');
 // ------------------------------------------------------------------------------
 
@@ -24,8 +24,8 @@ const name = (packageJson.name || '');
 const outputName = (packageJson.outputName || 'main.js');
 
 /* Final paths */
-const sourcePath = Path.resolve(__dirname, shortSourcePath);
-const destinyPath = Path.resolve(__dirname, './build');
+const sourcePath = resolve(__dirname, shortSourcePath);
+const destinyPath = resolve(__dirname, './build');
 // ------------------------------------------------------------------------------
 
 // ------------------------------------------------------------------------------
@@ -67,13 +67,13 @@ const generateBuild = {
 			{
 				patterns: [
 					{
-						from: Path.resolve(sourcePath, './config.json'), to: Path.resolve(destinyPath, './config.json'), force: true
+						from: resolve(sourcePath, './config.json'), to: resolve(destinyPath, './config.json'), force: true
 					},
 					{
-						from: Path.resolve(sourcePath, './views'), to: Path.resolve(destinyPath, './views'), force: true
+						from: resolve(sourcePath, './views'), to: resolve(destinyPath, './views'), force: true
 					},
 					{
-						from: Path.resolve(sourcePath, certFolder), to: Path.resolve(destinyPath, certFolder), force: true
+						from: resolve(sourcePath, certFolder), to: resolve(destinyPath, certFolder), force: true
 					}
 				]
 			}

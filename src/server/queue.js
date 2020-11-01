@@ -4,7 +4,7 @@
 // Modulos de inicializacao
 const fs = require('fs');
 const nodemailer = require('nodemailer');
-const path = require('path');
+const { join, extname } = require('path');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -168,7 +168,7 @@ const queueStartMailCheck = () => {
 								if (files && files.length) {
 									const targetFiles = files.filter(
 										file => {
-											return path.extname(file).toLowerCase() === fileExtension;
+											return extname(file).toLowerCase() === fileExtension;
 										}
 									);
 
@@ -268,7 +268,7 @@ const queueStartMailCheck = () => {
 							functions.removeInvalidFileNameChars(configKey).split(/[\\/]/),
 							async folder => {
 								try {
-									initPath = path.join(initPath, folder);
+									initPath = join(initPath, folder);
 									await functions.createNewFolder(fs, initPath);
 								} catch (err) {
 									reject(err);

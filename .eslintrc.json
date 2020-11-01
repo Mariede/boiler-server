@@ -7,12 +7,13 @@
 	"env": {
 		"node": true,
 		"es2020": true,
+		"browser": false,
 		"commonjs": true
 	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:node/recommended"
-	],
+	"parserOptions": {
+		"ecmaVersion": 2020,
+		"sourceType": "script"
+	},
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly",
@@ -20,9 +21,10 @@
 		"__serverConfig": "readonly",
 		"__serverWorker": "writable"
 	},
-	"parserOptions": {
-		"ecmaVersion": 2020
-	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:node/recommended"
+	],
 	"rules": {
 		"array-bracket-spacing": [
 			2,
@@ -215,10 +217,15 @@
 		"node/global-require": 2,
 		"node/handle-callback-err": 2,
 		"node/no-mixed-requires": 2,
+		"node/no-missing-import": 2,
 		"node/no-missing-require": 0,
 		"node/no-new-require": 2,
 		"node/no-path-concat": 2,
 		"node/prefer-global/buffer": 2,
+		"node/prefer-global/console": 2,
+		"node/prefer-global/process": 2,
+		"node/prefer-global/url-search-params": 2,
+		"node/prefer-global/url": 2,
 		"no-process-exit": 2,
 		"node/no-sync": 2,
 		"nonblock-statement-body-position": [
