@@ -41,7 +41,7 @@ const userRoutes = (router, handleErrorsController) => {
 			}
 		)
 	)
-	.post(
+	.post( // Novo usuario
 		handleErrorsController(
 			async (req, res) => {
 				const result = await user.inserir(req, res);
@@ -118,6 +118,25 @@ const userRoutes = (router, handleErrorsController) => {
 		handleErrorsController(
 			async (req, res) => {
 				const result = await user.ativacao(req, res);
+				res.status(200).send(result);
+			}
+		)
+	);
+
+	router
+	.route('/usuario/:id/senha')
+	.all(
+		handleErrorsController(
+			(req, res, next) => {
+				_commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.put(
+		handleErrorsController(
+			async (req, res) => {
+				const result = await user.senha(req, res);
 				res.status(200).send(result);
 			}
 		)

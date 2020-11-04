@@ -631,6 +631,128 @@ const ativacao = async (req, res) => {
 	return resultSet.output;
 };
 
+const senha = async (req, res) => {
+	// Parametros de sessao
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	// -------------------------------------------------------------------------
+
+	// Parametros de entrada
+	const idUsuario = req.params.id;
+	const senha = req.body.senha;
+	const senhaNova = req.body.senhaNova;
+	const senhaNovaCheck = req.body.senhaNovaCheck;
+	// -------------------------------------------------------------------------
+
+	// Validacoes entrada
+	if (!validator.isInteger(idUsuario, false)) {
+		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
+	}
+
+	if (sess[sessWraper].id !== parseInt(idUsuario, 10)) {
+		errWrapper.throwThis('USUARIO', 400, 'Só é possível realizar esta operação em si mesmo...');
+	}
+
+	const errorStack = [];
+
+	if (validator.isEmpty(senha)) {
+		errorStack.push('Senha atual não pode ser vazia...');
+	}
+
+	if (validator.isEmpty(senhaNova)) {
+		errorStack.push('Nova senha não pode ser vazia...');
+	} else {
+		if (validator.equal(senhaNova, senha)) {
+			errorStack.push('Nova senha não pode ser igual a atual...');
+		}
+	}
+
+	if (validator.isEmpty(senhaNovaCheck)) {
+		errorStack.push('Confirmação de nova senha não pode ser vazia...');
+	} else {
+		if (!validator.equal(senhaNovaCheck, senhaNova)) {
+			errorStack.push('Confirmação de nova senha não confere...');
+		}
+	}
+
+	if (errorStack.length !== 0) {
+		errWrapper.throwThis('USUARIO', 400, errorStack);
+	} else {
+		const query = {
+			formato: 1,
+			dados: {
+				input: [
+					['idUsuario', 'int', idUsuario]
+				],
+				executar: `
+					-- Valida dados do usuario
+					SELECT
+						A.SENHA
+						,A.SALT
+						,A.ATIVO
+					FROM
+						USUARIO A (NOLOCK)
+					WHERE
+						A.ID_USUARIO = @idUsuario;
+					-- ----------------------------------------
+				`
+			}
+		};
+
+		const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+		const dataUser = resultSet && resultSet.rowsAffected === 1 && resultSet.recordset.pop();
+		const senhaCheck = (dataUser ? cryptoHash.hash(senha, dataUser.SALT) : null);
+
+		if (!senhaCheck) {
+			errWrapper.throwThis('USUARIO', 400, 'Erro ao recuperar dados do usuário...');
+		} else {
+			if (senhaCheck.passHash !== dataUser.SENHA) {
+				errWrapper.throwThis('USUARIO', 400, 'Senha informada é inválida...');
+			}
+		}
+
+		if (!dataUser.ATIVO) {
+			errWrapper.throwThis('USUARIO', 400, 'Usuário inativo...');
+		}
+	}
+	// -------------------------------------------------------------------------
+
+	const salt = cryptoHash.generateSalt(5, false);
+
+	const query = {
+		formato: 1,
+		dados: {
+			input: [
+				['idUsuario', 'int', idUsuario],
+				['senha', 'varchar(128)', cryptoHash.hash(senhaNova, salt).passHash],
+				['salt', 'varchar(5)', salt]
+			],
+			output: [
+				['id', 'int']
+			],
+			executar: `
+				-- Altera senha do usuario
+				UPDATE
+					A
+				SET
+					A.SENHA = @senha
+					,A.SALT = @salt
+				FROM
+					USUARIO A
+				WHERE
+					A.ID_USUARIO = @idUsuario;
+
+				SET @id = @idUsuario;
+				-- ----------------------------------------
+			`
+		}
+	};
+
+	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	return resultSet.output;
+};
+
 const options = async (req, res) => {
 	const query = {
 		formato: 1,
@@ -684,5 +806,6 @@ module.exports = {
 	alterar,
 	excluir,
 	ativacao,
+	senha,
 	options
 };
