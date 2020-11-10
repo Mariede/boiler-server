@@ -64,11 +64,10 @@ CREATE TABLE [dbo].[USUARIO](
 	[ID_TIPO] [int] NOT NULL,
 	[NOME] [varchar](200) NOT NULL,
 	[EMAIL] [varchar](200) NOT NULL,
+	[CPF] [numeric](11, 0) NULL,
 	[SENHA] [varchar](128) NOT NULL,
 	[SALT] [varchar](5) NOT NULL,
 	[ATIVO] [bit] NOT NULL,
-	[CEP] [numeric](8, 0) NULL,
-	[CPF] [numeric](11, 0) NULL,
 	[DETALHES] [varchar](max) NULL,
  CONSTRAINT [PK_USUARIO] PRIMARY KEY CLUSTERED
 (

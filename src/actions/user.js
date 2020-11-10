@@ -58,7 +58,7 @@ const enumOptions = {
 // Funcoes compartilhadas
 
 // Validacao comum para insert e update de usuarios
-const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, cpf, detalhes, perfis, senha, senhaCheck) => {
+const _commonValidationErrStack = (isNewRecord, nome, email, cpf, tipo, ativo, detalhes, perfis, senha, senhaCheck) => {
 	const errorStack = [];
 
 	if (validator.isEmpty(nome)) {
@@ -77,6 +77,12 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 		}
 	}
 
+	if (!validator.isEmpty(cpf)) {
+		if (!validator.isCpf(cpf)) {
+			errorStack.push('CPF inválido...');
+		}
+	}
+
 	if (validator.isEmpty(tipo)) {
 		errorStack.push('Tipo não pode ser vazio...');
 	} else {
@@ -90,18 +96,6 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 	} else {
 		if (!validator.isBoolean(ativo)) {
 			errorStack.push('Estado inválido...');
-		}
-	}
-
-	if (!validator.isEmpty(cep)) {
-		if (!validator.isCep(cep)) {
-			errorStack.push('CEP inválido...');
-		}
-	}
-
-	if (!validator.isEmpty(cpf)) {
-		if (!validator.isCpf(cpf)) {
-			errorStack.push('CPF inválido...');
 		}
 	}
 
@@ -156,9 +150,8 @@ const consultarTodos = async (req, res) => {
 			A.ID_USUARIO
 			,A.NOME
 			,A.EMAIL
-			,A.ATIVO
-			,A.CEP
 			,A.CPF
+			,A.ATIVO
 			,A.DETALHES
 			,A.ID_TIPO [TIPO.ID]
 			,B.TIPO [TIPO.NOME]
@@ -225,9 +218,8 @@ const consultar = async (req, res) => {
 					A.ID_USUARIO
 					,A.NOME
 					,A.EMAIL
-					,A.ATIVO
-					,A.CEP
 					,A.CPF
+					,A.ATIVO
 					,A.DETALHES
 					,A.ID_TIPO [TIPO.ID]
 					,B.TIPO [TIPO.NOME]
@@ -304,10 +296,9 @@ const inserir = async (req, res) => {
 
 	const nome = uResult.body.nome;
 	const email = uResult.body.email;
+	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
 	const tipo = uResult.body.tipo;
 	const ativo = uResult.body.ativo;
-	const cep = String(uResult.body.cep).replace(/\D/g, ''); // Mascara no formulario
-	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
 	const detalhes = uResult.body.detalhes;
 	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
 
@@ -319,7 +310,7 @@ const inserir = async (req, res) => {
 
 	// Validacoes entrada
 	// Stack de erros
-	_commonValidationErrStack(true, nome, email, tipo, ativo, cep, cpf, detalhes, perfis, senha, senhaCheck);
+	_commonValidationErrStack(true, nome, email, cpf, tipo, ativo, detalhes, perfis, senha, senhaCheck);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -328,12 +319,11 @@ const inserir = async (req, res) => {
 			input: [
 				['nome', 'varchar(200)', nome],
 				['email', 'varchar(200)', email],
+				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['senha', 'varchar(128)', cryptoHash.hash(senha, salt).passHash],
 				['salt', 'varchar(5)', salt],
 				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
-				['cep', 'numeric(8, 0)', (cep ? Number(cep) : null)],
-				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['detalhes', 'varchar(max)', detalhes || null]
 			],
 			output: [
@@ -345,22 +335,20 @@ const inserir = async (req, res) => {
 					ID_TIPO
 					,NOME
 					,EMAIL
+					,CPF
 					,SENHA
 					,SALT
 					,ATIVO
-					,CEP
-					,CPF
 					,DETALHES
 				)
 				VALUES(
 					@tipo
 					,@nome
 					,@email
+					,@cpf
 					,@senha
 					,@salt
 					,@ativo
-					,@cep
-					,@cpf
 					,@detalhes
 				);
 
@@ -407,10 +395,9 @@ const alterar = async (req, res) => {
 
 	const nome = uResult.body.nome;
 	const email = uResult.body.email;
+	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
 	const tipo = uResult.body.tipo;
 	const ativo = uResult.body.ativo;
-	const cep = String(uResult.body.cep).replace(/\D/g, ''); // Mascara no formulario
-	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
 	const detalhes = uResult.body.detalhes;
 	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
 	// -------------------------------------------------------------------------
@@ -425,7 +412,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Stack de erros
-	_commonValidationErrStack(false, nome, email, tipo, ativo, cep, cpf, detalhes, perfis);
+	_commonValidationErrStack(false, nome, email, cpf, tipo, ativo, detalhes, perfis);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -435,10 +422,9 @@ const alterar = async (req, res) => {
 				['idUsuario', 'int', idUsuario],
 				['nome', 'varchar(200)', nome],
 				['email', 'varchar(200)', email],
+				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['tipo', 'int', tipo],
 				['ativo', 'bit', ativo],
-				['cep', 'numeric(8, 0)', (cep ? Number(cep) : null)],
-				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['detalhes', 'varchar(max)', detalhes || null]
 			],
 			output: [
@@ -451,10 +437,9 @@ const alterar = async (req, res) => {
 				SET
 					A.NOME = @nome
 					,A.EMAIL = @email
+					,A.CPF = @cpf
 					,A.ID_TIPO = @tipo
 					,A.ATIVO = @ativo
-					,A.CEP = @cep
-					,A.CPF = @cpf
 					,A.DETALHES = @detalhes
 				FROM
 					USUARIO A
