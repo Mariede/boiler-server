@@ -18,10 +18,24 @@ const validator = require('@serverRoot/helpers/validator');
 
 // -------------------------------------------------------------------------
 /*
-Constantes gerais
-	- utilizar key como 'OPTIONS.XXX'
-	- ajuste automatico dos niveis json ao converter para camelCase em paginator, quando necessario
-	- na rota options a propriedade key nao e utilizada
+Constantes gerais do modulo
+*/
+
+/*
+Constantes locais
+*/
+const enumLocals = {
+	passMinLen: 4,
+	passMaxLen: 20,
+	detailsMinLen: 5,
+	detailsMaxLen: 8000
+};
+
+/*
+Tipos enumerados para a rota options
+	-> utilizar key como 'OPTIONS.XXX' (para conversao json em paginator)
+		-> ajuste automatico dos niveis json ao converter para camelCase em paginator, quando necessario
+	-> na rota options a propriedade key nao e utilizada
 */
 const enumOptions = {
 	ativo: {
@@ -92,8 +106,8 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 	}
 
 	if (!validator.isEmpty(detalhes)) {
-		if (!validator.lenRange(detalhes, 5, 8000)) {
-			errorStack.push('Detalhes deve possuir entre 5 e 8000 caracteres...');
+		if (!validator.lenRange(detalhes, enumLocals.detailsMinLen, enumLocals.detailsMaxLen)) {
+			errorStack.push(`Detalhes deve conter entre ${enumLocals.detailsMinLen} e ${enumLocals.detailsMaxLen} caracteres...`);
 		}
 	}
 
@@ -106,12 +120,16 @@ const _commonValidationErrStack = (isNewRecord, nome, email, tipo, ativo, cep, c
 		if (validator.isEmpty(senha)) {
 			errorStack.push('Senha não pode ser vazia...');
 		} else {
-			if (validator.isEmpty(senhaCheck)) {
-				errorStack.push('Confirmação de senha não pode ser vazia...');
-			} else {
-				if (!validator.equal(senhaCheck, senha)) {
-					errorStack.push('Confirmação de senha não confere...');
-				}
+			if (!validator.lenRange(senha, enumLocals.passMinLen, enumLocals.passMaxLen)) {
+				errorStack.push(`Senha deve conter entre ${enumLocals.passMinLen} e ${enumLocals.passMaxLen} caracteres...`);
+			}
+		}
+
+		if (validator.isEmpty(senhaCheck)) {
+			errorStack.push('Confirmação de senha não pode ser vazia...');
+		} else {
+			if (!validator.equal(senhaCheck, senha)) {
+				errorStack.push('Confirmação de senha não confere...');
 			}
 		}
 	}
@@ -662,8 +680,12 @@ const senha = async (req, res) => {
 	if (validator.isEmpty(senhaNova)) {
 		errorStack.push('Nova senha não pode ser vazia...');
 	} else {
-		if (validator.equal(senhaNova, senha)) {
-			errorStack.push('Nova senha não pode ser igual a atual...');
+		if (!validator.lenRange(senhaNova, enumLocals.passMinLen, enumLocals.passMaxLen)) {
+			errorStack.push(`Nova senha deve conter entre ${enumLocals.passMinLen} e ${enumLocals.passMaxLen} caracteres...`);
+		} else {
+			if (validator.equal(senhaNova, senha)) {
+				errorStack.push('Nova senha não pode ser igual a atual...');
+			}
 		}
 	}
 
@@ -786,16 +808,16 @@ const options = async (req, res) => {
 		perfis: paginator.keysToCamelCase(resultSet.recordsets[1]) // Chaves para camelCase
 	};
 
-	const lEnumOptions = { ...enumOptions };
+	const _enumOptions = {};
 
 	// Mantem apenas a chave de conteudo
 	Object.keys(enumOptions).forEach(
 		key => {
-			lEnumOptions[key] = enumOptions[key].content;
+			_enumOptions[key] = enumOptions[key].content;
 		}
 	);
 
-	return { ...optionsSet, ...lEnumOptions };
+	return { ...optionsSet, ..._enumOptions };
 };
 // -------------------------------------------------------------------------
 
