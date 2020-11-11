@@ -2,7 +2,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
-const { format } = require('date-fns');
+const { format, isValid, parse } = require('date-fns');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -204,13 +204,30 @@ const generateUniqueId = (_length, fullUnique = true) => {
 	return fRet;
 };
 
-// Formata uma data valida js de acordo com o parametro de entrada
-const formatDate = (date, formatStyle = 'dd/MM/yyyy HH:mm:ss') => {
-	if (date instanceof Date) {
-		return format(date, formatStyle);
+// Formata uma data valida de acordo com o parametro de entrada
+//	retorna o proprio valor de entrada se value nao for um objeto/data
+const formatDateToString = (value, formatStyle = 'dd/MM/yyyy HH:mm:ss') => {
+	if (value instanceof Date) {
+		return format(value, formatStyle); // Funcao format retorna string
 	}
 
-	return date;
+	return value;
+};
+
+// Tenta formatar um valor em uma data valida de acordo com o parametro de entrada
+//	retorna o proprio valor de entrada se data invalida
+const formatStringToDate = (value, formatStyle = 'dd/MM/yyyy HH:mm:ss') => {
+	const date = parse(
+		String(value || ''),
+		formatStyle,
+		new Date()
+	);
+
+	if (isValid(date)) {
+		return date;
+	}
+
+	return value;
 };
 // -------------------------------------------------------------------------
 
@@ -224,5 +241,6 @@ module.exports = {
 	sendMail,
 	removeInvalidFileNameChars,
 	generateUniqueId,
-	formatDate
+	formatDateToString,
+	formatStringToDate
 };

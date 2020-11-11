@@ -75,7 +75,7 @@ const keysToCamelCase = (jsonData, keysXmlToJson) => {
 			if (typeof cValue === 'object' && cValue !== null) {
 				if (!Object.prototype.hasOwnProperty.call(nDocument, nKey)) {
 					if (cValue instanceof Date) {
-						nDocument[nKey] = functions.formatDate(cValue);
+						nDocument[nKey] = functions.formatDateToString(cValue);
 					} else {
 						nDocument[nKey] = {};
 					}
@@ -213,9 +213,10 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 
 			if (i < iLen) {
 				const order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
-				const aCheck = (getNestedValue(a, sortElements[i]) || '');
-				const bCheck = (getNestedValue(b, sortElements[i]) || '');
-				const checkData = collator.compare(aCheck, bCheck);
+				const aCheck = functions.formatStringToDate(getNestedValue(a, sortElements[i]) || '');
+				const bCheck = functions.formatStringToDate(getNestedValue(b, sortElements[i]) || '');
+
+				const checkData = ((aCheck instanceof Date && bCheck instanceof Date) ? (aCheck > bCheck) : collator.compare(aCheck, bCheck));
 
 				return ((checkData < 0) ? order.d1 : ((checkData > 0) ? order.a1 : sortThis(a, b, i + 1, iLen)));
 			}
