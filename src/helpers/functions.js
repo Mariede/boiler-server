@@ -2,6 +2,11 @@
 
 // -------------------------------------------------------------------------
 // Modulos de inicializacao
+const { format } = require('date-fns');
+// -------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+// Modulos de apoio
 
 // -------------------------------------------------------------------------
 
@@ -198,6 +203,15 @@ const generateUniqueId = (_length, fullUnique = true) => {
 
 	return fRet;
 };
+
+// Formata uma data valida js de acordo com o parametro de entrada
+const formatDate = (date, formatStyle = 'dd/MM/yyyy HH:mm:ss') => {
+	if (date instanceof Date) {
+		return format(date, formatStyle);
+	}
+
+	return date;
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
@@ -209,5 +223,6 @@ module.exports = {
 	writeFile,
 	sendMail,
 	removeInvalidFileNameChars,
-	generateUniqueId
+	generateUniqueId,
+	formatDate
 };

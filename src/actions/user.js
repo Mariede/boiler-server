@@ -77,7 +77,9 @@ const _commonValidationErrStack = (isNewRecord, nome, email, cpf, empresa, ativo
 		}
 	}
 
-	if (!validator.isEmpty(cpf)) {
+	if (validator.isEmpty(cpf)) {
+		errorStack.push('CPF não pode ser vazio...');
+	} else {
 		if (!validator.isCpf(cpf)) {
 			errorStack.push('CPF inválido...');
 		}
@@ -153,6 +155,7 @@ const consultarTodos = async (req, res) => {
 			,A.CPF
 			,A.ATIVO
 			,A.DETALHES
+			,A.DATA_CRIACAO
 			,A.ID_EMPRESA [EMPRESA.ID]
 			,B.EMPRESA [EMPRESA.NOME]
 			,(
@@ -221,6 +224,7 @@ const consultar = async (req, res) => {
 					,A.CPF
 					,A.ATIVO
 					,A.DETALHES
+					,A.DATA_CRIACAO
 					,A.ID_EMPRESA [EMPRESA.ID]
 					,B.EMPRESA [EMPRESA.NOME]
 					,(
@@ -340,6 +344,7 @@ const inserir = async (req, res) => {
 					,SALT
 					,ATIVO
 					,DETALHES
+					,DATA_CRIACAO
 				)
 				VALUES(
 					@empresa
@@ -350,6 +355,7 @@ const inserir = async (req, res) => {
 					,@salt
 					,@ativo
 					,@detalhes
+					,GETDATE()
 				);
 
 				SET @id = SCOPE_IDENTITY();

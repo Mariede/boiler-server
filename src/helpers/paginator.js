@@ -8,6 +8,7 @@ const xml2js = require('xml2js');
 // -------------------------------------------------------------------------
 // Modulos de apoio
 const errWrapper = require('@serverRoot/helpers/err-wrapper');
+const functions = require('@serverRoot/helpers/functions');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
@@ -73,7 +74,11 @@ const keysToCamelCase = (jsonData, keysXmlToJson) => {
 		} else {
 			if (typeof cValue === 'object' && cValue !== null) {
 				if (!Object.prototype.hasOwnProperty.call(nDocument, nKey)) {
-					nDocument[nKey] = {};
+					if (cValue instanceof Date) {
+						nDocument[nKey] = functions.formatDate(cValue);
+					} else {
+						nDocument[nKey] = {};
+					}
 				}
 
 				loopKeys(cValue, nDocument[nKey]);
