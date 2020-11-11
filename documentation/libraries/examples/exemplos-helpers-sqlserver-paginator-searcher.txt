@@ -312,12 +312,12 @@ const baseQuery = `
 		,a.SENHA
 		,a.SALT
 		,a.ATIVO
-		,a.ID_TIPO 'TIPO.ID'
-		,b.TIPO 'TIPO.TIPO'
+		,a.ID_EMPRESA 'EMPRESA.ID'
+		,b.EMPRESA 'EMPRESA.NOME'
 	FROM
 		USUARIO a (NOLOCK)
-		INNER JOIN TIPO b (NOLOCK)
-			on (a.ID_TIPO = b.ID_TIPO)
+		INNER JOIN EMPRESA b (NOLOCK)
+			on (a.ID_EMPRESA = b.ID_EMPRESA)
 	WHERE
 		a.NOME LIKE ('%jo%')
 		${replaceQuery};
@@ -357,12 +357,12 @@ const baseQuery = `
 		,a.SENHA
 		,a.SALT
 		,a.ATIVO
-		,a.ID_TIPO 'TIPO.ID'
-		,b.TIPO 'TIPO.TIPO'
+		,a.ID_EMPRESA 'EMPRESA.ID'
+		,b.EMPRESA 'EMPRESA.NOME'
 	FROM
 		USUARIO a (NOLOCK)
-		INNER JOIN TIPO b (NOLOCK)
-			on (a.ID_TIPO = b.ID_TIPO)
+		INNER JOIN EMPRESA b (NOLOCK)
+			on (a.ID_EMPRESA = b.ID_EMPRESA)
 	WHERE
 		a.NOME LIKE ('%jo%')
 		${replaceQuery};
@@ -404,12 +404,12 @@ const baseQuery = `
 		,a.SENHA
 		,a.SALT
 		,a.ATIVO
-		,a.ID_TIPO 'TIPO.ID'
-		,b.TIPO 'TIPO.TIPO'
+		,a.ID_EMPRESA 'EMPRESA.ID'
+		,b.EMPRESA 'EMPRESA.NOME'
 	FROM
 		USUARIO a (NOLOCK)
-		INNER JOIN TIPO b (NOLOCK)
-			on (a.ID_TIPO = b.ID_TIPO)
+		INNER JOIN EMPRESA b (NOLOCK)
+			on (a.ID_EMPRESA = b.ID_EMPRESA)
 	${replaceQuery};
 `;
 

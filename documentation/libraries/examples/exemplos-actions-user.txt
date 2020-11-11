@@ -16,12 +16,12 @@ const consultarTodos = async (req, res) => {
 					,A.SENHA
 					,A.SALT
 					,A.ATIVO
-					,A.ID_TIPO [TIPO.ID]
-					,B.TIPO [TIPO.NOME]
+					,A.ID_EMPRESA [EMPRESA.ID]
+					,B.EMPRESA [EMPRESA.NOME]
 				FROM
 					USUARIO A (NOLOCK)
-					INNER JOIN TIPO B (NOLOCK)
-						ON (A.ID_TIPO = B.ID_TIPO);
+					INNER JOIN EMPRESA B (NOLOCK)
+						ON (A.ID_EMPRESA = B.ID_EMPRESA);
 			`
 		}
 	};
@@ -69,12 +69,12 @@ const consultar = async (req, res) => {
 					,A.SENHA
 					,A.SALT
 					,A.ATIVO
-					,A.ID_TIPO [TIPO.ID]
-					,B.TIPO [TIPO.NOME]
+					,A.ID_EMPRESA [EMPRESA.ID]
+					,B.EMPRESA [EMPRESA.NOME]
 				FROM
 					USUARIO A (NOLOCK)
-					INNER JOIN TIPO B (NOLOCK)
-						ON (A.ID_TIPO = B.ID_TIPO)
+					INNER JOIN EMPRESA B (NOLOCK)
+						ON (A.ID_EMPRESA = B.ID_EMPRESA)
 				WHERE
 					A.ID_USUARIO = @idUsuario;
 			`

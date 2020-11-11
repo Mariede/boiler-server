@@ -46,7 +46,7 @@ Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
 
 	-> Formata resultados tabulares especificos para novas subchaves aninhadas
 		-> Regra: utilizar . no nome da chave para identificar niveis das subchaves do objeto
-			-> ex: 'USUARIO.TIPO.ID'
+			-> ex: 'USUARIO.EMPRESA.ID'
 
 	-> Se existir keysXmlToJson no formato array de objetos, converte dados XML relacionados para JSON
 			-> [{ xmlRoot: 'ROOT1', xmlPath: 'PATH1' }, { xmlRoot: 'ROOT2', xmlPath: 'PATH2' }, ...]

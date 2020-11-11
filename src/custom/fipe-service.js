@@ -12,7 +12,7 @@ const errWrapper = require('@serverRoot/helpers/err-wrapper');
 
 // -------------------------------------------------------------------------
 /*
-Tipos disponivels para consulta na API da FIPE (metodo privado)
+Tipos disponiveis para consulta na API da FIPE (metodo privado)
 	1 => carros
 	2 => motos
 	3 => caminhoes

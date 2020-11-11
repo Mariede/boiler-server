@@ -32,7 +32,7 @@ const enumLocals = {
 };
 
 /*
-Tipos enumerados para a rota options
+Colecoes enumeradas para a rota options
 	-> utilizar key como 'OPTIONS.XXX' (para conversao json em paginator)
 		-> ajuste automatico dos niveis json ao converter para camelCase em paginator, quando necessario
 	-> na rota options a propriedade key nao e utilizada
@@ -58,7 +58,7 @@ const enumOptions = {
 // Funcoes compartilhadas
 
 // Validacao comum para insert e update de usuarios
-const _commonValidationErrStack = (isNewRecord, nome, email, cpf, tipo, ativo, detalhes, perfis, senha, senhaCheck) => {
+const _commonValidationErrStack = (isNewRecord, nome, email, cpf, empresa, ativo, detalhes, perfis, senha, senhaCheck) => {
 	const errorStack = [];
 
 	if (validator.isEmpty(nome)) {
@@ -83,11 +83,11 @@ const _commonValidationErrStack = (isNewRecord, nome, email, cpf, tipo, ativo, d
 		}
 	}
 
-	if (validator.isEmpty(tipo)) {
-		errorStack.push('Tipo não pode ser vazio...');
+	if (validator.isEmpty(empresa)) {
+		errorStack.push('Empresa não pode ser vazia...');
 	} else {
-		if (!validator.isInteger(tipo, false)) {
-			errorStack.push('Tipo inválido...');
+		if (!validator.isInteger(empresa, false)) {
+			errorStack.push('Empresa inválida...');
 		}
 	}
 
@@ -153,8 +153,8 @@ const consultarTodos = async (req, res) => {
 			,A.CPF
 			,A.ATIVO
 			,A.DETALHES
-			,A.ID_TIPO [TIPO.ID]
-			,B.TIPO [TIPO.NOME]
+			,A.ID_EMPRESA [EMPRESA.ID]
+			,B.EMPRESA [EMPRESA.NOME]
 			,(
 				SELECT
 					D.ID_PERFIL [ID]
@@ -169,8 +169,8 @@ const consultarTodos = async (req, res) => {
 			) [PERFIS]
 		FROM
 			USUARIO A (NOLOCK)
-			INNER JOIN TIPO B (NOLOCK)
-				ON (A.ID_TIPO = B.ID_TIPO)
+			INNER JOIN EMPRESA B (NOLOCK)
+				ON (A.ID_EMPRESA = B.ID_EMPRESA)
 			INNER JOIN PERFIL_USUARIO C (NOLOCK)
 				ON (A.ID_USUARIO = C.ID_USUARIO)
 			INNER JOIN PERFIL D (NOLOCK)
@@ -221,8 +221,8 @@ const consultar = async (req, res) => {
 					,A.CPF
 					,A.ATIVO
 					,A.DETALHES
-					,A.ID_TIPO [TIPO.ID]
-					,B.TIPO [TIPO.NOME]
+					,A.ID_EMPRESA [EMPRESA.ID]
+					,B.EMPRESA [EMPRESA.NOME]
 					,(
 						SELECT
 							D.ID_PERFIL [ID]
@@ -237,20 +237,20 @@ const consultar = async (req, res) => {
 					) [PERFIS]
 				FROM
 					USUARIO A (NOLOCK)
-					INNER JOIN TIPO B (NOLOCK)
-						ON (A.ID_TIPO = B.ID_TIPO)
+					INNER JOIN EMPRESA B (NOLOCK)
+						ON (A.ID_EMPRESA = B.ID_EMPRESA)
 				WHERE
 					A.ID_USUARIO = @idUsuario;
 				-- ----------------------------------------
 
 				-- Retorna opcoes na mesma chamada, no mesmo json de retorno
 				SELECT
-					ID_TIPO [ID]
-					,TIPO [NOME]
+					ID_EMPRESA [ID]
+					,EMPRESA [NOME]
 				FROM
-					TIPO (NOLOCK)
+					EMPRESA (NOLOCK)
 				ORDER BY
-					TIPO DESC;
+					EMPRESA DESC;
 
 				SELECT
 					ID_PERFIL [ID]
@@ -271,7 +271,7 @@ const consultar = async (req, res) => {
 		resultSet.recordsets[0],
 		[
 			{
-				key: 'OPTIONS.TIPOS',
+				key: 'OPTIONS.EMPRESAS',
 				content: Array.from(resultSet.recordsets[1])
 			},
 			{
@@ -297,7 +297,7 @@ const inserir = async (req, res) => {
 	const nome = uResult.body.nome;
 	const email = uResult.body.email;
 	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
-	const tipo = uResult.body.tipo;
+	const empresa = uResult.body.empresa;
 	const ativo = uResult.body.ativo;
 	const detalhes = uResult.body.detalhes;
 	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
@@ -310,7 +310,7 @@ const inserir = async (req, res) => {
 
 	// Validacoes entrada
 	// Stack de erros
-	_commonValidationErrStack(true, nome, email, cpf, tipo, ativo, detalhes, perfis, senha, senhaCheck);
+	_commonValidationErrStack(true, nome, email, cpf, empresa, ativo, detalhes, perfis, senha, senhaCheck);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -322,7 +322,7 @@ const inserir = async (req, res) => {
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['senha', 'varchar(128)', cryptoHash.hash(senha, salt).passHash],
 				['salt', 'varchar(5)', salt],
-				['tipo', 'int', tipo],
+				['empresa', 'int', empresa],
 				['ativo', 'bit', ativo],
 				['detalhes', 'varchar(max)', detalhes || null]
 			],
@@ -332,7 +332,7 @@ const inserir = async (req, res) => {
 			executar: `
 				-- Cria novo usuario
 				INSERT INTO USUARIO(
-					ID_TIPO
+					ID_EMPRESA
 					,NOME
 					,EMAIL
 					,CPF
@@ -342,7 +342,7 @@ const inserir = async (req, res) => {
 					,DETALHES
 				)
 				VALUES(
-					@tipo
+					@empresa
 					,@nome
 					,@email
 					,@cpf
@@ -396,7 +396,7 @@ const alterar = async (req, res) => {
 	const nome = uResult.body.nome;
 	const email = uResult.body.email;
 	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
-	const tipo = uResult.body.tipo;
+	const empresa = uResult.body.empresa;
 	const ativo = uResult.body.ativo;
 	const detalhes = uResult.body.detalhes;
 	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
@@ -412,7 +412,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Stack de erros
-	_commonValidationErrStack(false, nome, email, cpf, tipo, ativo, detalhes, perfis);
+	_commonValidationErrStack(false, nome, email, cpf, empresa, ativo, detalhes, perfis);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -423,7 +423,7 @@ const alterar = async (req, res) => {
 				['nome', 'varchar(200)', nome],
 				['email', 'varchar(200)', email],
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
-				['tipo', 'int', tipo],
+				['empresa', 'int', empresa],
 				['ativo', 'bit', ativo],
 				['detalhes', 'varchar(max)', detalhes || null]
 			],
@@ -438,7 +438,7 @@ const alterar = async (req, res) => {
 					A.NOME = @nome
 					,A.EMAIL = @email
 					,A.CPF = @cpf
-					,A.ID_TIPO = @tipo
+					,A.ID_EMPRESA = @empresa
 					,A.ATIVO = @ativo
 					,A.DETALHES = @detalhes
 				FROM
@@ -474,8 +474,6 @@ const alterar = async (req, res) => {
 					,A.EMAIL email
 				FROM
 					USUARIO A (NOLOCK)
-					INNER JOIN TIPO B (NOLOCK)
-						ON (A.ID_TIPO = B.ID_TIPO)
 				WHERE
 					A.ID_USUARIO = @id;
 
@@ -765,14 +763,14 @@ const options = async (req, res) => {
 		formato: 1,
 		dados: {
 			executar: `
-				-- Opcoes -> Tipos e Perfis disponiveis no DB
+				-- Opcoes -> Empresas e Perfis disponiveis no DB
 				SELECT
-					ID_TIPO [ID]
-					,TIPO [NOME]
+					ID_EMPRESA [ID]
+					,EMPRESA [NOME]
 				FROM
-					TIPO (NOLOCK)
+					EMPRESA (NOLOCK)
 				ORDER BY
-					TIPO DESC;
+					EMPRESA DESC;
 
 				SELECT
 					ID_PERFIL [ID]
@@ -789,7 +787,7 @@ const options = async (req, res) => {
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
 	const optionsSet = {
-		tipos: paginator.keysToCamelCase(resultSet.recordsets[0]), // Chaves para camelCase
+		empresas: paginator.keysToCamelCase(resultSet.recordsets[0]), // Chaves para camelCase
 		perfis: paginator.keysToCamelCase(resultSet.recordsets[1]) // Chaves para camelCase
 	};
 

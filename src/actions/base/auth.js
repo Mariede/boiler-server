@@ -50,8 +50,6 @@ const logon = async (req, res) => {
 								,A.ATIVO
 							FROM
 								USUARIO A (NOLOCK)
-								INNER JOIN TIPO B (NOLOCK)
-									ON (A.ID_TIPO = B.ID_TIPO)
 							WHERE
 								A.EMAIL = @login;
 
