@@ -10,7 +10,7 @@ Select		o.name
 			,o.create_date
 			,o.modify_date
 From		sys.objects o
-Where		schema_name(o.schema_id)		Like 'dbo%'
+Where		schema_name(o.schema_id)		Like 'nodetest%'
 Union
 Select		i.name
 			,o.schema_id
@@ -20,7 +20,7 @@ Select		i.name
 			,o.modify_date
 From		sys.objects o
 			Inner Join sys.indexes i	On(o.object_id = i.object_id)
-Where		schema_name(o.schema_id)		Like 'dbo%'
+Where		schema_name(o.schema_id)		Like 'nodetest%'
 )
 Order by	type_desc
 			,name;

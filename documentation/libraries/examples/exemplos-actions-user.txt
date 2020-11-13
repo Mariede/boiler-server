@@ -19,8 +19,8 @@ const consultarTodos = async (req, res) => {
 					,A.ID_EMPRESA [EMPRESA.ID]
 					,B.EMPRESA [EMPRESA.NOME]
 				FROM
-					dbo.USUARIO A (NOLOCK)
-					INNER JOIN dbo.EMPRESA B (NOLOCK)
+					nodetest.USUARIO A (NOLOCK)
+					INNER JOIN nodetest.EMPRESA B (NOLOCK)
 						ON (A.ID_EMPRESA = B.ID_EMPRESA);
 			`
 		}
@@ -72,8 +72,8 @@ const consultar = async (req, res) => {
 					,A.ID_EMPRESA [EMPRESA.ID]
 					,B.EMPRESA [EMPRESA.NOME]
 				FROM
-					dbo.USUARIO A (NOLOCK)
-					INNER JOIN dbo.EMPRESA B (NOLOCK)
+					nodetest.USUARIO A (NOLOCK)
+					INNER JOIN nodetest.EMPRESA B (NOLOCK)
 						ON (A.ID_EMPRESA = B.ID_EMPRESA)
 				WHERE
 					A.ID_USUARIO = @idUsuario;
