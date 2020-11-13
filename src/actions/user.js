@@ -158,6 +158,7 @@ const consultarTodos = async (req, res) => {
 			,A.DATA_CRIACAO
 			,A.ID_EMPRESA [EMPRESA.ID]
 			,B.EMPRESA [EMPRESA.NOME]
+			,B.ATIVO [EMPRESA.ATIVO]
 			,(
 				SELECT
 					D.ID_PERFIL [ID]
@@ -227,6 +228,7 @@ const consultar = async (req, res) => {
 					,A.DATA_CRIACAO
 					,A.ID_EMPRESA [EMPRESA.ID]
 					,B.EMPRESA [EMPRESA.NOME]
+					,B.ATIVO [EMPRESA.ATIVO]
 					,(
 						SELECT
 							D.ID_PERFIL [ID]
@@ -251,10 +253,11 @@ const consultar = async (req, res) => {
 				SELECT
 					ID_EMPRESA [ID]
 					,EMPRESA [NOME]
+					,ATIVO
 				FROM
 					EMPRESA (NOLOCK)
 				ORDER BY
-					EMPRESA DESC;
+					EMPRESA;
 
 				SELECT
 					ID_PERFIL [ID]
@@ -478,22 +481,37 @@ const alterar = async (req, res) => {
 					A.ID_USUARIO id
 					,A.NOME nome
 					,A.EMAIL email
+					,B.EMPRESA empresa
 				FROM
 					USUARIO A (NOLOCK)
+					INNER JOIN EMPRESA B (NOLOCK)
+						ON (A.ID_EMPRESA = B.ID_EMPRESA)
 				WHERE
 					A.ID_USUARIO = @id;
 
 				SELECT
-					B.ID_PERFIL id
-					,B.PERFIL nome
+					C.PERFIL _perfis
 				FROM
-					PERFIL_USUARIO A (NOLOCK)
-					INNER JOIN PERFIL B (NOLOCK)
-						ON (A.ID_PERFIL = B.ID_PERFIL)
-					INNER JOIN USUARIO C (NOLOCK)
-						ON (A.ID_USUARIO = C.ID_USUARIO)
+					USUARIO A (NOLOCK)
+					INNER JOIN PERFIL_USUARIO B (NOLOCK)
+						ON (A.ID_USUARIO = B.ID_USUARIO)
+					INNER JOIN PERFIL C (NOLOCK)
+						ON (B.ID_PERFIL = C.ID_PERFIL)
 				WHERE
-					C.ID_USUARIO = @id;
+					A.ID_USUARIO = @id;
+
+				SELECT DISTINCT
+					D.FUNCAO _funcoes
+				FROM
+					USUARIO A (NOLOCK)
+					INNER JOIN PERFIL_USUARIO B (NOLOCK)
+						ON (A.ID_USUARIO = B.ID_USUARIO)
+					INNER JOIN PERFIL_FUNCAO C (NOLOCK)
+						ON (B.ID_PERFIL = C.ID_PERFIL)
+					INNER JOIN FUNCAO D (NOLOCK)
+						ON (C.ID_FUNCAO = D.ID_FUNCAO)
+				WHERE
+					A.ID_USUARIO = @id;
 				-- ----------------------------------------
 			`
 		}
@@ -506,12 +524,12 @@ const alterar = async (req, res) => {
 		if (resultSet && resultSet.recordsets) {
 			const rsLen = resultSet.recordsets.length;
 
-			const dataUser = resultSet.recordsets[rsLen - 2].length === 1 && resultSet.recordsets[rsLen - 2].pop();
+			const dataUser = resultSet.recordsets[rsLen - 3].length === 1 && resultSet.recordsets[rsLen - 3].pop();
 
 			const perfis = (
-				resultSet.recordsets[rsLen - 1].length !== 0 && resultSet.recordsets[rsLen - 1].map(
+				resultSet.recordsets[rsLen - 2].length !== 0 && resultSet.recordsets[rsLen - 2].map(
 					_p => {
-						return _p.nome;
+						return _p._perfis;
 					}
 				)
 			) || [];
@@ -519,7 +537,7 @@ const alterar = async (req, res) => {
 			const funcoes = (
 				resultSet.recordsets[rsLen - 1].length !== 0 && resultSet.recordsets[rsLen - 1].map(
 					_f => {
-						return _f.id;
+						return _f._funcoes;
 					}
 				)
 			) || [];
@@ -769,15 +787,17 @@ const options = async (req, res) => {
 		formato: 1,
 		dados: {
 			executar: `
-				-- Opcoes -> Empresas e Perfis disponiveis no DB
+				-- Opcoes -> Empresas disponiveis no DB
 				SELECT
 					ID_EMPRESA [ID]
 					,EMPRESA [NOME]
+					,ATIVO
 				FROM
 					EMPRESA (NOLOCK)
 				ORDER BY
-					EMPRESA DESC;
+					EMPRESA;
 
+				-- Opcoes -> Perfis disponiveis no DB
 				SELECT
 					ID_PERFIL [ID]
 					,PERFIL [NOME]

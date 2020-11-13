@@ -47,23 +47,39 @@ const logon = async (req, res) => {
 								,A.EMAIL email
 								,A.SENHA
 								,A.SALT
-								,A.ATIVO
+								,A.ATIVO USUARIO_ATIVO
+								,B.EMPRESA empresa
+								,B.ATIVO EMPRESA_ATIVA
 							FROM
 								USUARIO A (NOLOCK)
+								INNER JOIN EMPRESA B (NOLOCK)
+									ON (A.ID_EMPRESA = B.ID_EMPRESA)
 							WHERE
 								A.EMAIL = @login;
 
 							SELECT
-								B.ID_PERFIL id
-								,B.PERFIL nome
+								C.PERFIL _perfis
 							FROM
-								PERFIL_USUARIO A (NOLOCK)
-								INNER JOIN PERFIL B (NOLOCK)
-									ON (A.ID_PERFIL = B.ID_PERFIL)
-								INNER JOIN USUARIO C (NOLOCK)
-									ON (A.ID_USUARIO = C.ID_USUARIO)
+								USUARIO A (NOLOCK)
+								INNER JOIN PERFIL_USUARIO B (NOLOCK)
+									ON (A.ID_USUARIO = B.ID_USUARIO)
+								INNER JOIN PERFIL C (NOLOCK)
+									ON (B.ID_PERFIL = C.ID_PERFIL)
 							WHERE
-								C.EMAIL = @login;
+								A.EMAIL = @login;
+
+							SELECT DISTINCT
+								D.FUNCAO _funcoes
+							FROM
+								USUARIO A (NOLOCK)
+								INNER JOIN PERFIL_USUARIO B (NOLOCK)
+									ON (A.ID_USUARIO = B.ID_USUARIO)
+								INNER JOIN PERFIL_FUNCAO C (NOLOCK)
+									ON (B.ID_PERFIL = C.ID_PERFIL)
+								INNER JOIN FUNCAO D (NOLOCK)
+									ON (C.ID_FUNCAO = D.ID_FUNCAO)
+							WHERE
+								A.EMAIL = @login;
 							-- ----------------------------------------
 						`
 					}
@@ -74,37 +90,42 @@ const logon = async (req, res) => {
 				const senhaCheck = (dataUser ? cryptoHash.hash(senha, dataUser.SALT) : null);
 
 				if (senhaCheck && (senhaCheck.passHash === dataUser.SENHA)) {
-					if (dataUser.ATIVO) {
-						// Limpa eventuais sessoes anteriores ativas para este usuario
-						await helpersAuth.checkForLoggedSessions(req, dataUser.id);
+					if (dataUser.EMPRESA_ATIVA) {
+						if (dataUser.USUARIO_ATIVO) {
+							// Limpa eventuais sessoes anteriores ativas para este usuario
+							await helpersAuth.checkForLoggedSessions(req, dataUser.id);
 
-						const perfis = (
-							resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
-								_p => {
-									return _p.nome;
-								}
-							)
-						) || [];
+							const perfis = (
+								resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
+									_p => {
+										return _p._perfis;
+									}
+								)
+							) || [];
 
-						const funcoes = (
-							resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
-								_f => {
-									return _f.id;
-								}
-							)
-						) || [];
+							const funcoes = (
+								resultSet && resultSet.rowsAffected[2] !== 0 && resultSet.recordsets[2].map(
+									_f => {
+										return _f._funcoes;
+									}
+								)
+							) || [];
 
-						/* Session data */
-						sess[sessWraper] = {
-							id: dataUser.id,
-							nome: dataUser.nome,
-							email: dataUser.email,
-							perfis: perfis,
-							funcoes: funcoes
-						};
-						/* Session data */
+							/* Session data */
+							sess[sessWraper] = {
+								id: dataUser.id,
+								nome: dataUser.nome,
+								email: dataUser.email,
+								empresa: dataUser.empresa,
+								perfis: perfis,
+								funcoes: funcoes
+							};
+							/* Session data */
+						} else {
+							errWrapper.throwThis('AUTH', 400, 'Usuário inativo...');
+						}
 					} else {
-						errWrapper.throwThis('AUTH', 400, 'Usuário inativo...');
+						errWrapper.throwThis('AUTH', 400, 'Empresa inativa...');
 					}
 				} else {
 					errWrapper.throwThis('AUTH', 400, 'Usuário ou senha inválidos...');
