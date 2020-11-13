@@ -51,8 +51,8 @@ const logon = async (req, res) => {
 								,B.EMPRESA empresa
 								,B.ATIVO EMPRESA_ATIVA
 							FROM
-								USUARIO A (NOLOCK)
-								INNER JOIN EMPRESA B (NOLOCK)
+								dbo.USUARIO A (NOLOCK)
+								INNER JOIN dbo.EMPRESA B (NOLOCK)
 									ON (A.ID_EMPRESA = B.ID_EMPRESA)
 							WHERE
 								A.EMAIL = @login;
@@ -60,10 +60,10 @@ const logon = async (req, res) => {
 							SELECT
 								C.PERFIL _perfis
 							FROM
-								USUARIO A (NOLOCK)
-								INNER JOIN PERFIL_USUARIO B (NOLOCK)
+								dbo.USUARIO A (NOLOCK)
+								INNER JOIN dbo.PERFIL_USUARIO B (NOLOCK)
 									ON (A.ID_USUARIO = B.ID_USUARIO)
-								INNER JOIN PERFIL C (NOLOCK)
+								INNER JOIN dbo.PERFIL C (NOLOCK)
 									ON (B.ID_PERFIL = C.ID_PERFIL)
 							WHERE
 								A.EMAIL = @login;
@@ -71,12 +71,12 @@ const logon = async (req, res) => {
 							SELECT DISTINCT
 								D.FUNCAO _funcoes
 							FROM
-								USUARIO A (NOLOCK)
-								INNER JOIN PERFIL_USUARIO B (NOLOCK)
+								dbo.USUARIO A (NOLOCK)
+								INNER JOIN dbo.PERFIL_USUARIO B (NOLOCK)
 									ON (A.ID_USUARIO = B.ID_USUARIO)
-								INNER JOIN PERFIL_FUNCAO C (NOLOCK)
+								INNER JOIN dbo.PERFIL_FUNCAO C (NOLOCK)
 									ON (B.ID_PERFIL = C.ID_PERFIL)
-								INNER JOIN FUNCAO D (NOLOCK)
+								INNER JOIN dbo.FUNCAO D (NOLOCK)
 									ON (C.ID_FUNCAO = D.ID_FUNCAO)
 							WHERE
 								A.EMAIL = @login;

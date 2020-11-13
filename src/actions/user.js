@@ -164,20 +164,20 @@ const consultarTodos = async (req, res) => {
 					D.ID_PERFIL [ID]
 					,D.PERFIL [NOME]
 				FROM
-					PERFIL_USUARIO C (NOLOCK)
-					INNER JOIN PERFIL D (NOLOCK)
+					dbo.PERFIL_USUARIO C (NOLOCK)
+					INNER JOIN dbo.PERFIL D (NOLOCK)
 						ON C.ID_PERFIL = D.ID_PERFIL
 				WHERE
 					A.ID_USUARIO = C.ID_USUARIO
 				FOR XML PATH ('PERFIL'), ROOT('PERFIS')
 			) [PERFIS]
 		FROM
-			USUARIO A (NOLOCK)
-			INNER JOIN EMPRESA B (NOLOCK)
+			dbo.USUARIO A (NOLOCK)
+			INNER JOIN dbo.EMPRESA B (NOLOCK)
 				ON (A.ID_EMPRESA = B.ID_EMPRESA)
-			INNER JOIN PERFIL_USUARIO C (NOLOCK)
+			INNER JOIN dbo.PERFIL_USUARIO C (NOLOCK)
 				ON (A.ID_USUARIO = C.ID_USUARIO)
-			INNER JOIN PERFIL D (NOLOCK)
+			INNER JOIN dbo.PERFIL D (NOLOCK)
 				ON (C.ID_PERFIL = D.ID_PERFIL)
 		${replaceQuery}
 		-- ----------------------------------------
@@ -234,16 +234,16 @@ const consultar = async (req, res) => {
 							D.ID_PERFIL [ID]
 							,D.PERFIL [NOME]
 						FROM
-							PERFIL_USUARIO C (NOLOCK)
-							INNER JOIN PERFIL D (NOLOCK)
+							dbo.PERFIL_USUARIO C (NOLOCK)
+							INNER JOIN dbo.PERFIL D (NOLOCK)
 								ON C.ID_PERFIL = D.ID_PERFIL
 						WHERE
 							A.ID_USUARIO = C.ID_USUARIO
 						FOR XML PATH ('PERFIL'), ROOT('PERFIS')
 					) [PERFIS]
 				FROM
-					USUARIO A (NOLOCK)
-					INNER JOIN EMPRESA B (NOLOCK)
+					dbo.USUARIO A (NOLOCK)
+					INNER JOIN dbo.EMPRESA B (NOLOCK)
 						ON (A.ID_EMPRESA = B.ID_EMPRESA)
 				WHERE
 					A.ID_USUARIO = @idUsuario;
@@ -255,7 +255,7 @@ const consultar = async (req, res) => {
 					,EMPRESA [NOME]
 					,ATIVO
 				FROM
-					EMPRESA (NOLOCK)
+					dbo.EMPRESA (NOLOCK)
 				ORDER BY
 					EMPRESA;
 
@@ -263,7 +263,7 @@ const consultar = async (req, res) => {
 					ID_PERFIL [ID]
 					,PERFIL [NOME]
 				FROM
-					PERFIL (NOLOCK)
+					dbo.PERFIL (NOLOCK)
 				ORDER BY
 					PERFIL;
 				-- ----------------------------------------
@@ -338,7 +338,7 @@ const inserir = async (req, res) => {
 			],
 			executar: `
 				-- Cria novo usuario
-				INSERT INTO USUARIO(
+				INSERT INTO dbo.USUARIO(
 					ID_EMPRESA
 					,NOME
 					,EMAIL
@@ -365,11 +365,11 @@ const inserir = async (req, res) => {
 
 				DELETE
 				FROM
-					PERFIL_USUARIO
+					dbo.PERFIL_USUARIO
 				WHERE
 					ID_USUARIO = @id;
 
-				INSERT INTO PERFIL_USUARIO(
+				INSERT INTO dbo.PERFIL_USUARIO(
 					ID_PERFIL
 					,ID_USUARIO
 				)
@@ -451,17 +451,17 @@ const alterar = async (req, res) => {
 					,A.ATIVO = @ativo
 					,A.DETALHES = @detalhes
 				FROM
-					USUARIO A
+					dbo.USUARIO A
 				WHERE
 					A.ID_USUARIO = @idUsuario;
 
 				DELETE
 				FROM
-					PERFIL_USUARIO
+					dbo.PERFIL_USUARIO
 				WHERE
 					ID_USUARIO = @idUsuario;
 
-				INSERT INTO PERFIL_USUARIO(
+				INSERT INTO dbo.PERFIL_USUARIO(
 					ID_PERFIL
 					,ID_USUARIO
 				)
@@ -483,8 +483,8 @@ const alterar = async (req, res) => {
 					,A.EMAIL email
 					,B.EMPRESA empresa
 				FROM
-					USUARIO A (NOLOCK)
-					INNER JOIN EMPRESA B (NOLOCK)
+					dbo.USUARIO A (NOLOCK)
+					INNER JOIN dbo.EMPRESA B (NOLOCK)
 						ON (A.ID_EMPRESA = B.ID_EMPRESA)
 				WHERE
 					A.ID_USUARIO = @id;
@@ -492,10 +492,10 @@ const alterar = async (req, res) => {
 				SELECT
 					C.PERFIL _perfis
 				FROM
-					USUARIO A (NOLOCK)
-					INNER JOIN PERFIL_USUARIO B (NOLOCK)
+					dbo.USUARIO A (NOLOCK)
+					INNER JOIN dbo.PERFIL_USUARIO B (NOLOCK)
 						ON (A.ID_USUARIO = B.ID_USUARIO)
-					INNER JOIN PERFIL C (NOLOCK)
+					INNER JOIN dbo.PERFIL C (NOLOCK)
 						ON (B.ID_PERFIL = C.ID_PERFIL)
 				WHERE
 					A.ID_USUARIO = @id;
@@ -503,12 +503,12 @@ const alterar = async (req, res) => {
 				SELECT DISTINCT
 					D.FUNCAO _funcoes
 				FROM
-					USUARIO A (NOLOCK)
-					INNER JOIN PERFIL_USUARIO B (NOLOCK)
+					dbo.USUARIO A (NOLOCK)
+					INNER JOIN dbo.PERFIL_USUARIO B (NOLOCK)
 						ON (A.ID_USUARIO = B.ID_USUARIO)
-					INNER JOIN PERFIL_FUNCAO C (NOLOCK)
+					INNER JOIN dbo.PERFIL_FUNCAO C (NOLOCK)
 						ON (B.ID_PERFIL = C.ID_PERFIL)
-					INNER JOIN FUNCAO D (NOLOCK)
+					INNER JOIN dbo.FUNCAO D (NOLOCK)
 						ON (C.ID_FUNCAO = D.ID_FUNCAO)
 				WHERE
 					A.ID_USUARIO = @id;
@@ -582,13 +582,13 @@ const excluir = async (req, res) => {
 				-- Exclui usuario
 				DELETE
 				FROM
-					PERFIL_USUARIO
+					dbo.PERFIL_USUARIO
 				WHERE
 					ID_USUARIO = @idUsuario;
 
 				DELETE
 				FROM
-					USUARIO
+					dbo.USUARIO
 				WHERE
 					ID_USUARIO = @idUsuario;
 
@@ -641,7 +641,7 @@ const ativacao = async (req, res) => {
 				SET
 					A.ATIVO = @ativo
 				FROM
-					USUARIO A
+					dbo.USUARIO A
 				WHERE
 					A.ID_USUARIO = @idUsuario;
 
@@ -720,7 +720,7 @@ const senha = async (req, res) => {
 						,A.SALT
 						,A.ATIVO
 					FROM
-						USUARIO A (NOLOCK)
+						dbo.USUARIO A (NOLOCK)
 					WHERE
 						A.ID_USUARIO = @idUsuario;
 					-- ----------------------------------------
@@ -767,7 +767,7 @@ const senha = async (req, res) => {
 					A.SENHA = @senha
 					,A.SALT = @salt
 				FROM
-					USUARIO A
+					dbo.USUARIO A
 				WHERE
 					A.ID_USUARIO = @idUsuario;
 
@@ -793,7 +793,7 @@ const options = async (req, res) => {
 					,EMPRESA [NOME]
 					,ATIVO
 				FROM
-					EMPRESA (NOLOCK)
+					dbo.EMPRESA (NOLOCK)
 				ORDER BY
 					EMPRESA;
 
@@ -802,7 +802,7 @@ const options = async (req, res) => {
 					ID_PERFIL [ID]
 					,PERFIL [NOME]
 				FROM
-					PERFIL (NOLOCK)
+					dbo.PERFIL (NOLOCK)
 				ORDER BY
 					PERFIL;
 				-- ----------------------------------------

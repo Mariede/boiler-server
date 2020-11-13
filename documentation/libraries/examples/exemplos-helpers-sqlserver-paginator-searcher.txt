@@ -111,13 +111,13 @@ const query = {
 					SELECT TOP 1
 						ID_USUARIO
 					FROM
-						USUARIO U (NOLOCK)
+						dbo.USUARIO U (NOLOCK)
 					WHERE
 						U.NOME LIKE(@nomeCheck) -- variavel input externa
 					ORDER BY
 						ID_USUARIO DESC
 				);
-			INSERT INTO USUARIO (
+			INSERT INTO dbo.USUARIO (
 				NOME
 				,SENHA
 				,RELATORIO
@@ -133,7 +133,7 @@ const query = {
 			SELECT TOP 2
 				NOME
 			FROM
-				USUARIO U (NOLOCK)
+				dbo.USUARIO U (NOLOCK)
 			WHERE
 				U.NOME LIKE(@nomeCheck) -- variavel input externa
 			ORDER BY
@@ -141,7 +141,7 @@ const query = {
 			SELECT TOP 3
 				*
 			FROM
-				USUARIO U (NOLOCK)
+				dbo.USUARIO U (NOLOCK)
 			WHERE
 				U.NOME LIKE(@nomeCheck) -- variavel input externa
 			ORDER BY
@@ -168,7 +168,7 @@ const anotherQuery = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM dbo.USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 // ---------------------------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ const query = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM dbo.USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 
@@ -205,7 +205,7 @@ const query = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM dbo.USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 
@@ -251,7 +251,7 @@ const query = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM dbo.USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 
@@ -273,7 +273,7 @@ const query = {
 		input: [
 			['nome', '%jo%']
 		],
-		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
+		executar: 'SELECT ID_USUARIO, NOME, SENHA, ATIVO FROM dbo.USUARIO (NOLOCK) WHERE NOME LIKE(@nome);'
 	}
 };
 
@@ -315,8 +315,8 @@ const baseQuery = `
 		,a.ID_EMPRESA 'EMPRESA.ID'
 		,b.EMPRESA 'EMPRESA.NOME'
 	FROM
-		USUARIO a (NOLOCK)
-		INNER JOIN EMPRESA b (NOLOCK)
+		dbo.USUARIO a (NOLOCK)
+		INNER JOIN dbo.EMPRESA b (NOLOCK)
 			on (a.ID_EMPRESA = b.ID_EMPRESA)
 	WHERE
 		a.NOME LIKE ('%jo%')
@@ -360,8 +360,8 @@ const baseQuery = `
 		,a.ID_EMPRESA 'EMPRESA.ID'
 		,b.EMPRESA 'EMPRESA.NOME'
 	FROM
-		USUARIO a (NOLOCK)
-		INNER JOIN EMPRESA b (NOLOCK)
+		dbo.USUARIO a (NOLOCK)
+		INNER JOIN dbo.EMPRESA b (NOLOCK)
 			on (a.ID_EMPRESA = b.ID_EMPRESA)
 	WHERE
 		a.NOME LIKE ('%jo%')
@@ -407,8 +407,8 @@ const baseQuery = `
 		,a.ID_EMPRESA 'EMPRESA.ID'
 		,b.EMPRESA 'EMPRESA.NOME'
 	FROM
-		USUARIO a (NOLOCK)
-		INNER JOIN EMPRESA b (NOLOCK)
+		dbo.USUARIO a (NOLOCK)
+		INNER JOIN dbo.EMPRESA b (NOLOCK)
 			on (a.ID_EMPRESA = b.ID_EMPRESA)
 	${replaceQuery};
 `;
