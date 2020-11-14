@@ -13,7 +13,7 @@
 // -------------------------------------------------------------------------
 /*
 Verifica se o usuario logado tem permissao de acesso a rota (controller)
-	-> allowedPermissions: Identificadores das permissoes permitidas, em formato de array
+	-> allowedPermissions: Identificadores das permissoes liberadas, em formato de array
 
 	** Validacao case insensitive
 */
