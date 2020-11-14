@@ -9,7 +9,7 @@
 // Modulos de apoio
 
 // Acoes
-const home = require('@serverRoot/actions/base/home');
+const home = require('@serverRoot/actions/_base/home');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------

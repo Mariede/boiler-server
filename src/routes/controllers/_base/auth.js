@@ -9,7 +9,7 @@
 // Modulos de apoio
 
 // Acoes
-const auth = require('@serverRoot/actions/base/auth');
+const auth = require('@serverRoot/actions/_base/auth');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
