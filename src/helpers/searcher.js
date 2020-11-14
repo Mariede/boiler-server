@@ -20,6 +20,7 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao
 		-> fullsearch_fields contem os nomes das colunas no DB, pode estar em camelCase - sempre converte para SNAKE_CASE
 
 	Queries dinamicas: searchFields Array, targetReplace informa o identificador em baseQuery para montagem da query final
+		-> searchFields deve conter identificadores unicos (ex. duas colunas NOME para pesquisa no SELECT pode causar erro)
 		-> se WHERE for definido na baseQuery:
 			* deve conter uma condição ANTES do replace
 			* o conteudo da clausula where sempre sera um AND para o searcher

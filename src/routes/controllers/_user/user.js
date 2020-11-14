@@ -9,7 +9,7 @@
 // Modulos de apoio
 
 // Acoes
-const user = require('@serverRoot/actions/user');
+const user = require('@serverRoot/actions/_user/user');
 // -------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------
