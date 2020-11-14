@@ -22,7 +22,7 @@ const SessionStore = require('session-file-store')(session);
 const configManage = require('@serverRoot/server/config-manage'); // Verifica config.json
 const log = require('@serverRoot/helpers/log');
 const queue = require('@serverRoot/server/queue'); // Queue de e-mails
-const redirectHttpToHttps = require('@serverRoot/server/redirectHttpToHttps');
+const redirectHttpToHttps = require('@serverRoot/server/redirect-http-to-https');
 const routeGate = require('@serverRoot/server/route-gate'); // Gate de roteamento
 // -------------------------------------------------------------------------
 

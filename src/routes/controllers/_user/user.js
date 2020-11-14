@@ -7,7 +7,7 @@
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const checkPermissions = require('@serverRoot/helpers/checkPermissions');
+const checkPermissions = require('@serverRoot/helpers/check-permissions');
 const routesPermissions = require('@serverRoot/routes/controllers/routes-permissions');
 
 // Acoes
