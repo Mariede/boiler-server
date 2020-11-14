@@ -1,7 +1,7 @@
 'use strict';
 
 /*
-Colecao enumerada com as funcoes de acesso existentes na aplicacao (perfis)
+Funcoes de acesso existentes na aplicacao (perfis - funcoes)
 */
 module.exports = {
 	lstEmpresas: 'LST_EMPRESAS',
