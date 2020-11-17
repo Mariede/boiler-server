@@ -250,6 +250,8 @@ const consultar = async (req, res) => {
 				-- ----------------------------------------
 
 				-- Retorna opcoes na mesma chamada, no mesmo json de retorno
+
+				-- Empresas (opcoes)
 				SELECT
 					ID_EMPRESA [ID]
 					,EMPRESA [NOME]
@@ -259,6 +261,7 @@ const consultar = async (req, res) => {
 				ORDER BY
 					EMPRESA;
 
+				-- Perfis (opcoes)
 				SELECT
 					ID_PERFIL [ID]
 					,PERFIL [NOME]
@@ -363,6 +366,7 @@ const inserir = async (req, res) => {
 
 				SET @id = SCOPE_IDENTITY();
 
+				-- Perfis do usuario
 				DELETE
 				FROM
 					nodetest.PERFIL_USUARIO
@@ -455,6 +459,7 @@ const alterar = async (req, res) => {
 				WHERE
 					A.ID_USUARIO = @idUsuario;
 
+				-- Atualiza perfis do usuario
 				DELETE
 				FROM
 					nodetest.PERFIL_USUARIO
@@ -481,7 +486,9 @@ const alterar = async (req, res) => {
 					A.ID_USUARIO id
 					,A.NOME nome
 					,A.EMAIL email
-					,B.EMPRESA empresa
+					,B.ID_EMPRESA empresaId
+					,B.EMPRESA empresaNome
+					,B.PROPRIETARIO empresaProprietario
 				FROM
 					nodetest.USUARIO A (NOLOCK)
 					INNER JOIN nodetest.EMPRESA B (NOLOCK)
@@ -489,6 +496,7 @@ const alterar = async (req, res) => {
 				WHERE
 					A.ID_USUARIO = @id;
 
+				-- Perfis
 				SELECT
 					C.PERFIL _perfis
 				FROM
@@ -500,6 +508,7 @@ const alterar = async (req, res) => {
 				WHERE
 					A.ID_USUARIO = @id;
 
+				-- Funcoes
 				SELECT DISTINCT
 					D.FUNCAO _funcoes
 				FROM
@@ -519,12 +528,27 @@ const alterar = async (req, res) => {
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	// Atualiza dados da sessao ativa, apenas se mesmo usuario
+	// Atualiza dados da sessao ativa, APENAS se mesmo usuario
 	if (sess[sessWraper] && sess[sessWraper].id === parseInt(idUsuario, 10)) {
 		if (resultSet && resultSet.recordsets) {
 			const rsLen = resultSet.recordsets.length;
 
 			const dataUser = resultSet.recordsets[rsLen - 3].length === 1 && resultSet.recordsets[rsLen - 3].pop();
+
+			const sessData = dataUser ? (
+				{
+					id: dataUser.id,
+					nome: dataUser.nome,
+					email: dataUser.email,
+					empresa: [
+						dataUser.empresaId,
+						dataUser.empresaNome,
+						dataUser.empresaProprietario
+					]
+				}
+			) : (
+				{}
+			);
 
 			const perfis = (
 				resultSet.recordsets[rsLen - 2].length !== 0 && resultSet.recordsets[rsLen - 2].map(
@@ -542,7 +566,7 @@ const alterar = async (req, res) => {
 				)
 			) || [];
 
-			sess[sessWraper] = { ...sess[sessWraper], ...dataUser, perfis: perfis, funcoes: funcoes };
+			sess[sessWraper] = { ...sess[sessWraper], ...sessData, perfis: perfis, funcoes: funcoes };
 		}
 	}
 

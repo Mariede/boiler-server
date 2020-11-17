@@ -48,7 +48,9 @@ const logon = async (req, res) => {
 								,A.SENHA
 								,A.SALT
 								,A.ATIVO USUARIO_ATIVO
-								,B.EMPRESA empresa
+								,B.ID_EMPRESA empresaId
+								,B.EMPRESA empresaNome
+								,B.PROPRIETARIO empresaProprietario
 								,B.ATIVO EMPRESA_ATIVA
 							FROM
 								nodetest.USUARIO A (NOLOCK)
@@ -116,7 +118,11 @@ const logon = async (req, res) => {
 								id: dataUser.id,
 								nome: dataUser.nome,
 								email: dataUser.email,
-								empresa: dataUser.empresa,
+								empresa: [
+									dataUser.empresaId,
+									dataUser.empresaNome,
+									dataUser.empresaProprietario
+								],
 								perfis: perfis,
 								funcoes: funcoes
 							};
