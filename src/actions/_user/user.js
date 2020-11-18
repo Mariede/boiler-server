@@ -163,6 +163,11 @@ const _upload = async (req, res) => {
 // -------------------------------------------------------------------------
 // Acoes
 const consultarTodos = async (req, res) => {
+	// Parametros de sessao
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	// -------------------------------------------------------------------------
+
 	const replaceQuery = '{{REPLACE}}';
 	const baseQuery = `
 		-- Dados dos usuario (via searcher)
@@ -197,7 +202,13 @@ const consultarTodos = async (req, res) => {
 				ON (A.ID_USUARIO = C.ID_USUARIO)
 			INNER JOIN nodetest.PERFIL D (NOLOCK)
 				ON (C.ID_PERFIL = D.ID_PERFIL)
-		${replaceQuery}
+		WHERE
+			${
+				addQueryCheckPermissions
+				.replace(/@checkEmpresaId/g, sess[sessWraper].empresa[0])
+				.replace(/@checkEmpresaProprietario/g, (sess[sessWraper].empresa[2] & 1))
+			}
+			${replaceQuery}
 		-- ----------------------------------------
 	`;
 
@@ -218,6 +229,11 @@ const consultarTodos = async (req, res) => {
 };
 
 const consultar = async (req, res) => {
+	// Parametros de sessao
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	// -------------------------------------------------------------------------
+
 	// Parametros de entrada
 	const idUsuario = req.params.id;
 	// -------------------------------------------------------------------------
@@ -232,7 +248,9 @@ const consultar = async (req, res) => {
 		formato: 1,
 		dados: {
 			input: [
-				['idUsuario', 'int', idUsuario]
+				['idUsuario', 'int', idUsuario],
+				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
+				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
 			],
 			executar: `
 				-- Dados do usuario
@@ -264,29 +282,31 @@ const consultar = async (req, res) => {
 					INNER JOIN nodetest.EMPRESA B (NOLOCK)
 						ON (A.ID_EMPRESA = B.ID_EMPRESA)
 				WHERE
-					A.ID_USUARIO = @idUsuario;
+					A.ID_USUARIO = @idUsuario
+					AND ${addQueryCheckPermissions};
 				-- ----------------------------------------
 
 				-- Retorna opcoes na mesma chamada, no mesmo json de retorno
 
 				-- Empresas (opcoes)
 				SELECT
-					ID_EMPRESA [ID]
-					,EMPRESA [NOME]
-					,ATIVO
+					A.ID_EMPRESA [ID]
+					,A.EMPRESA [NOME]
+					,A.ATIVO
 				FROM
-					nodetest.EMPRESA (NOLOCK)
+					nodetest.EMPRESA A (NOLOCK)
+				WHERE ${addQueryCheckPermissions}
 				ORDER BY
-					EMPRESA;
+					A.EMPRESA;
 
 				-- Perfis (opcoes)
 				SELECT
-					ID_PERFIL [ID]
-					,PERFIL [NOME]
+					A.ID_PERFIL [ID]
+					,A.PERFIL [NOME]
 				FROM
-					nodetest.PERFIL (NOLOCK)
+					nodetest.PERFIL A (NOLOCK)
 				ORDER BY
-					PERFIL;
+					A.PERFIL;
 				-- ----------------------------------------
 			`
 		}
@@ -916,28 +936,38 @@ const senha = async (req, res) => {
 };
 
 const options = async (req, res) => {
+	// Parametros de sessao
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	// -------------------------------------------------------------------------
+
 	const query = {
 		formato: 1,
 		dados: {
+			input: [
+				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
+				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
+			],
 			executar: `
 				-- Opcoes -> Empresas disponiveis no DB
 				SELECT
-					ID_EMPRESA [ID]
-					,EMPRESA [NOME]
-					,ATIVO
+					A.ID_EMPRESA [ID]
+					,A.EMPRESA [NOME]
+					,A.ATIVO
 				FROM
-					nodetest.EMPRESA (NOLOCK)
+					nodetest.EMPRESA A (NOLOCK)
+				WHERE ${addQueryCheckPermissions}
 				ORDER BY
-					EMPRESA;
+					A.EMPRESA;
 
 				-- Opcoes -> Perfis disponiveis no DB
 				SELECT
-					ID_PERFIL [ID]
-					,PERFIL [NOME]
+					A.ID_PERFIL [ID]
+					,A.PERFIL [NOME]
 				FROM
-					nodetest.PERFIL (NOLOCK)
+					nodetest.PERFIL A (NOLOCK)
 				ORDER BY
-					PERFIL;
+					A.PERFIL;
 				-- ----------------------------------------
 			`
 		}
