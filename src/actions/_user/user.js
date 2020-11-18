@@ -32,6 +32,24 @@ const enumLocals = {
 };
 
 /*
+Queries: Permissoes de Acesso
+	-> Acoplado as queries do controller, filtrando a acao (where)
+	-> Define o escopo de visualizacao
+	-> Valida se usuario logado pode realizar a acao
+*/
+const addQueryCheckPermissions = `(
+	@checkEmpresaProprietario = 1 OR (
+		@checkEmpresaProprietario <> 1 AND A.ID_EMPRESA = @checkEmpresaId
+	)
+)`;
+
+/*
+Queries: Permissoes de Acesso
+	-> Erro exibido, caso acao bloqueada ou nao executada
+*/
+const errorQueryCheckPermissions = 'Ação não executada, verifique as suas permissões de acesso ou contacte um administrador...';
+
+/*
 Colecoes enumeradas para a rota options
 	-> utilizar key como 'OPTIONS.XXX' (para conversao json em paginator)
 		-> ajuste automatico dos niveis json ao converter para camelCase em paginator, quando necessario
@@ -299,6 +317,11 @@ const consultar = async (req, res) => {
 };
 
 const inserir = async (req, res) => {
+	// Parametros de sessao
+	const sess = req.session;
+	const sessWraper = __serverConfig.auth.sessWrapper;
+	// -------------------------------------------------------------------------
+
 	// Parametros de entrada
 
 	// Uploads, trocar req.body para result.body
@@ -334,62 +357,89 @@ const inserir = async (req, res) => {
 				['salt', 'varchar(5)', salt],
 				['empresa', 'int', empresa],
 				['ativo', 'bit', ativo],
-				['detalhes', 'varchar(max)', detalhes || null]
+				['detalhes', 'varchar(max)', detalhes || null],
+				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
+				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
 			],
 			output: [
+				['rowCount', 'int'],
 				['id', 'int']
 			],
 			executar: `
 				-- Cria novo usuario
-				INSERT INTO nodetest.USUARIO(
-					ID_EMPRESA
-					,NOME
-					,EMAIL
-					,CPF
-					,SENHA
-					,SALT
-					,ATIVO
-					,DETALHES
-					,DATA_CRIACAO
-				)
-				VALUES(
-					@empresa
-					,@nome
-					,@email
-					,@cpf
-					,@senha
-					,@salt
-					,@ativo
-					,@detalhes
-					,GETDATE()
+
+				SET @rowCount = (
+					SELECT
+						COUNT(*)
+					FROM
+						nodetest.EMPRESA A
+					WHERE
+						A.ID_EMPRESA = @empresa
+						AND ${addQueryCheckPermissions}
 				);
 
-				SET @id = SCOPE_IDENTITY();
-
-				-- Perfis do usuario
-				DELETE
-				FROM
-					nodetest.PERFIL_USUARIO
-				WHERE
-					ID_USUARIO = @id;
-
-				INSERT INTO nodetest.PERFIL_USUARIO(
-					ID_PERFIL
-					,ID_USUARIO
-				)
-				VALUES ${
-					perfis.map(
-						perfil => {
-							return `\n(${perfil}, @id)`;
-						}
+				IF (@rowCount <> 0)
+				BEGIN
+					INSERT INTO nodetest.USUARIO(
+						ID_EMPRESA
+						,NOME
+						,EMAIL
+						,CPF
+						,SENHA
+						,SALT
+						,ATIVO
+						,DETALHES
+						,DATA_CRIACAO
 					)
-				}
+					VALUES(
+						@empresa
+						,@nome
+						,@email
+						,@cpf
+						,@senha
+						,@salt
+						,@ativo
+						,@detalhes
+						,GETDATE()
+					);
+
+					SET @rowCount = @@ROWCOUNT;
+
+					SET @id = SCOPE_IDENTITY();
+
+					-- Perfis do usuario
+					IF (@rowCount <> 0)
+					BEGIN
+						DELETE
+							A
+						FROM
+							nodetest.PERFIL_USUARIO A
+						WHERE
+							A.ID_USUARIO = @id;
+
+						INSERT INTO nodetest.PERFIL_USUARIO(
+							ID_PERFIL
+							,ID_USUARIO
+						)
+						VALUES ${
+							perfis.map(
+								perfil => {
+									return `\n(${perfil}, @id)`;
+								}
+							)
+						}
+					END
+				END
 				-- ----------------------------------------
 			`
 		}
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	if (resultSet.output.rowCount === 0) {
+		errWrapper.throwThis('USUARIO', 400, errorQueryCheckPermissions);
+	}
 
 	return resultSet.output;
 };
@@ -438,95 +488,122 @@ const alterar = async (req, res) => {
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['empresa', 'int', empresa],
 				['ativo', 'bit', ativo],
-				['detalhes', 'varchar(max)', detalhes || null]
+				['detalhes', 'varchar(max)', detalhes || null],
+				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
+				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
 			],
 			output: [
+				['rowCount', 'int'],
 				['id', 'int']
 			],
 			executar: `
 				-- Atualiza usuario
-				UPDATE
-					A
-				SET
-					A.NOME = @nome
-					,A.EMAIL = @email
-					,A.CPF = @cpf
-					,A.ID_EMPRESA = @empresa
-					,A.ATIVO = @ativo
-					,A.DETALHES = @detalhes
-				FROM
-					nodetest.USUARIO A
-				WHERE
-					A.ID_USUARIO = @idUsuario;
 
-				-- Atualiza perfis do usuario
-				DELETE
-				FROM
-					nodetest.PERFIL_USUARIO
-				WHERE
-					ID_USUARIO = @idUsuario;
+				SET @rowCount = (
+					SELECT
+						COUNT(*)
+					FROM
+						nodetest.EMPRESA A
+					WHERE
+						A.ID_EMPRESA = @empresa
+						AND ${addQueryCheckPermissions}
+				);
 
-				INSERT INTO nodetest.PERFIL_USUARIO(
-					ID_PERFIL
-					,ID_USUARIO
-				)
-				VALUES ${
-					perfis.map(
-						perfil => {
-							return `\n(${perfil}, @idUsuario)`;
+				IF (@rowCount <> 0)
+				BEGIN
+					UPDATE
+						A
+					SET
+						A.NOME = @nome
+						,A.EMAIL = @email
+						,A.CPF = @cpf
+						,A.ID_EMPRESA = @empresa
+						,A.ATIVO = @ativo
+						,A.DETALHES = @detalhes
+					FROM
+						nodetest.USUARIO A
+					WHERE
+						A.ID_USUARIO = @idUsuario;
+
+					SET @rowCount = @@ROWCOUNT;
+
+					SET @id = @idUsuario;
+
+					-- Perfis do usuario
+					IF (@rowCount <> 0)
+					BEGIN
+						DELETE
+							A
+						FROM
+							nodetest.PERFIL_USUARIO A
+						WHERE
+							A.ID_USUARIO = @id;
+
+						INSERT INTO nodetest.PERFIL_USUARIO(
+							ID_PERFIL
+							,ID_USUARIO
+						)
+						VALUES ${
+							perfis.map(
+								perfil => {
+									return `\n(${perfil}, @id)`;
+								}
+							)
 						}
-					)
-				}
 
-				SET @id = @idUsuario;
-				-- ----------------------------------------
+						-- Se dados alterados forem do usuario logado, atualiza a sessao
+						SELECT
+							A.ID_USUARIO id
+							,A.NOME nome
+							,A.EMAIL email
+							,B.ID_EMPRESA empresaId
+							,B.EMPRESA empresaNome
+							,B.PROPRIETARIO empresaProprietario
+						FROM
+							nodetest.USUARIO A (NOLOCK)
+							INNER JOIN nodetest.EMPRESA B (NOLOCK)
+								ON (A.ID_EMPRESA = B.ID_EMPRESA)
+						WHERE
+							A.ID_USUARIO = @id;
 
-				-- Se dados alterados forem do usuario logado, atualiza a sessao
-				SELECT
-					A.ID_USUARIO id
-					,A.NOME nome
-					,A.EMAIL email
-					,B.ID_EMPRESA empresaId
-					,B.EMPRESA empresaNome
-					,B.PROPRIETARIO empresaProprietario
-				FROM
-					nodetest.USUARIO A (NOLOCK)
-					INNER JOIN nodetest.EMPRESA B (NOLOCK)
-						ON (A.ID_EMPRESA = B.ID_EMPRESA)
-				WHERE
-					A.ID_USUARIO = @id;
+						-- Perfis
+						SELECT
+							C.PERFIL _perfis
+						FROM
+							nodetest.USUARIO A (NOLOCK)
+							INNER JOIN nodetest.PERFIL_USUARIO B (NOLOCK)
+								ON (A.ID_USUARIO = B.ID_USUARIO)
+							INNER JOIN nodetest.PERFIL C (NOLOCK)
+								ON (B.ID_PERFIL = C.ID_PERFIL)
+						WHERE
+							A.ID_USUARIO = @id;
 
-				-- Perfis
-				SELECT
-					C.PERFIL _perfis
-				FROM
-					nodetest.USUARIO A (NOLOCK)
-					INNER JOIN nodetest.PERFIL_USUARIO B (NOLOCK)
-						ON (A.ID_USUARIO = B.ID_USUARIO)
-					INNER JOIN nodetest.PERFIL C (NOLOCK)
-						ON (B.ID_PERFIL = C.ID_PERFIL)
-				WHERE
-					A.ID_USUARIO = @id;
-
-				-- Funcoes
-				SELECT DISTINCT
-					D.FUNCAO _funcoes
-				FROM
-					nodetest.USUARIO A (NOLOCK)
-					INNER JOIN nodetest.PERFIL_USUARIO B (NOLOCK)
-						ON (A.ID_USUARIO = B.ID_USUARIO)
-					INNER JOIN nodetest.PERFIL_FUNCAO C (NOLOCK)
-						ON (B.ID_PERFIL = C.ID_PERFIL)
-					INNER JOIN nodetest.FUNCAO D (NOLOCK)
-						ON (C.ID_FUNCAO = D.ID_FUNCAO)
-				WHERE
-					A.ID_USUARIO = @id;
+						-- Funcoes
+						SELECT DISTINCT
+							D.FUNCAO _funcoes
+						FROM
+							nodetest.USUARIO A (NOLOCK)
+							INNER JOIN nodetest.PERFIL_USUARIO B (NOLOCK)
+								ON (A.ID_USUARIO = B.ID_USUARIO)
+							INNER JOIN nodetest.PERFIL_FUNCAO C (NOLOCK)
+								ON (B.ID_PERFIL = C.ID_PERFIL)
+							INNER JOIN nodetest.FUNCAO D (NOLOCK)
+								ON (C.ID_FUNCAO = D.ID_FUNCAO)
+						WHERE
+							A.ID_USUARIO = @id;
+						-- ----------------------------------------
+					END
+				END
 				-- ----------------------------------------
 			`
 		}
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	if (resultSet.output.rowCount === 0) {
+		errWrapper.throwThis('USUARIO', 400, errorQueryCheckPermissions);
+	}
 
 	// Atualiza dados da sessao ativa, APENAS se mesmo usuario
 	if (sess[sessWraper] && sess[sessWraper].id === parseInt(idUsuario, 10)) {
@@ -588,7 +665,7 @@ const excluir = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (sess[sessWraper].id === parseInt(idUsuario, 10)) {
+	if (sess[sessWraper].id === parseInt(idUsuario, 10)) { // Apenas outros usuarios
 		errWrapper.throwThis('USUARIO', 400, 'Não é possível realizar esta operação em si mesmo...');
 	}
 	// -------------------------------------------------------------------------
@@ -597,24 +674,35 @@ const excluir = async (req, res) => {
 		formato: 1,
 		dados: {
 			input: [
-				['idUsuario', 'int', idUsuario]
+				['idUsuario', 'int', idUsuario],
+				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
+				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
 			],
 			output: [
+				['rowCount', 'int'],
 				['id', 'int']
 			],
 			executar: `
 				-- Exclui usuario
 				DELETE
+					B
 				FROM
-					nodetest.PERFIL_USUARIO
+					nodetest.USUARIO A
+					INNER JOIN nodetest.PERFIL_USUARIO B
+						ON (A.ID_USUARIO = B.ID_USUARIO)
 				WHERE
-					ID_USUARIO = @idUsuario;
+					A.ID_USUARIO = @idUsuario
+					AND ${addQueryCheckPermissions};
 
 				DELETE
+					A
 				FROM
-					nodetest.USUARIO
+					nodetest.USUARIO A
 				WHERE
-					ID_USUARIO = @idUsuario;
+					A.ID_USUARIO = @idUsuario
+					AND ${addQueryCheckPermissions};
+
+				SET @rowCount = @@ROWCOUNT;
 
 				SET @id = @idUsuario;
 				-- ----------------------------------------
@@ -623,6 +711,10 @@ const excluir = async (req, res) => {
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	if (resultSet.output.rowCount === 0) {
+		errWrapper.throwThis('USUARIO', 400, errorQueryCheckPermissions);
+	}
 
 	return resultSet.output;
 };
@@ -643,7 +735,7 @@ const ativacao = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (sess[sessWraper].id === parseInt(idUsuario, 10)) {
+	if (sess[sessWraper].id === parseInt(idUsuario, 10)) { // Apenas outros usuarios
 		errWrapper.throwThis('USUARIO', 400, 'Não é possível realizar esta operação em si mesmo...');
 	}
 	// -------------------------------------------------------------------------
@@ -653,9 +745,12 @@ const ativacao = async (req, res) => {
 		dados: {
 			input: [
 				['idUsuario', 'int', idUsuario],
-				['ativo', 'bit', !ativo]
+				['ativo', 'bit', !ativo],
+				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
+				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
 			],
 			output: [
+				['rowCount', 'int'],
 				['id', 'int']
 			],
 			executar: `
@@ -667,7 +762,10 @@ const ativacao = async (req, res) => {
 				FROM
 					nodetest.USUARIO A
 				WHERE
-					A.ID_USUARIO = @idUsuario;
+					A.ID_USUARIO = @idUsuario
+					AND ${addQueryCheckPermissions};
+
+				SET @rowCount = @@ROWCOUNT;
 
 				SET @id = @idUsuario;
 				-- ----------------------------------------
@@ -676,6 +774,10 @@ const ativacao = async (req, res) => {
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	if (resultSet.output.rowCount === 0) {
+		errWrapper.throwThis('USUARIO', 400, errorQueryCheckPermissions);
+	}
 
 	return resultSet.output;
 };
@@ -698,7 +800,7 @@ const senha = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (sess[sessWraper].id !== parseInt(idUsuario, 10)) {
+	if (sess[sessWraper].id !== parseInt(idUsuario, 10)) { // Apenas em si mesmo
 		errWrapper.throwThis('USUARIO', 400, 'Só é possível realizar esta operação em si mesmo...');
 	}
 
@@ -781,6 +883,7 @@ const senha = async (req, res) => {
 				['salt', 'varchar(5)', salt]
 			],
 			output: [
+				['rowCount', 'int'],
 				['id', 'int']
 			],
 			executar: `
@@ -795,6 +898,8 @@ const senha = async (req, res) => {
 				WHERE
 					A.ID_USUARIO = @idUsuario;
 
+				SET @rowCount = @@ROWCOUNT;
+
 				SET @id = @idUsuario;
 				-- ----------------------------------------
 			`
@@ -802,6 +907,10 @@ const senha = async (req, res) => {
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
+
+	if (resultSet.output.rowCount === 0) {
+		errWrapper.throwThis('USUARIO', 400, errorQueryCheckPermissions);
+	}
 
 	return resultSet.output;
 };
