@@ -350,9 +350,9 @@ const inserir = async (req, res) => {
 	const nome = uResult.body.nome;
 	const email = uResult.body.email;
 	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
-	const empresa = uResult.body.empresa;
 	const ativo = uResult.body.ativo;
 	const detalhes = uResult.body.detalhes;
+	const empresa = uResult.body.empresa;
 	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
 
 	// Senha inicial
@@ -375,9 +375,9 @@ const inserir = async (req, res) => {
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['senha', 'varchar(128)', cryptoHash.hash(senha, salt).passHash],
 				['salt', 'varchar(5)', salt],
-				['empresa', 'int', empresa],
 				['ativo', 'bit', ativo],
 				['detalhes', 'varchar(max)', detalhes || null],
+				['empresa', 'int', empresa],
 				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
 				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
 			],
@@ -479,9 +479,9 @@ const alterar = async (req, res) => {
 	const nome = uResult.body.nome;
 	const email = uResult.body.email;
 	const cpf = String(uResult.body.cpf).replace(/\D/g, ''); // Mascara no formulario
-	const empresa = uResult.body.empresa;
 	const ativo = uResult.body.ativo;
 	const detalhes = uResult.body.detalhes;
+	const empresa = uResult.body.empresa;
 	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
 	// -------------------------------------------------------------------------
 
@@ -506,9 +506,9 @@ const alterar = async (req, res) => {
 				['nome', 'varchar(200)', String(nome || '').toUpperCase()],
 				['email', 'varchar(200)', String(email || '').toLowerCase()],
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
-				['empresa', 'int', empresa],
 				['ativo', 'bit', ativo],
 				['detalhes', 'varchar(max)', detalhes || null],
+				['empresa', 'int', empresa],
 				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
 				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
 			],
@@ -534,10 +534,10 @@ const alterar = async (req, res) => {
 					UPDATE
 						A
 					SET
-						A.NOME = @nome
+						A.ID_EMPRESA = @empresa
+						,A.NOME = @nome
 						,A.EMAIL = @email
 						,A.CPF = @cpf
-						,A.ID_EMPRESA = @empresa
 						,A.ATIVO = @ativo
 						,A.DETALHES = @detalhes
 					FROM
