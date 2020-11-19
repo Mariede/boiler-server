@@ -370,8 +370,8 @@ const inserir = async (req, res) => {
 		formato: 1,
 		dados: {
 			input: [
-				['nome', 'varchar(200)', nome],
-				['email', 'varchar(200)', email],
+				['nome', 'varchar(200)', String(nome || '').toUpperCase()],
+				['email', 'varchar(200)', String(email || '').toLowerCase()],
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['senha', 'varchar(128)', cryptoHash.hash(senha, salt).passHash],
 				['salt', 'varchar(5)', salt],
@@ -503,8 +503,8 @@ const alterar = async (req, res) => {
 		dados: {
 			input: [
 				['idUsuario', 'int', idUsuario],
-				['nome', 'varchar(200)', nome],
-				['email', 'varchar(200)', email],
+				['nome', 'varchar(200)', String(nome || '').toUpperCase()],
+				['email', 'varchar(200)', String(email || '').toLowerCase()],
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['empresa', 'int', empresa],
 				['ativo', 'bit', ativo],
