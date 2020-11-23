@@ -543,7 +543,8 @@ const alterar = async (req, res) => {
 					FROM
 						nodetest.USUARIO A
 					WHERE
-						A.ID_USUARIO = @idUsuario;
+						A.ID_USUARIO = @idUsuario
+						AND ${addQueryCheckPermissions};
 
 					SET @rowCount = @@ROWCOUNT;
 
