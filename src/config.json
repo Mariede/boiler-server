@@ -187,11 +187,11 @@
 			"host": "smtp.example.com",
 			"port": 587,
 			"secure": false,
+			"authMethod": "PLAIN",
 			"auth": {
 				"type": "login",
 				"user": "user",
-				"pass": "pass",
-				"authMethod": "PLAIN"
+				"pass": "pass"
 			}
 		}
 	}
