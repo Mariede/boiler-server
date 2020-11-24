@@ -9,7 +9,9 @@
 // Modulos de apoio
 const cryptoHash = require('@serverRoot/helpers/crypto-hash');
 const dbCon = require('@serverRoot/helpers/db');
+const ejs = require('ejs');
 const errWrapper = require('@serverRoot/helpers/err-wrapper');
+const mailSender = require('@serverRoot/helpers/email');
 const paginator = require('@serverRoot/helpers/paginator');
 const searcher = require('@serverRoot/helpers/searcher');
 const uploader = require('@serverRoot/helpers/uploader');
@@ -76,7 +78,7 @@ const enumOptions = {
 // Funcoes compartilhadas
 
 // Validacao comum para insert e update de usuarios
-const _commonValidationErrStack = (isNewRecord, nome, email, cpf, empresa, ativo, detalhes, perfis, senha, senhaCheck) => {
+const _commonValidationErrStack = (nome, email, cpf, empresa, ativo, detalhes, perfis) => {
 	const errorStack = [];
 
 	if (validator.isEmpty(nome)) {
@@ -129,25 +131,6 @@ const _commonValidationErrStack = (isNewRecord, nome, email, cpf, empresa, ativo
 		errorStack.push('Perfis não pode ser vazio...');
 	}
 
-	// Apenas para novos usuarios
-	if (isNewRecord) {
-		if (validator.isEmpty(senha)) {
-			errorStack.push('Senha não pode ser vazia...');
-		} else {
-			if (!validator.lenRange(senha, enumLocals.passMinLen, enumLocals.passMaxLen)) {
-				errorStack.push(`Senha deve conter entre ${enumLocals.passMinLen} e ${enumLocals.passMaxLen} caracteres...`);
-			}
-		}
-
-		if (validator.isEmpty(senhaCheck)) {
-			errorStack.push('Confirmação de senha não pode ser vazia...');
-		} else {
-			if (!validator.equal(senhaCheck, senha)) {
-				errorStack.push('Confirmação de senha não confere...');
-			}
-		}
-	}
-
 	if (errorStack.length !== 0) {
 		errWrapper.throwThis('USUARIO', 400, errorStack);
 	}
@@ -162,6 +145,9 @@ const _upload = async (req, res) => {
 
 // -------------------------------------------------------------------------
 // Acoes
+
+// ------------------------------->>> Acao
+// Consulta todos os usuarios
 const consultarTodos = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
@@ -228,6 +214,8 @@ const consultarTodos = async (req, res) => {
 	return pagedResultSet;
 };
 
+// ------------------------------->>> Acao
+// Consulta usuario por ID especifico, retorna tambem as opcoes disponiveis
 const consultar = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
@@ -336,6 +324,8 @@ const consultar = async (req, res) => {
 	return settedResult;
 };
 
+// ------------------------------->>> Acao
+// Insere um novo usuario, envia e-mail com dados de acesso
 const inserir = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
@@ -356,22 +346,26 @@ const inserir = async (req, res) => {
 	const perfis = dbCon.msSqlServer.sanitize(uResult.body.perfis);
 
 	// Senha inicial
-	const senha = uResult.body.senha;
-	const senhaCheck = uResult.body.senhaCheck;
+	const senha = cryptoHash.generateSalt(4, false); // Usando a funcao de salt para gerar uma senha randomica
 	const salt = cryptoHash.generateSalt(5, false);
 	// -------------------------------------------------------------------------
 
 	// Validacoes entrada
 	// Stack de erros
-	_commonValidationErrStack(true, nome, email, cpf, empresa, ativo, detalhes, perfis, senha, senhaCheck);
+	_commonValidationErrStack(nome, email, cpf, empresa, ativo, detalhes, perfis);
+	// -------------------------------------------------------------------------
+
+	// Alteracoes comuns nos parametros de entrada
+	const _nome = String(nome || '').toUpperCase();
+	const _email = String(email || '').toLowerCase();
 	// -------------------------------------------------------------------------
 
 	const query = {
 		formato: 1,
 		dados: {
 			input: [
-				['nome', 'varchar(200)', String(nome || '').toUpperCase()],
-				['email', 'varchar(200)', String(email || '').toLowerCase()],
+				['nome', 'varchar(200)', _nome],
+				['email', 'varchar(200)', _email],
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['senha', 'varchar(128)', cryptoHash.hash(senha, salt).passHash],
 				['salt', 'varchar(5)', salt],
@@ -461,9 +455,49 @@ const inserir = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, errorQueryCheckPermissions);
 	}
 
-	return resultSet.output;
+	// Envia login e senha para o e-mail cadastrado
+	const mailTemplate = `${__serverRoot}/views/server-side/pages/_mail-templates/user-new.ejs`;
+	const dataTemplate = await ejs.renderFile(mailTemplate, { nome: _nome, email: _email, senha: senha });
+	const mailSendQueue = __serverConfig.email.queue.on === true;
+
+	const mailSenderResult = await mailSender.sendEmail(
+		[
+			__serverConfig.email.transporter.auth.user,
+			__serverConfig.email.fromName
+		],
+		[
+			[
+				_email,
+				_nome
+			]
+		],
+		[],
+		[],
+		'Seu novo usuário',
+		dataTemplate,
+		[],
+		{},
+		true,
+		mailSendQueue
+	);
+
+	const mailSent = (
+		(Array.isArray(mailSenderResult) && mailSenderResult.length !== 0) ? (
+			{
+				envelope : mailSenderResult[0].envelope,
+				error: mailSenderResult[0].error,
+				toQueue: mailSenderResult[0].toQueue
+			}
+		) : (
+			mailSenderResult
+		)
+	);
+
+	return { ...resultSet.output, mailSent: { ...mailSent } };
 };
 
+// ------------------------------->>> Acao
+// Altera dados de um usuario existente, atualiza dados da sessao se for o proprio usuario logado
 const alterar = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
@@ -495,7 +529,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Stack de erros
-	_commonValidationErrStack(false, nome, email, cpf, empresa, ativo, detalhes, perfis);
+	_commonValidationErrStack(nome, email, cpf, empresa, ativo, detalhes, perfis);
 	// -------------------------------------------------------------------------
 
 	const query = {
@@ -671,6 +705,8 @@ const alterar = async (req, res) => {
 	return resultSet.output;
 };
 
+// ------------------------------->>> Acao
+// Exclui um usuario existente
 const excluir = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
@@ -740,6 +776,8 @@ const excluir = async (req, res) => {
 	return resultSet.output;
 };
 
+// ------------------------------->>> Acao
+// Ativa ou inativa um usuario existente
 const ativacao = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
@@ -803,6 +841,8 @@ const ativacao = async (req, res) => {
 	return resultSet.output;
 };
 
+// ------------------------------->>> Acao
+// Altera a senha do usuario logado
 const senha = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
@@ -936,6 +976,8 @@ const senha = async (req, res) => {
 	return resultSet.output;
 };
 
+// ------------------------------->>> Acao
+// Consulta as opcoes disponiveis
 const options = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;

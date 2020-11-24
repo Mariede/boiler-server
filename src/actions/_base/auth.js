@@ -17,7 +17,8 @@ const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
 // Acoes
 
-// Permite acesso as rotas protegidas, analise das permissoes em um segundo momento
+// ------------------------------->>> Acao
+// Inicia a sessao no servidor, permite acesso as rotas protegidas
 const logon = async (req, res) => {
 	const sess = req.session;
 	const sessWraper = __serverConfig.auth.sessWrapper;
@@ -147,6 +148,7 @@ const logon = async (req, res) => {
 	return sess[sessWraper];
 };
 
+// ------------------------------->>> Acao
 // Finaliza a sessao no servidor, rotas protegidas ficam inascessiveis
 const logoff = (req, res) => {
 	return new Promise((resolve, reject) => {
@@ -172,6 +174,7 @@ const logoff = (req, res) => {
 	});
 };
 
+// ------------------------------->>> Acao
 // Verifica se a sessao esta ativa
 const isLogged = (req, res) => {
 	const resultType = (req.query.result_type || '');

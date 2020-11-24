@@ -346,12 +346,12 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 				}
 
 				// Inicia o gerenciamento da pasta de e-mails para envios em fila (queue)
-				if (__serverConfig.email.queue.on) {
+				if (__serverConfig.email.queue.on === true) {
 					try {
 						const resultQueue = await queue.queueStartMailCheck();
 
 						if (typeof resultQueue === 'object' && resultQueue !== null) {
-							messages.push(['info', `Serviço de fila de e-mails iniciado com sucesso${__serverConfig.email.queue.saveFullLogs ? ' (logs completos)' : ''}`]);
+							messages.push(['info', `Serviço de fila de e-mails iniciado com sucesso${__serverConfig.email.queue.saveFullLogs === true ? ' (logs completos)' : ''}`]);
 						} else {
 							messages.push(['error', 'Serviço de fila de e-mails falhou ao iniciar...']);
 						}

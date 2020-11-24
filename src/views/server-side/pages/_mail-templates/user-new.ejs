@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#000000" />
+
+		<title>Novo usuário</title>
+
+		<style type="text/css">
+			html, body {
+				font: 15px B612, 'Segoe UI', Verdana, Arial, Helvetica;
+				color: #333;
+			}
+
+			body {
+				background-color: #eee;
+				text-shadow: 0 0 3px #ccc, 0 0 5px #fff;
+			}
+
+			table {
+				margin: 20px 50px;
+				padding: 20px 40px;
+				background-color: #fff;
+				border-radius: 12px;
+				white-space: nowrap;
+			}
+
+			hr {
+				border-top: 1px solid #fff;
+			}
+		</style>
+	</head>
+	<body>
+		Olá <strong><%= nome %></strong>! Este é o seu usuário e senha para acesso ao sistema:
+
+		<table>
+			<tbody>
+				<tr>
+					<td align="right">
+						Usuário:</td>
+					<td align="left">
+						<strong><%= email %></strong></td>
+				</tr>
+				<tr>
+					<td align="right">
+						Senha:</td>
+					<td align="left">
+						<strong><%= senha %></strong></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<hr />
+
+		Atenciosamente,<br />Boiler-Server
+	</body>
+</html>
