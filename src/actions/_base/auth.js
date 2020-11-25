@@ -10,6 +10,7 @@
 const cryptoHash = require('@serverRoot/helpers/crypto-hash');
 const dbCon = require('@serverRoot/helpers/db');
 const errWrapper = require('@serverRoot/helpers/err-wrapper');
+const functions = require('@serverRoot/helpers/functions');
 const helpersAuth = require('@serverRoot/helpers/auth');
 const validator = require('@serverRoot/helpers/validator');
 // -------------------------------------------------------------------------
@@ -53,6 +54,7 @@ const logon = async (req, res) => {
 								,B.EMPRESA empresaNome
 								,B.PROPRIETARIO empresaProprietario
 								,B.ATIVO EMPRESA_ATIVA
+								,B.DATA_LIMITE_USO
 							FROM
 								nodetest.USUARIO A (NOLOCK)
 								INNER JOIN nodetest.EMPRESA B (NOLOCK)
@@ -95,39 +97,43 @@ const logon = async (req, res) => {
 				if (senhaCheck && (senhaCheck.passHash === dataUser.SENHA)) {
 					if (dataUser.EMPRESA_ATIVA) {
 						if (dataUser.USUARIO_ATIVO) {
-							// Limpa eventuais sessoes anteriores ativas para este usuario
-							await helpersAuth.checkForLoggedSessions(req, dataUser.id);
+							if (dataUser.DATA_LIMITE_USO === null || functions.checkDateAfterNow(dataUser.DATA_LIMITE_USO)) {
+								// Limpa eventuais sessoes anteriores ativas para este usuario
+								await helpersAuth.checkForLoggedSessions(req, dataUser.id);
 
-							const perfis = (
-								resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
-									_p => {
-										return _p._perfis;
-									}
-								)
-							) || [];
+								const perfis = (
+									resultSet && resultSet.rowsAffected[1] !== 0 && resultSet.recordsets[1].map(
+										_p => {
+											return _p._perfis;
+										}
+									)
+								) || [];
 
-							const funcoes = (
-								resultSet && resultSet.rowsAffected[2] !== 0 && resultSet.recordsets[2].map(
-									_f => {
-										return _f._funcoes;
-									}
-								)
-							) || [];
+								const funcoes = (
+									resultSet && resultSet.rowsAffected[2] !== 0 && resultSet.recordsets[2].map(
+										_f => {
+											return _f._funcoes;
+										}
+									)
+								) || [];
 
-							/* Session data */
-							sess[sessWraper] = {
-								id: dataUser.id,
-								nome: dataUser.nome,
-								email: dataUser.email,
-								empresa: [
-									dataUser.empresaId,
-									dataUser.empresaNome,
-									dataUser.empresaProprietario
-								],
-								perfis: perfis,
-								funcoes: funcoes
-							};
-							/* Session data */
+								/* Session data */
+								sess[sessWraper] = {
+									id: dataUser.id,
+									nome: dataUser.nome,
+									email: dataUser.email,
+									empresa: [
+										dataUser.empresaId,
+										dataUser.empresaNome,
+										dataUser.empresaProprietario
+									],
+									perfis: perfis,
+									funcoes: funcoes
+								};
+								/* Session data */
+							} else {
+								errWrapper.throwThis('AUTH', 400, 'Empresa atingiu a data limite de uso do sistema...');
+							}
 						} else {
 							errWrapper.throwThis('AUTH', 400, 'Usuário inativo...');
 						}

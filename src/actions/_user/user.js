@@ -57,6 +57,8 @@ Colecoes enumeradas para a rota options
 		-> ajuste automatico dos niveis json ao converter para camelCase em paginator, quando necessario
 	-> na rota options a propriedade key nao e utilizada
 */
+const dateNow = new Date();
+
 const enumOptions = {
 	ativo: {
 		key: 'OPTIONS.ATIVO',
@@ -70,6 +72,17 @@ const enumOptions = {
 				nome: 'INATIVO'
 			}
 		]
+	},
+	agora: {
+		key: 'OPTIONS.AGORA',
+		content: {
+			dia: dateNow.getDate(),
+			mes: dateNow.getMonth(),
+			ano: dateNow.getFullYear(),
+			hora: dateNow.getHours(),
+			minuto: dateNow.getMinutes(),
+			segundo: dateNow.getSeconds()
+		}
 	}
 };
 // -------------------------------------------------------------------------
@@ -168,6 +181,7 @@ const consultarTodos = async (req, res) => {
 			,A.ID_EMPRESA [EMPRESA.ID]
 			,B.EMPRESA [EMPRESA.NOME]
 			,B.ATIVO [EMPRESA.ATIVO]
+			,B.DATA_LIMITE_USO [EMPRESA.DATA_LIMITE_USO]
 			,(
 				SELECT
 					D.ID_PERFIL [ID]
@@ -253,6 +267,7 @@ const consultar = async (req, res) => {
 					,A.ID_EMPRESA [EMPRESA.ID]
 					,B.EMPRESA [EMPRESA.NOME]
 					,B.ATIVO [EMPRESA.ATIVO]
+					,B.DATA_LIMITE_USO [EMPRESA.DATA_LIMITE_USO]
 					,(
 						SELECT
 							D.ID_PERFIL [ID]
@@ -281,6 +296,7 @@ const consultar = async (req, res) => {
 					A.ID_EMPRESA [ID]
 					,A.EMPRESA [NOME]
 					,A.ATIVO
+					,A.DATA_LIMITE_USO
 				FROM
 					nodetest.EMPRESA A (NOLOCK)
 				WHERE ${addQueryCheckPermissions}
@@ -314,7 +330,8 @@ const consultar = async (req, res) => {
 				key: 'OPTIONS.PERFIS',
 				content: Array.from(resultSet.recordsets[2])
 			},
-			enumOptions.ativo
+			enumOptions.ativo,
+			enumOptions.agora
 		]
 	);
 
@@ -997,6 +1014,7 @@ const options = async (req, res) => {
 					A.ID_EMPRESA [ID]
 					,A.EMPRESA [NOME]
 					,A.ATIVO
+					,A.DATA_LIMITE_USO
 				FROM
 					nodetest.EMPRESA A (NOLOCK)
 				WHERE ${addQueryCheckPermissions}

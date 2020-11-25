@@ -231,6 +231,20 @@ const formatStringToDate = (value, formatStyle = 'dd/MM/yyyy HH:mm:ss') => {
 
 	return value;
 };
+
+// Verifica se uma data valida esta futura a data de agora
+//	Utiliza os GMTs definidos nos servidores abordados (node ou node / DB)
+const checkDateAfterNow = value => {
+	if (value instanceof Date) {
+		const dateNow = new Date();
+
+		if (value - dateNow > 0) {
+			return true;
+		}
+	}
+
+	return false;
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
@@ -244,5 +258,6 @@ module.exports = {
 	removeInvalidFileNameChars,
 	generateUniqueId,
 	formatDateToString,
-	formatStringToDate
+	formatStringToDate,
+	checkDateAfterNow
 };
