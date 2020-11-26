@@ -3,13 +3,11 @@
 set PATH_HOME_BACK_END=C:\_des\_pessoal\full-stack\boiler-server
 set PATH_HOME_FRONT_END=C:\_des\_pessoal\full-stack\boiler-react
 
-set DOCKER_IMAGE_NAME=boiler-deploy:1.0.0
-set DOCKER_CONTAINER_NAME=boiler-server
-set DOCKER_CONTAINER_PORTS=-p 80:4000 -p 443:5000 -p 5001:5001
-set DOCKER_CONTAINER_MEMORY=8192m
-set DOCKER_VOLUME_MOUNT=C:/Users/mariede/.docker/boiler-server
-
-REM set DOCKER_HOST=-H tcp://localhost:2375
+set DOCKER_WEB_IMAGE_NAME=boiler-deploy:1.0.0
+set DOCKER_WEB_CONTAINER_NAME=boiler-server
+set DOCKER_WEB_CONTAINER_MEMORY=8192m
+set DOCKER_WEB_VOLUME_MOUNT=C:/Users/mariede/.docker/boiler-server
+set DOCKER_DB_VOLUME_MOUNT=C:/users/mariede/.docker/mssql
 
 cls
 echo/
@@ -122,28 +120,19 @@ if not exist "%PATH_HOME_BACK_END%\build\views\client-side\public\config.json" (
 
 echo/
 echo ================================================================
-echo  1-2 GENERATE DOCKER IMAGE BUILD                               #
+echo  1-1 GENERATE DOCKER-COMPOSE BUILD                             #
 echo ================================================================
 echo/
 
 cd %PATH_HOME_BACK_END%
 IF ERRORLEVEL 1 GOTO ERROR
 
-call docker %DOCKER_HOST% build -t %DOCKER_IMAGE_NAME% ./
+call docker-compose up -d
 IF ERRORLEVEL 1 GOTO ERROR
 
 echo/
 echo ================================================================
-echo  2-2 GENERATE DOCKER CONTAINER BUILD                           #
-echo ================================================================
-echo/
-
-call docker %DOCKER_HOST% run -d %DOCKER_CONTAINER_PORTS% --name %DOCKER_CONTAINER_NAME% --restart always --memory %DOCKER_CONTAINER_MEMORY% -v "%DOCKER_VOLUME_MOUNT%/logs:/home/node/app/logs" -v "%DOCKER_VOLUME_MOUNT%/queue:/home/node/app/queue" -v "%DOCKER_VOLUME_MOUNT%/sessions:/home/node/app/sessions" -v "%DOCKER_VOLUME_MOUNT%/uploads:/home/node/app/uploads" %DOCKER_IMAGE_NAME%
-IF ERRORLEVEL 1 GOTO ERROR
-
-echo/
-echo ================================================================
-echo  - Procedimento bem sucedido, image / container criados !!!    #
+echo  - Procedimento bem sucedido, imagem / containers criados !!!  #
 echo ================================================================
 echo/
 

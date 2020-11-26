@@ -83,17 +83,18 @@ const generateBuild = {
 				name: name,
 				version: (packageJson.version || ''),
 				description: (packageJson.description || ''),
-				main: outputName,
+				main: `./${outputName}`,
+				type: (packageJson.type || ''),
 				license: (packageJson.license || ''),
 				private: true,
 				engines: {
 					node: '>=10.5.0'
 				},
 				scripts: {
-					start: `node ${outputName}`
-				}
-			},
-			packageJsonFile
+					start: `node ./${outputName}`
+				},
+				dependencies: packageJson.dependencies
+			}
 		),
 		new WebpackMessages(
 			{

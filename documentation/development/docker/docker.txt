@@ -30,40 +30,13 @@ docker run -d -p 80:4000 -p 443:5000 -p 5001:5001 --name boiler-server --restart
 -v C:/Users/mariede/.docker/boiler-server/uploads:/home/node/app/uploads `
 boiler-deploy:1.0.0
 
-3) Serviço em docker-compose (docker-compose up -d):
 
-	web:
-		build:
-			context: .
-			dockerfile: ./Dockerfile
-		image: boiler-deploy:1.0.0
-		volumes:
-			- C:/Users/mariede/.docker/boiler-server/logs:/home/node/app/logs
-			- C:/Users/mariede/.docker/boiler-server/queue:/home/node/app/queue
-			- C:/Users/mariede/.docker/boiler-server/sessions:/home/node/app/sessions
-			- C:/Users/mariede/.docker/boiler-server/uploads:/home/node/app/uploads
-		deploy:
-			resources:
-				limits:
-					memory: 8192m
-			restart_policy:
-				condition: any
-				delay: 5s
-		restart: always
-		container_name: boiler-server
-		ports:
-			- [80:4000]
-			- [443:5000]
-			- [5001:5001]
-		depends_on:
-			- mssql
-
-4) Para inspecionar as configurações do container criado:
+3) Para inspecionar as configurações do container criado:
 
 docker container inspect boiler-server
 
 
-5) Para atualizar um arquivo do host diretamente dentro do container (supondo estar na pasta build):
+4) Para atualizar um arquivo do host diretamente dentro do container (supondo estar na pasta build):
 
 docker cp ./config.json boiler-server:home/node/app
 docker cp ./views/client-side/public/config.json boiler-server:home/node/app/views/client-side/public
@@ -102,29 +75,3 @@ docker run -d -p 1433:1433 --name mssql `
 -e 'MSSQL_LOG_DIR=/var/opt/mssql/data/user' `
 -e 'MSSQL_AGENT_ENABLED=false' `
 mcr.microsoft.com/mssql/server:2019-latest
-
-
-2) Serviço em docker-compose (docker-compose up -d):
-
-	mssql:
-		image: mcr.microsoft.com/mssql/server:2019-latest
-		environment:
-			- ACCEPT_EULA=Y
-			- MSSQL_SA_PASSWORD=A12345678a
-			- MSSQL_PID=Express
-			- MSSQL_LCID=1046
-			- MSSQL_COLLATION=Latin1_General_CI_AI
-			- MSSQL_TCP_PORT=1433
-			- TZ=America/Sao_Paulo
-			- MSSQL_BACKUP_DIR=/var/backups
-			- MSSQL_DATA_DIR=/var/opt/mssql/data/user
-			- MSSQL_LOG_DIR=/var/opt/mssql/data/user
-			- MSSQL_AGENT_ENABLED=false
-		volumes:
-			- C:/users/mariede/.docker/mssql/data:/var/opt/mssql/data
-			- C:/users/mariede/.docker/mssql/log:/var/opt/mssql/log
-			- C:/users/mariede/.docker/mssql/secrets:/var/opt/mssql/secrets
-			- C:/users/mariede/.docker/mssql/backups:/var/backups
-		container_name: mssql
-		ports:
-			- [1433:1433]
