@@ -2,7 +2,7 @@
 #
 # > Executar apos rodar o npm run build <
 
-FROM node:12.19-alpine
+FROM node:12.20-alpine
 
 RUN apk add -U tzdata
 RUN cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
