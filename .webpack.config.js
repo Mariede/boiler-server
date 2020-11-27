@@ -92,8 +92,7 @@ const generateBuild = {
 				},
 				scripts: {
 					start: `node ./${outputName}`
-				},
-				dependencies: packageJson.dependencies
+				}
 			}
 		),
 		new WebpackMessages(
