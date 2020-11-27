@@ -203,7 +203,8 @@ const consultarTodos = async (req, res) => {
 			INNER JOIN nodetest.PERFIL D (NOLOCK)
 				ON (C.ID_PERFIL = D.ID_PERFIL)
 		WHERE
-			${
+			A.DELETADO is NULL
+			AND ${
 				addQueryCheckPermissions
 				.replace(/@checkEmpresaId/g, sess[sessWraper].empresa[0])
 				.replace(/@checkEmpresaProprietario/g, (sess[sessWraper].empresa[2] & 1))
@@ -286,6 +287,7 @@ const consultar = async (req, res) => {
 						ON (A.ID_EMPRESA = B.ID_EMPRESA)
 				WHERE
 					A.ID_USUARIO = @idUsuario
+					AND A.DELETADO is NULL
 					AND ${addQueryCheckPermissions};
 				-- ----------------------------------------
 
@@ -595,6 +597,7 @@ const alterar = async (req, res) => {
 						nodetest.USUARIO A
 					WHERE
 						A.ID_USUARIO = @idUsuario
+						AND A.DELETADO is NULL
 						AND ${addQueryCheckPermissions};
 
 					SET @rowCount = @@ROWCOUNT;
@@ -636,7 +639,8 @@ const alterar = async (req, res) => {
 							INNER JOIN nodetest.EMPRESA B (NOLOCK)
 								ON (A.ID_EMPRESA = B.ID_EMPRESA)
 						WHERE
-							A.ID_USUARIO = @id;
+							A.ID_USUARIO = @id
+							AND A.DELETADO is NULL;
 
 						-- Perfis
 						SELECT
@@ -648,7 +652,8 @@ const alterar = async (req, res) => {
 							INNER JOIN nodetest.PERFIL C (NOLOCK)
 								ON (B.ID_PERFIL = C.ID_PERFIL)
 						WHERE
-							A.ID_USUARIO = @id;
+							A.ID_USUARIO = @id
+							AND A.DELETADO is NULL;
 
 						-- Funcoes
 						SELECT DISTINCT
@@ -662,7 +667,8 @@ const alterar = async (req, res) => {
 							INNER JOIN nodetest.FUNCAO D (NOLOCK)
 								ON (C.ID_FUNCAO = D.ID_FUNCAO)
 						WHERE
-							A.ID_USUARIO = @id;
+							A.ID_USUARIO = @id
+							AND A.DELETADO is NULL;
 						-- ----------------------------------------
 					END
 				END
@@ -757,23 +763,16 @@ const excluir = async (req, res) => {
 				['id', 'int']
 			],
 			executar: `
-				-- Exclui usuario
-				DELETE
-					B
-				FROM
-					nodetest.USUARIO A
-					INNER JOIN nodetest.PERFIL_USUARIO B
-						ON (A.ID_USUARIO = B.ID_USUARIO)
-				WHERE
-					A.ID_USUARIO = @idUsuario
-					AND ${addQueryCheckPermissions};
-
-				DELETE
+				-- Exclui usuario LOGICAMENTE
+				UPDATE
 					A
+				SET
+					A.DELETADO = GETDATE()
 				FROM
 					nodetest.USUARIO A
 				WHERE
 					A.ID_USUARIO = @idUsuario
+					AND A.DELETADO is NULL
 					AND ${addQueryCheckPermissions};
 
 				SET @rowCount = @@ROWCOUNT;
@@ -839,6 +838,7 @@ const ativacao = async (req, res) => {
 					nodetest.USUARIO A
 				WHERE
 					A.ID_USUARIO = @idUsuario
+					AND A.DELETADO is NULL
 					AND ${addQueryCheckPermissions};
 
 				SET @rowCount = @@ROWCOUNT;
@@ -926,7 +926,8 @@ const senha = async (req, res) => {
 					FROM
 						nodetest.USUARIO A (NOLOCK)
 					WHERE
-						A.ID_USUARIO = @idUsuario;
+						A.ID_USUARIO = @idUsuario
+						AND A.DELETADO is NULL;
 					-- ----------------------------------------
 				`
 			}
@@ -974,7 +975,8 @@ const senha = async (req, res) => {
 				FROM
 					nodetest.USUARIO A
 				WHERE
-					A.ID_USUARIO = @idUsuario;
+					A.ID_USUARIO = @idUsuario
+					AND A.DELETADO is NULL;
 
 				SET @rowCount = @@ROWCOUNT;
 

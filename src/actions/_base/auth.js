@@ -60,7 +60,8 @@ const logon = async (req, res) => {
 								INNER JOIN nodetest.EMPRESA B (NOLOCK)
 									ON (A.ID_EMPRESA = B.ID_EMPRESA)
 							WHERE
-								A.EMAIL = @login;
+								A.EMAIL = @login
+								AND A.DELETADO is NULL;
 
 							SELECT
 								C.PERFIL _perfis
@@ -71,7 +72,8 @@ const logon = async (req, res) => {
 								INNER JOIN nodetest.PERFIL C (NOLOCK)
 									ON (B.ID_PERFIL = C.ID_PERFIL)
 							WHERE
-								A.EMAIL = @login;
+								A.EMAIL = @login
+								AND A.DELETADO is NULL;
 
 							SELECT DISTINCT
 								D.FUNCAO _funcoes
@@ -84,7 +86,8 @@ const logon = async (req, res) => {
 								INNER JOIN nodetest.FUNCAO D (NOLOCK)
 									ON (C.ID_FUNCAO = D.ID_FUNCAO)
 							WHERE
-								A.EMAIL = @login;
+								A.EMAIL = @login
+								AND A.DELETADO is NULL;
 							-- ----------------------------------------
 						`
 					}
