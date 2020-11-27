@@ -11,6 +11,7 @@ const cryptoHash = require('@serverRoot/helpers/crypto-hash');
 const dbCon = require('@serverRoot/helpers/db');
 const ejs = require('ejs');
 const errWrapper = require('@serverRoot/helpers/err-wrapper');
+const functions = require('@serverRoot/helpers/functions');
 const mailSender = require('@serverRoot/helpers/email');
 const paginator = require('@serverRoot/helpers/paginator');
 const searcher = require('@serverRoot/helpers/searcher');
@@ -57,8 +58,6 @@ Colecoes enumeradas para a rota options
 		-> ajuste automatico dos niveis json ao converter para camelCase em paginator, quando necessario
 	-> na rota options a propriedade key nao e utilizada
 */
-const dateNow = new Date();
-
 const enumOptions = {
 	ativo: {
 		key: 'OPTIONS.ATIVO',
@@ -72,17 +71,6 @@ const enumOptions = {
 				nome: 'INATIVO'
 			}
 		]
-	},
-	agora: {
-		key: 'OPTIONS.AGORA',
-		content: {
-			dia: dateNow.getDate(),
-			mes: dateNow.getMonth(),
-			ano: dateNow.getFullYear(),
-			hora: dateNow.getHours(),
-			minuto: dateNow.getMinutes(),
-			segundo: dateNow.getSeconds()
-		}
 	}
 };
 // -------------------------------------------------------------------------
@@ -332,8 +320,11 @@ const consultar = async (req, res) => {
 				key: 'OPTIONS.PERFIS',
 				content: Array.from(resultSet.recordsets[2])
 			},
-			enumOptions.ativo,
-			enumOptions.agora
+			{
+				key: 'OPTIONS.AGORA',
+				content: { valor: functions.formatDateToString(new Date()) }
+			},
+			enumOptions.ativo
 		]
 	);
 
@@ -1040,7 +1031,8 @@ const options = async (req, res) => {
 
 	const optionsSet = {
 		empresas: paginator.keysToCamelCase(resultSet.recordsets[0]), // Chaves para camelCase
-		perfis: paginator.keysToCamelCase(resultSet.recordsets[1]) // Chaves para camelCase
+		perfis: paginator.keysToCamelCase(resultSet.recordsets[1]), // Chaves para camelCase
+		agora: { valor: functions.formatDateToString(new Date()) }
 	};
 
 	const _enumOptions = {};
