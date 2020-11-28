@@ -380,22 +380,22 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 
 						switch (resultRedirectHttpToHttps) {
 							case -1: {
-								messages.push(['info', 'Redirecionamento http -> https NÃO ativo (porta de redirecionamento não definida)']);
+								messages.push(['info', 'Redirecionamento http para https -> NÃO ativo, porta de redirecionamento não definida']);
 								break;
 							}
 							case -2: {
-								messages.push(['error', 'Redirecionamento http -> https NÃO ativo (porta de redirecionamento inválida)']);
+								messages.push(['error', 'Redirecionamento http para https -> NÃO ativo, porta de redirecionamento inválida']);
 								break;
 							}
 							default: {
-								messages.push(['info', `Redirecionamento http -> https ativo na porta ${resultRedirectHttpToHttps}`]);
+								messages.push(['info', `Redirecionamento http para https -> Ativo, redireciona via porta ${resultRedirectHttpToHttps}`]);
 							}
 						}
 					} catch (err) {
-						messages.push(['error', `Redirecionamento http -> https falhou ao iniciar: ${(err.stack || err)}`]);
+						messages.push(['error', `Redirecionamento http para https -> Falhou ao iniciar: ${(err.stack || err)}`]);
 					}
 				} else {
-					messages.push(['info', 'Redirecionamento http -> https NÃO ativo (https desabilitado)']);
+					messages.push(['info', 'Redirecionamento http para https -> https NÃO ativo (desabilitado)']);
 				}
 
 				resolve(messages);
