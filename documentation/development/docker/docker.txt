@@ -42,6 +42,16 @@ docker cp ./config.json boiler-server:home/node/app
 docker cp ./views/client-side/public/config.json boiler-server:home/node/app/views/client-side/public
 
 
+5) Para visualizar networks do docker
+
+docker network ls
+
+
+6) Para remover uma rede
+
+docker network rm
+
+
 PORTAINER:
 ---------
 
@@ -50,7 +60,7 @@ PORTAINER:
 docker run -d -p 9000:9000 --name portainer --restart always `
 -v /var/run/docker.sock:/var/run/docker.sock `
 -v C:/users/mariede/.docker/portainer/data:/data `
-portainer/portainer-ce
+portainer/portainer-ce:alpine
 
 
 BANCO DE DADOS:
