@@ -67,6 +67,9 @@ const generateBuild = {
 			{
 				patterns: [
 					{
+						from: resolve(sourcePath, '..', './package-lock.json'), to: resolve(destinyPath, './package-lock.json'), force: true
+					},
+					{
 						from: resolve(sourcePath, './config.json'), to: resolve(destinyPath, './config.json'), force: true
 					},
 					{
