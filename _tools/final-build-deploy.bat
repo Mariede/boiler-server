@@ -6,8 +6,8 @@ set PATH_HOME_FRONT_END=C:\_des\_pessoal\full-stack\boiler-react
 set DOCKER_WEB_IMAGE_NAME=boiler-deploy:1.0.0
 set DOCKER_WEB_CONTAINER_NAME=boiler-server
 set DOCKER_WEB_CONTAINER_MEMORY=8192m
-set DOCKER_WEB_VOLUME_MOUNT=C:/Users/mariede/.docker/boiler-server
-set DOCKER_DB_VOLUME_MOUNT=C:/users/mariede/.docker/mssql
+set DOCKER_WEB_VOLUME_MOUNT=C:/Users/mariede/.docker/_web/boiler-server
+set DOCKER_DB_VOLUME_MOUNT=C:/users/mariede/.docker/_db/mssql-boiler-server
 
 cls
 echo/
@@ -90,7 +90,7 @@ echo/
 :CHECK_DEPLOY_SCRIPT
 
 echo/
-choice /n /c:YN /m "Start script to deploy application? [Y|N]"
+choice /n /c:YN /m "Start script to deploy application? Remember to check your config.json files... [Y|N]"
 echo/
 
 IF ERRORLEVEL ==2 GOTO END_SCRIPT

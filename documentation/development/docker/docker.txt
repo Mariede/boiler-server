@@ -24,10 +24,10 @@ docker build -t boiler-deploy:1.0.0 ./
 2) Container a partir da imagem criada (validar arquivos de configuração da aplicação na imagem):
 
 docker run -d -p 80:4000 -p 443:5000 -p 5001:5001 --name boiler-server --restart always --memory 8192m `
--v C:/Users/mariede/.docker/boiler-server/logs:/home/node/app/logs `
--v C:/Users/mariede/.docker/boiler-server/queue:/home/node/app/queue `
--v C:/Users/mariede/.docker/boiler-server/sessions:/home/node/app/sessions `
--v C:/Users/mariede/.docker/boiler-server/uploads:/home/node/app/uploads `
+-v C:/Users/mariede/.docker/_web/boiler-server/logs:/home/node/app/logs `
+-v C:/Users/mariede/.docker/_web/boiler-server/queue:/home/node/app/queue `
+-v C:/Users/mariede/.docker/_web/boiler-server/sessions:/home/node/app/sessions `
+-v C:/Users/mariede/.docker/_web/boiler-server/uploads:/home/node/app/uploads `
 boiler-deploy:1.0.0
 
 
@@ -69,10 +69,10 @@ BANCO DE DADOS:
 1) Imagem + Container (com variaveis de ambiente configuradas):
 
 docker run -d -p 1433:1433 --name mssql `
--v C:/users/mariede/.docker/mssql/data:/var/opt/mssql/data `
--v C:/users/mariede/.docker/mssql/log:/var/opt/mssql/log `
--v C:/users/mariede/.docker/mssql/secrets:/var/opt/mssql/secrets `
--v C:/users/mariede/.docker/mssql/backups:/var/backups `
+-v C:/users/mariede/.docker/_db/mssql-boiler-server/data:/var/opt/mssql/data `
+-v C:/users/mariede/.docker/_db/mssql-boiler-server/log:/var/opt/mssql/log `
+-v C:/users/mariede/.docker/_db/mssql-boiler-server/secrets:/var/opt/mssql/secrets `
+-v C:/users/mariede/.docker/_db/mssql-boiler-server/backups:/var/backups `
 -e 'ACCEPT_EULA=Y' `
 -e 'MSSQL_SA_PASSWORD=A12345678a' `
 -e 'MSSQL_PID=Express' `
