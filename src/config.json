@@ -64,7 +64,7 @@
 			"permisys": {
 				"address": "https://address-permisys-service.com",
 				"siglaSistema": "SYS",
-				"idModulo": 15,
+				"siglaModulo": "MY-MODULE",
 				"headers": {
 					"authorization": "Basic XPTO="
 				}
