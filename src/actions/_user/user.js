@@ -157,7 +157,7 @@ const consultarTodos = async (req, res) => {
 
 	const replaceQuery = '{{REPLACE}}';
 	const baseQuery = `
-		-- Dados dos usuario (via searcher)
+		-- Dados dos usuarios (via searcher)
 		SELECT DISTINCT
 			A.ID_USUARIO
 			,A.NOME
