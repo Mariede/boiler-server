@@ -241,7 +241,7 @@ const consultar = async (req, res) => {
 			input: [
 				['idUsuario', 'int', idUsuario],
 				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
+				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
 			],
 			executar: `
 				-- Dados do usuario
@@ -383,7 +383,7 @@ const inserir = async (req, res) => {
 				['detalhes', 'varchar(max)', detalhes || null],
 				['empresa', 'int', empresa],
 				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
+				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
 			],
 			output: [
 				['rowCount', 'int'],
@@ -554,7 +554,7 @@ const alterar = async (req, res) => {
 				['detalhes', 'varchar(max)', detalhes || null],
 				['empresa', 'int', empresa],
 				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
+				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
 			],
 			output: [
 				['rowCount', 'int'],
@@ -747,7 +747,7 @@ const excluir = async (req, res) => {
 			input: [
 				['idUsuario', 'int', idUsuario],
 				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
+				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
 			],
 			output: [
 				['rowCount', 'int'],
@@ -813,7 +813,7 @@ const ativacao = async (req, res) => {
 				['idUsuario', 'int', idUsuario],
 				['ativo', 'bit', !ativo],
 				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
+				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
 			],
 			output: [
 				['rowCount', 'int'],
@@ -999,7 +999,7 @@ const options = async (req, res) => {
 		dados: {
 			input: [
 				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'int', sess[sessWraper].empresa[2]]
+				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
 			],
 			executar: `
 				-- Opcoes -> Empresas disponiveis no DB
