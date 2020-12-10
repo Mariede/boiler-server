@@ -19,7 +19,7 @@ Verifica se usuario ja possui uma sessao ativa e limpa com base em checkId
 const checkForLoggedSessions = (req, checkId) => {
 	return new Promise((resolve, reject) => {
 		const sessStore = req.sessionStore;
-		const sessWraper = __serverConfig.auth.sessWrapper;
+		const sessWrapper = __serverConfig.auth.sessWrapper;
 
 		sessStore.list(
 			(err, filesStored) => {
@@ -45,7 +45,7 @@ const checkForLoggedSessions = (req, checkId) => {
 																resolve(); // Arquivo removido durante o processo
 															}
 														} else {
-															if (fileContent && fileContent[sessWraper].id === checkId) {
+															if (fileContent && fileContent[sessWrapper].id === checkId) {
 																sessStore.destroy(
 																	fileStoredId,
 																	err => {
@@ -100,13 +100,13 @@ const checkForLoggedSessions = (req, checkId) => {
 // Verifica se a sessao esta ativa
 const isLogged = (req, resType) => { // Se resType === 1 => retorna object. Default: retorna boolean.
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 
 	let fRet = (resType === 1 ? {} : false);
 
-	if (Object.prototype.hasOwnProperty.call(sess, sessWraper)) {
+	if (Object.prototype.hasOwnProperty.call(sess, sessWrapper)) {
 		if (resType === 1) {
-			fRet = sess[sessWraper];
+			fRet = sess[sessWrapper];
 		} else {
 			fRet = true;
 		}

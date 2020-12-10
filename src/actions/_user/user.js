@@ -152,7 +152,7 @@ const _upload = async (req, res) => {
 const consultarTodos = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 	// -------------------------------------------------------------------------
 
 	const replaceQuery = '{{REPLACE}}';
@@ -194,8 +194,8 @@ const consultarTodos = async (req, res) => {
 			A.DELETADO is NULL
 			AND ${
 				addQueryCheckPermissions
-				.replace(/@checkEmpresaId/g, sess[sessWraper].empresa[0])
-				.replace(/@checkEmpresaProprietario/g, (sess[sessWraper].empresa[2] & 1))
+				.replace(/@checkEmpresaId/g, sess[sessWrapper].empresa[0])
+				.replace(/@checkEmpresaProprietario/g, (sess[sessWrapper].empresa[2] & 1))
 			}
 			${replaceQuery}
 		-- ----------------------------------------
@@ -222,7 +222,7 @@ const consultarTodos = async (req, res) => {
 const consultar = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 	// -------------------------------------------------------------------------
 
 	// Parametros de entrada
@@ -240,8 +240,8 @@ const consultar = async (req, res) => {
 		dados: {
 			input: [
 				['idUsuario', 'int', idUsuario],
-				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
+				['checkEmpresaId', 'int', sess[sessWrapper].empresa[0]],
+				['checkEmpresaProprietario', 'bit', sess[sessWrapper].empresa[2]]
 			],
 			executar: `
 				-- Dados do usuario
@@ -339,7 +339,7 @@ const consultar = async (req, res) => {
 const inserir = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 	// -------------------------------------------------------------------------
 
 	// Parametros de entrada
@@ -382,8 +382,8 @@ const inserir = async (req, res) => {
 				['ativo', 'bit', ativo],
 				['detalhes', 'varchar(max)', detalhes || null],
 				['empresa', 'int', empresa],
-				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
+				['checkEmpresaId', 'int', sess[sessWrapper].empresa[0]],
+				['checkEmpresaProprietario', 'bit', sess[sessWrapper].empresa[2]]
 			],
 			output: [
 				['rowCount', 'int'],
@@ -511,7 +511,7 @@ const inserir = async (req, res) => {
 const alterar = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 	// -------------------------------------------------------------------------
 
 	// Parametros de entrada
@@ -534,7 +534,7 @@ const alterar = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (sess[sessWraper].id === parseInt(idUsuario, 10) && !ativo) {
+	if (sess[sessWrapper].id === parseInt(idUsuario, 10) && !ativo) {
 		errWrapper.throwThis('USUARIO', 400, 'Não é possível desativar a si mesmo...');
 	}
 
@@ -553,8 +553,8 @@ const alterar = async (req, res) => {
 				['ativo', 'bit', ativo],
 				['detalhes', 'varchar(max)', detalhes || null],
 				['empresa', 'int', empresa],
-				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
+				['checkEmpresaId', 'int', sess[sessWrapper].empresa[0]],
+				['checkEmpresaProprietario', 'bit', sess[sessWrapper].empresa[2]]
 			],
 			output: [
 				['rowCount', 'int'],
@@ -675,7 +675,7 @@ const alterar = async (req, res) => {
 	}
 
 	// Atualiza dados da sessao ativa, APENAS se mesmo usuario
-	if (sess[sessWraper] && sess[sessWraper].id === parseInt(idUsuario, 10)) {
+	if (sess[sessWrapper] && sess[sessWrapper].id === parseInt(idUsuario, 10)) {
 		if (resultSet && resultSet.recordsets) {
 			const rsLen = resultSet.recordsets.length;
 
@@ -712,7 +712,7 @@ const alterar = async (req, res) => {
 				)
 			) || [];
 
-			sess[sessWraper] = { ...sess[sessWraper], ...sessData, perfis: perfis, funcoes: funcoes };
+			sess[sessWrapper] = { ...sess[sessWrapper], ...sessData, perfis: perfis, funcoes: funcoes };
 		}
 	}
 
@@ -724,7 +724,7 @@ const alterar = async (req, res) => {
 const excluir = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 	// -------------------------------------------------------------------------
 
 	// Parametros de entrada
@@ -736,7 +736,7 @@ const excluir = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (sess[sessWraper].id === parseInt(idUsuario, 10)) { // Apenas outros usuarios
+	if (sess[sessWrapper].id === parseInt(idUsuario, 10)) { // Apenas outros usuarios
 		errWrapper.throwThis('USUARIO', 400, 'Não é possível realizar esta operação em si mesmo...');
 	}
 	// -------------------------------------------------------------------------
@@ -746,8 +746,8 @@ const excluir = async (req, res) => {
 		dados: {
 			input: [
 				['idUsuario', 'int', idUsuario],
-				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
+				['checkEmpresaId', 'int', sess[sessWrapper].empresa[0]],
+				['checkEmpresaProprietario', 'bit', sess[sessWrapper].empresa[2]]
 			],
 			output: [
 				['rowCount', 'int'],
@@ -788,7 +788,7 @@ const excluir = async (req, res) => {
 const ativacao = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 	// -------------------------------------------------------------------------
 
 	// Parametros de entrada
@@ -801,7 +801,7 @@ const ativacao = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (sess[sessWraper].id === parseInt(idUsuario, 10)) { // Apenas outros usuarios
+	if (sess[sessWrapper].id === parseInt(idUsuario, 10)) { // Apenas outros usuarios
 		errWrapper.throwThis('USUARIO', 400, 'Não é possível realizar esta operação em si mesmo...');
 	}
 	// -------------------------------------------------------------------------
@@ -812,8 +812,8 @@ const ativacao = async (req, res) => {
 			input: [
 				['idUsuario', 'int', idUsuario],
 				['ativo', 'bit', !ativo],
-				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
+				['checkEmpresaId', 'int', sess[sessWrapper].empresa[0]],
+				['checkEmpresaProprietario', 'bit', sess[sessWrapper].empresa[2]]
 			],
 			output: [
 				['rowCount', 'int'],
@@ -854,7 +854,7 @@ const ativacao = async (req, res) => {
 const senha = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 	// -------------------------------------------------------------------------
 
 	// Parametros de entrada
@@ -869,7 +869,7 @@ const senha = async (req, res) => {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
 	}
 
-	if (sess[sessWraper].id !== parseInt(idUsuario, 10)) { // Apenas em si mesmo
+	if (sess[sessWrapper].id !== parseInt(idUsuario, 10)) { // Apenas em si mesmo
 		errWrapper.throwThis('USUARIO', 400, 'Só é possível realizar esta operação em si mesmo...');
 	}
 
@@ -991,15 +991,15 @@ const senha = async (req, res) => {
 const options = async (req, res) => {
 	// Parametros de sessao
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 	// -------------------------------------------------------------------------
 
 	const query = {
 		formato: 1,
 		dados: {
 			input: [
-				['checkEmpresaId', 'int', sess[sessWraper].empresa[0]],
-				['checkEmpresaProprietario', 'bit', sess[sessWraper].empresa[2]]
+				['checkEmpresaId', 'int', sess[sessWrapper].empresa[0]],
+				['checkEmpresaProprietario', 'bit', sess[sessWrapper].empresa[2]]
 			],
 			executar: `
 				-- Opcoes -> Empresas disponiveis no DB

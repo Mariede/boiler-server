@@ -19,9 +19,9 @@ Verifica se o usuario logado tem permissao de acesso a rota (controller)
 */
 const validate = (req, allowedPermissions) => {
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 
-	const userPermissions = Object.prototype.hasOwnProperty.call(sess, sessWraper) && sess[sessWraper].funcoes;
+	const userPermissions = Object.prototype.hasOwnProperty.call(sess, sessWrapper) && sess[sessWrapper].funcoes;
 
 	// Se string: para maiusculo na validacao
 	const _allowedPermissions = (

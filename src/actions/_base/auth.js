@@ -22,9 +22,9 @@ const validator = require('@serverRoot/helpers/validator');
 // Inicia a sessao no servidor, permite acesso as rotas protegidas
 const logon = async (req, res) => {
 	const sess = req.session;
-	const sessWraper = __serverConfig.auth.sessWrapper;
+	const sessWrapper = __serverConfig.auth.sessWrapper;
 
-	if (Object.prototype.hasOwnProperty.call(sess, sessWraper)) {
+	if (Object.prototype.hasOwnProperty.call(sess, sessWrapper)) {
 		errWrapper.throwThis('AUTH', 400, 'Usuário já logado...');
 	} else {
 		// Parametros de entrada
@@ -121,7 +121,7 @@ const logon = async (req, res) => {
 								) || [];
 
 								/* Session data */
-								sess[sessWraper] = {
+								sess[sessWrapper] = {
 									id: dataUser.id,
 									nome: dataUser.nome,
 									email: dataUser.email,
@@ -154,7 +154,7 @@ const logon = async (req, res) => {
 		}
 	}
 
-	return sess[sessWraper];
+	return sess[sessWrapper];
 };
 
 // ------------------------------->>> Acao
@@ -162,9 +162,9 @@ const logon = async (req, res) => {
 const logoff = (req, res) => {
 	return new Promise((resolve, reject) => {
 		const sess = req.session;
-		const sessWraper = __serverConfig.auth.sessWrapper;
+		const sessWrapper = __serverConfig.auth.sessWrapper;
 
-		const sessionExists = Object.prototype.hasOwnProperty.call(sess, sessWraper);
+		const sessionExists = Object.prototype.hasOwnProperty.call(sess, sessWrapper);
 
 		sess.destroy(
 			err => {
