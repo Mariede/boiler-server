@@ -391,7 +391,6 @@ const inserir = async (req, res) => {
 			],
 			executar: `
 				-- Cria novo usuario
-
 				SET @rowCount = (
 					SELECT
 						COUNT(*)
@@ -562,7 +561,6 @@ const alterar = async (req, res) => {
 			],
 			executar: `
 				-- Atualiza usuario
-
 				SET @rowCount = (
 					SELECT
 						COUNT(*)
