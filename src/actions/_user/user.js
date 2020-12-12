@@ -278,60 +278,16 @@ const consultar = async (req, res) => {
 					AND A.DELETADO is NULL
 					AND ${addQueryCheckPermissions};
 				-- ----------------------------------------
-
-				-- Retorna opcoes na mesma chamada, no mesmo json de retorno
-
-				-- Empresas (opcoes)
-				SELECT
-					A.ID_EMPRESA [ID]
-					,A.EMPRESA [NOME]
-					,A.ATIVO
-					,A.DATA_LIMITE_USO
-				FROM
-					nodetest.EMPRESA A (NOLOCK)
-				WHERE ${addQueryCheckPermissions}
-				ORDER BY
-					A.EMPRESA;
-
-				-- Perfis (opcoes)
-				SELECT
-					A.ID_PERFIL [ID]
-					,A.PERFIL [NOME]
-				FROM
-					nodetest.PERFIL A (NOLOCK)
-				ORDER BY
-					A.PERFIL;
-				-- ----------------------------------------
 			`
 		}
 	};
 
 	const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-	// Adiciona chaves extras ao resultset inicial (options acoplado)
-	resultSet.recordsets[0] = paginator.addKeysToRecords(
-		resultSet.recordsets[0],
-		[
-			{
-				key: 'OPTIONS.EMPRESAS',
-				content: Array.from(resultSet.recordsets[1])
-			},
-			{
-				key: 'OPTIONS.PERFIS',
-				content: Array.from(resultSet.recordsets[2])
-			},
-			{
-				key: 'OPTIONS.AGORA',
-				content: { valor: functions.formatDateToString(new Date()) }
-			},
-			enumOptions.ativo
-		]
-	);
+	// Chaves para camelCase
+	resultSet.recordset = paginator.keysToCamelCase(resultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
 
-	// Para o caso de mais de um recordset no result, mantem apenas o recordset inicial, chaves para camelCase
-	const settedResult = paginator.setResult(resultSet, resultSet.recordsets[0], resultSet.rowsAffected[0], [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
-
-	return settedResult;
+	return resultSet;
 };
 
 // ------------------------------->>> Acao
