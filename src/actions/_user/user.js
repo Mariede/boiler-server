@@ -422,7 +422,7 @@ const inserir = async (req, res) => {
 
 	// Envia login e senha para o e-mail cadastrado
 	const mailTemplate = `${__serverRoot}/views/server-side/pages/_mail-templates/user-new.ejs`;
-	const dataTemplate = await ejs.renderFile(mailTemplate, { nome: _nome, email: _email, senha: senha });
+	const dataTemplate = await ejs.renderFile(mailTemplate, { nome: _nome, email: _email, senha: senha, equipe: __serverConfig.email.fromName });
 	const mailSendQueue = __serverConfig.email.queue.on === true;
 
 	const mailSenderResult = await mailSender.sendEmail(
