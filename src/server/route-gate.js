@@ -88,6 +88,7 @@ router.use(
 			res.locals.routeEscapedRoute = route;
 			res.locals.routeIsProtectedRoute = isProtected;
 			res.locals.routeControllerRoute = 'HUB';
+			res.locals.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || (req.connection.socket ? req.connection.socket.remoteAddress : null);
 
 			if (releasedReq) {
 				controllersRoutes();

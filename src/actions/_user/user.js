@@ -186,6 +186,7 @@ const consultarTodos = async (req, res) => {
 			nodetest.USUARIO A (NOLOCK)
 			INNER JOIN nodetest.EMPRESA B (NOLOCK)
 				ON (A.ID_EMPRESA = B.ID_EMPRESA)
+			-- Apenas para viabilizar a consulta (Searcher) por perfil na aplicacao
 			INNER JOIN nodetest.PERFIL_USUARIO C (NOLOCK)
 				ON (A.ID_USUARIO = C.ID_USUARIO)
 			INNER JOIN nodetest.PERFIL D (NOLOCK)

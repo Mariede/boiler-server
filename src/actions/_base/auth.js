@@ -134,6 +134,33 @@ const logon = async (req, res) => {
 									funcoes: funcoes
 								};
 								/* Session data */
+
+								// Loga acesso ao sistema
+								const queryLog = {
+									formato: 1,
+									dados: {
+										input: [
+											['idUsuario', 'int', dataUser.id],
+											['ip', 'varchar(20)', res.locals.ip]
+										],
+										executar: `
+											-- Log do acesso
+											INSERT INTO nodetest.LOGS(
+												ID_USUARIO
+												,IP
+												,DATA_INSERCAO
+											)
+											VALUES(
+												@idUsuario
+												,@ip
+												,GETDATE()
+											);
+											-- ----------------------------------------
+										`
+									}
+								};
+
+								await dbCon.msSqlServer.sqlExecuteAll(queryLog);
 							} else {
 								errWrapper.throwThis('AUTH', 400, 'Empresa atingiu a data limite de uso do sistema...');
 							}
