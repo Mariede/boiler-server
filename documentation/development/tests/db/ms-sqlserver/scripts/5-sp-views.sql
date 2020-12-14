@@ -1,0 +1,42 @@
+USE [NODE_TEST]
+GO
+
+/****** Object:  StoredProcedure [nodetest].[USUARIO_CONSULTAR] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[nodetest].[USUARIO_CONSULTAR]') AND type in (N'P', N'PC'))
+BEGIN
+EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE [nodetest].[USUARIO_CONSULTAR] AS'
+END
+GO
+ALTER PROCEDURE [nodetest].[USUARIO_CONSULTAR]
+	@ID_USUARIO
+		int
+	,@NOME
+		varchar(200)
+	,@QTD_RET
+		int OUTPUT
+AS
+BEGIN
+	SET NOCOUNT OFF;
+
+/*
+PROC DE TESTES
+*/
+
+	SELECT
+		*
+	FROM
+		nodetest.USUARIO (NOLOCK)
+	WHERE
+		ID_USUARIO = @ID_USUARIO OR NOME LIKE ('%' + @NOME + '%');
+
+	SET
+		@QTD_RET = @@ROWCOUNT;
+
+	RETURN
+		@QTD_RET;
+END
+GO
