@@ -323,7 +323,7 @@ const inserir = async (req, res) => {
 	// -------------------------------------------------------------------------
 
 	// Alteracoes comuns nos parametros de entrada
-	const _nome = String(nome || '').toUpperCase();
+	const _nome = String(nome || '').trim().toUpperCase();
 	const _email = String(email || '').toLowerCase();
 	// -------------------------------------------------------------------------
 
@@ -503,7 +503,7 @@ const alterar = async (req, res) => {
 		dados: {
 			input: [
 				['idUsuario', 'int', idUsuario],
-				['nome', 'varchar(200)', String(nome || '').toUpperCase()],
+				['nome', 'varchar(200)', String(nome || '').trim().toUpperCase()],
 				['email', 'varchar(200)', String(email || '').toLowerCase()],
 				['cpf', 'numeric(11, 0)', (cpf ? Number(cpf) : null)],
 				['ativo', 'bit', ativo],
