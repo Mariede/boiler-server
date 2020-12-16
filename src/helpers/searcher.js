@@ -90,7 +90,7 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 			if (searchFields.length > 0 && searchValue) {
 				searchFields.forEach(
 					(e, i) => {
-						const regExpAlias = new RegExp(`SELECT\\s+[\\s\\S]*?(\\w+\\.)(${e})`, 'i');
+						const regExpAlias = new RegExp(`SELECT\\s+[\\s\\S]*?(\\w+\\.)(${e})\\s+`, 'i');
 						const searchAlias = regExpAlias.exec(baseQuery);
 						const alias = (Array.isArray(searchAlias) ? (searchAlias[1] || '') : '');
 

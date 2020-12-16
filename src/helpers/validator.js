@@ -419,13 +419,15 @@ Verifica a placa do carro nacional (BR / Mercosul)
 */
 const isVehicleLicensePlate = _licensePlate => {
 	const licensePlate = (_licensePlate || '').toString();
-	const regExpBrNationalPlate = /^([a-zA-Z]{2,3})[ -]?([0-9]{4})$/;
+
+	const regExpBrNationalPlateOld = /^[ ]?([a-zA-Z]{2})[ ]?[ -]?([0-9]{4})$/;
+	const regExpBrNationalPlateNew = /^([a-zA-Z]{3})[ -]?([0-9]{4})$/;
 	const regExpBrMercosulPlate1 = /^([a-zA-Z]{3})[ -]?([0-9][a-zA-Z][0-9]{2})$/; // Carros
 	const regExpBrMercosulPlate2 = /^([a-zA-Z]{3})[ -]?([0-9]{2}[a-zA-Z][0-9])$/; // Motos
 
 	let vRet = false;
 
-	if (regExpBrNationalPlate.test(licensePlate) || regExpBrMercosulPlate1.test(licensePlate) || regExpBrMercosulPlate2.test(licensePlate)) {
+	if (regExpBrNationalPlateOld.test(licensePlate) || regExpBrNationalPlateNew.test(licensePlate) || regExpBrMercosulPlate1.test(licensePlate) || regExpBrMercosulPlate2.test(licensePlate)) {
 		vRet = true;
 	}
 
@@ -434,13 +436,14 @@ const isVehicleLicensePlate = _licensePlate => {
 
 // Verifica o numero do chassi do veiculo
 const isVehicleChassis = _chassis => {
-	const chassis = (_chassis || '').toString();
-	const regExpChassisBase = /^(?!.*?[ioqIOQ])([a-zA-Z1-9]{1})([a-zA-Z0-9]{8})([a-zA-Z0-9-]{2})([0-9]{6})$/;
+	const chassis = (_chassis || '').toString().trim();
+	const regExpChassisBasePrior1981 = /^[a-zA-Z0-9]{5,14}$/;
+	const regExpChassisBaseAfter1981 = /^(?!.*?[ioqIOQ])([a-zA-Z1-9]{1})([a-zA-Z0-9]{8})([a-zA-Z0-9-]{3})([0-9]{3,5})$/;
 	const regExpChassisRepeated = /([a-zA-Z0-9])\1{6,}/g;
 
 	let vRet = false;
 
-	if (regExpChassisBase.test(chassis) && !regExpChassisRepeated.test(chassis)) {
+	if ((regExpChassisBasePrior1981.test(chassis) || regExpChassisBaseAfter1981.test(chassis)) && !regExpChassisRepeated.test(chassis)) {
 		vRet = true;
 	}
 
