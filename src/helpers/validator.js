@@ -436,10 +436,10 @@ const isVehicleLicensePlate = _licensePlate => {
 
 // Verifica o numero do chassi do veiculo
 const isVehicleChassis = _chassis => {
-	const chassis = (_chassis || '').toString().trim();
-	const regExpChassisBasePrior1981 = /^[a-zA-Z0-9]{5,14}$/;
-	const regExpChassisBaseAfter1981 = /^(?!.*?[ioqIOQ])([a-zA-Z1-9]{1})([a-zA-Z0-9]{8})([a-zA-Z0-9-]{3})([0-9]{3,5})$/;
-	const regExpChassisRepeated = /([a-zA-Z0-9])\1{6,}/g;
+	const chassis = (_chassis || '').toString();
+	const regExpChassisBasePrior1981 = /^[a-zA-Z0-9]{5,13}$/;
+	const regExpChassisBaseAfter1981 = /^(?!.*?[ioqIOQ])([a-zA-Z1-9]{1})([a-zA-Z0-9]{9,12})([0-9]{4})$/;
+	const regExpChassisRepeated = /([a-zA-Z0-9])\1{5,}/g;
 
 	let vRet = false;
 
