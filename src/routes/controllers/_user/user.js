@@ -24,7 +24,7 @@ const _commonGate = (req, res) => {
 // -------------------------------------------------------------------------
 // Rotas
 const userRoutes = (router, handleErrorsController) => {
-	// Colecao/Model usuario -----------------------------------------------
+	// Colecao/Model usuario ---------------------------------------------------
 	router
 	.route('/usuario')
 	.all(
@@ -86,7 +86,9 @@ const userRoutes = (router, handleErrorsController) => {
 			}
 		)
 	);
+	// -------------------------------------------------------------------------
 
+	// Opcoes disponiveis ------------------------------------------------------
 	router
 	.route('/usuario/options')
 	.all(
@@ -123,7 +125,9 @@ const userRoutes = (router, handleErrorsController) => {
 			}
 		)
 	);
+	// -------------------------------------------------------------------------
 
+	// Model usuario -----------------------------------------------------------
 	router
 	.route('/usuario/:id')
 	.all(
@@ -210,7 +214,9 @@ const userRoutes = (router, handleErrorsController) => {
 			}
 		)
 	);
+	// -------------------------------------------------------------------------
 
+	// Ativa/desativa usuario --------------------------------------------------
 	router
 	.route('/usuario/:id/ativacao')
 	.all(
@@ -246,7 +252,9 @@ const userRoutes = (router, handleErrorsController) => {
 			}
 		)
 	);
+	// -------------------------------------------------------------------------
 
+	// Altera senha usuario ----------------------------------------------------
 	router
 	.route('/usuario/:id/senha')
 	.all(
