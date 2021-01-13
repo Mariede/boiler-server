@@ -52,6 +52,16 @@ docker network ls
 docker network rm
 
 
+7) Para salvar uma image localmente
+
+docker save -o ./image.tar image-name:tag
+
+
+8) Para subir a imagem em um registry remoto
+
+docker push image-name:tag
+
+
 PORTAINER:
 ---------
 

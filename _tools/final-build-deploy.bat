@@ -1,7 +1,8 @@
 @echo OFF
 
-set PATH_HOME_BACK_END=C:\_des\_pessoal\full-stack\boiler-server
-set PATH_HOME_FRONT_END=C:\_des\_pessoal\full-stack\boiler-react
+set PATH_HOME=C:\_des\_pessoal\full-stack
+set PATH_HOME_BACK_END=%PATH_HOME%\boiler-server
+set PATH_HOME_FRONT_END=%PATH_HOME%\boiler-react
 
 set DOCKER_WEB_IMAGE_NAME=boiler-deploy:1.0.0
 set DOCKER_WEB_CONTAINER_NAME=boiler-server
@@ -127,7 +128,7 @@ echo/
 cd %PATH_HOME_BACK_END%
 IF ERRORLEVEL 1 GOTO ERROR
 
-call docker-compose up -d
+call docker-compose up -d --force-recreate
 IF ERRORLEVEL 1 GOTO ERROR
 
 echo/
