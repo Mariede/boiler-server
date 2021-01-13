@@ -15,6 +15,7 @@ const shortSourcePath = './src';
 /* Read config.json */
 const configJsonFile =  require(`${shortSourcePath}/config.json`);
 const certFolder = `.${((configJsonFile.server && configJsonFile.server.secure && configJsonFile.server.secure.certFolder) || '/cert')}`;
+const isHttps = (configJsonFile.server && configJsonFile.server.secure && configJsonFile.server.secure.isHttps) === true;
 
 /* Read package.json */
 const packageJsonFile = './package.json';
@@ -74,11 +75,18 @@ const generateBuild = {
 					},
 					{
 						from: resolve(sourcePath, './views'), to: resolve(destinyPath, './views'), force: true
-					},
-					{
-						from: resolve(sourcePath, certFolder), to: resolve(destinyPath, certFolder), force: true
 					}
-				]
+				].concat(
+					isHttps ? (
+						[
+							{
+								from: resolve(sourcePath, certFolder), to: resolve(destinyPath, certFolder), force: true
+							}
+						]
+					) : (
+						[]
+					)
+				)
 			}
 		),
 		new GeneratePackageJsonPlugin(
