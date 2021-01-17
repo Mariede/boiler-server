@@ -25,7 +25,7 @@ echo/
 echo Iniciando build final...
 echo/
 
-if not exist "%PATH_HOME_BACK_END%\package.json" (
+IF NOT EXIST "%PATH_HOME_BACK_END%\package.json" (
 	echo/
 	echo Arquivo package.json na pasta definida para o back-end nao encontrado, terminando o processo...
 	echo/
@@ -33,7 +33,7 @@ if not exist "%PATH_HOME_BACK_END%\package.json" (
 	GOTO ERROR
 )
 
-if not exist "%PATH_HOME_FRONT_END%\package.json" (
+IF NOT EXIST "%PATH_HOME_FRONT_END%\package.json" (
 	echo/
 	echo Arquivo package.json na pasta definida para o front-end nao encontrado, terminando o processo...
 	echo/
@@ -104,7 +104,7 @@ echo/
 echo Iniciando deploy...
 echo/
 
-if not exist "%PATH_HOME_BACK_END%\build\package.json" (
+IF NOT EXIST "%PATH_HOME_BACK_END%\build\package.json" (
 	echo/
 	echo Arquivo package.json na pasta definida para o build final nao encontrado, terminando o processo...
 	echo/
@@ -112,7 +112,7 @@ if not exist "%PATH_HOME_BACK_END%\build\package.json" (
 	GOTO ERROR
 )
 
-if not exist "%PATH_HOME_BACK_END%\build\views\client-side\public\config.json" (
+IF NOT EXIST "%PATH_HOME_BACK_END%\build\views\client-side\public\config.json" (
 	echo/
 	echo Arquivo config.json - front-end - nao encontrado, terminando o processo...
 	echo/
@@ -131,6 +131,11 @@ IF ERRORLEVEL 1 GOTO ERROR
 
 call docker-compose build --no-cache --pull
 IF ERRORLEVEL 1 GOTO ERROR
+
+IF NOT EXIST "%PATH_HOME%\images" (
+	mkdir "%PATH_HOME%\images"
+	IF ERRORLEVEL 1 GOTO ERROR
+)
 
 call docker save -o "%PATH_HOME%\images\%DOCKER_WEB_IMAGE_SAVED%.tar" %DOCKER_WEB_IMAGE_NAME%
 IF ERRORLEVEL 1 GOTO ERROR
