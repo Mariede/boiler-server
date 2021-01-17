@@ -8,8 +8,8 @@ set DOCKER_WEB_IMAGE_NAME=boiler-deploy:1.0.0
 set DOCKER_WEB_IMAGE_SAVED=boiler-deploy-1.0.0
 set DOCKER_WEB_CONTAINER_NAME=boiler-server
 set DOCKER_WEB_CONTAINER_MEMORY=8192m
-set DOCKER_WEB_VOLUME_MOUNT=C:/Users/mariede/.docker/_web/boiler-server
-set DOCKER_DB_VOLUME_MOUNT=C:/users/mariede/.docker/_db/mssql-boiler-server
+set DOCKER_WEB_VOLUME_MOUNT=C:\Users\miche\.docker\_web\boiler-server
+set DOCKER_DB_VOLUME_MOUNT=C:\Users\miche\.docker\_db\mssql-boiler-server
 
 cls
 echo/
