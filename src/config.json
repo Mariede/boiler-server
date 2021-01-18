@@ -14,8 +14,8 @@
 		"routePrefix": "/",
 		"showFrontEndStackTraceErr": false,
 		"secure": {
-			"isHttps": false,
-			"redirectHttpToHttpsPort": 0,
+			"isHttps": true,
+			"redirectHttpToHttpsPort": [4000, 443],
 			"certFolder": "/cert",
 			"certKey": "cert.key",
 			"certPublic": "cert.pem"
