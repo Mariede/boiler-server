@@ -88,25 +88,39 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 			let queryReplace = '';
 
 			if (searchFields.length > 0 && searchValue) {
+				const loopValues = searchValue.split(' ').filter(
+					element => {
+						return (
+							element !== ''
+						);
+					}
+				);
+
 				searchFields.forEach(
-					(e, i) => {
-						const regExpAlias = new RegExp(`SELECT\\s+[\\s\\S]*?(\\w+\\.)(${e})\\s+`, 'i');
+					(eField, iField) => {
+						const regExpAlias = new RegExp(`SELECT\\s+[\\s\\S]*?(\\w+\\.)(${eField})\\s+`, 'i');
 						const searchAlias = regExpAlias.exec(baseQuery);
 						const alias = (Array.isArray(searchAlias) ? (searchAlias[1] || '') : '');
 
-						searchQuery.dados.input[i] = [e, 'varchar', `%${searchValue}%`];
+						loopValues.forEach(
+							(eValue, iValue) => {
+								const finalField = eField + iValue;
 
-						if (queryWhere !== -1 || i !== 0) {
-							if (i !== 0) {
-								queryReplace += ' OR ';
-							} else {
-								queryReplace += ' AND (';
+								searchQuery.dados.input.push([finalField, 'varchar', `%${eValue}%`]);
+
+								if (queryWhere !== -1 || iField !== 0 || iValue !== 0) {
+									if (iField !== 0 || iValue !== 0) {
+										queryReplace += ' OR ';
+									} else {
+										queryReplace += ' AND (';
+									}
+								} else {
+									queryReplace += ' WHERE (';
+								}
+
+								queryReplace += `CAST(${alias + eField} AS varchar(max)) LIKE(@${finalField})`;
 							}
-						} else {
-							queryReplace += ' WHERE (';
-						}
-
-						queryReplace += `CAST(${alias + e} AS varchar(max)) LIKE(@${e})`;
+						);
 					}
 				);
 
