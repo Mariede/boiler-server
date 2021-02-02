@@ -813,7 +813,7 @@ const senha = async (req, res) => {
 	// -------------------------------------------------------------------------
 
 	// Parametros de entrada
-	const idUsuario = req.params.id;
+	const idUsuario = sess[sessWrapper].id;
 	const senha = req.body.senha;
 	const senhaNova = req.body.senhaNova;
 	const senhaNovaCheck = req.body.senhaNovaCheck;
@@ -822,10 +822,6 @@ const senha = async (req, res) => {
 	// Validacoes entrada
 	if (!validator.isInteger(idUsuario, false)) {
 		errWrapper.throwThis('USUARIO', 400, 'ID do usuário deve ser numérico...');
-	}
-
-	if (sess[sessWrapper].id !== parseInt(idUsuario, 10)) { // Apenas em si mesmo
-		errWrapper.throwThis('USUARIO', 400, 'Só é possível realizar esta operação em si mesmo...');
 	}
 
 	const errorStack = [];

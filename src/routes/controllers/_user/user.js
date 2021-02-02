@@ -88,6 +88,44 @@ const userRoutes = (router, handleErrorsController) => {
 	);
 	// -------------------------------------------------------------------------
 
+	// Altera senha usuario ----------------------------------------------------
+	router
+	.route('/usuario/senha')
+	.all(
+		handleErrorsController(
+			(req, res, next) => {
+				_commonGate(req, res);
+				next();
+			}
+		)
+	)
+	.put(
+		handleErrorsController(
+			async (req, res) => {
+				if (
+					checkPermissions.validate(
+						req,
+						[
+							routesPermissions.edtMinhaSenha
+						]
+					)
+				) {
+					const result = await user.senha(req, res);
+					res.status(200).send(result);
+				} else {
+					res.status(401).send(
+						{
+							name: res.locals.routeControllerRoute,
+							code: 401,
+							message: 'Rota protegida, permissão negada...'
+						}
+					);
+				}
+			}
+		)
+	);
+	// -------------------------------------------------------------------------
+
 	// Opcoes disponiveis ------------------------------------------------------
 	router
 	.route('/usuario/options')
@@ -239,44 +277,6 @@ const userRoutes = (router, handleErrorsController) => {
 					)
 				) {
 					const result = await user.ativacao(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
-		)
-	);
-	// -------------------------------------------------------------------------
-
-	// Altera senha usuario ----------------------------------------------------
-	router
-	.route('/usuario/:id/senha')
-	.all(
-		handleErrorsController(
-			(req, res, next) => {
-				_commonGate(req, res);
-				next();
-			}
-		)
-	)
-	.put(
-		handleErrorsController(
-			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.edtMinhaSenha
-						]
-					)
-				) {
-					const result = await user.senha(req, res);
 					res.status(200).send(result);
 				} else {
 					res.status(401).send(
