@@ -142,6 +142,26 @@ const keysToCamelCase = (jsonData, keysXmlToJson) => {
 		const checkData = Array.from(jsonData);
 
 		if (Array.isArray(keysXmlToJson) && keysXmlToJson.length !== 0) {
+			const parseBooleans = _input => {
+				const parseResult = (/^(?:true|false)$/i.test(_input)) ? (
+					_input.toLowerCase() === 'true'
+				) : (
+					_input
+				);
+
+				return parseResult;
+			};
+
+			const parseNumbers = _input => {
+				const parseResult = (!isNaN(_input) && !isNaN(parseFloat(_input))) ? (
+					Number(_input)
+				) : (
+					_input
+				);
+
+				return parseResult;
+			};
+
 			checkData.map(
 				record => {
 					return (
@@ -153,8 +173,8 @@ const keysToCamelCase = (jsonData, keysXmlToJson) => {
 										explicitRoot: false,
 										explicitArray: false,
 										valueProcessors: [
-											xml2js.processors.parseNumbers,
-											xml2js.processors.parseBooleans
+											parseBooleans,
+											parseNumbers
 										]
 									},
 									(err, result) => {
