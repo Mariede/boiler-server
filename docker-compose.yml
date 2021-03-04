@@ -16,12 +16,6 @@ services:
       - ${DOCKER_WEB_VOLUME_MOUNT}/queue:/home/node/app/queue
       - ${DOCKER_WEB_VOLUME_MOUNT}/sessions:/home/node/app/sessions
       - ${DOCKER_WEB_VOLUME_MOUNT}/uploads:/home/node/app/uploads
-    deploy:
-      resources:
-        limits:
-          memory: ${DOCKER_WEB_CONTAINER_MEMORY}
-      restart_policy:
-        condition: any
     restart: always
     depends_on:
       - db

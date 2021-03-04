@@ -1,15 +1,17 @@
 @echo OFF
 
-set PATH_HOME=C:\_Projetos\_full-stack
-set PATH_HOME_BACK_END=%PATH_HOME%\boiler-server
-set PATH_HOME_FRONT_END=%PATH_HOME%\boiler-react
+set PATH_HOME=C:/_Projetos/_full-stack
+set PATH_HOME_BACK_END=%PATH_HOME%/boiler-server
+set PATH_HOME_FRONT_END=%PATH_HOME%/boiler-react
 
-set DOCKER_WEB_IMAGE_NAME=boiler-deploy:1.0.0
-set DOCKER_WEB_IMAGE_SAVED=boiler-deploy-1.0.0
+rem set DOCKER_WEB_IMAGE_VERSION= & call node -p -e "require('C:/_des/SGIF/front-end/package.json').version"
+set DOCKER_WEB_IMAGE_VERSION=1.0.0
+set DOCKER_WEB_IMAGE_NAME=boiler-server:%DOCKER_WEB_IMAGE_VERSION%
+set DOCKER_WEB_IMAGE_SAVED=boiler-server-%DOCKER_WEB_IMAGE_VERSION%
 set DOCKER_WEB_CONTAINER_NAME=boiler-server
-set DOCKER_WEB_CONTAINER_MEMORY=8192m
-set DOCKER_WEB_VOLUME_MOUNT=C:\Users\miche\.docker\_web\boiler-server
-set DOCKER_DB_VOLUME_MOUNT=C:\Users\miche\.docker\_db\mssql-boiler-server
+set DOCKER_WEB_VOLUME_MOUNT=C:/Users/miche/.docker/_web/boiler-server
+set DOCKER_DB_VOLUME_MOUNT=C:/Users/miche/.docker/_db/mssql-boiler-server
+rem set DOCKER_REGISTRY=10.28.10.21:9001
 
 cls
 echo/
@@ -25,7 +27,7 @@ echo/
 echo Iniciando build final...
 echo/
 
-IF NOT EXIST "%PATH_HOME_BACK_END%\package.json" (
+IF NOT EXIST "%PATH_HOME_BACK_END%/package.json" (
 	echo/
 	echo Arquivo package.json na pasta definida para o back-end nao encontrado, terminando o processo...
 	echo/
@@ -33,7 +35,7 @@ IF NOT EXIST "%PATH_HOME_BACK_END%\package.json" (
 	GOTO ERROR
 )
 
-IF NOT EXIST "%PATH_HOME_FRONT_END%\package.json" (
+IF NOT EXIST "%PATH_HOME_FRONT_END%/package.json" (
 	echo/
 	echo Arquivo package.json na pasta definida para o front-end nao encontrado, terminando o processo...
 	echo/
@@ -77,10 +79,10 @@ echo  3-3 PACKING FINAL BUILD IN STATIC PUBLIC FOLDER               #
 echo ================================================================
 echo/
 
-del "%PATH_HOME_BACK_END%\build\views\client-side\public\*" /Q /S /F
+del "%PATH_HOME_BACK_END%/build/views/client-side/public" /q /s /f
 IF ERRORLEVEL 1 GOTO ERROR
 
-xcopy "%PATH_HOME_FRONT_END%\build\" "%PATH_HOME_BACK_END%\build\views\client-side\public\" /E /H
+xcopy "%PATH_HOME_FRONT_END%/build" "%PATH_HOME_BACK_END%/build/views/client-side/public" /q /s /f /e /h
 IF ERRORLEVEL 1 GOTO ERROR
 
 echo/
@@ -104,7 +106,7 @@ echo/
 echo Iniciando deploy...
 echo/
 
-IF NOT EXIST "%PATH_HOME_BACK_END%\build\package.json" (
+IF NOT EXIST "%PATH_HOME_BACK_END%/build/package.json" (
 	echo/
 	echo Arquivo package.json na pasta definida para o build final nao encontrado, terminando o processo...
 	echo/
@@ -112,7 +114,15 @@ IF NOT EXIST "%PATH_HOME_BACK_END%\build\package.json" (
 	GOTO ERROR
 )
 
-IF NOT EXIST "%PATH_HOME_BACK_END%\build\views\client-side\public\config.json" (
+IF NOT EXIST "%PATH_HOME_BACK_END%/build/config.json" (
+	echo/
+	echo Arquivo config.json - back-end - nao encontrado, terminando o processo...
+	echo/
+
+	GOTO ERROR
+)
+
+IF NOT EXIST "%PATH_HOME_BACK_END%/build/views/client-side/public/config.json" (
 	echo/
 	echo Arquivo config.json - front-end - nao encontrado, terminando o processo...
 	echo/
@@ -132,13 +142,19 @@ IF ERRORLEVEL 1 GOTO ERROR
 call docker-compose build --no-cache --pull
 IF ERRORLEVEL 1 GOTO ERROR
 
-IF NOT EXIST "%PATH_HOME%\images" (
-	mkdir "%PATH_HOME%\images"
+IF NOT EXIST "%PATH_HOME%/images" (
+	mkdir "%PATH_HOME%/images"
 	IF ERRORLEVEL 1 GOTO ERROR
 )
 
-call docker save -o "%PATH_HOME%\images\%DOCKER_WEB_IMAGE_SAVED%.tar" %DOCKER_WEB_IMAGE_NAME%
+call docker save -o "%PATH_HOME%/images/%DOCKER_WEB_IMAGE_SAVED%.tar" %DOCKER_WEB_IMAGE_NAME%
 IF ERRORLEVEL 1 GOTO ERROR
+
+REM call docker tag %DOCKER_WEB_IMAGE_NAME% %DOCKER_REGISTRY%/%DOCKER_WEB_IMAGE_NAME%
+REM IF ERRORLEVEL 1 GOTO ERROR
+
+REM call docker push %DOCKER_REGISTRY%/%DOCKER_WEB_IMAGE_NAME%
+REM IF ERRORLEVEL 1 GOTO ERROR
 
 REM call docker-compose up -d --force-recreate
 REM IF ERRORLEVEL 1 GOTO ERROR
