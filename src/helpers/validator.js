@@ -375,7 +375,7 @@ const isInteger = (_num, signed = true) => {
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante variavel (sempre . como separador decimal)
 const isIntegerOrFloat = (_num, signed = true) => {
 	const num = _falsyCheck(_num);
-	const regExp = (signed ? /^([-+]?[0-9]+)((\.{1}[0-9]+)|())$/ : /^([0-9]+)((\.{1}[0-9]+)|())$/);
+	const regExp = (signed ? /^([-+]?[0-9]+)(\.{1}[0-9]+)?$/ : /^([0-9]+)(\.{1}[0-9]+)?$/);
 
 	let vRet = false;
 
@@ -387,9 +387,9 @@ const isIntegerOrFloat = (_num, signed = true) => {
 };
 
 // Verifica se valor e numerico e inteiro ou numerico com pontuacao flutuante fixa (sempre . como separador decimal)
-const isIntegerOrFixed = (_num, fixedDecimal = 0, signed = true) => {
+const isIntegerOrFixed = (_num, fixedDecimal = 1, signed = true) => {
 	const num = _falsyCheck(_num);
-	const regExp = (signed ? new RegExp(`^([-+]?[0-9]+)((\\.{1}[0-9]{${fixedDecimal}})|())$`) : new RegExp(`^([0-9]+)((\\.{1}[0-9]{${fixedDecimal}})|())$`));
+	const regExp = (signed ? new RegExp(`^([-+]?[0-9]+)(\\.{1}[0-9]{1,${fixedDecimal || 1}})?$`) : new RegExp(`^([0-9]+)(\\.{1}[0-9]{1,${fixedDecimal || 1}})?$`));
 
 	let vRet = false;
 
