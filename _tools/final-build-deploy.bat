@@ -4,7 +4,6 @@ set PATH_HOME=C:/_Projetos/_full-stack
 set PATH_HOME_BACK_END=%PATH_HOME%/boiler-server
 set PATH_HOME_FRONT_END=%PATH_HOME%/boiler-react
 
-rem set DOCKER_WEB_IMAGE_VERSION= & call node -p -e "require('C:/_des/SGIF/front-end/package.json').version"
 set DOCKER_WEB_IMAGE_VERSION=1.0.0
 set DOCKER_WEB_IMAGE_NAME=boiler-server:%DOCKER_WEB_IMAGE_VERSION%
 set DOCKER_WEB_IMAGE_SAVED=boiler-server-%DOCKER_WEB_IMAGE_VERSION%
@@ -12,6 +11,8 @@ set DOCKER_WEB_CONTAINER_NAME=boiler-server
 set DOCKER_WEB_VOLUME_MOUNT=C:/Users/miche/.docker/_web/boiler-server
 set DOCKER_DB_VOLUME_MOUNT=C:/Users/miche/.docker/_db/mssql-boiler-server
 rem set DOCKER_REGISTRY=10.28.10.21:9001
+
+set COMPOSE_DOCKER_CLI_BUILD=0
 
 cls
 echo/
