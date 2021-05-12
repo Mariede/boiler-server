@@ -204,6 +204,15 @@ const generateUniqueId = (_length, fullUnique = true) => {
 	return fRet;
 };
 
+// Formata um numero valido para padrao brasileiro (com virgula)
+const formatNumberToString = value => {
+	if (typeof value === 'number') {
+		return String(value).replace(/\./, ',');
+	}
+
+	return value;
+};
+
 // Formata uma data valida de acordo com o parametro de entrada
 //	retorna o proprio valor de entrada se value nao for um objeto/data
 const formatDateToString = (value, formatStyle = 'dd/MM/yyyy HH:mm:ss') => {
@@ -257,6 +266,7 @@ module.exports = {
 	sendMail,
 	removeInvalidFileNameChars,
 	generateUniqueId,
+	formatNumberToString,
 	formatDateToString,
 	formatStringToDate,
 	checkDateAfterNow
