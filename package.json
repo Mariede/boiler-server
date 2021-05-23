@@ -7,7 +7,7 @@
   "license": "GPL-3.0-only",
   "private": true,
   "engines": {
-    "node": ">=10.5.0"
+    "node": ">=12.13.0"
   },
   "outputName": "main.js",
   "dependencies": {
@@ -19,30 +19,30 @@
     "date-fns": "^2.21.3",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
-    "express-session": "^1.17.1",
+    "express-session": "^1.17.2",
     "html-to-text": "^7.1.1",
     "http-proxy": "^1.18.1",
     "log4js": "^6.3.0",
     "module-alias": "^2.2.2",
-    "mongoose": "^5.12.9",
-    "mssql": "^6.3.2",
+    "mongoose": "^5.12.10",
+    "mssql": "^7.1.0",
     "multer": "^1.4.2",
-    "nodemailer": "^6.6.0",
+    "nodemailer": "^6.6.1",
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.5.0",
     "sharp": "^0.28.2",
-    "socket.io": "^4.1.1",
+    "socket.io": "^4.1.2",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^8.1.1",
-    "eslint": "^7.26.0",
+    "copy-webpack-plugin": "^9.0.0",
+    "eslint": "^7.27.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-node": "^11.1.0",
     "generate-package-json-webpack-plugin": "^2.1.2",
     "nodemon": "^2.0.7",
-    "webpack": "^5.37.0",
+    "webpack": "^5.37.1",
     "webpack-cli": "^4.7.0",
     "webpack-messages": "^2.0.4",
     "webpack-node-externals": "^3.0.0"
