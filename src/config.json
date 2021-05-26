@@ -44,7 +44,7 @@
 		],
 		"pathFavicon": "/views/server-side/assets/images/favicon.ico",
 		"cors": {
-			"origin": "*",
+			"origin": true,
 			"methods": [
 				"GET",
 				"HEAD",
