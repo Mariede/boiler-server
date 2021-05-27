@@ -96,7 +96,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 		// Middleware
 
 		// Security Headers --------------------------------------------------------
-		app.disable('x-powered-by'); // Desabilita header x-powered-by (hidepoweredby)
+		app.disable('X-Powered-By'); // Desabilita header x-powered-by (hidepoweredby)
 
 		app.use(
 			(req, res, next) => {
