@@ -204,6 +204,19 @@ const generateUniqueId = (_length, fullUnique = true) => {
 	return fRet;
 };
 
+// Formata o numero de casas decimais de um numero float
+const formatNumberDecimalsAfter = (value, decimalsAfter) => {
+	if (typeof value === 'number') {
+		const fatorDecimalsAfter = 10 ** decimalsAfter;
+
+		return (
+			Math.round(value * fatorDecimalsAfter) / fatorDecimalsAfter
+		);
+	}
+
+	return value;
+};
+
 // Formata um numero valido para padrao brasileiro (com virgula)
 const formatNumberToString = value => {
 	if (typeof value === 'number') {
@@ -266,6 +279,7 @@ module.exports = {
 	sendMail,
 	removeInvalidFileNameChars,
 	generateUniqueId,
+	formatNumberDecimalsAfter,
 	formatNumberToString,
 	formatDateToString,
 	formatStringToDate,
