@@ -63,13 +63,17 @@ const check = config => {
 	const showMessage = (fn, wait) => {
 		return new Promise((resolve, reject) => {
 			clearTimeout(timeoutMessages);
-			timeoutMessages = setTimeout(() => {
-				try {
-					resolve(fn());
-				} catch (err) {
-					reject(err);
-				}
-			}, wait);
+
+			timeoutMessages = setTimeout(
+				() => {
+					try {
+						resolve(fn());
+					} catch (err) {
+						reject(err);
+					}
+				},
+				wait
+			);
 		});
 	};
 
