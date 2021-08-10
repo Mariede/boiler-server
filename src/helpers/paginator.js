@@ -222,6 +222,10 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 				return currentKey.split('.').reduce(
 					(o, k) => {
 						if (!Object.prototype.hasOwnProperty.call(o, k)) {
+							if (typeof o === 'object' && Object.keys(o).length === 0) {
+								return '';
+							}
+
 							return o;
 						}
 
@@ -235,7 +239,14 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 				const order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
 				const aCheck = functions.formatStringToDate(getNestedValue(a, sortElements[i]) || '');
 				const bCheck = functions.formatStringToDate(getNestedValue(b, sortElements[i]) || '');
-				const checkData = ((aCheck instanceof Date && bCheck instanceof Date) ? (aCheck > bCheck) : collator.compare(aCheck, bCheck));
+
+				const checkData = (
+					typeof aCheck === 'string' && typeof bCheck === 'string' ? (
+						collator.compare(aCheck, bCheck)
+					) : (
+						aCheck - bCheck
+					)
+				);
 
 				return ((checkData < 0) ? order.d1 : ((checkData > 0) ? order.a1 : sortThis(a, b, i + 1, iLen)));
 			}
