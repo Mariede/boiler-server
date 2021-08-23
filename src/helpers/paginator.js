@@ -222,8 +222,8 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 				return currentKey.split('.').reduce(
 					(o, k) => {
 						if (!Object.prototype.hasOwnProperty.call(o, k)) {
-							if (typeof o === 'object' && Object.keys(o).length === 0) {
-								return '';
+							if (typeof o === 'object') {
+								return undefined;
 							}
 
 							return o;
