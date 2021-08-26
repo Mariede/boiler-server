@@ -24,22 +24,20 @@ const throwThis = (name, code, message) => {
 
 // Retorna um erro customizado na pilha de erros (Objeto err existente)
 const returnThis = (name, code, err, formmated = true) => {
-	let result = err;
-
 	if (formmated) {
 		const e = new Error();
 
 		e.name = name;
 		e.code = code;
-		e.message = result.message;
+		e.message = err.message;
 
-		result = e;
-	} else {
-		result.name = name;
-		result.code = code;
+		return e;
 	}
 
-	return result;
+	err.name = name;
+	err.code = code;
+
+	return err;
 };
 // -------------------------------------------------------------------------
 
