@@ -23,8 +23,8 @@ const throwThis = (name, code, message) => {
 };
 
 // Retorna um erro customizado na pilha de erros (Objeto err existente)
-const returnThis = (name, code, err, formmated = true) => {
-	if (formmated) {
+const returnThis = (name, code, err, formatted = true) => {
+	if (formatted) {
 		const e = new Error();
 
 		e.name = name;
