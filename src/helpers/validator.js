@@ -287,7 +287,7 @@ const isCep = _cep => {
 Verifica se nome e completo: com pelo menos uma letra, um espaco e duas letra em sequencia
 */
 const isCompleteName = _name => {
-	const name = (_name || '').toString().trim();
+	const name = (_name || '').toString().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 	const regExp = /([a-zA-Z]{1,})(\s{1})([a-zA-Z]{2,})/;
 
 	let vRet = false;
