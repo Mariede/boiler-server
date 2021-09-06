@@ -332,9 +332,9 @@ const isEmpty = (_param, trimmed = true, implicit = true) => {
 };
 
 // Verifica se valor e alfanumerico
-const isAlphaNumeric = (_param, spaceAndUnderscore = true) => {
+const isAlphaNumeric = (_param, separatorCharacters = true) => {
 	const param = (_param === true ? false : _falsyCheck(_param));
-	const regExp = (spaceAndUnderscore ? /^([a-z0-9_ ]+)$/i : /^([a-z0-9]+)$/i);
+	const regExp = (separatorCharacters ? /^([a-z0-9_ -]+)$/i : /^([a-z0-9]+)$/i);
 
 	let vRet = false;
 
