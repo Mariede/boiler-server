@@ -59,6 +59,7 @@
 		},
 		"custom": {
 			"fipe": {
+				"disabled": true,
 				"address": "http://fipeapi.appspot.com/api/1"
 			},
 			"permisys": {

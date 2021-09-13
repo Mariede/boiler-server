@@ -61,6 +61,12 @@ Retorna marcas ou marca (API FIPE)
 	ex: brand(59) ou brand('volks')
 */
 const brand = (_brand = '', _type = 1) => {
+	const isDisabled = __serverConfig.server.custom.fipe.disabled === true;
+
+	if (isDisabled) {
+		return Promise.resolve({});
+	}
+
 	return new Promise((resolve, reject) => {
 		const brand = ((/^([0-9]+)$/.test(_brand) && typeof _brand === 'number') ? _brand : String(_brand || ''));
 		const type = _types(_type);
@@ -117,6 +123,12 @@ Retorna veiculos por modelos ou veiculo por modelo (API FIPE)
 	ex: brandModel(59, 5599) ou brandModel(59, 'fox rock rio')
 */
 const brandModel = (brand, _model = '', _type = 1) => {
+	const isDisabled = __serverConfig.server.custom.fipe.disabled === true;
+
+	if (isDisabled) {
+		return Promise.resolve({});
+	}
+
 	return new Promise((resolve, reject) => {
 		const model = ((/^([0-9]+)$/.test(_model) && typeof _model === 'number') ? _model : String(_model || ''));
 		const type = _types(_type);
@@ -178,6 +190,12 @@ Retorna modelo especifico de veiculo por detalhes (API FIPE)
 		- ou vehicle({ brand: 59, model: '005332-5', details: '2016-1' })
 */
 const vehicle = (search, _details = '', _type = 1) => {
+	const isDisabled = __serverConfig.server.custom.fipe.disabled === true;
+
+	if (isDisabled) {
+		return Promise.resolve({});
+	}
+
 	return new Promise((resolve, reject) => {
 		const mountQuery = _search => {
 			let resultQuery = '';
