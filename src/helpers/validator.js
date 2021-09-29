@@ -514,6 +514,50 @@ const valueRange = (_num, vMin = 0, vMax = vMin) => {
 
 	return vRet;
 };
+
+/*
+Verifica se:
+	_checkDiff === 1 => _dateEnd e uma data maior do que _dateStart
+	_checkDiff !== 1 => _dateStart e uma data maior do que _dateEnd
+*/
+const dateDiff = (_dateStart, _dateEnd, _checkDiff = 1, _mode = 'dd/mm/yyyy') => {
+	const parseDate = _date => {
+		const mode = (
+			_mode === 'dd/mm/yyyy' ? (
+				'$2-$1-$3'
+			) : (
+				'$1-$2-$3'
+			)
+		);
+
+		const regEx = (
+			/(\d{2})[-/.]{1}(\d{2})[-/.]{1}(\d{4})/
+		);
+
+		return (
+			Date.parse(String(_date || '').replace(regEx, mode))
+		);
+	};
+
+	const dateStart = parseDate(_dateStart);
+	const dateEnd = parseDate(_dateEnd);
+
+	if (!isNaN(dateStart) && !isNaN(dateEnd)) {
+		const finalValidation = (
+			_checkDiff === 1 ? (
+				dateEnd > dateStart
+			) : (
+				dateStart > dateEnd
+			)
+		);
+
+		if (finalValidation) {
+			return true;
+		}
+	}
+
+	return false;
+};
 // -------------------------------------------------------------------------
 
 module.exports = {
@@ -537,5 +581,6 @@ module.exports = {
 	contains,
 	equal,
 	lenRange,
-	valueRange
+	valueRange,
+	dateDiff
 };
