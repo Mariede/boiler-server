@@ -211,7 +211,7 @@ const startServer = (cert, configPath, numWorkers, ...cluster) => {
 			(req, res, next) => {
 				Object.entries(req.query).forEach(
 					([qKey, qValue]) => {
-						if (typeof qValue !== 'string') {
+						if (typeof qValue !== 'string' && !Array.isArray(qValue)) {
 							req.query[qKey] = '';
 						}
 					}
