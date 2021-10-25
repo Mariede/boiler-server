@@ -110,7 +110,11 @@ const setSearch = async (req, baseQuery, targetReplace) => {
 
 								if (queryWhere !== -1 || iField !== 0 || iValue !== 0) {
 									if (iField !== 0 || iValue !== 0) {
-										queryReplace += ' OR ';
+										if (iValue !== 0) {
+											queryReplace += ' AND ';
+										} else {
+											queryReplace += ' OR ';
+										}
 									} else {
 										queryReplace += ' AND (';
 									}
