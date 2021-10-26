@@ -235,7 +235,7 @@ const query = {
 };
 
 const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
-const noPagedResult = paginator.setResult(resultSet, resultSet.recordsets[0], resultSet.rowsAffected[0], true); // Recordset selecionado
+const noPagedResult = paginator.setResult(resultSet, resultSet.recordsets[0], resultSet.rowsAffected[0]); // Recordset selecionado
 
 return noPagedResult;
 // ---------------------------------------------------------------------------------------------------------
@@ -257,7 +257,7 @@ const query = {
 
 // Executa query ou queries
 const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
-const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected, true); // Paginador
+const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
 
 return pagedResultSet;
 // ---------------------------------------------------------------------------------------------------------
@@ -280,21 +280,13 @@ const query = {
 // Executa query ou queries
 const resultSet = await dbCon.msSqlServer.sqlExecuteAll(query);
 
-resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
+resultSet.recordset = paginator.setSort(req, resultSet.recordset); // Ordenador
 const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
 
 return pagedResultSet;
 
 /*
-	* Apenas UM toCamelCase é necessário em todas as chamadas
-		=> parâmetro toCamelCase existe nos métodos setSort, setPage e setResult da lib paginator
-
-	* se toCamelCase = true no setSort (ou antes da chamada setSort):
 		=> utilizar camelCase exato (case sensitive) para identificar as chaves de sort no Json
-		=> é o caso do exemplo
-
-	* se toCamelCase = false no setSort:
-		=> utilizar nome da coluna exato no banco de dados (case sensitive) para identificar as chaves de sort no Json
 */
 
 // ---------------------------------------------------------------------------------------------------------
@@ -420,8 +412,11 @@ const resultSet = await searcher.setSearch(
 	replaceQuery
 );
 
-resultSet.recordset = paginator.setSort(req, resultSet.recordset, true); // Ordenador
+resultSet.recordset = paginator.setSort(req, resultSet.recordset); // Ordenador
+
 const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected); // Paginador
+
+pagedResultSet.recordset = paginator.keysToCamelCase(pagedResultSet.recordset); // Chaves para camelCase
 
 return pagedResultSet;
 
@@ -435,15 +430,7 @@ return pagedResultSet;
 */
 
 /*
-	* Apenas UM toCamelCase é necessário em todas as chamadas
-		=> parâmetro toCamelCase existe nos métodos setSort, setPage e setResult da lib paginator
-
-	* se toCamelCase = true no setSort (ou antes da chamada setSort):
 		=> utilizar camelCase exato (case sensitive) para identificar as chaves de sort no Json
-		=> é o caso do exemplo
-
-	* se toCamelCase = false no setSort:
-		=> utilizar nome da coluna exato no banco de dados (case sensitive) para identificar as chaves de sort no Json
 */
 
 // ---------------------------------------------------------------------------------------------------------

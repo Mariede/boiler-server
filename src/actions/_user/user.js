@@ -209,11 +209,14 @@ const consultarTodos = async (req, res) => {
 		replaceQuery
 	);
 
-	// Ordenador, chaves para camelCase
-	resultSet.recordset = paginator.setSort(req, resultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
+	// Ordenador
+	resultSet.recordset = paginator.setSort(req, resultSet.recordset);
 
 	// Paginador
 	const pagedResultSet = paginator.setPage(req, resultSet, resultSet.recordset, resultSet.rowsAffected);
+
+	// Chaves para camelCase
+	pagedResultSet.recordset = paginator.keysToCamelCase(pagedResultSet.recordset, [{ xmlRoot: 'PERFIS', xmlPath: 'PERFIL' }]);
 
 	return pagedResultSet;
 };

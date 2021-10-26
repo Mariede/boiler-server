@@ -212,10 +212,8 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordena
 	Ordenador: sortElements deve ser uma array e case sensitive para as chaves
 		-> sortOrder Array ASC/DESC (default: ASC)
 		-> sortCaseInsensitive true/false
-
-	toCamelCase: Boolean ou Array de objetos caso true mais propriedades em xml para conversao json
 */
-const setSort = (req, jsonData, toCamelCase = false) => {
+const setSort = (req, jsonData) => {
 	const _executeSort = (sortElements, sortOrder, sortCaseInsensitive) => {
 		const sortThis = (a, b, i, iLen) => {
 			const getNestedValue = (obj, currentKey) => {
@@ -254,7 +252,7 @@ const setSort = (req, jsonData, toCamelCase = false) => {
 			return 0;
 		};
 
-		const newData = (toCamelCase ? keysToCamelCase(jsonData, toCamelCase) : Array.from(jsonData));
+		const newData = Array.from(jsonData);
 		const sortElementsLen = (Array.isArray(sortElements) ? sortElements.length : 0);
 		const collator = new Intl.Collator(
 			undefined, // Default locale
@@ -306,10 +304,8 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao (pagina
 
 	Paginador: currentPage / itemsPerPage
 		-> retorna pageDetails, recordset, rowsAffected, output, returnValue
-
-	toCamelCase: Boolean ou Array de objetos caso true mais propriedades em xml para conversao json
 */
-const setPage = (req, jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) => {
+const setPage = (req, jsonDataAll, jsonData, jsonDataLen) => {
 	const _executePage = (currentPage, itemsPerPage, output, returnValue) => {
 		const backPage = currentPage - 1;
 		const _iFrom = (backPage * itemsPerPage) + 1;
@@ -324,7 +320,7 @@ const setPage = (req, jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) =
 		};
 		const indexSearchStart = backPage * itemsPerPage;
 		const indexSearchStop = indexSearchStart + itemsPerPage;
-		const recordSet = (toCamelCase ? keysToCamelCase(jsonData, toCamelCase) : Array.from(jsonData)).filter(
+		const recordSet = Array.from(jsonData).filter(
 			(e, i) => {
 				return (i >= indexSearchStart && i < indexSearchStop);
 			}
@@ -363,13 +359,11 @@ const setPage = (req, jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) =
 
 /*
 Formata a saida para o cliente selecionando o recordset de retorno, casos existam recordsets
-
-	toCamelCase: Boolean ou Array de objetos caso true mais propriedades em xml para conversao json
 */
-const setResult = (jsonDataAll, jsonData, jsonDataLen, toCamelCase = false) => {
+const setResult = (jsonDataAll, jsonData, jsonDataLen) => {
 	const formattedResult = {};
 
-	formattedResult.recordset = (toCamelCase ? keysToCamelCase(jsonData, toCamelCase) : Array.from(jsonData));
+	formattedResult.recordset = Array.from(jsonData);
 	formattedResult.rowsAffected = jsonDataLen;
 
 	if (typeof jsonDataAll.output === 'object' && Object.keys(jsonDataAll.output).length) {
