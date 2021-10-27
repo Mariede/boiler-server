@@ -52,6 +52,8 @@ Converte chaves de uma array com objetos de SNAKE_CASE para camelCase
 	-> Se existir keysXmlToJson no formato array de objetos, converte dados XML relacionados para JSON
 			-> [{ xmlRoot: 'ROOT1', xmlPath: 'PATH1' }, { xmlRoot: 'ROOT2', xmlPath: 'PATH2' }, ...]
 			** xmlRoot deve ter o mesmo identificador da coluna no recordset **
+
+	-> *** CUIDADO !!! *** Esta funcao pode ser tornar lenta para grandes quantidades de dados (big JSON data), principalmente se houver conversoes XML
 */
 const keysToCamelCase = (jsonData, keysXmlToJson) => {
 	const convertKeys = (cKey, cValue, nDocument) => {
@@ -216,27 +218,66 @@ Chamada inicial, verifica os dados de entrada do cliente, executa a acao (ordena
 const setSort = (req, jsonData) => {
 	const _executeSort = (sortElements, sortOrder, sortCaseInsensitive) => {
 		const sortThis = (a, b, i, iLen) => {
-			const getNestedValue = (obj, currentKey) => {
-				return currentKey.split('.').reduce(
-					(o, k) => {
-						if (!Object.prototype.hasOwnProperty.call(o, k)) {
-							if (typeof o === 'object') {
+			const getCurrentValue = (obj, currentKey) => {
+				const camelCaseToSnakeCase = field => {
+					const transformP = p => {
+						const changedP = p.replace(
+							/([A-Z])/g,
+							g => {
+								return `_${g[0]}`;
+							}
+						)
+						.toUpperCase();
+
+						return changedP;
+					};
+
+					const isUpperCase = _s => {
+						const s = String(_s);
+						return (s === s.toUpperCase());
+					};
+
+					return (
+						(/(_)+/.test(field) || isUpperCase(field)) ? field : transformP(field)
+					);
+				};
+
+				const keyNestedValue = (obj, currentKey) => {
+					return currentKey.split('.').reduce(
+						(o, k) => {
+							if (typeof o !== 'object' || !Object.prototype.hasOwnProperty.call(o, k)) {
 								return undefined;
 							}
 
-							return o;
-						}
+							return o[k];
+						},
+						obj
+					);
+				};
 
-						return o[k];
-					},
-					obj
+				const keyValue = obj[camelCaseToSnakeCase(currentKey)];
+
+				if (keyValue !== undefined || !/.+\..+/.test(currentKey)) {
+					return (
+						keyValue || ''
+					);
+				}
+
+				return (
+					keyNestedValue(obj, currentKey) || ''
 				);
 			};
 
 			if (i < iLen) {
 				const order = ((sortOrder[i] || '').toUpperCase() === 'DESC' ? { d1: 1, a1: -1 } : { d1: -1, a1: 1 });
-				const aCheck = functions.formatStringToDate(getNestedValue(a, sortElements[i]) || '');
-				const bCheck = functions.formatStringToDate(getNestedValue(b, sortElements[i]) || '');
+
+				/*
+					=> Entradas SEMPRE em camelCase, pesquisa por chaves em SNAKE_CASE via funcao
+					=> Valores pesquisados montados a partir de resultado direto do DB
+					=> Se valor nao for data, formatStringToDate desconsidera a formatacao
+				*/
+				const aCheck = functions.formatStringToDate(getCurrentValue(a, sortElements[i]));
+				const bCheck = functions.formatStringToDate(getCurrentValue(b, sortElements[i]));
 
 				const checkData = (
 					typeof aCheck === 'string' && typeof bCheck === 'string' ? (
