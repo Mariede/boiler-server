@@ -24,7 +24,7 @@ const egg = (req, res) => {
 // ------------------------------->>> Acao
 // Pagina informativa do servidor
 const server = (req, res) => {
-	const fRet = { file: 'index.ejs', path: '_home/', pageData: { date: functions.getDateNow(true), ioUrl: socketIoListeners.nameSpaces.ioRootNameSpace, ioPath: __serverConfig.socketIo.path, server: { name: process.env.npm_package_name, version: process.env.npm_package_version } } };
+	const fRet = { file: 'index.ejs', path: '_home/', pageData: { date: functions.getDateNow(true), ioUrl: socketIoListeners.nameSpaces.ioRootNameSpace, ioPath: __serverConfig.socketIo.path, server: { name: process.env.npm_package_name, version: process.env.npm_package_version, uptime: process.uptime() } } };
 	return fRet;
 };
 // -------------------------------------------------------------------------

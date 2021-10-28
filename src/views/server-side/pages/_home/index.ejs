@@ -51,8 +51,28 @@
 
 			ioConnection();
 		</script>
+
+		<script type="text/javascript">
+			const serverUptimeShow = () => {
+				const formatServerUptime = seconds => {
+					const pad = s => {
+						return (s < 10 ? '0' : '') + s;
+					}
+
+					var hours = Math.floor(seconds / (60 * 60));
+					var minutes = Math.floor(seconds % (60 * 60) / 60);
+					var seconds = Math.floor(seconds % 60);
+
+					return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+				}
+
+				const el = document.getElementById('server-uptime-show');
+
+				el.innerHTML = `<br />Servidor ativo durante <strong>${formatServerUptime(<%= server.uptime %>)} h</strong> (checagem em <%= date %> h)`;
+			}
+		</script>
 	</head>
-	<body>
+	<body onload="serverUptimeShow()">
 		<div id="wrapper">
 			<div id="content">
 				<img id="logo-img" src="img/server-logo.png" alt="logo" />
@@ -61,7 +81,7 @@
 
 			<hr />
 
-			<em><%= (server.name ? `${server.name}, ` : '') %>versão <strong><%= (server.version || 'N/D') %></strong></em>
+			<em><%= (server.name ? `${server.name}, ` : '') %>versão <strong><%= (server.version || 'N/D') %></strong><span id="server-uptime-show" /></em>
 
 			<div class="panel panel-home-bottom">
 				Hora do servidor : <span id="panel-home-date"><%= date %> h</span>
