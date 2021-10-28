@@ -257,7 +257,7 @@ const setSort = (req, jsonData) => {
 
 				const keyValue = obj[camelCaseToSnakeCase(currentKey)];
 
-				if (keyValue !== undefined || !/.+\..+/.test(currentKey)) {
+				if (keyValue !== undefined || !/^([a-zA-Z0-9_]+\.[a-zA-Z0-9_]+)+$/.test(currentKey)) {
 					return (
 						keyValue || ''
 					);
