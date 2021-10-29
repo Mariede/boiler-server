@@ -380,6 +380,8 @@ const setPage = (req, jsonDataAll, jsonData, jsonDataLen) => {
 		return result;
 	};
 
+	const hardLimitPerPage = 500; // Limite maximo de itens retornados por pagina
+
 	let currentPage = 0,
 		itemsPerPage = 10;
 
@@ -395,7 +397,7 @@ const setPage = (req, jsonDataAll, jsonData, jsonDataLen) => {
 		errWrapper.throwThis('PAGINAÇÃO (PAGINATOR)', 400, 'Favor utilizar verbo GET para realizar a consulta...');
 	}
 
-	return _executePage(currentPage, itemsPerPage, jsonDataAll.output, jsonDataAll.returnValue);
+	return _executePage(currentPage, (itemsPerPage < hardLimitPerPage ? itemsPerPage : hardLimitPerPage), jsonDataAll.output, jsonDataAll.returnValue);
 };
 
 /*
