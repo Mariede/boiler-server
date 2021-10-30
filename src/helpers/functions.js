@@ -254,6 +254,13 @@ const formatStringToDate = (value, formatStyle = 'dd/MM/yyyy HH:mm:ss') => {
 	return value;
 };
 
+// Verifica se e um numero js valido
+const isNumber = _n => {
+	return (
+		typeof _n === 'number' && !isNaN(_n)
+	);
+};
+
 // Verifica se uma data valida esta futura a data de agora
 //	Utiliza os GMTs definidos nos servidores abordados (node ou node / DB)
 const checkDateAfterNow = value => {
@@ -283,5 +290,6 @@ module.exports = {
 	formatNumberToString,
 	formatDateToString,
 	formatStringToDate,
+	isNumber,
 	checkDateAfterNow
 };
