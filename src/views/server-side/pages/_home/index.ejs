@@ -13,8 +13,20 @@
 		<script type="text/javascript" src="https://cdn.socket.io/socket.io-3.0.3.min.js"></script>
 
 		<script type="text/javascript">
+			const formatServerUptime = seconds => {
+				const pad = s => {
+					return (s < 10 ? '0' : '') + s;
+				};
+
+				var hours = Math.floor(seconds / (60 * 60));
+				var minutes = Math.floor(seconds % (60 * 60) / 60);
+				var seconds = Math.floor(seconds % 60);
+
+				return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+			};
+
 			const ioConnection = () => {
-				const showData = (connected, ...data) => {
+				const dateShow = (connected, ...data) => {
 					const el = document.getElementById('panel-home-date');
 
 					if (connected) {
@@ -25,12 +37,29 @@
 					}
 				};
 
+				const serverUptimeShow = connected => {
+					const el = document.getElementById('server-uptime-show');
+
+					if (serverUpTime === -1) {
+						el.innerHTML = '(por favor, recarregue a página...)';
+					} else {
+						if (connected) {
+							el.innerHTML = `${formatServerUptime(++serverUpTime)} h`;
+							el.style.color = '';
+						} else {
+							serverUpTime = -1;
+							el.style.color = 'red';
+						}
+					}
+				};
+
 				const socket = io.connect('<%= ioUrl %>', { path: '<%= ioPath %>', transports: ['websocket', 'polling'], forceNew: true });
 
 				socket.on(
 					'serverTimeTick',
 					data => {
-						showData(true, data);
+						dateShow(true, data);
+						serverUptimeShow(true);
 					}
 				);
 
@@ -44,35 +73,24 @@
 				socket.on(
 					'disconnect',
 					() => {
-						showData(false);
+						dateShow(false);
+						serverUptimeShow(false);
 					}
 				);
 			};
 
 			ioConnection();
-		</script>
 
-		<script type="text/javascript">
-			const serverUptimeShow = () => {
-				const formatServerUptime = seconds => {
-					const pad = s => {
-						return (s < 10 ? '0' : '') + s;
-					}
+			let serverUpTime = <%= server.uptime %>;
 
-					var hours = Math.floor(seconds / (60 * 60));
-					var minutes = Math.floor(seconds % (60 * 60) / 60);
-					var seconds = Math.floor(seconds % 60);
-
-					return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
-				}
-
+			// Valor inicial formatado
+			const serverUptimeStart = () => {
 				const el = document.getElementById('server-uptime-show');
-
-				el.innerHTML = `<br />Servidor ativo durante <strong>${formatServerUptime(<%= server.uptime %>)} h</strong> (checagem em <%= date %> h)`;
-			}
+				el.innerHTML = `${formatServerUptime(serverUpTime)} h`;
+			};
 		</script>
 	</head>
-	<body onload="serverUptimeShow()">
+	<body onload="serverUptimeStart()">
 		<div id="wrapper">
 			<div id="content">
 				<img id="logo-img" src="img/server-logo.png" alt="logo" />
@@ -81,7 +99,11 @@
 
 			<hr />
 
-			<em><%= (server.name ? `${server.name}, ` : '') %>versão <strong><%= (server.version || 'N/D') %></strong><span id="server-uptime-show" /></em>
+			<em><%= (server.name ? `${server.name}, ` : '') %>versão <strong><%= (server.version || 'N/D') %></strong></em>
+
+			<br />
+
+			<em>Servidor ativo durante <strong><span id="server-uptime-show" /></strong></em>
 
 			<div class="panel panel-home-bottom">
 				Hora do servidor : <span id="panel-home-date"><%= date %> h</span>

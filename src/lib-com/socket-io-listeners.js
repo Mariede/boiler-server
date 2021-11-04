@@ -11,11 +11,17 @@ const functions = require('@serverRoot/helpers/functions');
 const log = require('@serverRoot/helpers/log');
 // -------------------------------------------------------------------------
 
+// Namespaces dos listeners (caminhos para conexao)
+const nameSpaces = {
+	ioRootNameSpace: '/home.io'
+};
+
 // -------------------------------------------------------------------------
 // Listeners para socket.io separados por rota ou funcao
 const listeners = {
 	ioRootListening: io => { // Listeners para Home do servidor
 		const ioChannel = io.of(nameSpaces.ioRootNameSpace);
+
 		ioChannel.on(
 			'connection',
 			socket => {
@@ -45,14 +51,9 @@ const listeners = {
 		);
 	}
 };
-
-// Namespaces dos listeners (caminhos para conexao)
-const nameSpaces = {
-	ioRootNameSpace: '/home.io'
-};
 // -------------------------------------------------------------------------
 
 module.exports = {
-	listeners,
-	nameSpaces
+	nameSpaces,
+	listeners
 };
