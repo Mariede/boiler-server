@@ -1,11 +1,14 @@
 // ------------------------------------------------------------------------------
 /* Required modules */
+const NodeExternals = require('webpack-node-externals');
+
+const ESLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
-const NodeExternals = require('webpack-node-externals');
-const { resolve } = require('path');
 const WebpackMessages = require('webpack-messages');
+
+const { resolve } = require('path');
 // ------------------------------------------------------------------------------
 
 // ------------------------------------------------------------------------------
@@ -48,21 +51,15 @@ const generateBuild = {
 	externals: [
 		NodeExternals()
 	],
-	module: {
-		rules: [
-			{
-				enforce: 'pre',
-				test: /\.js$/,
-				exclude: /node_modules/,
-				loader: 'eslint-loader',
-				options: {
-					cache: false,
-					configFile: './.eslintrc.json'
-				}
-			}
-		]
-	},
 	plugins: [
+		new ESLintPlugin(
+			{
+				context: './src',
+				eslintPath: 'eslint',
+				extensions: ['js', 'jsx'],
+				exclude: ['node_modules']
+			}
+		),
 		new CleanWebpackPlugin(),
 		new CopyWebpackPlugin(
 			{
