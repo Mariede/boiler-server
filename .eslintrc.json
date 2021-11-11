@@ -21,8 +21,19 @@
 		"__serverConfig": "readonly",
 		"__serverWorker": "writable"
 	},
+	"settings": { // Package eslint-import-resolver-alias for eslint-plugin-import
+		"import/resolver": {
+			"alias": {
+				"map": [
+					["@serverRoot", "./src"]
+				],
+				"extensions": [".js"]
+			}
+		}
+	},
 	"extends": [
 		"eslint:recommended",
+		"plugin:import/errors",
 		"plugin:node/recommended"
 	],
 	"rules": {
@@ -114,6 +125,16 @@
 			2,
 			"beside"
 		],
+
+		// This one handles require() resolution respecting aliases IF you set commonjs: true
+		"import/no-unresolved": [
+			2,
+			{
+				"commonjs": true
+			}
+		],
+		"import/no-extraneous-dependencies": 2,
+
 		"indent": [
 			2,
 			"tab",
@@ -218,7 +239,10 @@
 		"node/handle-callback-err": 2,
 		"node/no-mixed-requires": 2,
 		"node/no-missing-import": 2,
+
+		// Turned off because conflicts with some rules in plugin:import/errors and does not support aliases
 		"node/no-missing-require": 0,
+
 		"node/no-new-require": 2,
 		"node/no-path-concat": 2,
 		"node/prefer-global/buffer": 2,
