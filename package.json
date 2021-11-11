@@ -7,7 +7,7 @@
   "license": "GPL-3.0-only",
   "private": true,
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=12.22.0"
   },
   "outputName": "main.js",
   "dependencies": {
