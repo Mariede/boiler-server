@@ -152,7 +152,7 @@
 			}
 		],
 		"linebreak-style": [
-			2,
+			0,
 			"windows"
 		],
 		"new-cap": 2,
