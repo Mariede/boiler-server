@@ -15,7 +15,7 @@
 		"showFrontEndStackTraceErr": false,
 		"secure": {
 			"isHttps": true,
-			"redirectHttpToHttpsPort": [4000, 443],
+			"redirectHttpToHttpsPort": 80,
 			"certFolder": "/cert",
 			"certKey": "cert.key",
 			"certPublic": "cert.pem"
