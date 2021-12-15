@@ -7,7 +7,6 @@
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
-const checkPermissions = require('@serverRoot/helpers/check-permissions');
 const routesPermissions = require('@serverRoot/routes/controllers/routes-permissions');
 
 // Acoes
@@ -38,52 +37,24 @@ const userRoutes = (router, handleErrorsController) => {
 	.get( // Colecao usuarios (todos)
 		handleErrorsController(
 			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.lstUsuarios,
-							routesPermissions.edtUsuarios
-						]
-					)
-				) {
-					const result = await user.consultarTodos(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
+				const result = await user.consultarTodos(req, res);
+				res.status(200).send(result);
+			},
+			[
+				routesPermissions.lstUsuarios,
+				routesPermissions.edtUsuarios
+			]
 		)
 	)
 	.post( // Novo usuario
 		handleErrorsController(
 			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.edtUsuarios
-						]
-					)
-				) {
-					const result = await user.inserir(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
+				const result = await user.inserir(req, res);
+				res.status(200).send(result);
+			},
+			[
+				routesPermissions.edtUsuarios
+			]
 		)
 	);
 	// -------------------------------------------------------------------------
@@ -102,26 +73,12 @@ const userRoutes = (router, handleErrorsController) => {
 	.put(
 		handleErrorsController(
 			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.edtMinhaSenha
-						]
-					)
-				) {
-					const result = await user.senha(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
+				const result = await user.senha(req, res);
+				res.status(200).send(result);
+			},
+			[
+				routesPermissions.edtMinhaSenha
+			]
 		)
 	);
 	// -------------------------------------------------------------------------
@@ -140,27 +97,13 @@ const userRoutes = (router, handleErrorsController) => {
 	.get(
 		handleErrorsController(
 			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.lstUsuarios,
-							routesPermissions.edtUsuarios
-						]
-					)
-				) {
-					const result = await user.options(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
+				const result = await user.options(req, res);
+				res.status(200).send(result);
+			},
+			[
+				routesPermissions.lstUsuarios,
+				routesPermissions.edtUsuarios
+			]
 		)
 	);
 	// -------------------------------------------------------------------------
@@ -179,77 +122,35 @@ const userRoutes = (router, handleErrorsController) => {
 	.get(
 		handleErrorsController(
 			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.lstUsuarios,
-							routesPermissions.edtUsuarios
-						]
-					)
-				) {
-					const result = await user.consultar(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
+				const result = await user.consultar(req, res);
+				res.status(200).send(result);
+			},
+			[
+				routesPermissions.lstUsuarios,
+				routesPermissions.edtUsuarios
+			]
 		)
 	)
 	.put(
 		handleErrorsController(
 			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.edtUsuarios
-						]
-					)
-				) {
-					const result = await user.alterar(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
+				const result = await user.alterar(req, res);
+				res.status(200).send(result);
+			},
+			[
+				routesPermissions.edtUsuarios
+			]
 		)
 	)
 	.delete(
 		handleErrorsController(
 			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.edtUsuarios
-						]
-					)
-				) {
-					const result = await user.excluir(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
+				const result = await user.excluir(req, res);
+				res.status(200).send(result);
+			},
+			[
+				routesPermissions.edtUsuarios
+			]
 		)
 	);
 	// -------------------------------------------------------------------------
@@ -268,26 +169,12 @@ const userRoutes = (router, handleErrorsController) => {
 	.put(
 		handleErrorsController(
 			async (req, res) => {
-				if (
-					checkPermissions.validate(
-						req,
-						[
-							routesPermissions.edtUsuarios
-						]
-					)
-				) {
-					const result = await user.ativacao(req, res);
-					res.status(200).send(result);
-				} else {
-					res.status(401).send(
-						{
-							name: res.locals.routeControllerRoute,
-							code: 401,
-							message: 'Rota protegida, permissão negada...'
-						}
-					);
-				}
-			}
+				const result = await user.ativacao(req, res);
+				res.status(200).send(result);
+			},
+			[
+				routesPermissions.edtUsuarios
+			]
 		)
 	);
 	// -------------------------------------------------------------------------

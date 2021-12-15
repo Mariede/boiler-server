@@ -8,6 +8,7 @@ const router = new express.Router();
 
 // -------------------------------------------------------------------------
 // Modulos de apoio
+const checkPermissions = require('@serverRoot/helpers/check-permissions');
 const helpersAuth = require('@serverRoot/helpers/auth');
 const routeProfiler = require('@serverRoot/server/route-profiler');
 const routes = require('@serverRoot/routes/routes');
@@ -54,11 +55,32 @@ router.use(
 			};
 
 			const controllersRoutes = () => {
-				const handleErrorsController = fn => { // Wrapper para handler de erros dos controllers
+				const handleErrorsController = (fn, permissions) => { // Wrapper para handler de erros e permissoes a rota nos controllers
 					return (
 						async (req, res, next) => {
 							try {
-								await fn(req, res, next);
+								const hasAccess = (
+									permissions === undefined ? (
+										true // Se nao existir o segundo parametro, liberado direto
+									) : (
+										checkPermissions.validate(
+											req,
+											permissions
+										)
+									)
+								);
+
+								if (hasAccess) {
+									await fn(req, res, next);
+								} else {
+									res.status(401).send(
+										{
+											name: res.locals.routeControllerRoute,
+											code: 401,
+											message: 'Rota protegida, permissão negada...'
+										}
+									);
+								}
 							} catch (err) {
 								next(err); // Sobe erro para topo do middleware
 							}
