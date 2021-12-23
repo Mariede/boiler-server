@@ -131,6 +131,7 @@
 					"enableArithAbort": true,
 					"useUTC": false,
 					"encrypt": false,
+					"trustServerCertificate": false,
 					"instanceName": ""
 				},
 				"pool": {

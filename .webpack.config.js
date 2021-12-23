@@ -115,7 +115,8 @@ const generateBuild = {
 	resolve: {
 		alias: {
 			'@serverRoot': sourcePath
-		}
+		},
+		fullySpecified: false
 	}
 };
 // ------------------------------------------------------------------------------
