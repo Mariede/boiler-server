@@ -124,7 +124,8 @@
 				"database": "database",
 				"connectionTimeout": 15000,
 				"requestTimeout": 15000,
-				"stream": true,
+				"stream": false,
+				"arrayRowMode": false,
 				"parseJSON": true,
 				"options": {
 					"abortTransactionOnError": true,
@@ -155,7 +156,7 @@
 				"poolSize": 10,
 				"connectTimeoutMS": 15000,
 				"socketTimeoutMS": 45000,
-				"authSource": "nodetest"
+				"authSource": "admin"
 			},
 			"configSchema": {
 				"bufferCommands": false,

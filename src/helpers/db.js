@@ -154,7 +154,7 @@ const msSqlServer = {
 								return { base: checkParamD, ext: validateE(checkParamE) };
 							};
 
-							const inputCheck = (r, p) => {
+							const inputCheck = () => {
 								if (Object.prototype.hasOwnProperty.call(p.dados, 'input')) {
 									p.dados.input.forEach(key => {
 										if (key.length === 3) {
@@ -180,7 +180,7 @@ const msSqlServer = {
 								}
 							};
 
-							const outputCheck = (r, p) => {
+							const outputCheck = () => {
 								if (Object.prototype.hasOwnProperty.call(p.dados, 'output')) {
 									p.dados.output.forEach(key => {
 										if (key.length === 2) {
@@ -202,17 +202,29 @@ const msSqlServer = {
 								}
 							};
 
-							inputCheck(r, p);
-							outputCheck(r, p);
+							inputCheck();
+							outputCheck();
+
+							const isStream = __serverConfig.db.msSqlServer.configDb.stream === true;
 
 							switch (p.formato) {
 								case 1: {
 								// Query Simples
-									return await r.query(p.dados.executar);
+									if (!isStream) {
+										return await r.query(p.dados.executar);
+									}
+
+									r.query(p.dados.executar);
+									return -1;
 								}
 								case 2: {
 								// Stored Procedure
-									return await r.execute(p.dados.executar);
+									if (!isStream) {
+										return await r.execute(p.dados.executar);
+									}
+
+									r.execute(p.dados.executar);
+									return -1;
 								}
 								default: {
 									errWrapper.throwThis('DB', 500, 'Formato não foi corretamente definido nos parâmetros JSON para execução da query, ele contempla apenas os valores numéricos: 1 (Queries locais) ou 2 (Stored Procedure)...');
@@ -226,36 +238,87 @@ const msSqlServer = {
 					}
 				};
 
-				const sqlFormattedResult = result => {
-					const formattedResult = {};
-
-					if (result.rowsAffected.length === 1 && result.recordsets.length === 1) {
-						formattedResult.recordset = result.recordsets[0];
-						formattedResult.rowsAffected = result.rowsAffected[0];
-					} else {
-						formattedResult.recordsets = result.recordsets;
-						formattedResult.rowsAffected = result.rowsAffected;
-					}
-
-					// Output values, se existirem
-					if (typeof result.output === 'object' && Object.keys(result.output).length) {
-						formattedResult.output = result.output;
-					}
-
-					// Return value, se existir
-					if (result.returnValue) {
-						formattedResult.returnValue = result.returnValue;
-					}
-
-					return formattedResult;
-				};
-
 				sqlAction(request, params)
 				.then(
 					res => {
-						resolve(
-							sqlFormattedResult(res)
-						);
+						const sqlFormattedResult = result => {
+							const formattedResult = {};
+
+							if (result.rowsAffected.length === 1 && result.recordsets.length === 1) {
+								formattedResult.recordset = result.recordsets[0];
+								formattedResult.rowsAffected = result.rowsAffected[0];
+							} else {
+								formattedResult.recordsets = result.recordsets;
+								formattedResult.rowsAffected = result.rowsAffected;
+							}
+
+							// Output values, se existirem
+							if (typeof result.output === 'object' && Object.keys(result.output).length) {
+								formattedResult.output = result.output;
+							}
+
+							// Return value, se existir
+							if (result.returnValue) {
+								formattedResult.returnValue = result.returnValue;
+							}
+
+							return formattedResult;
+						};
+
+						if (res !== -1) {
+							resolve(
+								sqlFormattedResult(res)
+							);
+						} else { // Stream
+							const streamingAll = [];
+
+							request.on(
+								'error',
+								err => {
+									failReturn(err);
+								}
+							);
+
+							request.on(
+								'row',
+								row => {
+									streamingAll.push(row);
+								}
+							);
+
+							request.on(
+								'done',
+								done => {
+									const streamSplitted = [];
+
+									const streamSplit = (
+										Array.isArray(done.rowsAffected) ? (
+											done.rowsAffected
+										) : (
+											[streamingAll.length]
+										)
+									);
+
+									let streamPick = 0;
+
+									streamSplit.forEach(
+										blockSplit => {
+											const nextPick = streamPick + blockSplit;
+											const blockCurrent = streamingAll.slice(streamPick, nextPick);
+
+											streamSplitted.push(blockCurrent);
+											streamPick = nextPick;
+										}
+									);
+
+									done.recordsets = streamSplitted;
+
+									resolve(
+										sqlFormattedResult(done)
+									);
+								}
+							);
+						}
 					}
 				)
 				.catch(
@@ -277,17 +340,14 @@ const msSqlServer = {
 			};
 
 			try {
-				const sqlClose = p => {
-					p.close();
-				};
-
 				transaction.commit()
 				.then(
 					() => {
 						if (__serverConfig.db.msSqlServer.connectionType === 2 || forceClose) {
 						// Conexao simples, direta, sem pool
-							sqlClose(sql);
+							sql.close();
 						}
+
 						resolve();
 					}
 				)
