@@ -524,14 +524,18 @@ const dateDiff = (_dateStart, _dateEnd, _checkDiff = 1, _mode = 'dd/mm/yyyy') =>
 	const parseDate = _date => {
 		const mode = (
 			_mode === 'dd/mm/yyyy' ? (
-				'$2-$1-$3'
+				'$3-$2-$1'
 			) : (
-				'$1-$2-$3'
+				_mode === 'mm/dd/yyyy' ? (
+					'$3-$1-$2'
+				) : (
+					'$1-$2-$3' // Ja no formato yyyy/mm/dd
+				)
 			)
 		);
 
 		const regEx = (
-			/(\d{2})[-/.]{1}(\d{2})[-/.]{1}(\d{4})/
+			/^(\d{2,4})[-/. ]{1}(\d{2})[-/. ]{1}(\d{2,4})$/
 		);
 
 		return (
@@ -551,9 +555,7 @@ const dateDiff = (_dateStart, _dateEnd, _checkDiff = 1, _mode = 'dd/mm/yyyy') =>
 			)
 		);
 
-		if (finalValidation) {
-			return true;
-		}
+		return finalValidation;
 	}
 
 	return false;
