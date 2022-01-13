@@ -47,17 +47,22 @@ docker cp ./views/client-side/public/config.json boiler-server:home/node/app/vie
 docker network ls
 
 
-6) Para remover uma rede
+6) Para criar nova rede
 
-docker network rm
+docker network create --driver bridge --subnet=192.160.0.0/24 --gateway=192.160.0.1 my-network
 
 
-7) Para salvar uma image localmente
+7) Para remover uma rede
+
+docker network rm my-network
+
+
+8) Para salvar uma image localmente
 
 docker save -o ./image.tar image-name:tag
 
 
-8) Para subir a imagem em um registry remoto
+9) Para subir a imagem em um registry remoto
 
 docker push image-name:tag
 
