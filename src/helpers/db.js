@@ -383,7 +383,6 @@ const msSqlServer = {
 			-> Retorna null, undefined, Boolean, Number ou String
 
 		** converte tipos nao especificados para string
-		** remove espacos extras em branco, caso string
 	*/
 	sanitize: param => {
 		const sanitizeThis = _s => {
@@ -399,7 +398,7 @@ const msSqlServer = {
 				return Number(_s);
 			}
 
-			return String(_s || '').trim().replace(
+			return String(_s || '').replace(
 				/[\0\x08\x09\x1a\n\r"'\\%]/g, // eslint-disable-line no-control-regex
 				char => {
 					switch (char) {
