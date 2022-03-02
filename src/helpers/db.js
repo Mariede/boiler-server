@@ -380,65 +380,55 @@ const msSqlServer = {
 	/*
 	Espera uma array de valores ou valor unico em param
 		-> Limpa cada valor da array ou valor unico, validando caracteres perigosos (sanitize)
-			-> Retorna null, undefined, Boolean, Number ou String
-
-		** converte tipos nao especificados para string
+			-> Retorna String protegida ou o valor existente sem modificacao (se diferente de String)
 	*/
 	sanitize: param => {
-		const sanitizeThis = _s => {
-			if (_s === null || _s === undefined) {
-				return _s;
-			}
-
-			if (_s === true || _s === false) {
-				return _s;
-			}
-
-			if ((/^([+-]?\d+)(\.{1}\d+|())$/).test(_s)) {
-				return Number(_s);
-			}
-
-			return String(_s || '').replace(
-				/[\0\x08\x09\x1a\n\r"'\\%]/g, // eslint-disable-line no-control-regex
-				char => {
-					switch (char) {
-						case '\0':
-							return '\\0';
-						case '\x08':
-							return '\\b';
-						case '\x09':
-							return '\\t';
-						case '\x1a':
-							return '\\z';
-						case '\n':
-							return '\\n';
-						case '\r':
-							return '\\r';
-						case '"':
-							return '""';
-						case '\'':
-							return '\'\'';
-						case '\\':
-						case '%':
-							return `\\${char}`;
-						default:
-							return char;
+		const sanitizeThis = _param => {
+			if (typeof _param === 'string') {
+				return _param.replace(
+					/[\0\x08\x09\x1a\n\r"'\\%]/g, // eslint-disable-line no-control-regex
+					char => {
+						switch (char) {
+							case '\0':
+								return '\\0';
+							case '\x08':
+								return '\\b';
+							case '\x09':
+								return '\\t';
+							case '\x1a':
+								return '\\z';
+							case '\n':
+								return '\\n';
+							case '\r':
+								return '\\r';
+							case '"':
+								return '""';
+							case '\'':
+								return '\'\'';
+							case '\\':
+							case '%':
+								return `\\${char}`;
+							default:
+								return char;
+						}
 					}
-				}
-			);
-		};
+				);
+			}
 
-		return (
-			Array.isArray(param) ? (
-				param.map(
+			if (!Array.isArray(_param)) {
+				return _param;
+			}
+
+			return (
+				_param.map(
 					value => {
 						return sanitizeThis(value);
 					}
 				)
-			) : (
-				sanitizeThis(param)
-			)
-		);
+			);
+		};
+
+		return sanitizeThis(param);
 	}
 };
 
