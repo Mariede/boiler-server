@@ -24,7 +24,7 @@
     "http-proxy": "^1.18.1",
     "log4js": "^6.5.2",
     "module-alias": "^2.2.2",
-    "mongoose": "^6.3.6",
+    "mongoose": "^6.4.6",
     "mssql": "^8.1.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.7.5",
