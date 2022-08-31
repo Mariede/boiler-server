@@ -204,6 +204,39 @@ const generateUniqueId = (_length, fullUnique = true) => {
 	return fRet;
 };
 
+// Verifica se e um numero js valido
+const isNumber = _n => {
+	return (
+		typeof _n === 'number' && !isNaN(_n)
+	);
+};
+
+// Formata o numero sem casas decimais
+const formatNumberFixedDigits = (value, digits) => {
+	if (typeof value === 'number' && typeof digits === 'number') {
+		const sinal = value < 0 ? -1 : 1;
+		const _value = Math.abs(value);
+
+		const rounded = Math.round(_value);
+		const lRounded = rounded.toString().length;
+
+		const expoent = digits - lRounded;
+		const multiplier = Math.pow(10, expoent);
+
+		const result = sinal * (Math.round(_value * multiplier) / multiplier);
+
+		return (
+			lRounded > digits ? (
+				Math.round(result)
+			) : (
+				result
+			)
+		);
+	}
+
+	return value;
+};
+
 // Formata o numero de casas decimais de um numero float
 const formatNumberDecimalsAfter = (value, decimalsAfter) => {
 	if (typeof value === 'number') {
@@ -254,13 +287,6 @@ const formatStringToDate = (value, formatStyle = 'dd/MM/yyyy HH:mm:ss') => {
 	return value;
 };
 
-// Verifica se e um numero js valido
-const isNumber = _n => {
-	return (
-		typeof _n === 'number' && !isNaN(_n)
-	);
-};
-
 // Verifica se uma data valida esta futura a data de agora
 //	Utiliza os GMTs definidos nos servidores abordados (node ou node / DB)
 const checkDateAfterNow = value => {
@@ -286,10 +312,11 @@ module.exports = {
 	sendMail,
 	removeInvalidFileNameChars,
 	generateUniqueId,
+	isNumber,
+	formatNumberFixedDigits,
 	formatNumberDecimalsAfter,
 	formatNumberToString,
 	formatDateToString,
 	formatStringToDate,
-	isNumber,
 	checkDateAfterNow
 };
