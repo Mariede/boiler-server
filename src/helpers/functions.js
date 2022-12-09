@@ -218,7 +218,7 @@ const formatNumberFixedDigits = (value, digits) => {
 		const _value = Math.abs(value);
 
 		const lRounded = (_value === 0 || Math.floor(_value) !== 0) ? (
-			Math.round(_value).toString().length
+			Math.floor(_value).toString().length
 		) : (
 			Math.ceil(Math.log10(_value))
 		);
@@ -251,6 +251,12 @@ const formatNumberDecimalsAfter = (value, decimalsAfter) => {
 	}
 
 	return value;
+};
+
+const formatNumberFixedDigitsAndAfter = (value, digits, decimalsAfter) => {
+	return (
+		formatNumberDecimalsAfter(formatNumberFixedDigits(value, digits), decimalsAfter)
+	);
 };
 
 // Formata um numero valido para padrao brasileiro (com virgula)
@@ -318,6 +324,7 @@ module.exports = {
 	isNumber,
 	formatNumberFixedDigits,
 	formatNumberDecimalsAfter,
+	formatNumberFixedDigitsAndAfter,
 	formatNumberToString,
 	formatDateToString,
 	formatStringToDate,
